@@ -569,5 +569,126 @@
         ],
         "source": "Custom_Drider_Update",
         "image": "https://www.aidedd.org/dnd/images/drider.jpg"
+    },
+    {
+        "slug": "ignacio-zhentarim-lord",
+        "name": "Ignacio, Zhentarim Lord",
+        "size": "Medium",
+        "type": "Humanoid (Human)",
+        "alignment": "Lawful Evil",
+        "ac": 19,
+        "hp": 150,
+        "speed": "30 ft.",
+        "stats": {
+            "str": 12,
+            "dex": 20,
+            "con": 16,
+            "int": 18,
+            "wis": 16,
+            "cha": 18
+        },
+        "saves": "Dex +9, Int +8, Wis +7",
+        "skills": "Deception +12, Insight +11, Perception +11, Stealth +13",
+        "conditionImmunities": "Charmed, Frightened",
+        "cr": "12",
+        "traits": [
+            {
+                "name": "Sneak Attack (1/Turn)",
+                "desc": "Deals an extra 6d6 damage if he has advantage or an ally is within 5 ft."
+            },
+            {
+                "name": "Cunning Action",
+                "desc": "Bonus action to Dash, Disengage, or Hide."
+            },
+            {
+                "name": "Ring of Mind Shielding",
+                "desc": "Immune to magic that allows others to read his thoughts or determine whether he is lying."
+            },
+            {
+                "name": "Assassinate",
+                "desc": "Advantage vs creatures that haven't taken a turn. Auto-crit vs surprised."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "Three attacks with Rapier or Hand Crossbow."
+            },
+            {
+                "name": "Rapier of Wounding",
+                "desc": "+10 to hit, 1d8+6 piercing. Target cannot regain hit points until start of Ignacio's next turn."
+            },
+            {
+                "name": "Poisoned Hand Crossbow",
+                "desc": "+10 to hit, range 30/120, 1d6+5 piercing + 3d6 poison (Con DC 15 half)."
+            }
+        ],
+        "reactions": [
+            {
+                "name": "Uncanny Dodge",
+                "desc": "Halve damage from an attack he can see."
+            },
+            {
+                "name": "Parry",
+                "desc": "Add +4 AC against one melee attack."
+            }
+        ],
+        "legendary": [
+            {
+                "name": "Command Ally",
+                "desc": "One ally within 30 ft can make a weapon attack as a reaction."
+            },
+            {
+                "name": "Shadow Step",
+                "desc": "Teleport 30 ft to an unoccupied space in dim light or darkness."
+            },
+            {
+                "name": "Cheap Shot (Costs 2)",
+                "desc": "Makes one Hand Crossbow attack."
+            }
+        ],
+        "source": "Custom"
+    },
+    {
+        "slug": "zhentarim-juggernaut",
+        "name": "Zhentarim Juggernaut",
+        "size": "Medium",
+        "type": "Humanoid (Orc/Human)",
+        "alignment": "Lawful Evil",
+        "ac": 20,
+        "hp": 160,
+        "speed": "30 ft.",
+        "stats": {
+            "str": 22,
+            "dex": 10,
+            "con": 20,
+            "int": 8,
+            "wis": 12,
+            "cha": 10
+        },
+        "saves": "Str +10, Con +9",
+        "skills": "Athletics +10",
+        "cr": "9",
+        "traits": [
+            {
+                "name": "Sentinel",
+                "desc": "Creatures hit by opportunity attacks generate speed 0. Creatures within 5ft attacking others provoke attacks."
+            },
+            {
+                "name": "Brute",
+                "desc": "Melee weapons deal one extra die of damage (included)."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "Two Maul attacks."
+            },
+            {
+                "name": "Maul",
+                "desc": "+10 to hit, 4d6+6 bludgeoning. If target is Large or smaller, DC 18 Str save or prone."
+            }
+        ],
+        "source": "Custom"
     }
 ]

@@ -101,7 +101,7 @@ export const SHOP_AMBUSH_TABLE: Encounter[] = [
     {
         roll: [1, 20],
         name: "The Debt of Memory",
-        description: "SCENE: A courier delivers a heavy iron box instead of the goods. Inside is the Shopkeeper's severed hand and a note: 'The Black Network cannot be charmed.' \n\nAMBUSH: Ignacio (Zhentarim Leader) steps from invisibility with 4 Veterans and 1 Mage. They have silenced the room. \n\nIGNACIO'S PARANOIA: He believes the Modify Memory was a Psionic/Mind Flayer attack. 'Tell me where the Colony is, Drow-lovers, or I crack your skulls to find it.' \n\nSIDEBAR: The Mercenary PC receives a *Sending*: '7,000 Platinum to walk away. Khelben never needs to know.'",
-        monsters: ["ignacio-zhentarim-lord", "mage", "zhentarim-veteran"]
+        description: "SCENE: A courier delivers a heavy iron box instead of the goods. Inside is the Shopkeeper's severed hand and a note: 'The Black Network cannot be charmed.' \n\nAMBUSH: Ignacio (Zhentarim Lord) steps from invisibility with his personal bodyguard, 'The Wall' (Juggernaut), and a Counterspell Mage. \n\nIGNACIO'S PARANOIA: He believes the Modify Memory was a Psionic/Mind Flayer attack. 'Tell me where the Colony is, Drow-lovers.' \n\nSIDEBAR: The Mercenary PC receives a *Sending*: '7,000 Platinum to walk away. Khelben never needs to know.'",
+        monsters: ["ignacio-zhentarim-lord", "zhentarim-juggernaut", "mage", "zhentarim-veteran"]
     }
 ];
