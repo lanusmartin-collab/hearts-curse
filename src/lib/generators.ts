@@ -79,9 +79,6 @@ const THEMED_ADJECTIVES: Record<GeneratorTheme, string[]> = {
     "Construct": ["Clockwork", "Brass", "Clicking", "Steam-Powered", "Cogwork", "Mithral", "Forged", "Automated"]
 };
 
-// Replaced generic LOOT_NOUNS with logic in generator function
-// const LOOT_NOUNS = ["Blade", "Shield", "Amulet", "Ring", "Gem", "Tome", "Boots", "Cloak", "Gloves", "Helm"];
-
 const THEMED_QUOTES: Record<GeneratorTheme, string[]> = {
     "Surface": [
         "A fine piece of craftmanship, fit for a lord.",
@@ -148,7 +145,6 @@ const EFFECTS = [
 
 export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
     // Filter Races by Theme
-    // ... (Same logic as before, just kept for completeness in this file rewrite)
     const availableRaces = RACES.filter(r => r.themes.includes(theme));
     const race = availableRaces[Math.floor(Math.random() * availableRaces.length)] || RACES[0];
 
@@ -235,6 +231,8 @@ export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
 
 export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
     const roll = Math.floor(Math.random() * 100);
+    // Bias towards "Common" materials/consumables for variety unless High Rarity
+
     let rarityObj = RARITY_ODDS[0];
     let currentSum = 0;
     for (const r of RARITY_ODDS) {
@@ -249,23 +247,55 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
 
     // Theme-based Adjectives
     const adjectives = THEMED_ADJECTIVES[theme] || THEMED_ADJECTIVES["Surface"];
-    const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    let adj = adjectives[Math.floor(Math.random() * adjectives.length)];
 
-    // [IMPROVED] Specific Item Nouns
+    // Specific Item Nouns
     let noun = "";
     if (typeCat === "Weapon") noun = WEAPON_TYPES[Math.floor(Math.random() * WEAPON_TYPES.length)];
     else if (typeCat === "Armor") noun = ARMOR_TYPES[Math.floor(Math.random() * ARMOR_TYPES.length)];
     else if (typeCat === "Potion") noun = "Potion";
     else if (typeCat === "Scroll") noun = "Scroll";
     else if (typeCat === "Wondrous") noun = ["Amulet", "Boots", "Cloak", "Gloves", "Helm", "Bag", "Gem"][Math.floor(Math.random() * 7)];
-    else noun = typeCat; // Ring, Wand remain as base nouns or can be expanded
+    else noun = typeCat;
 
-    const name = `${adj} ${noun}`;
+    // --- NON-MAGICAL FLAVOR LOGIC ---
+    let effectText = "";
+    let magicBonus = 0;
 
-    const effect = EFFECTS[Math.floor(Math.random() * EFFECTS.length)];
+    if (rarityObj.name === "Common") {
+        // Flavor only, no magic
+        const materials = ["Silvered", "Adamantine", "Cold Iron", "Masterwork"];
+        if (Math.random() > 0.6) {
+            adj = materials[Math.floor(Math.random() * materials.length)];
+            if (adj === "Silvered") effectText = "Counts as magical for overcoming resistances.";
+            if (adj === "Adamantine") effectText = "Critical hits against you become normal hits (Armor) or Objects take auto-crit (Weapon).";
+            if (adj === "Masterwork") effectText = "Exquisitely crafted. Worth double.";
+        } else {
+            effectText = "Standard quality, but reliable.";
+        }
+    } else {
+        // Magic Item Logic
+        if (rarityObj.name === "Uncommon") magicBonus = Math.random() > 0.5 ? 1 : 0;
+        if (rarityObj.name === "Rare") magicBonus = Math.random() > 0.5 ? 2 : 1;
+        if (rarityObj.name === "Very Rare") magicBonus = Math.random() > 0.5 ? 3 : 2;
+        if (rarityObj.name === "Legendary") magicBonus = 3;
+
+        effectText = EFFECTS[Math.floor(Math.random() * EFFECTS.length)];
+
+        // Add specific mechanic based on bonus
+        if (magicBonus > 0 && (typeCat === "Weapon" || typeCat === "Armor")) {
+            effectText = `Grants a +${magicBonus} bonus to ${typeCat === "Weapon" ? "attack and damage rolls" : "AC"}. ${effectText}`;
+        }
+    }
+
+    let name = `${adj} ${noun}`;
+    if (magicBonus > 0) name += ` +${magicBonus}`;
 
     let cost = 50 * rarityObj.costMod;
     cost = Math.floor(cost * (0.8 + Math.random() * 0.4));
+
+    // Potions are cheaper
+    if (noun === "Potion" || noun === "Scroll") cost = Math.floor(cost / 5);
 
     const props = [];
     if (typeCat === "Weapon") props.push("Martial", noun.includes("Two-Handed") || noun.includes("Great") ? "Two-Handed" : "Versatile");
@@ -278,16 +308,16 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
     if (rarityObj.name !== "Common") props.push("Magic");
     if (rarityObj.name === "Legendary") props.push("Attunement", "Indestructible");
 
-    // [IMPROVED] Quotes
+    // Quotes
     const quotes = THEMED_QUOTES[theme] || THEMED_QUOTES["Surface"];
     const selectedQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
     return {
         name: name,
-        type: noun, // Specific type
+        type: noun,
         rarity: rarityObj.name,
         cost: `${cost} gp`,
-        effect: effect,
+        effect: effectText,
         properties: props,
         npcQuote: selectedQuote
     };
