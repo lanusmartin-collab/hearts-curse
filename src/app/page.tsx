@@ -28,7 +28,7 @@ export default function Home() {
               alt="Heart's Curse Cover Art"
               width={800}
               height={300}
-              style={{ maxWidth: "100%", height: "auto", display: "block", maxHeight: "200px", objectFit: "cover" }}
+              style={{ maxWidth: "100%", height: "auto", display: "block", objectFit: "contain" }}
               priority
             />
           </div>

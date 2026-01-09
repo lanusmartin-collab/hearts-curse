@@ -136,19 +136,22 @@ button:hover {
 
 .card,
 .retro-border {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(10px);
+  background: var(--obsidian-base);
+  border: 1px solid #333;
   padding: 2rem;
-  border-radius: 8px;
-  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  border-radius: 2px;
+  /* Sharper corners for retro feel */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  /* Simple shadow */
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover,
 .retro-border:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 40px rgba(255, 9, 9, 0.15);
-  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.6);
+  border-color: var(--gold-accent);
+  /* Subtle highlight */
 }
 
 .parchment-panel {

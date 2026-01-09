@@ -27,20 +27,20 @@ export default function DashboardWidget({
 }: DashboardWidgetProps) {
     const content = (
         <>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem", borderBottom: "1px solid var(--glass-border)", paddingBottom: "0.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem", borderBottom: "2px solid var(--adnd-blue)", paddingBottom: "0.5rem" }}>
                 <div>
-                    <h3 style={{ fontSize: "1.125rem", fontFamily: "var(--font-serif)", color: "var(--scarlet-accent)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0, textShadow: "0 0 5px rgba(0,0,0,0.5)" }}>
+                    <h3 style={{ fontSize: "1.25rem", fontFamily: "var(--adnd-font-header)", color: "var(--adnd-blue)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>
                         {title}
                     </h3>
                     {subtitle && (
-                        <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)", fontFamily: "var(--font-mono)", textTransform: "uppercase", opacity: 0.7, margin: 0 }}>
+                        <p style={{ fontSize: "0.8rem", color: "#333", fontFamily: "var(--adnd-font-body)", fontStyle: "italic", opacity: 0.9, margin: 0 }}>
                             {subtitle}
                         </p>
                     )}
                 </div>
-                {Icon && <Icon style={{ width: "24px", height: "24px", color: "var(--mystic-accent)", opacity: 0.8 }} />}
+                {Icon && <Icon style={{ width: "24px", height: "24px", color: "var(--adnd-ink)", opacity: 0.7 }} />}
             </div>
-            <div style={{ color: "var(--fg-color)" }}>
+            <div style={{ color: "var(--adnd-ink)", fontFamily: "var(--adnd-font-body)" }}>
                 {children}
             </div>
         </>
@@ -50,11 +50,10 @@ export default function DashboardWidget({
         position: "relative",
         overflow: "hidden",
         padding: "1.5rem",
-        borderRadius: "0.5rem",
         transition: "all 0.3s",
-        background: "var(--glass-bg)",
-        border: "1px solid var(--glass-border)",
-        backdropFilter: "blur(10px)",
+        background: "var(--adnd-bg)", // Parchment
+        border: "1px solid #8b7e66",   // Darker parchment border
+        boxShadow: "5px 5px 10px rgba(0,0,0,0.3)", // Solid shadow, no glow
         display: "block",
         cursor: (href || onClick) ? "pointer" : "default",
         ...style
