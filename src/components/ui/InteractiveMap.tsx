@@ -52,8 +52,23 @@ export default function InteractiveMap({ src, title, nodes = [], onNodeClick, gr
         setIsDragging(false);
     };
 
+    const [lastPinchDist, setLastPinchDist] = useState<number | null>(null);
+
+    const getTouchDistance = (touches: React.TouchList) => {
+        if (touches.length < 2) return null;
+        const dx = touches[0].clientX - touches[1].clientX;
+        const dy = touches[0].clientY - touches[1].clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    };
+
     const handleTouchStart = (e: React.TouchEvent) => {
         if ((e.target as HTMLElement).closest(".map-node")) return;
+
+        if (e.touches.length === 2) {
+            const dist = getTouchDistance(e.touches);
+            setLastPinchDist(dist);
+            return;
+        }
 
         const touch = e.touches[0];
         setIsDragging(true);
@@ -61,6 +76,23 @@ export default function InteractiveMap({ src, title, nodes = [], onNodeClick, gr
     };
 
     const handleTouchMove = (e: React.TouchEvent) => {
+        // Handle Pinch Zoom
+        if (e.touches.length === 2) {
+            const currentDist = getTouchDistance(e.touches);
+            if (lastPinchDist && currentDist) {
+                // Determine zoom factor
+                const diff = currentDist - lastPinchDist;
+                // Sensitivity factor
+                const zoomFactor = diff * 0.005;
+
+                const newScale = Math.max(0.6, Math.min(6, scale + zoomFactor));
+                setScale(newScale);
+                setLastPinchDist(currentDist);
+            }
+            return;
+        }
+
+        // Handle Pan
         if (!isDragging) return;
         const touch = e.touches[0];
         setPos({ x: touch.clientX - dragStart.x, y: touch.clientY - dragStart.y });
@@ -68,6 +100,7 @@ export default function InteractiveMap({ src, title, nodes = [], onNodeClick, gr
 
     const handleTouchEnd = () => {
         setIsDragging(false);
+        setLastPinchDist(null);
     };
 
     // Reset view helper
