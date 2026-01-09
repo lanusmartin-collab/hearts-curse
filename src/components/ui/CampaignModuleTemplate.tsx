@@ -157,14 +157,14 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                                 </div>
 
                                 <div className="space-y-2 mt-2">
-                                    {stat.traits.map((trait, t) => (
+                                    {(stat.traits || []).map((trait, t) => (
                                         <div key={t}>
                                             <span className="font-bold italic">{trait.name}.</span> {trait.desc}
                                         </div>
                                     ))}
                                 </div>
 
-                                {stat.actions.length > 0 && (
+                                {stat.actions && stat.actions.length > 0 && (
                                     <div className="mt-2 pt-2 border-t border-black">
                                         <h4 className="font-bold uppercase text-sm mb-1">Actions</h4>
                                         {stat.actions.map((act, a) => (
