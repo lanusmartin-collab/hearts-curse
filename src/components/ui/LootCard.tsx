@@ -19,28 +19,28 @@ export function LootCard({ item }: { item: ShopItem }) {
 
     return (
         <div style={{
-            background: `
-                linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
-                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E"),
-                var(--adnd-bg)
+            background: "#e8dcc5",
+            backgroundImage: `
+                radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(240,230,210,0) 60%),
+                repeating-linear-gradient(45deg, rgba(139,69,19,0.02) 0px, rgba(139,69,19,0.02) 2px, transparent 2px, transparent 8px),
+                linear-gradient(to bottom right, #f4e8d1, #e8dcc5)
             `,
-            backgroundColor: "#e8dcd0", // Fallback
-            border: "1px solid #8b7355", // Paler brown
-            borderRadius: "2px",
+            border: "2px solid #5d4037",
+            borderRadius: "4px", // OLD SCHOOL CARD CORNER
             padding: "1.5rem",
-            boxShadow: "2px 2px 5px rgba(0,0,0,0.2), inset 0 0 30px rgba(139, 69, 19, 0.1)", // Inset for aged look
+            boxShadow: "inset 0 0 40px rgba(93, 64, 55, 0.15), 5px 5px 15px rgba(0,0,0,0.4)", // Stronger vignette + drop shadow
             position: "relative",
-            color: "#2c1a1a", // Deep Ink
+            color: "#2c1a1a",
             fontFamily: "var(--adnd-font-body)",
             width: "100%",
             maxWidth: "450px",
             margin: "0 auto"
         }}>
             {/* Corner Decorations */}
-            <div style={{ position: "absolute", top: "4px", left: "4px", width: "10px", height: "10px", borderTop: "2px solid #5d4037", borderLeft: "2px solid #5d4037" }} />
-            <div style={{ position: "absolute", top: "4px", right: "4px", width: "10px", height: "10px", borderTop: "2px solid #5d4037", borderRight: "2px solid #5d4037" }} />
-            <div style={{ position: "absolute", bottom: "4px", left: "4px", width: "10px", height: "10px", borderBottom: "2px solid #5d4037", borderLeft: "2px solid #5d4037" }} />
-            <div style={{ position: "absolute", bottom: "4px", right: "4px", width: "10px", height: "10px", borderBottom: "2px solid #5d4037", borderRight: "2px solid #5d4037" }} />
+            <div style={{ position: "absolute", top: "6px", left: "6px", width: "12px", height: "12px", borderTop: "3px solid #5d4037", borderLeft: "3px solid #5d4037" }} />
+            <div style={{ position: "absolute", top: "6px", right: "6px", width: "12px", height: "12px", borderTop: "3px solid #5d4037", borderRight: "3px solid #5d4037" }} />
+            <div style={{ position: "absolute", bottom: "6px", left: "6px", width: "12px", height: "12px", borderBottom: "3px solid #5d4037", borderLeft: "3px solid #5d4037" }} />
+            <div style={{ position: "absolute", bottom: "6px", right: "6px", width: "12px", height: "12px", borderBottom: "3px solid #5d4037", borderRight: "3px solid #5d4037" }} />
 
             {/* Header */}
             <div style={{ borderBottom: `2px solid ${getRarityColor(item.rarity || "Common")}`, paddingBottom: "0.5rem", marginBottom: "1rem", textAlign: "center" }}>
@@ -49,11 +49,13 @@ export function LootCard({ item }: { item: ShopItem }) {
                     fontFamily: "var(--adnd-font-header)",
                     color: getRarityColor(item.rarity || "Common"),
                     textTransform: "uppercase",
-                    fontSize: "1.4rem"
+                    fontSize: "1.6rem", // LARGER
+                    letterSpacing: "0.05em",
+                    textShadow: "1px 1px 0px rgba(255,255,255,0.5)" // POP EFFECT
                 }}>
                     {item.name}
                 </h3>
-                <div style={{ fontSize: "0.8rem", fontStyle: "italic", opacity: 0.8, textTransform: "uppercase", marginTop: "0.2rem" }}>
+                <div style={{ fontSize: "0.9rem", fontWeight: "bold", color: getRarityColor(item.rarity || "Common"), opacity: 0.9, textTransform: "uppercase", marginTop: "0.2rem" }}>
                     {item.rarity} {item.type} {item.attunement || (item.properties && item.properties.some(p => p.toLowerCase().includes("attunement"))) ? "(Requires Attunement)" : ""}
                 </div>
             </div>
