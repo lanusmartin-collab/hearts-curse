@@ -1,48 +1,43 @@
 "use client";
 
 import { useState } from "react";
-import { NPC_NAMES, NPC_TITLES, NPC_QUIRKS, MONSTER_PREFIXES, MONSTER_ABILITIES, LOOT_TRINKETS } from "@/lib/data/generator-tables";
+import { ALL_MONSTERS } from "@/lib/data/monsters_2024";
 import { Statblock } from "@/lib/data/statblocks";
+import { ShopItem } from "@/lib/data/items";
+import { generateNPC, generateLootItem } from "@/lib/generators"; // New generators
 import StatblockCard from "@/components/ui/StatblockCard";
+import { LootCard } from "@/components/ui/LootCard"; // New component
 import PrintButton from "@/components/ui/PrintButton";
 import Link from "next/link";
-
-import { ALL_MONSTERS } from "@/lib/data/monsters_2024";
+import { NPC_NAMES, NPC_TITLES, NPC_QUIRKS } from "@/lib/data/generator-tables";
 
 export default function GeneratorsPage() {
     const [result, setResult] = useState<Statblock | null>(null);
-    const [loot, setLoot] = useState("");
+    const [lootItem, setLootItem] = useState<ShopItem | null>(null);
 
     const genNPC = () => {
+        const sb = generateNPC();
+        // Flavor the name
         const n = NPC_NAMES[Math.floor(Math.random() * NPC_NAMES.length)];
         const t = NPC_TITLES[Math.floor(Math.random() * NPC_TITLES.length)];
+        sb.name = `${n} ${t}`;
+        // Add quirk
         const q = NPC_QUIRKS[Math.floor(Math.random() * NPC_QUIRKS.length)];
+        sb.traits.push({ name: "Quirk", desc: q });
 
-        setResult({
-            name: `${n} ${t}`,
-            size: "Medium", type: "Humanoid (Cursed)", alignment: "Neutral",
-            ac: 10 + Math.floor(Math.random() * 8), armorType: "Scavenged Gear",
-            hp: 10 + Math.floor(Math.random() * 50), hitDice: "8d8",
-            speed: "30 ft.",
-            stats: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
-            saves: "", skills: "", immunities: "", languages: "Common",
-            cr: "1/4", xp: 50,
-            traits: [{ name: "Quirk", desc: q }],
-            actions: [{ name: "Improvised Weapon", desc: "+2 to hit, 1d4 damage." }]
-        });
-        setLoot("");
+        setResult(sb);
+        setLootItem(null);
     };
 
     const genMonster = () => {
         // Pick random from ALL_MONSTERS
         const monster = ALL_MONSTERS[Math.floor(Math.random() * ALL_MONSTERS.length)];
-
         setResult(monster);
-        setLoot("");
+        setLootItem(null);
     };
 
     const genLoot = () => {
-        setLoot(LOOT_TRINKETS[Math.floor(Math.random() * LOOT_TRINKETS.length)]);
+        setLootItem(generateLootItem());
         setResult(null);
     };
 
@@ -63,19 +58,19 @@ export default function GeneratorsPage() {
                 <button onClick={genLoot}>[GENERATE LOOT]</button>
             </div>
 
-            <div className="retro-border" style={{ minHeight: "400px" }}>
+            <div className="retro-border" style={{ minHeight: "400px", display: "flex", justifyContent: "center", alignItems: "start", padding: "2rem" }}>
                 {result ? (
-                    <div className="fade-in">
-                        <h3 style={{ borderBottom: "1px dashed #555", marginBottom: "1rem" }}>Fabrication Result</h3>
+                    <div className="fade-in" style={{ width: "100%" }}>
+                        <h3 style={{ borderBottom: "1px dashed #555", marginBottom: "1rem" }}>Fabrication Result (Bio-Data)</h3>
                         <StatblockCard data={result} />
                     </div>
-                ) : loot ? (
-                    <div className="fade-in" style={{ textAlign: "center", paddingTop: "4rem" }}>
-                        <h3>Trinket Found</h3>
-                        <p style={{ fontSize: "2rem", marginTop: "1rem", color: "var(--accent-color)" }}>{loot}</p>
+                ) : lootItem ? (
+                    <div className="fade-in" style={{ width: "100%", maxWidth: "500px" }}>
+                        <h3 style={{ borderBottom: "1px dashed #555", marginBottom: "1rem", textAlign: "center" }}>Fabrication Result (Artifact)</h3>
+                        <LootCard item={lootItem} />
                     </div>
                 ) : (
-                    <p style={{ opacity: 0.5, textAlign: "center", paddingTop: "4rem" }}>Select a module to begin fabrication...</p>
+                    <p style={{ opacity: 0.5, paddingTop: "4rem" }}>Select a module to begin fabrication...</p>
                 )}
             </div>
         </div>
