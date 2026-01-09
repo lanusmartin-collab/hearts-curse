@@ -111,7 +111,7 @@ export default function StatblockCard({ data }: { data: Statblock }) {
                 <div>
                     <div><strong>CR</strong> {data.cr} {data.xp ? `(${data.xp} XP)` : ""}</div>
                     <div><strong>Proficiency Bonus</strong> +{Math.max(2, Math.floor((Math.max(0, parseInt(data.cr) || 0) - 1) / 4) + 2)}</div>
-                    <div><strong>Initiative</strong> {data.initiative && data.initiative >= 0 ? "+" : ""}{data.initiative}</div>
+                    <div><strong>Initiative</strong> {data.initiative !== undefined ? (data.initiative >= 0 ? "+" : "") + data.initiative : ""}</div>
                 </div>
             </div>
 
