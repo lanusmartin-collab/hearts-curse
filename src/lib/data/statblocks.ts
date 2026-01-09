@@ -26,6 +26,7 @@ export type Statblock = {
     image?: string;
     description?: string;
     initiative?: number;
+    slug?: string;
 };
 
 export const STATBLOCKS: Record<string, Statblock> = {
@@ -125,41 +126,7 @@ export const STATBLOCKS: Record<string, Statblock> = {
         traits: [{ name: "Indomitable", desc: "Reroll save 2/day." }],
         actions: [{ name: "Multiattack", desc: "Three Greatsword attacks." }, { name: "Greatsword", desc: "+9 to hit, 2d6+5 slashing." }]
     },
-    "larloch": {
-        name: "Larloch the Shadow King",
-        size: "Medium",
-        type: "Undead (Wizard)",
-        alignment: "Lawful Evil",
-        ac: 22,
-        armorType: "calcium-plate + Ioun Stones",
-        hp: 250,
-        hitDice: "20d8 + 100",
-        speed: "30 ft., fly 60 ft. (hover)",
-        stats: { str: 10, dex: 16, con: 20, int: 30, wis: 24, cha: 20 },
-        saves: "Con +12, Int +17, Wis +14",
-        skills: "Arcana +24, History +24, Perception +14",
-        immunities: "Necrotic, Poison; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks",
-        languages: "All, Telepathy 120 ft.",
-        cr: "26",
-        xp: 90000,
-        traits: [
-            { name: "Legendary Resistance (4/Day)", desc: "If Larloch fails a saving throw, he can choose to succeed instead." },
-            { name: "Master of Magic", desc: "Larloch casts spells of 1st through 5th level at will." },
-            { name: "Rejuvenation", desc: "If destroyed, Larloch gains a new body in 1d10 days, regaining all HP and becoming active again." }
-        ],
-        actions: [
-            { name: "Multiattack", desc: "Larloch uses Frightful Presence. He then makes three attacks: two with Arcane Blast and one with Paralyzing Touch." },
-            { name: "Arcane Blast", desc: "+17 to hit, range 120 ft., one target. Hit: 4d10 + 10 Force damage." },
-            { name: "Paralyzing Touch", desc: "Melee Spell Attack: +17 to hit, reach 5 ft., one creature. Hit: 3d6 cold damage. DC 24 Con save or be Paralyzed for 1 minute." },
-            { name: "Time Stop (Recharge 6)", desc: "Larloch briefly stops the flow of time for everyone but himself." }
-        ],
-        legendary: [
-            { name: "Cantrip", desc: "Larloch casts a cantrip." },
-            { name: "Cast Spell (Costs 2 Actions)", desc: "Larloch casts a spell from his list." },
-            { name: "Disrupt Life (Costs 3 Actions)", desc: "Each non-undead creature within 20 ft. of Larloch must make a DC 24 Con save, taking 42 (12d6) necrotic damage on a failed save." }
-        ],
-        treasure: "Staff of the Netherese Archon, Robe of the Archmagi"
-    },
+
     "dracolich": {
         name: "Ancient White Dracolich",
         size: "Gargantuan",

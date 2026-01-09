@@ -4502,8 +4502,34 @@
     "languages": "Common, Draconic",
     "description": "",
     "initiative": 2,
-    "traits": [],
-    "actions": [],
+    "traits": [
+      {
+        "name": "Death Throes",
+        "desc": "When the draconian reaches 0 hit points, it explodes into a blast of magical energy. Each creature within 10 feet of it must make a DC 15 Dexterity saving throw, taking 21 (6d6) force damage on a failed save, or half as much damage on a successful one."
+      },
+      {
+        "name": "Magic Resistance",
+        "desc": "The draconian has advantage on saving throws against spells and other magical effects."
+      },
+      {
+        "name": "Innate Spellcasting",
+        "desc": "The draconian's spellcasting ability is Charisma (spell save DC 15). It can innately cast the following spells, requiring no material components:\nAt will: invisibility, misty step"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "The draconian makes two Energy Ray attacks."
+      },
+      {
+        "name": "Energy Ray",
+        "desc": "Ranged Spell Attack: +6 to hit, range 60 ft., one target. Hit: 8 (1d10 + 3) force damage."
+      },
+      {
+        "name": "Noxious Breath (Recharge 5–6)",
+        "desc": "The draconian exhales a 15-foot cone of noxious gas. Each creature in that area must succeed on a DC 14 Constitution saving throw or be poisoned for 1 minute. While poisoned in this way, a creature is incapacitated. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+      }
+    ],
     "legendary": [],
     "source_url": "https://www.aidedd.org/dnd/monstres.php?vo=aurak-draconian",
     "image_url": "https://www.aidedd.org/dnd/images/aurak-draconian.jpg",
@@ -4871,8 +4897,22 @@
     "languages": "Common, Draconic",
     "description": "",
     "initiative": 0,
-    "traits": [],
-    "actions": [],
+    "traits": [
+      {
+        "name": "Death Throes",
+        "desc": "When the draconian reaches 0 hit points, its body turns to stone and releases a cloud of dust. Any creature within 5 feet of the draconian that hit it with a melee weapon attack this turn must succeed on a DC 11 Dexterity saving throw or have its weapon stuck in the stone. A creature can use an action to attempt a DC 11 Strength check to free the weapon. The stone body crumbles after 1 minute."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "The draconian makes two melee attacks."
+      },
+      {
+        "name": "Shortsword",
+        "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+      }
+    ],
     "legendary": [],
     "source_url": "https://www.aidedd.org/dnd/monstres.php?vo=baaz-draconian",
     "image_url": "https://www.aidedd.org/dnd/images/baaz-draconian.jpg",
@@ -7546,8 +7586,34 @@
     "languages": "Common, Draconic",
     "description": "",
     "initiative": 0,
-    "traits": [],
-    "actions": [],
+    "traits": [
+      {
+        "name": "Death Throes",
+        "desc": "When the draconian dies, its body explodes. Each creature within 10 feet of it must make a DC 12 Dexterity saving throw, taking 10 (3d6) force damage on a failed save, or half as much damage on a successful one."
+      },
+      {
+        "name": "Magic Resistance",
+        "desc": "The draconian has advantage on saving throws against spells and other magical effects."
+      },
+      {
+        "name": "Spellcasting",
+        "desc": "The draconian is a 4th-level spellcaster. Its spellcasting ability is Charisma (spell save DC 12, +4 to hit with spell attacks). It knows the following Sorcerer spells:\nCantrips (at will): blade ward, fire bolt, friends, poison spray\n1st level (4 slots): magic missile, shield, witch bolt\n2nd level (3 slots): blur, web"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "The draconian makes two melee attacks."
+      },
+      {
+        "name": "Shortsword",
+        "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+      },
+      {
+        "name": "Longbow",
+        "desc": "Ranged Weapon Attack: +2 to hit, range 150/600 ft., one target. Hit: 4 (1d8) piercing damage."
+      }
+    ],
     "legendary": [],
     "source_url": "https://www.aidedd.org/dnd/monstres.php?vo=bozak-draconian",
     "image_url": "https://www.aidedd.org/dnd/images/bozak-draconian.jpg",
@@ -12690,8 +12756,26 @@
     "languages": "Common, Draconic",
     "description": "",
     "initiative": 0,
-    "traits": [],
-    "actions": [],
+    "traits": [
+      {
+        "name": "Death Throes",
+        "desc": "When the draconian dies, it changes shape. If it was humanoid, it shifts into the resemblance of the person who killed it. If the killer was not humanoid, or if the draconian died by other means, it bursts into flames, dealing 10 (3d6) fire damage to all creatures within 10 feet (DC 13 Dex save for half)."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "The draconian makes three attacks: two with its claws and one with its bite, or three with its Greatsword."
+      },
+      {
+        "name": "Greatsword",
+        "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage."
+      },
+      {
+        "name": "Trip",
+        "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 6 (1d4 + 4) bludgeoning damage, and the target must succeed on a DC 14 Strength saving throw or be knocked prone."
+      }
+    ],
     "legendary": [],
     "source_url": "https://www.aidedd.org/dnd/monstres.php?vo=draconian-dreadnought",
     "image_url": "https://www.aidedd.org/dnd/images/draconian-dreadnought.jpg",
@@ -12729,8 +12813,22 @@
     "languages": "Common, Draconic",
     "description": "",
     "initiative": 0,
-    "traits": [],
-    "actions": [],
+    "traits": [
+      {
+        "name": "Death Throes",
+        "desc": "When the draconian reaches 0 hit points, its body turns to stone and releases a cloud of dust. Any creature within 5 feet of the draconian that hit it with a melee weapon attack this turn must succeed on a DC 11 Dexterity saving throw or have its weapon stuck in the stone. A creature can use an action to attempt a DC 11 Strength check to free the weapon. The stone body crumbles after 1 minute."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "The draconian makes two melee attacks."
+      },
+      {
+        "name": "Shortsword",
+        "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+      }
+    ],
     "legendary": [],
     "source_url": "https://www.aidedd.org/dnd/monstres.php?vo=draconian-foot-soldier",
     "image_url": "https://www.aidedd.org/dnd/images/draconian-foot-soldier.jpg",
@@ -12768,8 +12866,26 @@
     "languages": "Common, Draconic",
     "description": "",
     "initiative": 3,
-    "traits": [],
-    "actions": [],
+    "traits": [
+      {
+        "name": "Death Throes",
+        "desc": "When the draconian dies, its body dissolves into a pool of acid. Each creature within 5 feet of it must make a DC 13 Dexterity saving throw, taking 10 (3d6) acid damage on a failed save, or half as much damage on a successful one."
+      },
+      {
+        "name": "Sneak Attack",
+        "desc": "The draconian deals an extra 7 (2d6) damage when it hits a target with a weapon attack and has advantage on the attack roll, or when the target is within 5 feet of an ally of the draconian that isn't incapacitated and the draconian doesn't have disadvantage on the attack roll."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "The draconian makes two Melee attacks."
+      },
+      {
+        "name": "Shortsword",
+        "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage plus 3 (1d6) poison damage."
+      }
+    ],
     "legendary": [],
     "source_url": "https://www.aidedd.org/dnd/monstres.php?vo=draconian-infiltrator",
     "image_url": "https://www.aidedd.org/dnd/images/draconian-infiltrator.jpg",
@@ -12807,8 +12923,34 @@
     "languages": "Common, Draconic",
     "description": "",
     "initiative": 0,
-    "traits": [],
-    "actions": [],
+    "traits": [
+      {
+        "name": "Death Throes",
+        "desc": "When the draconian dies, its body explodes. Each creature within 10 feet of it must make a DC 12 Dexterity saving throw, taking 10 (3d6) force damage on a failed save, or half as much damage on a successful one."
+      },
+      {
+        "name": "Magic Resistance",
+        "desc": "The draconian has advantage on saving throws against spells and other magical effects."
+      },
+      {
+        "name": "Spellcasting",
+        "desc": "The draconian is a 4th-level spellcaster. Its spellcasting ability is Charisma (spell save DC 12, +4 to hit with spell attacks). It knows the following Sorcerer spells:\nCantrips (at will): blade ward, fire bolt, friends, poison spray\n1st level (4 slots): magic missile, shield, witch bolt\n2nd level (3 slots): blur, web"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "The draconian makes two melee attacks."
+      },
+      {
+        "name": "Shortsword",
+        "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+      },
+      {
+        "name": "Longbow",
+        "desc": "Ranged Weapon Attack: +2 to hit, range 150/600 ft., one target. Hit: 4 (1d8) piercing damage."
+      }
+    ],
     "legendary": [],
     "source_url": "https://www.aidedd.org/dnd/monstres.php?vo=draconian-mage",
     "image_url": "https://www.aidedd.org/dnd/images/draconian-mage.jpg",
@@ -12846,8 +12988,34 @@
     "languages": "Common, Draconic",
     "description": "",
     "initiative": 2,
-    "traits": [],
-    "actions": [],
+    "traits": [
+      {
+        "name": "Death Throes",
+        "desc": "When the draconian reaches 0 hit points, it explodes into a blast of magical energy. Each creature within 10 feet of it must make a DC 15 Dexterity saving throw, taking 21 (6d6) force damage on a failed save, or half as much damage on a successful one."
+      },
+      {
+        "name": "Magic Resistance",
+        "desc": "The draconian has advantage on saving throws against spells and other magical effects."
+      },
+      {
+        "name": "Innate Spellcasting",
+        "desc": "The draconian's spellcasting ability is Charisma (spell save DC 15). It can innately cast the following spells, requiring no material components:\nAt will: invisibility, misty step"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "The draconian makes two Energy Ray attacks."
+      },
+      {
+        "name": "Energy Ray",
+        "desc": "Ranged Spell Attack: +6 to hit, range 60 ft., one target. Hit: 8 (1d10 + 3) force damage."
+      },
+      {
+        "name": "Noxious Breath (Recharge 5–6)",
+        "desc": "The draconian exhales a 15-foot cone of noxious gas. Each creature in that area must succeed on a DC 14 Constitution saving throw or be poisoned for 1 minute. While poisoned in this way, a creature is incapacitated. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+      }
+    ],
     "legendary": [],
     "source_url": "https://www.aidedd.org/dnd/monstres.php?vo=draconian-mastermind",
     "image_url": "https://www.aidedd.org/dnd/images/draconian-mastermind.jpg",
@@ -26715,8 +26883,26 @@
     "languages": "Common, Draconic",
     "description": "",
     "initiative": 3,
-    "traits": [],
-    "actions": [],
+    "traits": [
+      {
+        "name": "Death Throes",
+        "desc": "When the draconian dies, its body dissolves into a pool of acid. Each creature within 5 feet of it must make a DC 13 Dexterity saving throw, taking 10 (3d6) acid damage on a failed save, or half as much damage on a successful one."
+      },
+      {
+        "name": "Sneak Attack",
+        "desc": "The draconian deals an extra 7 (2d6) damage when it hits a target with a weapon attack and has advantage on the attack roll, or when the target is within 5 feet of an ally of the draconian that isn't incapacitated and the draconian doesn't have disadvantage on the attack roll."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "The draconian makes two Melee attacks."
+      },
+      {
+        "name": "Shortsword",
+        "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage plus 3 (1d6) poison damage."
+      }
+    ],
     "legendary": [],
     "source_url": "https://www.aidedd.org/dnd/monstres.php?vo=kapak-draconian",
     "image_url": "https://www.aidedd.org/dnd/images/kapak-draconian.jpg",
@@ -27998,41 +28184,49 @@
   {
     "name": "Larloch the Shadow King",
     "slug": "larloch",
-    "cr": 26,
-    "cr_display": "26",
+    "cr": 28,
+    "cr_display": "28",
     "type": "Undead (Wizard)",
     "size": "Medium",
     "ac": 22,
-    "ac_display": "22",
-    "hp": 250,
-    "hp_display": "250",
+    "ac_display": "22 (Robes of the Evil Archmagi)",
+    "hp": 300,
+    "hp_display": "300 (Regenerates 20 HP/turn)",
     "speed": "30 ft., fly 60 ft. (hover)",
     "stats": {
-      "str": 10,
+      "str": 12,
       "dex": 16,
-      "con": 20,
+      "con": 22,
       "int": 30,
-      "wis": 24,
-      "cha": 20
+      "wis": 26,
+      "cha": 24
     },
     "alignment": "Lawful Evil",
-    "saves": "Con +12, Int +17, Wis +14",
-    "skills": "Arcana +24, History +24, Perception +14",
-    "immunities": "Necrotic, Poison; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks",
-    "resistances": "",
-    "conditionImmunities": "",
-    "senses": "",
+    "saves": "Con +14, Int +19, Wis +16, Cha +15",
+    "skills": "Arcana +28, History +28, Perception +16, Insight +16",
+    "immunities": "Necrotic, Poison; Bludgeoning, Piercing, and Slashing from weapons +2 or lower",
+    "resistances": "Psychic; Bludgeoning, Piercing, and Slashing from +3 weapons (take half damage)",
+    "conditionImmunities": "Charmed, Exhaustion, Frightened, Paralyzed, Poisoned",
+    "senses": "Truesight 120 ft., Passive Perception 26",
     "languages": "All, Telepathy 120 ft.",
-    "description": "",
-    "initiative": 3,
+    "description": "Larloch wears the *Robes of the Evil Archmagi* and wields the *Staff of the Magi*. Orbiting his head are 27 Ioun Stones, each a unique artifact of Netheril.",
+    "initiative": 23,
     "traits": [
       {
-        "name": "Legendary Resistance (4/Day)",
+        "name": "Netherese Invulnerability",
+        "desc": "Larloch is immune to bludgeoning, piercing, and slashing damage from weapons with a bonus of +2 or lower. Weapons with a +3 bonus deal only half damage."
+      },
+      {
+        "name": "Ioun Stone Shell",
+        "desc": "Larloch begins combat with 27 Ioun Stones orbiting him. Each stone has AC 24 and 10 HP. He can use a stone's power as a Reaction or part of a Legendary Action. Using a stone's power causes it to shatter (turn to dust). The stones provide the following one-time effects when used:\n1. **Spell Absorption (Violet)**: Absorbs a spell of 9th level or lower targeting him.\n2. **Dispel Blast (Pale Green)**: Casts 9th-level *Dispel Magic*.\n3. **Fire Shield (Ruby)**: Absorbs 70 fire damage before shattering.\n4. **Cold Shield (Sapphire)**: Absorbs 70 cold damage before shattering.\n5. **Lightning Shield (Topaz)**: Absorbs 70 lightning damage before shattering.\n6. **Counterspell Perfection (Deep Purple)**: Automatically counters a spell of 9th level or lower.\n7. **Temporal Skip (Lavender)**: Grants Larloch a second Turn immediately after this one.\n8. **Teleport (Pearly)**: Teleports Larloch to any location on the same plane without error.\n9. **Healing Burst (Pink)**: Restores 100 HP to Larloch.\n10. **Mana Burn (Orange)**: Target loses a 9th level spell slot (or highest available).\n11. **Reality Anchor (Gold)**: Prevents teleportation within 100ft for 1 round.\n12. **Focus (Clear)**: Larloch maintains concentration on 2 spells at once for 1 minute.\n13. **Vengeance (Crimson)**: Reflects a single attack back at the attacker with double damage.\n14. **Ghost Form (Silver)**: Larloch becomes ethereal until the start of his next turn.\n15. **Clarity (Diamond)**: Larloch automatically succeeds on an Insight check or detects a lie.\n16. **Luck (Agate)**: Larloch rerolls a d20 roll.\n17. **Destiny (Obsidian)**: Forces a player to reroll a d20 roll and take the lower.\n18. **Speed (Emerald)**: Increases Larloch's speed to 120ft for 1 round.\n19. **Weight (Lead)**: Target creature's speed becomes 0 for 1 round (No save).\n20. **Vision (Opal)**: Grants Larloch X-Ray vision for 1 minute.\n21. **Silence (Jet)**: Casts *Silence* centered on himself (he can still cast verbally).\n22. **Fear (Amethyst)**: Casts *Weird* (DC 26) without concentration.\n23. **Charm (Rose)**: Target considers Larloch a close friend for 1 round (Wis DC 26).\n24. **Stasis (Iron)**: Target is placed in a *Forcecage* for 1 round.\n25. **Death (Black)**: Casts *Power Word Kill*.\n26. **Life (White)**: Resurrects a fallen minion with full HP.\n27. **The Master Stone (Prismatic)**: Recreates any one shattered stone."
+      },
+      {
+        "name": "Legendary Resistance (5/Day)",
         "desc": "If Larloch fails a saving throw, he can choose to succeed instead."
       },
       {
         "name": "Master of Magic",
-        "desc": "Larloch casts spells of 1st through 5th level at will."
+        "desc": "Larloch casts spells of 1st through 5th level at will. He has advantage on saving throws against spells and other magical effects (Robes)."
       },
       {
         "name": "Rejuvenation",
@@ -28042,15 +28236,19 @@
     "actions": [
       {
         "name": "Multiattack",
-        "desc": "Larloch uses Frightful Presence. He then makes three attacks: two with Arcane Blast and one with Paralyzing Touch."
+        "desc": "Larloch uses Frightful Presence. He then makes three attacks: two with his Staff of the Magi and one with Paralyzing Touch."
+      },
+      {
+        "name": "Staff of the Magi",
+        "desc": "Melee Weapon Attack: +15 to hit, reach 5 ft., one target. Hit: 1d6 + 6 bludgeoning damage plus 2d6 force damage. Larloch can expend charges to deal extra damage."
       },
       {
         "name": "Arcane Blast",
-        "desc": "+17 to hit, range 120 ft., one target. Hit: 4d10 + 10 Force damage."
+        "desc": "Ranged Spell Attack: +19 to hit, range 120 ft., one target. Hit: 4d10 + 10 Force damage."
       },
       {
         "name": "Paralyzing Touch",
-        "desc": "Melee Spell Attack: +17 to hit, reach 5 ft., one creature. Hit: 3d6 cold damage. DC 24 Con save or be Paralyzed for 1 minute."
+        "desc": "Melee Spell Attack: +19 to hit, reach 5 ft., one creature. Hit: 3d6 cold damage. DC 26 Con save or be Paralyzed for 1 minute."
       },
       {
         "name": "Time Stop (Recharge 6)",
@@ -28059,16 +28257,16 @@
     ],
     "legendary": [
       {
-        "name": "Cantrip",
-        "desc": "Larloch casts a cantrip."
+        "name": "Ioun Stone (Costs 1 Action)",
+        "desc": "Larloch activates and shatters one of his Ioun Stones."
       },
       {
-        "name": "Cast Spell (Costs 2 Actions)",
-        "desc": "Larloch casts a spell from his list."
+        "name": "Staff Spell (Costs 2 Actions)",
+        "desc": "Larloch casts a spell from the Staff of the Magi (e.g., Fireball, Lightning Bolt, Wall of Fire)."
       },
       {
-        "name": "Disrupt Life (Costs 3 Actions)",
-        "desc": "Each non-undead creature within 20 ft. of Larloch must make a DC 24 Con save, taking 42 (12d6) necrotic damage on a failed save."
+        "name": "The 4th Wall (Costs 3 Actions)",
+        "desc": "**Meta-Action:** Larloch addresses the *players* at the table, not the characters. He targets one player and demands they make a request. If the player refuses or hesitates, their character takes 50 psychic damage. If they comply, Larloch twists the request in game (DM's discretion)."
       }
     ],
     "source_url": "",
@@ -38293,8 +38491,26 @@
     "languages": "Common, Draconic",
     "description": "",
     "initiative": 0,
-    "traits": [],
-    "actions": [],
+    "traits": [
+      {
+        "name": "Death Throes",
+        "desc": "When the draconian dies, it changes shape. If it was humanoid, it shifts into the resemblance of the person who killed it. If the killer was not humanoid, or if the draconian died by other means, it bursts into flames, dealing 10 (3d6) fire damage to all creatures within 10 feet (DC 13 Dex save for half)."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "The draconian makes three attacks: two with its claws and one with its bite, or three with its Greatsword."
+      },
+      {
+        "name": "Greatsword",
+        "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage."
+      },
+      {
+        "name": "Trip",
+        "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 6 (1d4 + 4) bludgeoning damage, and the target must succeed on a DC 14 Strength saving throw or be knocked prone."
+      }
+    ],
     "legendary": [],
     "source_url": "https://www.aidedd.org/dnd/monstres.php?vo=sivak-draconian",
     "image_url": "https://www.aidedd.org/dnd/images/sivak-draconian.jpg",

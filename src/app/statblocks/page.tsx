@@ -20,7 +20,27 @@ export default function StatblocksPage() {
     useEffect(() => {
         const saved = localStorage.getItem("custom_statblocks");
         if (saved) {
-            setCustomCreatures(JSON.parse(saved));
+            try {
+                let parsed = JSON.parse(saved);
+
+                // CRITICAL FIX: Purge old versions of Larloch
+                const initialLength = parsed.length;
+                parsed = parsed.filter((c: Statblock) => {
+                    if (c.name === "Larloch the Shadow King" && (!c.cr || parseInt(String(c.cr)) < 28)) {
+                        console.log("Purging legacy Larloch from cache");
+                        return false;
+                    }
+                    return true;
+                });
+
+                if (parsed.length !== initialLength) {
+                    localStorage.setItem("custom_statblocks", JSON.stringify(parsed));
+                }
+
+                setCustomCreatures(parsed);
+            } catch (e) {
+                console.error("Failed to parse custom statblocks", e);
+            }
         }
     }, []);
 
@@ -31,11 +51,47 @@ export default function StatblocksPage() {
         setShowGenerator(false);
     };
 
-    const allCreatures = [
-        ...Object.values(STATBLOCKS),
-        ...Object.values(ALL_MONSTERS),
-        ...customCreatures
-    ].sort((a, b) => a.name.localeCompare(b.name));
+    // Combine and Deduplicate by Slug
+    const combined = new Map<string, Statblock>();
+
+    // 1. Add Legacy Statblocks (Preserve Keys as Slugs)
+    Object.entries(STATBLOCKS).forEach(([key, s]) => {
+        const slug = s.slug || key;
+        combined.set(slug, { ...s, slug });
+    });
+
+    // 2. Add New Monsters (Overrides Legacy)
+    Object.values(ALL_MONSTERS).forEach(s => {
+        if (s.slug) {
+            combined.set(s.slug, s);
+        }
+    });
+
+    // 3. Add Custom (Overrides Everything)
+    customCreatures.forEach(s => {
+        // Normalize Key: Try slug, then name converted to slug-like string
+        let key = s.slug;
+        if (!key && s.name) {
+            key = s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        }
+
+        // Special Case: Catch "Larloch the Shadow King" if saved without slug
+        if (s.name === "Larloch the Shadow King") key = "larloch";
+
+        if (key) combined.set(key, s);
+    });
+
+    let allCreatures = Array.from(combined.values());
+
+    // HARD FIX: Filter out "Old Larloch" if it somehow persists with a different key
+    allCreatures = allCreatures.filter(c => {
+        // Check for ANY Larloch
+        if (c.name.includes("Larloch") && c.name.includes("Shadow King")) {
+            // If CR is missing or low, it's garbage
+            if (!c.cr || parseInt(String(c.cr)) < 28) return false;
+        }
+        return true;
+    }).sort((a, b) => a.name.localeCompare(b.name));
 
     // Derive unique types
     const allTypes = ["All", ...Array.from(new Set(allCreatures.map(c => c.type.split(' ')[0].replace(/[\(\)]/g, ''))))].sort();
