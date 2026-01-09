@@ -68,7 +68,7 @@ export default function StatblockCard({ data }: { data: Statblock }) {
     };
 
     return (
-        <div className={clsx("adnd-card", "statblock-card")} style={{ width: "100%", padding: "2rem", paddingLeft: "3.5rem", position: "relative" }}>
+        <div className={clsx("adnd-card", "statblock-card")} style={{ width: "100%", padding: "2rem", paddingLeft: "3.5rem", position: "relative", color: "var(--adnd-ink)" }}>
             {/* Binder Holes */}
             <div className="adnd-hole" style={{ top: "30px" }}></div>
             <div className="adnd-hole" style={{ top: "50%", transform: "translateY(-50%)" }}></div>
