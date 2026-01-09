@@ -6,21 +6,36 @@ import CUSTOM_DATA from "./monsters_custom.json";
 
 const typedData: Record<string, Statblock> = {};
 
+// Helper to map raw data to Statblock
+function mapToStatblock(m: any): Statblock {
+  // Map image_url/image_path/imageUrl to image if image is missing
+  // Priority: image > image_path (local) > image_url (remote) > imageUrl (camelCase remote)
+  const image = m.image || m.image_path || m.image_url || m.imageUrl;
+  return {
+    ...m,
+    image
+  } as Statblock;
+}
+
 // 1. Load Main Data
 (RAW_DATA as any[]).forEach((m: any) => {
-  typedData[m.slug] = m as Statblock;
+  if (m.slug) {
+    typedData[m.slug] = mapToStatblock(m);
+  }
 });
 
 // 2. Load Drow Data (Overrides Main)
 (DROW_DATA as any[]).forEach((m: any) => {
-  typedData[m.slug] = m as Statblock;
+  if (m.slug) {
+    typedData[m.slug] = mapToStatblock(m);
+  }
 });
 
 // 3. Load Custom Data (Overrides Drow/Main)
 (CUSTOM_DATA as any[]).forEach((m: any) => {
   // Only add if it has a valid slug
   if (m.slug) {
-    typedData[m.slug] = m as Statblock;
+    typedData[m.slug] = mapToStatblock(m);
   }
 });
 

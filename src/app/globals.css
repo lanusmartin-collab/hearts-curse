@@ -27,6 +27,50 @@
   --max-width: 1400px;
 }
 
+/* AD&D 2nd Edition Theme Variables */
+:root {
+  --adnd-parchment: #f4e8d1;
+  --adnd-parchment-dark: #e6dace;
+  --adnd-ink: #2c1a1a;
+  --adnd-red: #8b0000;
+  --adnd-blue: #00008b;
+  --adnd-font-header: 'Bookman Old Style', 'Georgia', serif;
+  --adnd-font-body: 'Arial', sans-serif;
+  /* 2e used concise sans-serif for stats sometimes, or typewriter */
+  --adnd-font-stat: 'Courier New', monospace;
+}
+
+.adnd-theme {
+  --bg-color: var(--adnd-parchment);
+  --fg-color: var(--adnd-ink);
+  --accent-color: var(--adnd-red);
+  --glass-bg: rgba(244, 232, 209, 0.9);
+  --glass-border: var(--adnd-ink);
+  font-family: var(--adnd-font-body);
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 29px,
+      rgba(139, 69, 19, 0.1) 30px), url("https://www.transparenttextures.com/patterns/aged-paper.png");
+  background-color: var(--adnd-parchment);
+}
+
+.adnd-card {
+  background: #fffef0;
+  border: 1px solid #444;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.adnd-hole {
+  width: 15px;
+  height: 15px;
+  background: #222;
+  border-radius: 50%;
+  position: absolute;
+  left: 10px;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
 @keyframes flicker {
 
   0%,

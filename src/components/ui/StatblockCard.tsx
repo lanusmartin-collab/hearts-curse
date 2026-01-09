@@ -68,7 +68,12 @@ export default function StatblockCard({ data }: { data: Statblock }) {
     };
 
     return (
-        <div className={clsx("retro-border", "statblock-card")} style={{ background: "#fdf5c9", color: "#3e2723", fontFamily: "var(--font-stats)", position: "relative" }}>
+        <div className={clsx("adnd-card", "statblock-card")} style={{ width: "100%", padding: "2rem", paddingLeft: "3.5rem", position: "relative" }}>
+            {/* Binder Holes */}
+            <div className="adnd-hole" style={{ top: "30px" }}></div>
+            <div className="adnd-hole" style={{ top: "50%", transform: "translateY(-50%)" }}></div>
+            <div className="adnd-hole" style={{ bottom: "30px" }}></div>
+
             {/* Image (Floating Right) */}
             {data.image && (
                 <div style={{ float: "right", marginLeft: "1rem", marginBottom: "1rem", maxWidth: "150px" }}>
@@ -77,7 +82,7 @@ export default function StatblockCard({ data }: { data: Statblock }) {
                         alt={data.name}
                         width={150}
                         height={150}
-                        style={{ width: "100%", height: "auto", borderRadius: "8px", border: "2px solid #8a1c1c", boxShadow: "0 4px 6px rgba(0,0,0,0.3)" }}
+                        style={{ border: "2px solid var(--adnd-ink)", boxShadow: "2px 2px 0 rgba(0,0,0,0.2)" }}
                         unoptimized
                     />
                 </div>
@@ -85,28 +90,29 @@ export default function StatblockCard({ data }: { data: Statblock }) {
 
             {/* Header */}
             <h2 style={{
-                fontFamily: "var(--font-serif)",
-                color: "#8a1c1c",
-                borderBottom: "2px solid #8a1c1c",
+                fontFamily: "var(--adnd-font-header)",
+                color: "var(--adnd-blue)", /* 2e titles often blue */
+                borderBottom: "3px double var(--adnd-ink)",
                 marginBottom: "0.2rem",
-                clear: "none" // Allow header to wrap around float if needed
+                clear: "none",
+                fontSize: "1.8rem"
             }}>
                 {data.name}
             </h2>
-            <div style={{ fontStyle: "italic", marginBottom: "1rem" }}>
+            <div style={{ fontStyle: "italic", marginBottom: "1rem", fontFamily: "var(--adnd-font-body)", fontSize: "0.9rem" }}>
                 {data.size} {data.type}, {data.alignment}
             </div>
 
             {data.description && (
-                <div style={{ marginBottom: "1rem", fontStyle: "italic", fontSize: "0.9rem", color: "#666" }}>
+                <div style={{ marginBottom: "1rem", fontStyle: "italic", fontSize: "0.9rem", color: "#444" }}>
                     {data.description}
                 </div>
             )}
 
-            <hr style={{ border: "1px solid #8a1c1c", marginBottom: "1rem" }} />
+            <hr style={{ border: "1px solid var(--adnd-ink)", marginBottom: "1rem" }} />
 
             {/* Core Stats */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem", fontSize: "0.9rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem", fontSize: "0.9rem", fontFamily: "var(--adnd-font-body)" }}>
                 <div>
                     <div><strong>Armor Class</strong> {data.ac} {data.armorType ? `(${data.armorType})` : ""}</div>
                     <div><strong>Hit Points</strong> {data.hp} {data.hitDice ? `(${data.hitDice})` : ""}</div>

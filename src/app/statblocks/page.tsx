@@ -15,7 +15,6 @@ export default function StatblocksPage() {
 
     // Filters
     const [filterType, setFilterType] = useState("All");
-    const [filterLetter, setFilterLetter] = useState("All");
 
     useEffect(() => {
         const saved = localStorage.getItem("custom_statblocks");
@@ -37,7 +36,6 @@ export default function StatblocksPage() {
                     localStorage.setItem("custom_statblocks", JSON.stringify(parsed));
                 }
 
-                // eslint-disable-next-line
                 setCustomCreatures(parsed);
             } catch (e) {
                 console.error("Failed to parse custom statblocks", e);
@@ -52,7 +50,8 @@ export default function StatblocksPage() {
         setShowGenerator(false);
     };
 
-    // Combine and Deduplicate by Slug
+    // Combine locally defined STATBLOCKS, imported ALL_MONSTERS, and user CUSTOM_CREATURES.
+    // We use a Map to ensure uniqueness by SLUG.
     const combined = new Map<string, Statblock>();
 
     // 1. Add Legacy Statblocks (Preserve Keys as Slugs)
@@ -61,8 +60,8 @@ export default function StatblocksPage() {
         combined.set(slug, { ...s, slug });
     });
 
-    // 2. Add New Monsters (Overrides Legacy)
-    Object.values(ALL_MONSTERS).forEach(s => {
+    // 2. Add New Monsters (Overrides Legacy because ALL_MONSTERS includes Drow/AideDD)
+    ALL_MONSTERS.forEach(s => {
         if (s.slug) {
             combined.set(s.slug, s);
         }
@@ -70,13 +69,11 @@ export default function StatblocksPage() {
 
     // 3. Add Custom (Overrides Everything)
     customCreatures.forEach(s => {
-        // Normalize Key: Try slug, then name converted to slug-like string
         let key = s.slug;
         if (!key && s.name) {
             key = s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
         }
-
-        // Special Case: Catch "Larloch the Shadow King" if saved without slug
+        // Special Case
         if (s.name === "Larloch the Shadow King") key = "larloch";
 
         if (key) combined.set(key, s);
@@ -86,102 +83,170 @@ export default function StatblocksPage() {
 
     // HARD FIX: Filter out "Old Larloch" if it somehow persists with a different key
     allCreatures = allCreatures.filter(c => {
-        // Check for ANY Larloch
         if (c.name.includes("Larloch") && c.name.includes("Shadow King")) {
-            // If CR is missing or low, it's garbage
             if (!c.cr || parseInt(String(c.cr)) < 28) return false;
         }
         return true;
     }).sort((a, b) => a.name.localeCompare(b.name));
 
-    // Derive unique types
-    const allTypes = ["All", ...Array.from(new Set(allCreatures.map(c => c.type.split(' ')[0].replace(/[\(\)]/g, ''))))].sort();
-    const alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
+    // Extract unique types for the sidebar
+    const allTypes = ["All", ...Array.from(new Set(allCreatures.map(m => {
+        if (!m.type) return "Unknown";
+        // Normalize "Medium humanoid (dwarf)" -> "Humanoid"
+        const mainType = m.type.split(" ")[0].replace(/,/g, "").replace(/\(/g, "");
+        return mainType.charAt(0).toUpperCase() + mainType.slice(1);
+    }).filter(Boolean))).sort()];
 
+    // Filter Logic
     const filtered = allCreatures.filter(s => {
         const matchesSearch = s.name.toLowerCase().includes(search.toLowerCase()) ||
-            s.type.toLowerCase().includes(search.toLowerCase());
-        const matchesType = filterType === "All" || s.type.includes(filterType);
-        const matchesLetter = filterLetter === "All" || s.name.toUpperCase().startsWith(filterLetter);
-        return matchesSearch && matchesType && matchesLetter;
+            (s.type && s.type.toLowerCase().includes(search.toLowerCase()));
+        const matchesType = filterType === "All" || (s.type && s.type.toLowerCase().includes(filterType.toLowerCase()));
+        return matchesSearch && matchesType;
     });
 
-    return (
-        <div className="retro-container">
-            <div className="no-print" style={{ marginBottom: "2rem" }}>
-                <Link href="/">{"< BACK_TO_ROOT"}</Link>
-            </div>
+    const [selectedCreature, setSelectedCreature] = useState<Statblock | null>(null);
 
-            <header style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
-                <h1>Monster Compendium</h1>
+    return (
+        <div className="adnd-theme" style={{ minHeight: "100vh", padding: "1rem", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+
+            {/* Top Navigation Bar */}
+            <header className="no-print" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", padding: "0 1rem" }}>
+                <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+                    <Link href="/" style={{ fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "1px", fontWeight: "bold" }}>← Back to Campaign</Link>
+                    <h1 style={{ margin: 0, fontSize: "1.5rem", borderBottom: "none", textShadow: "none", color: "var(--adnd-ink)" }}>Monstrous Compendium</h1>
+                </div>
                 <div style={{ display: "flex", gap: "1rem" }}>
-                    <button onClick={() => setShowGenerator(!showGenerator)}>
-                        {showGenerator ? "[CLOSE FORGE]" : "[CREATE CREATURE]"}
+                    <button onClick={() => setShowGenerator(!showGenerator)} style={{ fontSize: "0.8rem", padding: "0.4rem 0.8rem" }}>
+                        {showGenerator ? "Close Forge" : "Open Forge"}
                     </button>
                     <PrintButton />
                 </div>
             </header>
 
-            {showGenerator && <StatblockGenerator onSave={handleSave} />}
-
-            {/* Filters */}
-            <div className="retro-border" style={{ marginBottom: "2rem", padding: "1rem" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "1rem", marginBottom: "1rem" }}>
-                    <input
-                        type="text"
-                        placeholder="Search creatures..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        style={{ fontSize: "1.2rem" }}
-                    />
-                    <select
-                        value={filterType}
-                        onChange={(e) => setFilterType(e.target.value)}
-                        style={{ width: "200px" }}
-                    >
-                        {allTypes.map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
+            {showGenerator && (
+                <div style={{ position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 100, background: "rgba(0,0,0,0.8)", padding: "2rem", overflowY: "auto" }}>
+                    <div className="retro-container" style={{ background: "var(--bg-color)" }}>
+                        <button onClick={() => setShowGenerator(false)} style={{ float: "right" }}>CLOSE</button>
+                        <StatblockGenerator onSave={handleSave} />
+                    </div>
                 </div>
+            )}
 
-                {/* A-Z Bar */}
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", justifyContent: "center" }}>
-                    <button
-                        onClick={() => setFilterLetter("All")}
-                        style={{
-                            padding: "0.2rem 0.5rem",
-                            fontSize: "0.8rem",
-                            background: filterLetter === "All" ? "var(--header-color)" : "transparent",
-                            color: filterLetter === "All" ? "white" : "var(--fg-color)"
-                        }}
-                    >
-                        ALL
-                    </button>
-                    {alphabet.map(l => (
-                        <button
-                            key={l}
-                            onClick={() => setFilterLetter(l)}
+            {/* Binder Layout */}
+            <div style={{
+                flex: 1,
+                display: "grid",
+                gridTemplateColumns: "200px 300px 1fr",
+                gap: "0",
+                background: "var(--adnd-parchment-dark)", /* Binder Cover/Inside */
+                border: "4px solid #3e2723",
+                borderRadius: "8px",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+                overflow: "hidden",
+                height: "calc(100vh - 100px)"
+            }}>
+
+                {/* 1. Tabs / Categories Sidebar */}
+                <div style={{
+                    background: "#2c1a1a",
+                    color: "#d7c0a0",
+                    overflowY: "auto",
+                    borderRight: "2px solid #1a0f0f",
+                    display: "flex",
+                    flexDirection: "column"
+                }}>
+                    <div style={{ padding: "1rem", borderBottom: "1px solid #444" }}>
+                        <input
+                            type="text"
+                            placeholder="Search Index..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
                             style={{
-                                padding: "0.2rem 0.5rem",
-                                fontSize: "0.8rem",
-                                background: filterLetter === l ? "var(--header-color)" : "transparent",
-                                color: filterLetter === l ? "white" : "var(--fg-color)"
+                                width: "100%",
+                                background: "rgba(255,255,255,0.1)",
+                                border: "1px solid #555",
+                                color: "#f0f0f0",
+                                fontSize: "0.9rem"
+                            }}
+                        />
+                    </div>
+                    {allTypes.map(t => (
+                        <button
+                            key={t}
+                            onClick={() => setFilterType(t)}
+                            style={{
+                                textAlign: "left",
+                                border: "none",
+                                borderBottom: "1px solid #444",
+                                background: filterType === t ? "var(--adnd-parchment)" : "transparent",
+                                color: filterType === t ? "var(--adnd-ink)" : "#d7c0a0",
+                                padding: "0.8rem 1rem",
+                                borderRadius: 0,
+                                textTransform: "capitalize",
+                                fontSize: "0.9rem"
                             }}
                         >
-                            {l}
+                            {t}
                         </button>
                     ))}
                 </div>
-            </div>
 
-            <div style={{ display: "grid", gap: "2rem" }}>
-                {filtered.map((statblock, i) => (
-                    <div key={i} style={{ breakInside: "avoid" }} className="fade-in">
-                        <StatblockCard data={statblock} />
-                    </div>
-                ))}
-                {filtered.length === 0 && (
-                    <p style={{ textAlign: "center", fontStyle: "italic", padding: "2rem" }}>No creatures found matching query.</p>
-                )}
+                {/* 2. Monster List (Index) */}
+                <div style={{
+                    background: "var(--adnd-parchment)",
+                    overflowY: "auto",
+                    borderRight: "1px solid #c9bca0",
+                    position: "relative"
+                }}>
+                    {/* Binder Rings Graphic (Optional) */}
+                    <div style={{ position: "absolute", left: "-10px", top: "0", bottom: "0", width: "20px", background: "url('/binder-rings.png') repeat-y" }}></div>
+
+                    {filtered.map((s, i) => (
+                        <div
+                            key={i}
+                            onClick={() => setSelectedCreature(s)}
+                            onMouseEnter={() => !selectedCreature && setSelectedCreature(s)}
+                            style={{
+                                padding: "0.5rem 1rem",
+                                paddingLeft: "1.5rem",
+                                borderBottom: "1px dashed #d7c0a0",
+                                cursor: "pointer",
+                                background: selectedCreature === s ? "rgba(138, 28, 28, 0.1)" : "transparent",
+                                fontWeight: selectedCreature === s ? "bold" : "normal",
+                                color: "var(--adnd-ink)",
+                                fontFamily: "var(--adnd-font-body)",
+                                fontSize: "0.9rem",
+                                display: "flex",
+                                justifyContent: "space-between"
+                            }}
+                        >
+                            <span>{s.name}</span>
+                            <span style={{ fontSize: "0.8em", opacity: 0.6 }}>{s.cr}</span>
+                        </div>
+                    ))}
+                </div>
+
+                {/* 3. Preview Pane (The Page) */}
+                <div style={{
+                    background: "#fdf5c9",
+                    padding: "2rem",
+                    overflowY: "auto",
+                    display: "flex",
+                    justifyContent: "center",
+                    backgroundImage: "url('https://www.transparenttextures.com/patterns/aged-paper.png')"
+                }}>
+                    {selectedCreature ? (
+                        <div style={{ maxWidth: "800px", width: "100%", transition: "all 0.3s ease" }}>
+                            <StatblockCard data={selectedCreature} />
+                        </div>
+                    ) : (
+                        <div style={{ alignSelf: "center", opacity: 0.4, fontStyle: "italic", textAlign: "center" }}>
+                            <h3>Select a creature from the index</h3>
+                            <p>Or perform a search to filter the archives.</p>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
