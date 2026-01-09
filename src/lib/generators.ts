@@ -63,6 +63,17 @@ const LOOT_TYPES = ["Weapon", "Armor", "Potion", "Scroll", "Wondrous", "Ring", "
 const WEAPON_TYPES = ["Longsword", "Shortsword", "Greatsword", "Greataxe", "Dagger", "Maul", "Rapier", "Longbow", "Heavy Crossbow"];
 const ARMOR_TYPES = ["Plate Armor", "Chain Mail", "Scale Mail", "Leather Armor", "Studded Leather", "Breastplate", "Shield"];
 
+const LORE_PREFIXES = [
+    "Larloch's",
+    "Veznan's",
+    "Valrath's",
+    "Aumvor's",
+    "Netherese",
+    "Iriolarthas'",
+    "Rhaugilath's",
+    "Shadowvar"
+];
+
 const RARITY_ODDS = [
     { name: "Common", chance: 50, costMod: 1, propCount: 0 },
     { name: "Uncommon", chance: 30, costMod: 10, propCount: 1 },
@@ -79,13 +90,42 @@ const THEMED_ADJECTIVES: Record<GeneratorTheme, string[]> = {
     "Construct": ["Clockwork", "Brass", "Clicking", "Steam-Powered", "Cogwork", "Mithral", "Forged", "Automated"]
 };
 
+// --- SYNERGISTIC EFFECTS TABLE ---
+type MagicEffect = {
+    desc: string;
+    duration: string;
+    suffix: string; // "of Fire"
+}
+
+const MAGIC_EFFECTS: MagicEffect[] = [
+    { desc: "Deal +1d6 fire damage on hit.", duration: "Instantaneous", suffix: "of the Phoenix" },
+    { desc: "Deal +1d6 cold damage on hit.", duration: "Instantaneous", suffix: "of Winter" },
+    { desc: "User can cast Sanctuary.", duration: "1 Minute", suffix: "of Sanctuary" },
+    { desc: "Glows in the presence of evil.", duration: "Permanent", suffix: "of Vigilance" },
+    { desc: "Increases speed by 10ft.", duration: "Permanent", suffix: "of Speed" },
+    { desc: "Grants resistance to Cold damage.", duration: "Permanent", suffix: "of Warmth" },
+    { desc: "Allows water breathing.", duration: "Permanent", suffix: "of the Depths" },
+    { desc: "User has advantage on Initiative.", duration: "Permanent", suffix: "of Alacrity" },
+    { desc: "Cannot be terrified.", duration: "Permanent", suffix: "of Courage" },
+    { desc: "Whispers dark secrets to the wearer.", duration: "Permanent", suffix: "of Madness" },
+    { desc: "Critical hits knock the target prone.", duration: "Instantaneous", suffix: "of Impact" },
+    { desc: "Thrown weapons return to hand immediately.", duration: "Instantaneous", suffix: "of Returning" },
+    { desc: "User ignores difficult terrain.", duration: "Permanent", suffix: "of Freedom" },
+    { desc: "Grants Darkvision 60ft.", duration: "Permanent", suffix: "of Night-Sight" },
+    { desc: "Advantage on Perception checks.", duration: "Permanent", suffix: "of Awareness" },
+    { desc: "Casts Light on command.", duration: "1 Hour", suffix: "of Illumination" },
+    { desc: "Allows casting of Shield.", duration: "1 Round", suffix: "of Shielding" },
+    { desc: "User can cast Misty Step.", duration: "Instantaneous", suffix: "of Blinking" },
+    { desc: "Grants resistance to Fire damage.", duration: "Permanent", suffix: "of Dousing" }
+];
+
 const THEMED_QUOTES: Record<GeneratorTheme, string[]> = {
     "Surface": [
         "A fine piece of craftmanship, fit for a lord.",
         "Simple, sturdy, and reliable. What else do you need?",
         "Found this in a caravan wreck. Still deadly.",
         "The gold leaf is peeling, but the steel is true.",
-        "They don't make them like this anymore. Too expensive.",
+        "Someone paid a lot of coin for this.",
         "Smells like old oil and victory."
     ],
     "Underdark": [
@@ -121,23 +161,6 @@ const THEMED_QUOTES: Record<GeneratorTheme, string[]> = {
         "The steam vents open when it strikes."
     ]
 };
-
-const EFFECTS = [
-    "User can cast Sanctuary 1/day.",
-    "Glows in the presence of evil.",
-    "Increases speed by 10ft.",
-    "Grants resistance to Cold damage.",
-    "Allows water breathing.",
-    "User has advantage on Initiative.",
-    "Cannot be terrified.",
-    "Whispers dark secrets to the wearer.",
-    "Critical hits knock the target prone.",
-    "Returning: Thrown weapons return to hand.",
-    "User ignores difficult terrain.",
-    "Grants Darkvision 60ft.",
-    "Advantage on Perception checks.",
-    "Casts Light on command."
-];
 
 // --- GENERATORS ---
 
@@ -242,9 +265,9 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
 
     const typeCat = LOOT_TYPES[Math.floor(Math.random() * LOOT_TYPES.length)];
 
-    // Theme-based Adjectives
-    const adjectives = THEMED_ADJECTIVES[theme] || THEMED_ADJECTIVES["Surface"];
-    let adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    // Lore Chance (15%) for Higher Rarity
+    const isLoreItem = rarityObj.name !== "Common" && Math.random() < 0.15;
+    const lorePrefix = isLoreItem ? LORE_PREFIXES[Math.floor(Math.random() * LORE_PREFIXES.length)] : "";
 
     // Specific Item Nouns & Bonus Eligbility
     let noun = "";
@@ -264,25 +287,16 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
         if (Math.random() > 0.6) {
             noun = "Rod of the Pact Keeper";
             bonusEligible = true;
-        } else {
-            noun = "Rod";
-        }
+        } else noun = "Rod";
     } else if (typeCat === "Wand") {
         if (Math.random() > 0.6) {
             noun = "Wand of the War Mage";
             bonusEligible = true;
-        } else {
-            noun = "Wand";
-        }
+        } else noun = "Wand";
     } else if (typeCat === "Wondrous" || typeCat === "Ring") {
-        // Chance for specific combat items
         if (rarityObj.name !== "Common" && Math.random() > 0.7) {
             const combatItems = ["Bracers of Defense", "Ring of Protection", "Cloak of Protection", "Amulet of Health"];
             noun = combatItems[Math.floor(Math.random() * combatItems.length)];
-            // These generally have fixed bonuses in 5e (e.g. +1 AC), so we treat them as bonusEligible to append +1 etc if we want dynamic power,
-            // OR we just let them be. The user asked for +1/+2/+3 applicability.
-            // Ring of Protection +1 is common homebrew, but standard is just +1.
-            // Let's make them eligible to allow "Ring of Protection +2" for higher rarity.
             bonusEligible = true;
         } else {
             noun = ["Amulet", "Boots", "Cloak", "Gloves", "Helm", "Bag", "Gem", "Ring"][Math.floor(Math.random() * 8)];
@@ -291,53 +305,96 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
         noun = typeCat;
     }
 
-    // --- NON-MAGICAL FLAVOR LOGIC ---
-    let effectText = "";
+    // Determine Effect first to guide naming
+    const magicEffectObj = MAGIC_EFFECTS[Math.floor(Math.random() * MAGIC_EFFECTS.length)];
+    let effectText = magicEffectObj.desc;
+    let nameSuffix = magicEffectObj.suffix; // e.g. "of Fire"
+
     let magicBonus = 0;
 
+    // --- NON-MAGICAL FLAVOR LOGIC (Common) ---
     if (rarityObj.name === "Common") {
-        // Flavor only, no magic
         const materials = ["Silvered", "Adamantine", "Cold Iron", "Masterwork"];
         if (bonusEligible && Math.random() > 0.6) {
-            adj = materials[Math.floor(Math.random() * materials.length)];
-            if (adj === "Silvered") effectText = "Counts as magical for overcoming resistances.";
-            if (adj === "Adamantine") effectText = "Critical hits against you become normal hits (Armor) or Objects take auto-crit (Weapon).";
-            if (adj === "Masterwork") effectText = "Exquisitely crafted. Worth double.";
+            const mat = materials[Math.floor(Math.random() * materials.length)];
+            if (mat === "Silvered") effectText = "Counts as magical for overcoming resistances.";
+            if (mat === "Adamantine") effectText = "Critical hits against you become normal (Armor) or Objects take auto-crit (Weapon).";
+            if (mat === "Masterwork") effectText = "Exquisitely crafted. Worth double.";
+            // Un-set suffix for common items, use prefix instead
+            nameSuffix = "";
+            noun = `${mat} ${noun}`; // e.g., "Silvered Longsword"
         } else {
             effectText = "Standard quality, but reliable.";
+            nameSuffix = "";
         }
     } else {
-        // Magic Item Logic
+        // --- MAGIC ITEMS (Uncommon+) ---
         if (bonusEligible) {
             if (rarityObj.name === "Uncommon") magicBonus = 1;
             if (rarityObj.name === "Rare") magicBonus = 2;
             if (rarityObj.name === "Very Rare") magicBonus = 3;
             if (rarityObj.name === "Legendary") magicBonus = 3;
-        }
 
-        effectText = EFFECTS[Math.floor(Math.random() * EFFECTS.length)];
+            // Should we apply the random effect AND the bonus?
+            // "Longsword +1" usually doesn't have "Fire Damage +1d6" too unless it's a Flame Tongue.
+            // Let's say: 30% chance to contain an "Extra" effect on top of +X.
+            // Otherwise, it's just a +X item.
 
-        // Add specific mechanic based on bonus
-        if (magicBonus > 0) {
-            if (typeCat === "Weapon") effectText = `Grants a +${magicBonus} bonus to attack and damage rolls. ${effectText}`;
-            else if (typeCat === "Armor") effectText = `Grants a +${magicBonus} bonus to AC. ${effectText}`;
-            else if (noun.includes("Wand")) effectText = `Grants a +${magicBonus} bonus to spell attack rolls. ${effectText}`;
-            else if (noun.includes("Rod")) effectText = `Grants a +${magicBonus} bonus to spell attack rolls and save DCs. ${effectText}`;
-            else if (noun.includes("Protection") || noun.includes("Defense")) effectText = `Grants a +${magicBonus} bonus to AC and Saving Throws. ${effectText}`;
-            else effectText = `Grants a +${magicBonus} bonus to relevant rolls. ${effectText}`;
+            if (Math.random() > 0.3) {
+                // Just a pure +X item
+                effectText = ""; // Will be filled by bonus text later
+                nameSuffix = ""; // Pure +X items don't have "of Fire" usually
+            } else {
+                // Hybrid item: +X AND Effect
+                effectText = `${magicEffectObj.desc} (Duration: ${magicEffectObj.duration})`;
+                // Name will have suffix
+            }
+        } else {
+            // Wondrous item without +X eligibility (e.g. Boots of Speed)
+            effectText = `${magicEffectObj.desc} (Duration: ${magicEffectObj.duration})`;
         }
     }
 
-    // Construct Name
-    // If it's a "Named" item (Rod of.., Wand of.., Ring of..), we don't usually put an Adjective before it.
-    // e.g. "Rusty Wand of the War Mage" is weird. "Wand of the War Mage +1" is better.
+    // Add Bonus Text
+    if (magicBonus > 0) {
+        let bonusDesc = "";
+        if (typeCat === "Weapon") bonusDesc = `Grants a +${magicBonus} bonus to attack and damage rolls.`;
+        else if (typeCat === "Armor") bonusDesc = `Grants a +${magicBonus} bonus to AC.`;
+        else if (noun.includes("Wand")) bonusDesc = `Grants a +${magicBonus} bonus to spell attack rolls.`;
+        else if (noun.includes("Rod")) bonusDesc = `Grants a +${magicBonus} bonus to spell attack rolls and save DCs.`;
+        else if (noun.includes("Protection") || noun.includes("Defense")) bonusDesc = `Grants a +${magicBonus} bonus to AC and Saving Throws.`;
+
+        // Combine texts
+        effectText = effectText ? `${bonusDesc} ${effectText}` : bonusDesc;
+    }
+
+    // --- NAME CONSTRUCTION ---
+    const isNamedItem = noun.includes(" of ") || noun.includes("Bracers"); // e.g. "Rod of the Pact Keeper"
     let name = "";
-    const isNamedItem = noun.includes(" of ") || noun.includes("Bracers");
 
     if (isNamedItem) {
-        name = noun;
+        // "Larloch's Rod of the Pact Keeper +1"
+        name = lorePrefix ? `${lorePrefix} ${noun}` : noun;
     } else {
-        name = `${adj} ${noun}`;
+        // Generic Item logic
+        if (nameSuffix && magicBonus > 0) {
+            // "Longsword of Fire +1"
+            name = `${noun} ${nameSuffix}`;
+        } else if (nameSuffix) {
+            // "Ring of Fire"
+            // If Lore: "Larloch's Ring of Fire"
+            name = lorePrefix ? `${lorePrefix} ${noun} ${nameSuffix}` : `${noun} ${nameSuffix}`;
+        } else {
+            // No suffix (Pure +X or Common)
+            // "Larloch's Longsword" or "Longsword"
+            if (lorePrefix) name = `${lorePrefix} ${noun}`;
+            else {
+                // Fallback to random adjective if no lore prefix and common/plain
+                const adjectives = THEMED_ADJECTIVES[theme] || THEMED_ADJECTIVES["Surface"];
+                const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+                name = `${adj} ${noun}`;
+            }
+        }
     }
 
     if (magicBonus > 0) name += ` +${magicBonus}`;
@@ -345,7 +402,6 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
     let cost = 50 * rarityObj.costMod;
     cost = Math.floor(cost * (0.8 + Math.random() * 0.4));
 
-    // Potions are cheaper
     if (noun === "Potion" || noun === "Scroll") cost = Math.floor(cost / 5);
 
     const props = [];
