@@ -36,7 +36,7 @@ export default function Home() {
             HEART&apos;S CURSE
           </h1>
           <p style={{ fontFamily: "var(--font-mono)", color: "var(--fg-dim)", letterSpacing: "0.3em", textTransform: "uppercase", fontSize: "0.9rem" }}>
-            Campaign Manager <span style={{ color: "var(--mystic-accent)" }}>v2.0 // NETHER-OS</span>
+            Campaign Manager <span style={{ color: "var(--mystic-accent)" }}>v1.2 // HEART'S CURSE</span>
           </p>
         </div>
 
