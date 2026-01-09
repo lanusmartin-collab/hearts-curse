@@ -4,26 +4,31 @@ import { ShopItem } from "./data/items";
 
 // --- DATA TABLES ---
 
+export type GeneratorTheme = "Surface" | "Underdark" | "Undead" | "Arcane" | "Construct";
+
 const RACES = [
-    { name: "Human", traits: [{ name: "Versatile", desc: "Gains one skill proficiency." }] },
-    { name: "Elf", traits: [{ name: "Fey Ancestry", desc: "Advantage vs Charm, immune to magical sleep." }, { name: "Darkvision", desc: "60ft." }] },
-    { name: "Dwarf", traits: [{ name: "Dwarven Resilience", desc: "Advantage vs Poison, resistance to Poison damage." }, { name: "Darkvision", desc: "60ft." }] },
-    { name: "Tiefling", traits: [{ name: "Hellish Resistance", desc: "Resistance to Fire damage." }, { name: "Darkvision", desc: "60ft." }] },
-    { name: "Halfling", traits: [{ name: "Lucky", desc: "Reroll 1s on d20s." }, { name: "Brave", desc: "Advantage vs Frightened." }] },
-    { name: "Orc", traits: [{ name: "Aggressive", desc: "Bonus action to move towards enemy." }, { name: "Darkvision", desc: "60ft." }] },
-    { name: "Gnome", traits: [{ name: "Gnome Cunning", desc: "Advantage on Int/Wis/Cha saves vs magic." }] },
-    { name: "Dragonborn", traits: [{ name: "Breath Weapon", desc: "Can use a storage breath weapon (Type varies)." }, { name: "Damage Resistance", desc: "Resistance to breath damage type." }] }
+    { name: "Human", traits: [{ name: "Versatile", desc: "Gains one skill proficiency." }], themes: ["Surface", "Undead", "Arcane"] },
+    { name: "Elf", traits: [{ name: "Fey Ancestry", desc: "Advantage vs Charm, immune to magical sleep." }, { name: "Darkvision", desc: "60ft." }], themes: ["Surface", "Arcane"] },
+    { name: "Drow", traits: [{ name: "Sunlight Sensitivity", desc: "Disadvantage in direct sunlight." }, { name: "Drow Magic", desc: "Dancing Lights, Faerie Fire." }], themes: ["Underdark", "Arcane"] },
+    { name: "Dwarf", traits: [{ name: "Dwarven Resilience", desc: "Advantage vs Poison, resistance to Poison damage." }, { name: "Darkvision", desc: "60ft." }], themes: ["Surface", "Underdark"] },
+    { name: "Tiefling", traits: [{ name: "Hellish Resistance", desc: "Resistance to Fire damage." }, { name: "Darkvision", desc: "60ft." }], themes: ["Surface", "Underdark"] },
+    { name: "Halfling", traits: [{ name: "Lucky", desc: "Reroll 1s on d20s." }, { name: "Brave", desc: "Advantage vs Frightened." }], themes: ["Surface"] },
+    { name: "Orc", traits: [{ name: "Aggressive", desc: "Bonus action to move towards enemy." }, { name: "Darkvision", desc: "60ft." }], themes: ["Surface", "Underdark"] },
+    { name: "Gnome", traits: [{ name: "Gnome Cunning", desc: "Advantage on Int/Wis/Cha saves vs magic." }], themes: ["Surface", "Underdark", "Arcane"] },
+    { name: "Dragonborn", traits: [{ name: "Breath Weapon", desc: "Can use a storage breath weapon (Type varies)." }, { name: "Damage Resistance", desc: "Resistance to breath damage type." }], themes: ["Surface"] },
+    { name: "Undead", traits: [{ name: "Undead Nature", desc: "Doesn't require air, food, drink, or sleep." }, { name: "Turn Resistance", desc: "Advantage on saves vs Turn Undead." }], themes: ["Undead"] },
+    { name: "Construct", traits: [{ name: "Antimagic Susceptibility", desc: "Incapacitated in Antimagic Field." }, { name: "Immutable Form", desc: "Immune to polymorph." }], themes: ["Construct"] }
 ];
 
 const CLASSES = [
-    { name: "Warrior", role: "Melee", hd: "d10", stats: ["str", "con"], armor: "Plate", weapons: ["Greatsword", "Longbow"] },
-    { name: "Soldier", role: "Melee", hd: "d10", stats: ["str", "con"], armor: "Chain Mail", weapons: ["Longsword", "Shield", "Crossbow"] },
-    { name: "Mage", role: "Caster", hd: "d6", stats: ["int", "wis"], armor: "Robes", weapons: ["Staff", "Dagger"] },
-    { name: "Priest", role: "Caster", hd: "d8", stats: ["wis", "cha"], armor: "Chain Shirt", weapons: ["Mace", "Shield"] },
-    { name: "Rogue", role: "Skirmisher", hd: "d8", stats: ["dex", "int"], armor: "Leather", weapons: ["Shortsword", "Shortbow", "Dagger"] },
-    { name: "Berserker", role: "Melee", hd: "d12", stats: ["str", "con"], armor: "Hide", weapons: ["Greataxe", "Handaxe"] },
-    { name: "Cultist", role: "Caster", hd: "d8", stats: ["cha", "con"], armor: "Leather", weapons: ["Dagger"] },
-    { name: "Guard", role: "Melee", hd: "d8", stats: ["str", "dex"], armor: "Chain Shirt", weapons: ["Spear", "Shield"] }
+    { name: "Warrior", role: "Melee", hd: "d10", stats: ["str", "con"], armor: "Plate", weapons: ["Greatsword", "Longbow"], themes: ["Surface", "Underdark", "Undead", "Construct"] },
+    { name: "Soldier", role: "Melee", hd: "d10", stats: ["str", "con"], armor: "Chain Mail", weapons: ["Longsword", "Shield", "Crossbow"], themes: ["Surface", "Underdark", "Undead"] },
+    { name: "Mage", role: "Caster", hd: "d6", stats: ["int", "wis"], armor: "Robes", weapons: ["Staff", "Dagger"], themes: ["Surface", "Underdark", "Arcane", "Undead"] },
+    { name: "Priest", role: "Caster", hd: "d8", stats: ["wis", "cha"], armor: "Chain Shirt", weapons: ["Mace", "Shield"], themes: ["Surface", "Underdark", "Arcane"] },
+    { name: "Rogue", role: "Skirmisher", hd: "d8", stats: ["dex", "int"], armor: "Leather", weapons: ["Shortsword", "Shortbow", "Dagger"], themes: ["Surface", "Underdark"] },
+    { name: "Berserker", role: "Melee", hd: "d12", stats: ["str", "con"], armor: "Hide", weapons: ["Greataxe", "Handaxe"], themes: ["Surface", "Underdark", "Undead"] },
+    { name: "Cultist", role: "Caster", hd: "d8", stats: ["cha", "con"], armor: "Leather", weapons: ["Dagger"], themes: ["Surface", "Underdark", "Arcane", "Undead"] },
+    { name: "Guard", role: "Melee", hd: "d8", stats: ["str", "dex"], armor: "Chain Shirt", weapons: ["Spear", "Shield"], themes: ["Surface", "Underdark", "Construct"] }
 ];
 
 const WEAPONS: Record<string, { hit: string, dmg: string, prop: string }> = {
@@ -53,8 +58,6 @@ const ARMOR: Record<string, { ac: number, type: string, dexMax?: number }> = {
     "None": { ac: 10, type: "None", dexMax: 99 }
 };
 
-const STAT_MODS = [-1, 0, 1, 2, 3, 4, 5]; // For low level NPCs
-
 // --- LOOT DATA ---
 const LOOT_TYPES = ["Weapon", "Armor", "Potion", "Scroll", "Wondrous", "Ring", "Wand"];
 const RARITY_ODDS = [
@@ -65,7 +68,14 @@ const RARITY_ODDS = [
     { name: "Legendary", chance: 1, costMod: 10000, propCount: 4 }
 ];
 
-const LOOT_ADJECTIVES = ["Ancient", "Cursed", "Shining", "Bloodstained", "Whispering", "Heavy", "Golden", "Rusty", "Ethereal", "Runed"];
+const THEMED_ADJECTIVES: Record<GeneratorTheme, string[]> = {
+    "Surface": ["Rusty", "Golden", "Polished", "Oaken", "Traveler's", "Royal"],
+    "Underdark": ["Obsidian", "Spider-Silk", "Glowing", "Duergar", "Poisoned", "Crystal"],
+    "Undead": ["Bone", "Rotting", "Ghostly", "Necrotic", "Ancient", "Tomb"],
+    "Arcane": ["Aetheral", "Runed", "Floating", "Singing", "Void", "Astral"],
+    "Construct": ["Clockwork", "Brass", "Clicking", "Steam-Powered", "Cogwork", "Mithral"]
+};
+
 const LOOT_NOUNS = ["Blade", "Shield", "Amulet", "Ring", "Gem", "Tome", "Boots", "Cloak", "Gloves", "Helm"];
 
 const EFFECTS = [
@@ -83,9 +93,14 @@ const EFFECTS = [
 
 // --- GENERATORS ---
 
-export function generateNPC(): Statblock {
-    const race = RACES[Math.floor(Math.random() * RACES.length)];
-    const cls = CLASSES[Math.floor(Math.random() * CLASSES.length)];
+export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
+    // Filter Races by Theme
+    const availableRaces = RACES.filter(r => r.themes.includes(theme));
+    const race = availableRaces[Math.floor(Math.random() * availableRaces.length)] || RACES[0];
+
+    // Filter Classes by Theme
+    const availableClasses = CLASSES.filter(c => c.themes.includes(theme));
+    const cls = availableClasses[Math.floor(Math.random() * availableClasses.length)] || CLASSES[0];
 
     // Generate Stats
     const stats: any = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
@@ -143,7 +158,7 @@ export function generateNPC(): Statblock {
     }).join(", ");
 
     return {
-        name: `Random ${race.name} ${cls.name}`,
+        name: `Random ${theme} ${race.name} ${cls.name}`,
         size: "Medium",
         type: `${race.name} humanoid (${cls.name})`,
         alignment: "Neutral",
@@ -153,9 +168,9 @@ export function generateNPC(): Statblock {
         hitDice: `${crVal + 2}${cls.hd}`,
         speed: "30 ft.",
         stats: stats,
-        saves: savesList, // Now populated
+        saves: savesList,
         skills: `Perception +${Math.floor((stats.wis - 10) / 2) + pb}`,
-        immunities: "",
+        immunities: theme === "Construct" ? "Poison, Psychic" : (theme === "Undead" ? "Necrotic, Poison" : ""),
         languages: "Common",
         cr: crVal === 0 ? "1/2" : crVal.toString(),
         xp: crVal * 200, // Approx
@@ -164,7 +179,7 @@ export function generateNPC(): Statblock {
     };
 }
 
-export function generateLootItem(): ShopItem {
+export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
     const roll = Math.floor(Math.random() * 100);
     let rarityObj = RARITY_ODDS[0];
     let currentSum = 0;
@@ -177,10 +192,14 @@ export function generateLootItem(): ShopItem {
     }
 
     const type = LOOT_TYPES[Math.floor(Math.random() * LOOT_TYPES.length)];
-    const adj = LOOT_ADJECTIVES[Math.floor(Math.random() * LOOT_ADJECTIVES.length)];
+
+    // Theme-based Adjectives
+    const adjectives = THEMED_ADJECTIVES[theme] || THEMED_ADJECTIVES["Surface"];
+    const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+
     const noun = type === "Weapon" ? "Blade" : (type === "Armor" ? "Plate" : LOOT_NOUNS[Math.floor(Math.random() * LOOT_NOUNS.length)]);
 
-    const name = `${adj} ${noun} of the ${["Wolf", "Bear", "Eagle", "Dragon", "Ghost", "Void", "Sun"][Math.floor(Math.random() * 7)]}`;
+    const name = `${adj} ${noun}`;
 
     const effect = EFFECTS[Math.floor(Math.random() * EFFECTS.length)];
 
@@ -195,6 +214,8 @@ export function generateLootItem(): ShopItem {
     if (type === "Potion" || type === "Scroll") props.push("Consumable");
     if (type === "Wondrous" || type === "Ring" || type === "Wand") props.push("Wondrous Item");
 
+    if (theme) props.push(theme + " Origin");
+
     if (rarityObj.name !== "Common") props.push("Magic");
     if (rarityObj.name === "Legendary") props.push("Attunement", "Indestructible");
 
@@ -205,6 +226,6 @@ export function generateLootItem(): ShopItem {
         cost: `${cost} gp`,
         effect: effect,
         properties: props,
-        npcQuote: "A fine piece, found in the deep places."
+        npcQuote: `A relic from the ${theme} regions.`
     };
 }
