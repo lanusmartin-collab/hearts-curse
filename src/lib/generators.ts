@@ -170,8 +170,6 @@ const ARTIFACT_PROPERTIES_DETRIMENTAL = [
 
 export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
     // ... (Existing implementation)
-    // For brevity in this diff, reusing the existing body structure via "..." comment if I could, 
-    // but I must provide the full file content.
     // RE-INSERTING PREVIOUS generateNPC CODE...
     const availableRaces = RACES.filter(r => r.themes.includes(theme));
     const race = availableRaces[Math.floor(Math.random() * availableRaces.length)] || RACES[0];
@@ -236,10 +234,62 @@ export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
     };
 }
 
-export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
-    // ... (Existing implementation)
-    // RE-INSERTING PREVIOUS generateLootItem CODE...
+export function generateArtifact(theme: GeneratorTheme = "Surface"): ShopItem {
+    // 1. Lore Priority: 100%
+    const lorePrefix = LORE_PREFIXES[Math.floor(Math.random() * LORE_PREFIXES.length)];
+
+    // Artifact Noun
+    const noun = ["Orb", "Staff", "Blade", "Grimoire", "Crown", "Amulet", "Plate", "Skull", "Scepter"][Math.floor(Math.random() * 9)];
+
+    // Artifact Name construction
+    // "Larloch's Skull of the Void"
+    const magicEffectObj = MAGIC_EFFECTS[Math.floor(Math.random() * MAGIC_EFFECTS.length)];
+    const name = `${lorePrefix} ${noun} ${magicEffectObj.suffix}`;
+
+    // Properties
+    const benProp = ARTIFACT_PROPERTIES_BENEFICIAL[Math.floor(Math.random() * ARTIFACT_PROPERTIES_BENEFICIAL.length)];
+    const detProp = ARTIFACT_PROPERTIES_DETRIMENTAL[Math.floor(Math.random() * ARTIFACT_PROPERTIES_DETRIMENTAL.length)];
+
+    const props = ["Artifact", "Attunement", "Indestructible", "Legendary", theme];
+
+    let effectText = `**Major Benefit:** ${benProp} \n**Side Effect:** ${detProp} \n\n${magicEffectObj.desc} (Duration: ${magicEffectObj.duration})`;
+
+    // Sentience Chance (50%)
+    const isSentient = Math.random() > 0.5;
+    let npcQuote = "This item thrums with quiet power.";
+
+    if (isSentient) {
+        props.push("Sentient");
+        const alignment = SENTIENCE_ALIGNMENTS[Math.floor(Math.random() * SENTIENCE_ALIGNMENTS.length)];
+        const purpose = SENTIENCE_PURPOSES[Math.floor(Math.random() * SENTIENCE_PURPOSES.length)];
+        const senses = SENTIENCE_SENSES[Math.floor(Math.random() * SENTIENCE_SENSES.length)];
+
+        effectText += `\n\n**Sentience:** ${alignment}. Int ${12 + Math.floor(Math.random() * 6)}, Wis ${12 + Math.floor(Math.random() * 6)}, Cha ${14 + Math.floor(Math.random() * 6)}. ${senses}`;
+        effectText += `\n**Purpose:** ${purpose}`;
+
+        npcQuote = `"${["I serve only the strong.", "Blood... I need blood.", "We must find the Master.", "Do not bore me, mortal."][Math.floor(Math.random() * 4)]}"`;
+    }
+
+    return {
+        name: name,
+        type: "Artifact",
+        rarity: "Artifact",
+        cost: "Priceless",
+        effect: effectText,
+        properties: props,
+        npcQuote: npcQuote
+    };
+}
+
+export function generateLootItem(theme: GeneratorTheme = "Surface", isHighLevel: boolean = false): ShopItem {
+    // [NEW] High Level Maps have 5% chance to spawn an Artifact or Sentient Item
+    if (isHighLevel && Math.random() < 0.05) {
+        return generateArtifact(theme);
+    }
+
     const roll = Math.floor(Math.random() * 100);
+    // ...
+    // RE-INSERTING PREVIOUS generateLootItem CODE...
     let rarityObj = RARITY_ODDS[0];
     let currentSum = 0;
     for (const r of RARITY_ODDS) { currentSum += r.chance; if (roll < currentSum) { rarityObj = r; break; } }
@@ -318,51 +368,4 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
     const quotes = THEMED_QUOTES[theme] || THEMED_QUOTES["Surface"];
     const selectedQuote = quotes[Math.floor(Math.random() * quotes.length)];
     return { name: name, type: noun, rarity: rarityObj.name, cost: `${cost} gp`, effect: effectText, properties: props, npcQuote: selectedQuote };
-}
-
-export function generateArtifact(theme: GeneratorTheme = "Surface"): ShopItem {
-    // 1. Lore Priority: 100%
-    const lorePrefix = LORE_PREFIXES[Math.floor(Math.random() * LORE_PREFIXES.length)];
-
-    // Artifact Noun
-    const noun = ["Orb", "Staff", "Blade", "Grimoire", "Crown", "Amulet", "Plate", "Skull", "Scepter"][Math.floor(Math.random() * 9)];
-
-    // Artifact Name construction
-    // "Larloch's Skull of the Void"
-    const magicEffectObj = MAGIC_EFFECTS[Math.floor(Math.random() * MAGIC_EFFECTS.length)];
-    const name = `${lorePrefix} ${noun} ${magicEffectObj.suffix}`;
-
-    // Properties
-    const benProp = ARTIFACT_PROPERTIES_BENEFICIAL[Math.floor(Math.random() * ARTIFACT_PROPERTIES_BENEFICIAL.length)];
-    const detProp = ARTIFACT_PROPERTIES_DETRIMENTAL[Math.floor(Math.random() * ARTIFACT_PROPERTIES_DETRIMENTAL.length)];
-
-    const props = ["Artifact", "Attunement", "Indestructible", "Legendary", theme];
-
-    let effectText = `**Major Benefit:** ${benProp} \n**Side Effect:** ${detProp} \n\n${magicEffectObj.desc} (Duration: ${magicEffectObj.duration})`;
-
-    // Sentience Chance (50%)
-    const isSentient = Math.random() > 0.5;
-    let npcQuote = "This item thrums with quiet power.";
-
-    if (isSentient) {
-        props.push("Sentient");
-        const alignment = SENTIENCE_ALIGNMENTS[Math.floor(Math.random() * SENTIENCE_ALIGNMENTS.length)];
-        const purpose = SENTIENCE_PURPOSES[Math.floor(Math.random() * SENTIENCE_PURPOSES.length)];
-        const senses = SENTIENCE_SENSES[Math.floor(Math.random() * SENTIENCE_SENSES.length)];
-
-        effectText += `\n\n**Sentience:** ${alignment}. Int ${12 + Math.floor(Math.random() * 6)}, Wis ${12 + Math.floor(Math.random() * 6)}, Cha ${14 + Math.floor(Math.random() * 6)}. ${senses}`;
-        effectText += `\n**Purpose:** ${purpose}`;
-
-        npcQuote = `"${["I serve only the strong.", "Blood... I need blood.", "We must find the Master.", "Do not bore me, mortal."][Math.floor(Math.random() * 4)]}"`;
-    }
-
-    return {
-        name: name,
-        type: "Artifact",
-        rarity: "Artifact",
-        cost: "Priceless",
-        effect: effectText,
-        properties: props,
-        npcQuote: npcQuote
-    };
 }

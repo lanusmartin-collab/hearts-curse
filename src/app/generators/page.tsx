@@ -28,6 +28,10 @@ export default function GeneratorsPage() {
 
     const currentTheme = getTheme(selectedMapId);
 
+    // Maps that enable Artifact/Sentient Item generation naturally
+    const HIGH_LEVEL_MAPS = ["mind_flayer", "beholder", "arach", "netheril", "heart_chamber", "catacombs_despair", "ossuary"];
+    const isHighLevel = HIGH_LEVEL_MAPS.some(id => selectedMapId.includes(id));
+
     const genNPC = () => {
         const sb = generateNPC(currentTheme);
         // Flavor the name
@@ -50,7 +54,8 @@ export default function GeneratorsPage() {
     };
 
     const genLoot = () => {
-        setLootItem(generateLootItem(currentTheme));
+        // [IMPROVED] Pass IsHighLevel context to allow Artifact drops
+        setLootItem(generateLootItem(currentTheme, isHighLevel));
         setResult(null);
     };
 
