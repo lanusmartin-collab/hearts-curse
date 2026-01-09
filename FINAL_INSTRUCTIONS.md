@@ -1,28 +1,31 @@
-# Final Deployment Instructions
+# Zero-Jargon Deployment Guide
 
-Great news! I found Git on your computer and **I have already initialized your project** for you.
-You don't need to type any complex commands.
+I have successfully prepared your files. You just need to get them online.
 
-## Step 1: Create Repository on GitHub
-1.  Go to [github.com/new](https://github.com/new).
-2.  Repository name: `hearts-curse` (or similar).
-3.  **Do not** check "Initialize with README", .gitignore, or license.
-4.  Click **Create repository**.
+## Step 1: Restart VS Code (Crucial!)
+1.  **Close this window** (Visual Studio Code).
+    *   *Click the X in the top right corner.*
+2.  **Open Visual Studio Code** again.
+    *   *You don't need to run "npm run dev". Just open the editor.*
+    *   *This makes sure VS Code sees the "git" tool I just installed.*
 
-## Step 2: Push your code
-1.  Copy the commands GitHub shows you under **"…or push an existing repository from the command line"**.
-2.  Open your VS Code terminal (Terminal -> New Terminal).
-3.  Paste them and hit Enter. They look like this:
+## Step 2: Create the Website Container (GitHub)
+1.  Click this link: [https://github.com/new](https://github.com/new)
+2.  **Repository name**: Type `hearts-curse`
+3.  Scroll down and click the green **Create repository** button.
+4.  Keep that page open!
 
-```bash
-git remote add origin https://github.com/YOUR_USERNAME/hearts-curse.git
-git branch -M main
-git push -u origin main
-```
+## Step 3: Send Your Files (Push)
+1.  Back in VS Code, look at the **Left Sidebar**.
+2.  Click the icon that looks like a **Tree Branch** (Source Control).
+3.  Click the **3 dots (...)** at the top of that sidebar pane.
+4.  Select **Remote** -> **Add Remote...**
+5.  Paste the URL of your new GitHub repo (it looks like `https://github.com/YOUR_USER/hearts-curse.git`).
+6.  Type `origin` and press Enter.
+7.  Now click the big blue **Publish Branch** (or Sync Changes) button.
+    *   *If asked to sign in, say yes.*
 
-*(If `git` command still fails, **then** restart VS Code and try Step 2 again)*.
-
-## Step 3: Put it online (Vercel)
-1.  Go to [vercel.com/new](https://vercel.com/new).
-2.  Click **Import** next to your new `hearts-curse` project.
+## Step 4: Go Live (Vercel)
+1.  Go to [https://vercel.com/new](https://vercel.com/new)
+2.  You should see `hearts-curse` in the list. Click **Import**.
 3.  Click **Deploy**.
