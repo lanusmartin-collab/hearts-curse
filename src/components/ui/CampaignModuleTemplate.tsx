@@ -137,7 +137,7 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                 <div className="break-after-page page-break">
                     <h2 className="text-4xl font-bold uppercase border-b-4 border-black mb-8 mt-12">Appendix A: Monster Compendium</h2>
                     <div className="columns-2 gap-8">
-                        {ALL_MONSTERS.sort((a, b) => a.name.localeCompare(b.name)).map((stat, i) => (
+                        {ALL_MONSTERS.slice().sort((a, b) => a.name.localeCompare(b.name)).map((stat, i) => (
                             <div key={i} className="break-inside-avoid border-2 border-black p-4 mb-6 bg-white text-xs">
                                 <h3 className="font-bold text-xl uppercase mb-1">{stat.name}</h3>
                                 <div className="border-b border-black mb-2 pb-1 italic">{stat.size} {stat.type}, {stat.alignment}</div>

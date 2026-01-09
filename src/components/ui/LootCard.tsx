@@ -19,12 +19,18 @@ export function LootCard({ item }: { item: ShopItem }) {
 
     return (
         <div style={{
-            background: "var(--adnd-bg)",
-            border: "2px solid #5d4037",
+            background: `
+                linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E"),
+                var(--adnd-bg)
+            `,
+            backgroundColor: "#e8dcd0", // Fallback
+            border: "1px solid #8b7355", // Paler brown
+            borderRadius: "2px",
             padding: "1.5rem",
-            boxShadow: "5px 5px 15px rgba(0,0,0,0.4)",
+            boxShadow: "2px 2px 5px rgba(0,0,0,0.2), inset 0 0 30px rgba(139, 69, 19, 0.1)", // Inset for aged look
             position: "relative",
-            color: "var(--adnd-ink)",
+            color: "#2c1a1a", // Deep Ink
             fontFamily: "var(--adnd-font-body)",
             width: "100%",
             maxWidth: "450px",
