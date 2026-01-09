@@ -1,8 +1,12 @@
+"use client";
+
+import { useState } from "react";
 import { Statblock } from "@/lib/data/statblocks";
 import Image from "next/image";
 import clsx from "clsx";
 
 export default function StatblockCard({ data }: { data: Statblock }) {
+    const [imgError, setImgError] = useState(false);
 
     const renderTrait = (trait: { name: string, desc: string }) => {
         const isSpellcasting = trait.name.toLowerCase().includes("spellcasting");
@@ -75,7 +79,7 @@ export default function StatblockCard({ data }: { data: Statblock }) {
             <div className="adnd-hole" style={{ bottom: "30px" }}></div>
 
             {/* Image (Floating Right) */}
-            {data.image && (
+            {data.image && !imgError && (
                 <div style={{ float: "right", marginLeft: "1rem", marginBottom: "1rem", maxWidth: "150px" }}>
                     <Image
                         src={data.image}
@@ -84,6 +88,7 @@ export default function StatblockCard({ data }: { data: Statblock }) {
                         height={150}
                         style={{ border: "2px solid var(--adnd-ink)", boxShadow: "2px 2px 0 rgba(0,0,0,0.2)" }}
                         unoptimized
+                        onError={() => setImgError(true)}
                     />
                 </div>
             )}
