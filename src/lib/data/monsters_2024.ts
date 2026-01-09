@@ -9,6 +9,14 @@ const typedData: Record<string, Statblock> = {};
 // Manual overrides for broken or missing images from the source
 const CUSTOM_IMAGE_MAPPINGS: Record<string, string> = {
   "acererak": "https://www.aidedd.org/dnd/images/lich.jpg",
+  "abjurer-wizard": "https://www.aidedd.org/dnd/images/archmage.jpg",
+  "conjurer-wizard": "https://www.aidedd.org/dnd/images/archmage.jpg",
+  "diviner-wizard": "https://www.aidedd.org/dnd/images/archmage.jpg",
+  "enchanter-wizard": "https://www.aidedd.org/dnd/images/archmage.jpg",
+  "evoker-wizard": "https://www.aidedd.org/dnd/images/archmage.jpg",
+  "illusionist-wizard": "https://www.aidedd.org/dnd/images/archmage.jpg",
+  "necromancer-wizard": "https://www.aidedd.org/dnd/images/archmage.jpg",
+  "transmuter-wizard": "https://www.aidedd.org/dnd/images/archmage.jpg",
 };
 
 // Helper to map raw data to Statblock

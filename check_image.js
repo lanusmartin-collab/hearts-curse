@@ -1,6 +1,6 @@
 const https = require('https');
 
-const url = "https://www.aidedd.org/dnd/images/lich.jpg";
+const url = "https://www.aidedd.org/dnd/images/archmage.jpg";
 
 https.get(url, (res) => {
     console.log('statusCode:', res.statusCode);
