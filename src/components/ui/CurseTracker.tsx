@@ -49,10 +49,10 @@ export default function CurseTracker({ simpleView = false }: { simpleView?: bool
     // Derive intensity and label for simple view
     const intensityMap: { [key: string]: number } = {
         "Latent": 0,
-        "Mild": 1,
-        "Moderate": 2,
-        "Severe": 3,
-        "Critical": 4,
+        "The Hollow ache": 1,
+        "The Fading Color": 2,
+        "The Whispering Void": 3,
+        "Heart Failure": 4,
     };
     const intensity = intensityMap[currentStage.name] !== undefined ? intensityMap[currentStage.name] : 0;
     const getLabel = (name: string) => name;
