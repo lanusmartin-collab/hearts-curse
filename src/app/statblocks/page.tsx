@@ -134,21 +134,10 @@ export default function StatblocksPage() {
             )}
 
             {/* Binder Layout */}
-            <div style={{
-                flex: 1,
-                display: "grid",
-                gridTemplateColumns: "200px 300px 1fr",
-                gap: "0",
-                background: "var(--adnd-parchment-dark)", /* Binder Cover/Inside */
-                border: "4px solid #3e2723",
-                borderRadius: "8px",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-                overflow: "hidden",
-                height: "calc(100vh - 100px)"
-            }}>
+            <div className="adnd-binder-grid">
 
                 {/* 1. Tabs / Categories Sidebar */}
-                <div style={{
+                <div className="adnd-binder-sidebar" style={{
                     background: "#2c1a1a",
                     color: "#d7c0a0",
                     overflowY: "auto",
@@ -156,7 +145,7 @@ export default function StatblocksPage() {
                     display: "flex",
                     flexDirection: "column"
                 }}>
-                    <div style={{ padding: "1rem", borderBottom: "1px solid #444" }}>
+                    <div style={{ padding: "1rem", borderBottom: "1px solid #444", minWidth: "200px" }}>
                         <input
                             type="text"
                             placeholder="Search Index..."
@@ -193,7 +182,7 @@ export default function StatblocksPage() {
                 </div>
 
                 {/* 2. Monster List (Index) */}
-                <div style={{
+                <div className="adnd-binder-list" style={{
                     background: "var(--adnd-parchment)",
                     overflowY: "auto",
                     borderRight: "1px solid #c9bca0",
@@ -228,7 +217,7 @@ export default function StatblocksPage() {
                 </div>
 
                 {/* 3. Preview Pane (The Page) */}
-                <div style={{
+                <div className="adnd-binder-preview" style={{
                     background: "#fdf5c9",
                     padding: "2rem",
                     overflowY: "auto",
@@ -237,7 +226,7 @@ export default function StatblocksPage() {
                     backgroundImage: "url('https://www.transparenttextures.com/patterns/aged-paper.png')"
                 }}>
                     {selectedCreature ? (
-                        <div style={{ maxWidth: "800px", width: "100%", transition: "all 0.3s ease" }}>
+                        <div style={{ maxWidth: "800px", width: "100%", transition: "all 0.3s ease", paddingBottom: "5rem" }}>
                             <StatblockCard data={selectedCreature} />
                         </div>
                     ) : (
