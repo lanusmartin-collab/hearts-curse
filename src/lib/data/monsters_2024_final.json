@@ -28225,8 +28225,8 @@
         "desc": "If Larloch fails a saving throw, he can choose to succeed instead."
       },
       {
-        "name": "Master of Magic",
-        "desc": "Larloch casts spells of 1st through 5th level at will. He has advantage on saving throws against spells and other magical effects (Robes)."
+        "name": "Spellcasting",
+        "desc": "Larloch is a 20th-level spellcaster. His spellcasting ability is Intelligence (spell save DC 27, +19 to hit with spell attacks). He has the following Wizard spells prepared:\nCantrips (at will): *Mage Hand, Prestidigitation, Ray of Frost, Fire Bolt*\n1st-5th Level (At Will): *Shield, Magic Missile, Detect Magic, Mirror Image, Counterspell, Fireball, Lightning Bolt, Misty Step, Telekinesis*\n6th Level (2 slots): *Globe of Invulnerability, Disintegrate*\n7th Level (2 slots): *Finger of Death, Plane Shift*\n8th Level (2 slots): *Dominate Monster, Power Word Stun*\n9th Level (2 slots): *Power Word Kill, Meteor Swarm*"
       },
       {
         "name": "Rejuvenation",
@@ -28240,7 +28240,7 @@
       },
       {
         "name": "Staff of the Magi",
-        "desc": "Melee Weapon Attack: +15 to hit, reach 5 ft., one target. Hit: 1d6 + 6 bludgeoning damage plus 2d6 force damage. Larloch can expend charges to deal extra damage."
+        "desc": "Melee Weapon Attack: +15 to hit, reach 5 ft., one target. Hit: 1d6 + 6 bludgeoning damage plus 2d6 force damage. The staff has 50 charges. When he hits with it, Larloch can expend 1 charge to deal an extra 2d6 force damage. He regains 4d6 + 2 charges daily at dawn."
       },
       {
         "name": "Arcane Blast",
@@ -28262,7 +28262,7 @@
       },
       {
         "name": "Staff Spell (Costs 2 Actions)",
-        "desc": "Larloch casts a spell from the Staff of the Magi (e.g., Fireball, Lightning Bolt, Wall of Fire)."
+        "desc": "Larloch casts a spell from the Staff of the Magi, expending charges: *Conjure Elemental* (7), *Dispel Magic* (3), *Fireball* (7th-level, 7), *Flaming Sphere* (2), *Ice Storm* (4), *Invisibility* (2), *Knock* (2), *Lightning Bolt* (7th-level, 7), *Passwall* (5), *Plane Shift* (7), *Telekinesis* (5), *Wall of Fire* (4), *Web* (2)."
       },
       {
         "name": "The 4th Wall (Costs 3 Actions)",
