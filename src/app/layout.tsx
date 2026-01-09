@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 import { AudioProvider } from "@/components/providers/AudioProvider";
+import ShadowCaster from "@/components/ui/ShadowCaster";
 
 export default function RootLayout({
   children,
@@ -34,6 +35,7 @@ export default function RootLayout({
           <div className="noise-overlay"></div>
           <SidebarNav />
           <main>{children}</main>
+          <ShadowCaster />
           <DiceRoller />
         </AudioProvider>
       </body>

@@ -39,7 +39,7 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
     return (
         <div className="fixed inset-0 z-50 bg-gray-100 overflow-y-auto text-black font-serif print:static print:overflow-visible print:h-auto print:bg-white text-justify leading-snug">
             {/* Toolbar - No Print */}
-            <div className="no-print fixed top-0 left-0 w-full bg-black text-white p-2 flex justify-between items-center shadow-lg z-[100] text-xs md:text-sm">
+            <div className="no-print fixed top-0 left-0 w-full bg-black text-white p-2 flex justify-between items-center shadow-lg z-[9999] text-xs md:text-sm">
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
                     <span className="font-bold text-accent uppercase tracking-widest hidden md:inline mr-4">AD&D Campaign Book</span>
 
