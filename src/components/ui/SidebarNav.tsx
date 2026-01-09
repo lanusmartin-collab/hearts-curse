@@ -180,7 +180,7 @@ export default function SidebarNav() {
                         <CurseTracker simpleView={true} />
                     </div>
                     <div style={{ marginTop: "1rem", fontSize: "0.6rem", textAlign: "center", color: "var(--fg-dim)", opacity: 0.3, fontFamily: "var(--font-mono)" }}>
-                        v2.0.4 // NETHER-OS
+                        v1.2.1 // HEART'S CURSE
                     </div>
                 </div>
             </div>
