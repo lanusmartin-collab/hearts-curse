@@ -32,6 +32,17 @@
   --accent-glow: rgba(138, 28, 28, 0.5);
   --glass-bg: rgba(10, 10, 12, 0.8);
   --glass-border: rgba(109, 40, 217, 0.3);
+
+  /* AD&D RETRO VIBE (For Statblocks) */
+  --adnd-bg: #e8dcc5;
+  /* Warm Parchment */
+  --adnd-ink: #1a1a1a;
+  /* Near Black for high contrast */
+  --adnd-font-header: 'Cinzel', serif;
+  --adnd-font-body: 'Merriweather', serif;
+  /* Serif for body text is crucial for 2e feel */
+  --adnd-blue: #003366;
+  /* Classic Header Blue */
 }
 
 * {

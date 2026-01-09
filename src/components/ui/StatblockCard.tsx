@@ -13,17 +13,15 @@ export default function StatblockCard({ data }: { data: Statblock }) {
 
         if (!isSpellcasting) {
             return (
-                <>
-                    <strong><em>{trait.name}.</em></strong> <span style={{ whiteSpace: "pre-wrap" }}>{trait.desc}</span>
-                </>
+                <div style={{ marginBottom: "0.5rem" }}>
+                    <strong style={{ fontFamily: "var(--adnd-font-header)", fontSize: "1.1em" }}><em>{trait.name}.</em></strong> <span style={{ whiteSpace: "pre-wrap" }}>{trait.desc}</span>
+                </div>
             );
         }
 
         let desc = trait.desc;
-        // 1. Normalize: Inject newlines before known headers if missing or stuck to colon
         desc = desc.replace(/:\s*(At will|Cantrips|\d+\/day)/gi, ":\n$1");
 
-        // 2. Pattern to split by. 
         const headerPattern = /((?:Cantrips|At will|\d+[\s\u00A0]*\/[\s\u00A0]*[Dd]ay|\d+(?:st|nd|rd|th)[\s\u00A0]+level).*?:)/gi;
 
         const parts = desc.split(headerPattern);
@@ -39,19 +37,18 @@ export default function StatblockCard({ data }: { data: Statblock }) {
 
         const parseFailed = groups.length === 0;
 
-        // Fallback: If no groups found (e.g. Mephit with just 1 line), render standard
         if (parseFailed) {
             return (
-                <>
+                <div style={{ marginBottom: "0.5rem" }}>
                     <strong><em>{trait.name}.</em></strong> <span style={{ whiteSpace: "pre-wrap" }}>{trait.desc}</span>
-                </>
+                </div>
             );
         }
 
         const intro = parts[0].trim();
 
         return (
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative', marginBottom: "0.5rem" }}>
                 <strong><em>{trait.name}.</em></strong>
 
                 {intro && (
@@ -63,7 +60,7 @@ export default function StatblockCard({ data }: { data: Statblock }) {
                 <div style={{ marginLeft: "1rem" }}>
                     {groups.map((g, idx) => (
                         <div key={idx} style={{ marginBottom: "0.2rem", textIndent: "-1rem", paddingLeft: "1rem" }}>
-                            <strong style={{ color: "#8a1c1c" }}>{g.header}</strong> {g.content}
+                            <strong style={{ color: "var(--scarlet-accent)" }}>{g.header}</strong> {g.content}
                         </div>
                     ))}
                 </div>
@@ -72,21 +69,28 @@ export default function StatblockCard({ data }: { data: Statblock }) {
     };
 
     return (
-        <div className={clsx("adnd-card", "statblock-card")} style={{ width: "100%", padding: "2rem", paddingLeft: "3.5rem", position: "relative", color: "var(--adnd-ink)" }}>
-            {/* Binder Holes */}
-            <div className="adnd-hole" style={{ top: "30px" }}></div>
-            <div className="adnd-hole" style={{ top: "50%", transform: "translateY(-50%)" }}></div>
-            <div className="adnd-hole" style={{ bottom: "30px" }}></div>
+        <div style={{
+            width: "100%",
+            padding: "2rem",
+            paddingLeft: "2.5rem",
+            position: "relative",
+            color: "var(--adnd-ink)",
+            background: "var(--adnd-bg)",
+            boxShadow: "5px 5px 15px rgba(0,0,0,0.5)",
+            border: "1px solid #c9bca0",
+            fontFamily: "var(--adnd-font-body)",
+            lineHeight: "1.4"
+        }}>
 
             {/* Image (Floating Right) */}
             {data.image && !imgError && (
-                <div style={{ float: "right", marginLeft: "1rem", marginBottom: "1rem", maxWidth: "150px" }}>
+                <div style={{ float: "right", marginLeft: "1.5rem", marginBottom: "1rem", maxWidth: "180px", border: "4px solid #2c1a1a" }}>
                     <Image
                         src={data.image}
                         alt={data.name}
-                        width={150}
-                        height={150}
-                        style={{ border: "2px solid var(--adnd-ink)", boxShadow: "2px 2px 0 rgba(0,0,0,0.2)" }}
+                        width={180}
+                        height={180}
+                        style={{ display: "block" }}
                         unoptimized
                         onError={() => setImgError(true)}
                     />
@@ -96,60 +100,57 @@ export default function StatblockCard({ data }: { data: Statblock }) {
             {/* Header */}
             <h2 style={{
                 fontFamily: "var(--adnd-font-header)",
-                color: "var(--adnd-blue)", /* 2e titles often blue */
-                borderBottom: "3px double var(--adnd-ink)",
-                marginBottom: "0.2rem",
+                color: "var(--adnd-blue)",
+                borderBottom: "2px solid var(--adnd-blue)",
+                marginBottom: "0.5rem",
                 clear: "none",
-                fontSize: "1.8rem"
+                fontSize: "2rem",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                textShadow: "none"
             }}>
                 {data.name}
             </h2>
-            <div style={{ fontStyle: "italic", marginBottom: "1rem", fontFamily: "var(--adnd-font-body)", fontSize: "0.9rem" }}>
+            <div style={{ fontStyle: "italic", marginBottom: "1rem", fontFamily: "var(--adnd-font-body)", fontSize: "1rem", color: "#333" }}>
                 {data.size} {data.type}, {data.alignment}
             </div>
 
-            {data.description && (
-                <div style={{ marginBottom: "1rem", fontStyle: "italic", fontSize: "0.9rem", color: "#444" }}>
-                    {data.description}
-                </div>
-            )}
-
-            <hr style={{ border: "1px solid var(--adnd-ink)", marginBottom: "1rem" }} />
+            <hr style={{ border: "0", borderTop: "2px solid var(--adnd-ink)", marginBottom: "1rem" }} />
 
             {/* Core Stats */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem", fontSize: "0.9rem", fontFamily: "var(--adnd-font-body)" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem", fontSize: "1rem" }}>
                 <div>
                     <div><strong>Armor Class</strong> {data.ac} {data.armorType ? `(${data.armorType})` : ""}</div>
                     <div><strong>Hit Points</strong> {data.hp} {data.hitDice ? `(${data.hitDice})` : ""}</div>
                     <div><strong>Speed</strong> {data.speed}</div>
                 </div>
                 <div>
-                    <div><strong>CR</strong> {data.cr} {data.xp ? `(${data.xp} XP)` : ""}</div>
+                    <div><strong>Challenge</strong> {data.cr} {data.xp ? `(${data.xp} XP)` : ""}</div>
                     <div><strong>Proficiency Bonus</strong> +{Math.max(2, Math.floor((Math.max(0, parseInt(data.cr) || 0) - 1) / 4) + 2)}</div>
                     <div><strong>Initiative</strong> {data.initiative !== undefined ? (data.initiative >= 0 ? "+" : "") + data.initiative : ""}</div>
                 </div>
             </div>
 
-            {/* Ability Scores */}
+            {/* Ability Scores Table - Classic Box */}
             <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                background: "rgba(138, 28, 28, 0.1)",
-                padding: "0.5rem",
-                borderRadius: "4px",
-                marginBottom: "1rem",
+                border: "2px solid #5d4037",
+                background: "#f0e6d2",
+                padding: "0.75rem",
+                marginBottom: "1.5rem",
                 textAlign: "center"
             }}>
                 {data.stats && Object.entries(data.stats).map(([stat, val]) => (
                     <div key={stat}>
-                        <div style={{ fontWeight: "bold", textTransform: "uppercase", fontSize: "0.8em" }}>{stat}</div>
-                        <div>{val} ({Math.floor((val - 10) / 2) >= 0 ? "+" : ""}{Math.floor((val - 10) / 2)})</div>
+                        <div style={{ fontWeight: "bold", textTransform: "uppercase", fontSize: "0.9em", fontFamily: "var(--adnd-font-header)" }}>{stat}</div>
+                        <div style={{ fontSize: "1.2rem" }}>{val} <span style={{ fontSize: "0.9rem", color: "#666" }}>({Math.floor((val - 10) / 2) >= 0 ? "+" : ""}{Math.floor((val - 10) / 2)})</span></div>
                     </div>
                 ))}
             </div>
 
             {/* Skills & Saves */}
-            <div style={{ marginBottom: "1rem", fontSize: "0.9rem" }}>
+            <div style={{ marginBottom: "1.5rem", fontSize: "1rem" }}>
                 {data.saves && <div><strong>Saving Throws</strong> {data.saves}</div>}
                 {data.skills && <div><strong>Skills</strong> {data.skills}</div>}
                 {data.immunities && <div><strong>Damage Immunities</strong> {data.immunities}</div>}
@@ -159,19 +160,29 @@ export default function StatblockCard({ data }: { data: Statblock }) {
                 {data.languages && <div><strong>Languages</strong> {data.languages}</div>}
             </div>
 
-            <hr style={{ border: "1px solid #8a1c1c", marginBottom: "1rem", clear: "both" }} />
+            <hr style={{ border: "0", borderTop: "2px solid var(--adnd-blue)", marginBottom: "1.5rem", clear: "both" }} />
 
             {/* Traits */}
-            {data.traits && data.traits.map((trait, i) => (
-                <div key={i} style={{ marginBottom: "0.8rem" }}>
-                    {renderTrait(trait)}
+            {data.traits && (
+                <div style={{ marginBottom: "1.5rem" }}>
+                    {data.traits.map((trait, i) => (
+                        <div key={i}>{renderTrait(trait)}</div>
+                    ))}
                 </div>
-            ))}
+            )}
 
             {/* Actions */}
             {data.actions && data.actions.length > 0 && (
                 <>
-                    <h3 style={{ borderBottom: "1px solid #5d4037", marginTop: "1rem", fontSize: "1.2rem" }}>Actions</h3>
+                    <h3 style={{
+                        fontFamily: "var(--adnd-font-header)",
+                        color: "var(--adnd-blue)",
+                        borderBottom: "1px solid var(--adnd-blue)",
+                        marginTop: "1.5rem",
+                        marginBottom: "1rem",
+                        fontSize: "1.4rem",
+                        textShadow: "none"
+                    }}>Actions</h3>
                     {data.actions.map((action, i) => (
                         <div key={i} style={{ marginBottom: "0.8rem" }}>
                             {renderTrait(action)}
@@ -183,8 +194,16 @@ export default function StatblockCard({ data }: { data: Statblock }) {
             {/* Legendary Actions */}
             {data.legendary && Array.isArray(data.legendary) && data.legendary.length > 0 && (
                 <>
-                    <h3 style={{ borderBottom: "1px solid #5d4037", marginTop: "1rem", fontSize: "1.2rem" }}>Legendary Actions</h3>
-                    <p style={{ marginBottom: "0.5rem", fontSize: "0.9rem" }}>
+                    <h3 style={{
+                        fontFamily: "var(--adnd-font-header)",
+                        color: "var(--adnd-blue)",
+                        borderBottom: "1px solid var(--adnd-blue)",
+                        marginTop: "1.5rem",
+                        marginBottom: "1rem",
+                        fontSize: "1.4rem",
+                        textShadow: "none"
+                    }}>Legendary Actions</h3>
+                    <p style={{ marginBottom: "0.5rem", fontSize: "1rem" }}>
                         The {data.name} can take 3 legendary actions...
                     </p>
                     {data.legendary.map((action, i) => (
@@ -197,8 +216,8 @@ export default function StatblockCard({ data }: { data: Statblock }) {
 
             {/* Treasure */}
             {data.treasure && (
-                <div style={{ marginTop: "1rem", borderTop: "1px solid #5d4037", paddingTop: "0.5rem", fontSize: "0.9rem" }}>
-                    <strong>Treasure:</strong> {data.treasure}
+                <div style={{ marginTop: "1.5rem", borderTop: "2px solid #5d4037", paddingTop: "0.75rem", fontSize: "1rem", background: "rgba(0,0,0,0.05)", padding: "1rem" }}>
+                    <strong style={{ fontFamily: "var(--adnd-font-header)", fontSize: "1.1rem" }}>Treasure:</strong> {data.treasure}
                 </div>
             )}
         </div>
