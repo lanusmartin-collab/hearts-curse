@@ -169,7 +169,7 @@ export default function StatblocksPage() {
                                 textAlign: "left",
                                 border: "none",
                                 borderBottom: "1px solid #444",
-                                background: filterType === t ? "var(--adnd-parchment)" : "transparent",
+                                background: filterType === t ? "var(--adnd-bg)" : "transparent",
                                 color: filterType === t ? "var(--adnd-ink)" : "#d7c0a0",
                                 padding: "0.8rem 1rem",
                                 borderRadius: 0,
@@ -184,7 +184,7 @@ export default function StatblocksPage() {
 
                 {/* 2. Monster List (Index) */}
                 <div className="adnd-binder-list" style={{
-                    background: "var(--adnd-parchment)",
+                    background: "var(--adnd-bg)",
                     overflowY: "auto",
                     borderRight: "1px solid #c9bca0",
                     position: "relative"
