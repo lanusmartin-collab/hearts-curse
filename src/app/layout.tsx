@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
 };
 
+import { AudioProvider } from "@/components/providers/AudioProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,10 +30,12 @@ export default function RootLayout({
         {/* NOTE: If we wanted strict 'Stranger Things' we'd try to find a Benguiat substitute, but Merriweather 900 is a decent 'Classic Serif' fallback freely available */}
       </head>
       <body>
-        <div className="noise-overlay"></div>
-        <SidebarNav />
-        <main>{children}</main>
-        <DiceRoller />
+        <AudioProvider>
+          <div className="noise-overlay"></div>
+          <SidebarNav />
+          <main>{children}</main>
+          <DiceRoller />
+        </AudioProvider>
       </body>
     </html>
   );
