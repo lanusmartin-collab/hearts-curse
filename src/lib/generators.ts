@@ -281,7 +281,7 @@ export function generateArtifact(theme: GeneratorTheme = "Surface"): ShopItem {
     };
 }
 
-export function generateLootItem(theme: GeneratorTheme = "Surface", isHighLevel: boolean = false): ShopItem {
+export function generateLootItem(theme: GeneratorTheme = "Surface", isHighLevel: boolean = false, forceRarity?: string): ShopItem {
     // [NEW] High Level Maps have 5% chance to spawn an Artifact or Sentient Item
     if (isHighLevel && Math.random() < 0.05) {
         return generateArtifact(theme);
@@ -291,8 +291,13 @@ export function generateLootItem(theme: GeneratorTheme = "Surface", isHighLevel:
     // ...
     // RE-INSERTING PREVIOUS generateLootItem CODE...
     let rarityObj = RARITY_ODDS[0];
-    let currentSum = 0;
-    for (const r of RARITY_ODDS) { currentSum += r.chance; if (roll < currentSum) { rarityObj = r; break; } }
+
+    if (forceRarity) {
+        rarityObj = RARITY_ODDS.find(r => r.name === forceRarity) || RARITY_ODDS[0];
+    } else {
+        let currentSum = 0;
+        for (const r of RARITY_ODDS) { currentSum += r.chance; if (roll < currentSum) { rarityObj = r; break; } }
+    }
     const typeCat = LOOT_TYPES[Math.floor(Math.random() * LOOT_TYPES.length)];
     const isLoreItem = rarityObj.name !== "Common" && Math.random() < 0.15;
     const lorePrefix = isLoreItem ? LORE_PREFIXES[Math.floor(Math.random() * LORE_PREFIXES.length)] : "";
