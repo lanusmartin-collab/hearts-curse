@@ -670,6 +670,7 @@
         "saves": "Str +10, Con +9",
         "skills": "Athletics +10",
         "cr": "9",
+        "initiative": 0,
         "traits": [
             {
                 "name": "Sentinel",
@@ -711,6 +712,7 @@
         },
         "skills": "Athletics +5, Perception +2",
         "cr": "3",
+        "initiative": 1,
         "actions": [
             {
                 "name": "Multiattack",
