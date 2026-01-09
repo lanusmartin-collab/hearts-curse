@@ -28218,7 +28218,7 @@
       },
       {
         "name": "Contingency: Escape",
-        "desc": "If Larloch drops below 50 HP or is subjected to a condition that prevents him from casting spells, a *Contingency* spell immediately activates, teleporting him to a secret safe room (sanctuary) and restoring 100 HP. This ability cannot be countered."
+        "desc": "If Larloch drops below 50 HP or is subjected to a condition that prevents him from casting spells, a *Contingency* spell immediately activates, teleporting him to the altar in the ossuary and restoring 100 HP. This ability cannot be countered."
       },
       {
         "name": "Netherese Mastery",
