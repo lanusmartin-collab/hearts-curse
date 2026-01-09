@@ -1,7 +1,7 @@
 export type ShopItem = {
     name: string;
-    type: string;
-    rarity: string;
+    type?: string;
+    rarity?: string;
     cost: string;
     effect?: string;
     stock?: number;
