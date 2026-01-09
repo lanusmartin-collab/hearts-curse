@@ -2,7 +2,9 @@ import React from 'react';
 import Image from 'next/image';
 import { CAMPAIGN_MAPS } from '@/lib/data/maps';
 import { CAMPAIGN_LORE } from '@/lib/data/lore';
-import { STATBLOCKS } from '@/lib/data/statblocks';
+import { ALL_MONSTERS } from '@/lib/data/monsters_2024';
+import { ITEMS } from '@/lib/data/items';
+import { CURSE_MECHANICS, PROLOGUE_POWERS, SAFE_HAVEN } from '@/lib/data/mechanics';
 
 type CampaignModuleTemplateProps = {
     onClose: () => void;
@@ -60,7 +62,9 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                             <li key={idx}><strong>Chapter {idx + 1}:</strong> {map.title}</li>
                         ))}
                         <li><strong>Appendix A:</strong> Monster Compendium</li>
-                        <li><strong>Appendix B:</strong> Factions & Lore</li>
+                        <li><strong>Appendix B:</strong> Magic Items & Artifacts</li>
+                        <li><strong>Appendix C:</strong> Factions & Lore</li>
+                        <li><strong>Appendix D:</strong> Global Mechanics</li>
                     </ul>
                 </div>
 
@@ -133,7 +137,7 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                 <div className="break-after-page page-break">
                     <h2 className="text-4xl font-bold uppercase border-b-4 border-black mb-8 mt-12">Appendix A: Monster Compendium</h2>
                     <div className="columns-2 gap-8">
-                        {Object.values(STATBLOCKS).map((stat, i) => (
+                        {ALL_MONSTERS.sort((a, b) => a.name.localeCompare(b.name)).map((stat, i) => (
                             <div key={i} className="break-inside-avoid border-2 border-black p-4 mb-6 bg-white text-xs">
                                 <h3 className="font-bold text-xl uppercase mb-1">{stat.name}</h3>
                                 <div className="border-b border-black mb-2 pb-1 italic">{stat.size} {stat.type}, {stat.alignment}</div>
@@ -172,6 +176,53 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                                 )}
                             </div>
                         ))}
+                    </div>
+                </div>
+
+                {/* --- ITEMS SECTION --- */}
+                <div className="break-after-page page-break">
+                    <h2 className="text-4xl font-bold uppercase border-b-4 border-black mb-8 mt-12">Appendix B: Magic Items & Artifacts</h2>
+                    <div className="columns-2 gap-8">
+                        {ITEMS.map((item, i) => (
+                            <div key={i} className="break-inside-avoid border border-black p-4 mb-4 bg-white text-xs shadow-sm">
+                                <h3 className="font-bold text-lg uppercase mb-1">{item.name}</h3>
+                                <div className="border-b border-black mb-2 pb-1 italic">{item.rarity || "Common"} {item.type}</div>
+                                <p className="leading-snug">{item.description || item.effect}</p>
+                                <div className="mt-2 text-right font-bold">{item.cost}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* --- MECHANICS SECTION --- */}
+                <div className="break-after-page page-break">
+                    <h2 className="text-4xl font-bold uppercase border-b-4 border-black mb-8 mt-12">Appendix D: Global Mechanics</h2>
+
+                    <div className="mb-8 break-inside-avoid">
+                        <h3 className="text-2xl font-bold uppercase border-b-2 border-black mb-4">The Curse System</h3>
+                        <p className="mb-4">{CURSE_MECHANICS.description}</p>
+                        <div className="grid grid-cols-1 gap-4">
+                            {CURSE_MECHANICS.stages.map(stage => (
+                                <div key={stage.name} className="border border-black p-2">
+                                    <strong>Day {stage.day}+: {stage.name}</strong> - <em>{stage.effect}</em>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="flex gap-8">
+                        <div className="flex-1 break-inside-avoid">
+                            <h3 className="text-xl font-bold uppercase border-b-2 border-black mb-2">{PROLOGUE_POWERS.title}</h3>
+                            <ul className="list-disc pl-4 space-y-1">
+                                {PROLOGUE_POWERS.bonuses.map((b, i) => <li key={i}>{b}</li>)}
+                            </ul>
+                        </div>
+                        <div className="flex-1 break-inside-avoid">
+                            <h3 className="text-xl font-bold uppercase border-b-2 border-black mb-2">{SAFE_HAVEN.title}</h3>
+                            <ul className="list-disc pl-4 space-y-1">
+                                {SAFE_HAVEN.features.map((f, i) => <li key={i}>{f}</li>)}
+                            </ul>
+                        </div>
                     </div>
                 </div>
 

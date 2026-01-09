@@ -7,12 +7,27 @@ export default function CurseTracker({ simpleView = false }: { simpleView?: bool
     // Initialize state lazily to avoid hydration mismatch, but we need useEffect for actual storage access
     const [days, setDays] = useState(0);
 
-    // Load from local storage on mount
+    // Load from local storage on mount and listen for changes
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('curse_days');
-            if (saved) setDays(parseInt(saved, 10));
-        }
+        const loadDays = () => {
+            if (typeof window !== 'undefined') {
+                const saved = localStorage.getItem('curse_days');
+                if (saved) setDays(parseInt(saved, 10));
+            }
+        };
+
+        loadDays();
+
+        // Listen for storage events (updates from other tabs)
+        window.addEventListener('storage', loadDays);
+
+        // Custom event for same-tab updates (if any)
+        window.addEventListener('curse-update', loadDays);
+
+        return () => {
+            window.removeEventListener('storage', loadDays);
+            window.removeEventListener('curse-update', loadDays);
+        };
     }, []);
 
     // Save to local storage whenever days changes (wrapped in helper to avoid useEffect loop or race)
@@ -21,6 +36,8 @@ export default function CurseTracker({ simpleView = false }: { simpleView?: bool
         setDays(val);
         if (typeof window !== 'undefined') {
             localStorage.setItem('curse_days', val.toString());
+            // Dispatch custom event for immediate same-page update if multiple widgets exist
+            window.dispatchEvent(new Event('curse-update'));
         }
     };
 

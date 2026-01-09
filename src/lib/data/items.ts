@@ -3,10 +3,13 @@ export type ShopItem = {
     type?: string;
     rarity?: string;
     cost: string;
-    effect?: string;
+    effect?: string; // This acts as the description for most items
     stock?: number;
-    npcQuote?: string; // [NEW] Flavor text
-    properties?: string[]; // [NEW] Item properties like Attunement
+    npcQuote?: string;
+    properties?: string[];
+    source?: string; // Added to match usage
+    attunement?: boolean; // Added to match usage
+    description?: string; // Added to match usage
 };
 
 export const KHELBEN_GIFTS: ShopItem[] = [
@@ -77,3 +80,11 @@ export const CAMPAIGN_UNIQUE_ITEMS: ShopItem[] = [
     { name: "Piwafwi (Cloak of Elvenkind)", type: "Wondrous", rarity: "Uncommon", cost: "Loot (Arach-Tinilith)", effect: "Incosequential to Drow sensors. Adv on Stealth.", npcQuote: "To be unseen is to survive in the dark.", properties: ["Attunement"] },
     { name: "Prism of the Void", type: "Wondrous", rarity: "Artifact", cost: "Quest Item", effect: "Absorbs magic. Key to breaking the Curse.", npcQuote: "It drinks the light." }
 ];
+
+// AGGREGATE ALL ITEMS FOR CAMPAIGN BOOK
+export const ITEMS = [
+    ...KHELBEN_GIFTS,
+    ...FIMBLE_INVENTORY,
+    ...CROW_NEST_INVENTORY,
+    ...CAMPAIGN_UNIQUE_ITEMS
+].sort((a, b) => a.name.localeCompare(b.name));
