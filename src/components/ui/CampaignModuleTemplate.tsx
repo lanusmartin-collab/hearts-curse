@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { CAMPAIGN_MAPS } from '@/lib/data/maps';
 import { CAMPAIGN_LORE } from '@/lib/data/lore';
 import { ALL_MONSTERS } from '@/lib/data/monsters_2024';
-import { ITEMS, KHELBEN_GIFTS, FIMBLE_INVENTORY, CROW_NEST_INVENTORY, IRON_KNOT_SERVICES } from '@/lib/data/items';
+import { ITEMS, KHELBEN_GIFTS, FIMBLE_INVENTORY, CROW_NEST_INVENTORY, IRON_KNOT_SERVICES, CAMPAIGN_UNIQUE_ITEMS } from '@/lib/data/items';
 import { CURSE_MECHANICS, PROLOGUE_POWERS, SAFE_HAVEN } from '@/lib/data/mechanics';
 import { ITEMS as MAGIC_ITEMS_LIST } from '@/lib/data/items'; // Aggregate
 
