@@ -136,6 +136,12 @@ export function generateNPC(): Statblock {
         });
     }
 
+    // Calculate Saves (Primary stats + PB)
+    const savesList = cls.stats.map(s => {
+        const mod = Math.floor((stats[s] - 10) / 2) + pb;
+        return `${s.charAt(0).toUpperCase() + s.slice(1)} ${mod >= 0 ? "+" : ""}${mod}`;
+    }).join(", ");
+
     return {
         name: `Random ${race.name} ${cls.name}`,
         size: "Medium",
@@ -147,7 +153,7 @@ export function generateNPC(): Statblock {
         hitDice: `${crVal + 2}${cls.hd}`,
         speed: "30 ft.",
         stats: stats,
-        saves: "", // Simplify for generator
+        saves: savesList, // Now populated
         skills: `Perception +${Math.floor((stats.wis - 10) / 2) + pb}`,
         immunities: "",
         languages: "Common",
@@ -183,6 +189,12 @@ export function generateLootItem(): ShopItem {
     cost = Math.floor(cost * (0.8 + Math.random() * 0.4));
 
     const props = [];
+    // GUARANTEE PROPERTIES
+    if (type === "Weapon") props.push("Martial", "Versatile");
+    if (type === "Armor") props.push("Medium Armor");
+    if (type === "Potion" || type === "Scroll") props.push("Consumable");
+    if (type === "Wondrous" || type === "Ring" || type === "Wand") props.push("Wondrous Item");
+
     if (rarityObj.name !== "Common") props.push("Magic");
     if (rarityObj.name === "Legendary") props.push("Attunement", "Indestructible");
 
