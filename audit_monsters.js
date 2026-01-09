@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 
 const FILE = 'src/lib/data/monsters_2024_final.json';
@@ -14,7 +13,8 @@ const missingList = [];
 
 for (const m of data) {
     const hasActions = m.actions && m.actions.length > 0;
-    const hasTraits = m.traits && m.traits.length > 0;
+    // const hasTraits = m.traits && m.traits.length > 0;
+    // const hasTraits = m.traits && m.traits.length > 0;
 
     if (!hasActions) {
         incomplete++;

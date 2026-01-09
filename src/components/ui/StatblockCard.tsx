@@ -1,4 +1,5 @@
 import { Statblock } from "@/lib/data/statblocks";
+import Image from "next/image";
 import clsx from "clsx";
 
 export default function StatblockCard({ data }: { data: Statblock }) {
@@ -71,10 +72,13 @@ export default function StatblockCard({ data }: { data: Statblock }) {
             {/* Image (Floating Right) */}
             {data.image && (
                 <div style={{ float: "right", marginLeft: "1rem", marginBottom: "1rem", maxWidth: "150px" }}>
-                    <img
+                    <Image
                         src={data.image}
                         alt={data.name}
-                        style={{ width: "100%", borderRadius: "8px", border: "2px solid #8a1c1c", boxShadow: "0 4px 6px rgba(0,0,0,0.3)" }}
+                        width={150}
+                        height={150}
+                        style={{ width: "100%", height: "auto", borderRadius: "8px", border: "2px solid #8a1c1c", boxShadow: "0 4px 6px rgba(0,0,0,0.3)" }}
+                        unoptimized
                     />
                 </div>
             )}

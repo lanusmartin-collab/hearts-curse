@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 
 type Theme = "standard" | "zhentarim" | "drow" | "larloch" | "oakhaven";
 
@@ -154,16 +155,25 @@ export default function HandoutEditor() {
                 {/* WAX SEAL (Top Right) */}
                 {activeSeal && (
                     <div style={{ position: "absolute", top: "2rem", right: "2rem", width: "120px", height: "120px", opacity: 0.9 }}>
-                        <img src={activeSeal} alt="Seal" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "drop-shadow(2px 4px 6px rgba(0,0,0,0.3))" }} />
+                        <Image
+                            src={activeSeal}
+                            alt="Seal"
+                            fill
+                            style={{ objectFit: "contain", filter: "drop-shadow(2px 4px 6px rgba(0,0,0,0.3))" }}
+                            unoptimized
+                        />
                     </div>
                 )}
 
                 {/* CONTENT */}
                 {uploadedImage ? (
-                    <img
+                    <Image
                         src={uploadedImage}
                         alt="Uploaded Prop"
-                        style={{ maxWidth: "100%", maxHeight: "90vh", objectFit: "contain" }}
+                        width={800}
+                        height={600}
+                        style={{ maxWidth: "100%", maxHeight: "90vh", objectFit: "contain", width: 'auto', height: 'auto' }}
+                        unoptimized
                     />
                 ) : (
                     <div style={{

@@ -28,7 +28,7 @@ async function main() {
                     localSlugs.add(urlSlug);
                 }
             });
-        } catch (e) {
+        } catch {
             console.log("Local file not found or empty.");
         }
         console.log(`Local monsters count: ${localSlugs.size}`);

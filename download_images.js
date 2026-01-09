@@ -115,7 +115,7 @@ async function processImages() {
                     downloaded++;
                     success = true;
                     break;
-                } catch (err) {
+                } catch {
                     // console.error(`Failed ${cand}: ${err}`);
                 }
             }

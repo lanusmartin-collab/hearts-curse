@@ -59,14 +59,14 @@ function main() {
     let expansion = [];
     try {
         expansion = JSON.parse(fs.readFileSync(EXPANSION_FILE, 'utf8'));
-    } catch (e) {
+    } catch {
         console.warn("No expansion file found yet.");
     }
 
     let existing = [];
     try {
         existing = JSON.parse(fs.readFileSync(EXISTING_FILE, 'utf8'));
-    } catch (e) {
+    } catch {
         console.warn("No existing file found.");
     }
 
