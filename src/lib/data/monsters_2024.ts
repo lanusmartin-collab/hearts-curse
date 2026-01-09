@@ -6,11 +6,16 @@ import CUSTOM_DATA from "./monsters_custom.json";
 
 const typedData: Record<string, Statblock> = {};
 
+// Manual overrides for broken or missing images from the source
+const CUSTOM_IMAGE_MAPPINGS: Record<string, string> = {
+  "acererak": "https://www.aidedd.org/dnd/images/lich.jpg",
+};
+
 // Helper to map raw data to Statblock
 function mapToStatblock(m: any): Statblock {
   // Map image_url/image_path/imageUrl to image if image is missing
-  // Priority: image > image_path (local) > image_url (remote) > imageUrl (camelCase remote)
-  const image = m.image || m.image_path || m.image_url || m.imageUrl;
+  // Priority: Custom Override > image > image_path (local) > image_url (remote) > imageUrl (camelCase remote)
+  const image = CUSTOM_IMAGE_MAPPINGS[m.slug] || m.image || m.image_path || m.image_url || m.imageUrl;
   return {
     ...m,
     image
