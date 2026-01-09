@@ -59,7 +59,7 @@ const ARMOR: Record<string, { ac: number, type: string, dexMax?: number }> = {
 };
 
 // --- LOOT DATA ---
-const LOOT_TYPES = ["Weapon", "Armor", "Potion", "Scroll", "Wondrous", "Ring", "Wand"];
+const LOOT_TYPES = ["Weapon", "Armor", "Potion", "Scroll", "Wondrous", "Ring", "Wand", "Rod"];
 const WEAPON_TYPES = ["Longsword", "Shortsword", "Greatsword", "Greataxe", "Dagger", "Maul", "Rapier", "Longbow", "Heavy Crossbow"];
 const ARMOR_TYPES = ["Plate Armor", "Chain Mail", "Scale Mail", "Leather Armor", "Studded Leather", "Breastplate", "Shield"];
 
@@ -123,8 +123,6 @@ const THEMED_QUOTES: Record<GeneratorTheme, string[]> = {
 };
 
 const EFFECTS = [
-    "Grants +1 to AC.",
-    "Deal +1d6 fire damage on hit.",
     "User can cast Sanctuary 1/day.",
     "Glows in the presence of evil.",
     "Increases speed by 10ft.",
@@ -231,7 +229,6 @@ export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
 
 export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
     const roll = Math.floor(Math.random() * 100);
-    // Bias towards "Common" materials/consumables for variety unless High Rarity
 
     let rarityObj = RARITY_ODDS[0];
     let currentSum = 0;
@@ -249,14 +246,50 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
     const adjectives = THEMED_ADJECTIVES[theme] || THEMED_ADJECTIVES["Surface"];
     let adj = adjectives[Math.floor(Math.random() * adjectives.length)];
 
-    // Specific Item Nouns
+    // Specific Item Nouns & Bonus Eligbility
     let noun = "";
-    if (typeCat === "Weapon") noun = WEAPON_TYPES[Math.floor(Math.random() * WEAPON_TYPES.length)];
-    else if (typeCat === "Armor") noun = ARMOR_TYPES[Math.floor(Math.random() * ARMOR_TYPES.length)];
-    else if (typeCat === "Potion") noun = "Potion";
-    else if (typeCat === "Scroll") noun = "Scroll";
-    else if (typeCat === "Wondrous") noun = ["Amulet", "Boots", "Cloak", "Gloves", "Helm", "Bag", "Gem"][Math.floor(Math.random() * 7)];
-    else noun = typeCat;
+    let bonusEligible = false;
+
+    if (typeCat === "Weapon") {
+        noun = WEAPON_TYPES[Math.floor(Math.random() * WEAPON_TYPES.length)];
+        bonusEligible = true;
+    } else if (typeCat === "Armor") {
+        noun = ARMOR_TYPES[Math.floor(Math.random() * ARMOR_TYPES.length)];
+        bonusEligible = true;
+    } else if (typeCat === "Potion") {
+        noun = "Potion";
+    } else if (typeCat === "Scroll") {
+        noun = "Scroll";
+    } else if (typeCat === "Rod") {
+        if (Math.random() > 0.6) {
+            noun = "Rod of the Pact Keeper";
+            bonusEligible = true;
+        } else {
+            noun = "Rod";
+        }
+    } else if (typeCat === "Wand") {
+        if (Math.random() > 0.6) {
+            noun = "Wand of the War Mage";
+            bonusEligible = true;
+        } else {
+            noun = "Wand";
+        }
+    } else if (typeCat === "Wondrous" || typeCat === "Ring") {
+        // Chance for specific combat items
+        if (rarityObj.name !== "Common" && Math.random() > 0.7) {
+            const combatItems = ["Bracers of Defense", "Ring of Protection", "Cloak of Protection", "Amulet of Health"];
+            noun = combatItems[Math.floor(Math.random() * combatItems.length)];
+            // These generally have fixed bonuses in 5e (e.g. +1 AC), so we treat them as bonusEligible to append +1 etc if we want dynamic power,
+            // OR we just let them be. The user asked for +1/+2/+3 applicability.
+            // Ring of Protection +1 is common homebrew, but standard is just +1.
+            // Let's make them eligible to allow "Ring of Protection +2" for higher rarity.
+            bonusEligible = true;
+        } else {
+            noun = ["Amulet", "Boots", "Cloak", "Gloves", "Helm", "Bag", "Gem", "Ring"][Math.floor(Math.random() * 8)];
+        }
+    } else {
+        noun = typeCat;
+    }
 
     // --- NON-MAGICAL FLAVOR LOGIC ---
     let effectText = "";
@@ -265,7 +298,7 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
     if (rarityObj.name === "Common") {
         // Flavor only, no magic
         const materials = ["Silvered", "Adamantine", "Cold Iron", "Masterwork"];
-        if (Math.random() > 0.6) {
+        if (bonusEligible && Math.random() > 0.6) {
             adj = materials[Math.floor(Math.random() * materials.length)];
             if (adj === "Silvered") effectText = "Counts as magical for overcoming resistances.";
             if (adj === "Adamantine") effectText = "Critical hits against you become normal hits (Armor) or Objects take auto-crit (Weapon).";
@@ -275,20 +308,38 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
         }
     } else {
         // Magic Item Logic
-        if (rarityObj.name === "Uncommon") magicBonus = Math.random() > 0.5 ? 1 : 0;
-        if (rarityObj.name === "Rare") magicBonus = Math.random() > 0.5 ? 2 : 1;
-        if (rarityObj.name === "Very Rare") magicBonus = Math.random() > 0.5 ? 3 : 2;
-        if (rarityObj.name === "Legendary") magicBonus = 3;
+        if (bonusEligible) {
+            if (rarityObj.name === "Uncommon") magicBonus = 1;
+            if (rarityObj.name === "Rare") magicBonus = 2;
+            if (rarityObj.name === "Very Rare") magicBonus = 3;
+            if (rarityObj.name === "Legendary") magicBonus = 3;
+        }
 
         effectText = EFFECTS[Math.floor(Math.random() * EFFECTS.length)];
 
         // Add specific mechanic based on bonus
-        if (magicBonus > 0 && (typeCat === "Weapon" || typeCat === "Armor")) {
-            effectText = `Grants a +${magicBonus} bonus to ${typeCat === "Weapon" ? "attack and damage rolls" : "AC"}. ${effectText}`;
+        if (magicBonus > 0) {
+            if (typeCat === "Weapon") effectText = `Grants a +${magicBonus} bonus to attack and damage rolls. ${effectText}`;
+            else if (typeCat === "Armor") effectText = `Grants a +${magicBonus} bonus to AC. ${effectText}`;
+            else if (noun.includes("Wand")) effectText = `Grants a +${magicBonus} bonus to spell attack rolls. ${effectText}`;
+            else if (noun.includes("Rod")) effectText = `Grants a +${magicBonus} bonus to spell attack rolls and save DCs. ${effectText}`;
+            else if (noun.includes("Protection") || noun.includes("Defense")) effectText = `Grants a +${magicBonus} bonus to AC and Saving Throws. ${effectText}`;
+            else effectText = `Grants a +${magicBonus} bonus to relevant rolls. ${effectText}`;
         }
     }
 
-    let name = `${adj} ${noun}`;
+    // Construct Name
+    // If it's a "Named" item (Rod of.., Wand of.., Ring of..), we don't usually put an Adjective before it.
+    // e.g. "Rusty Wand of the War Mage" is weird. "Wand of the War Mage +1" is better.
+    let name = "";
+    const isNamedItem = noun.includes(" of ") || noun.includes("Bracers");
+
+    if (isNamedItem) {
+        name = noun;
+    } else {
+        name = `${adj} ${noun}`;
+    }
+
     if (magicBonus > 0) name += ` +${magicBonus}`;
 
     let cost = 50 * rarityObj.costMod;
@@ -301,7 +352,7 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
     if (typeCat === "Weapon") props.push("Martial", noun.includes("Two-Handed") || noun.includes("Great") ? "Two-Handed" : "Versatile");
     if (typeCat === "Armor") props.push(noun.includes("Plate") || noun.includes("Splint") ? "Heavy Armor" : "Light/Medium Armor");
     if (typeCat === "Potion" || typeCat === "Scroll") props.push("Consumable");
-    if (typeCat === "Wondrous" || typeCat === "Ring" || typeCat === "Wand") props.push("Wondrous Item");
+    if (typeCat === "Wondrous" || typeCat === "Ring" || typeCat === "Wand" || typeCat === "Rod") props.push("Wondrous Item");
 
     if (theme) props.push(theme);
 
