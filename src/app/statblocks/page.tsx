@@ -7,6 +7,7 @@ import StatblockCard from "@/components/ui/StatblockCard";
 import StatblockGenerator from "@/components/ui/StatblockGenerator";
 import PrintButton from "@/components/ui/PrintButton";
 import Link from "next/link";
+import "./binder.css";
 
 export default function StatblocksPage() {
     const [search, setSearch] = useState("");
@@ -108,7 +109,7 @@ export default function StatblocksPage() {
     const [selectedCreature, setSelectedCreature] = useState<Statblock | null>(null);
 
     return (
-        <div className="adnd-theme" style={{ minHeight: "100vh", padding: "1rem", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+        <div className="adnd-theme" style={{ minHeight: "100vh", padding: "1rem", display: "flex", flexDirection: "column" }}>
 
             {/* Top Navigation Bar */}
             <header className="no-print" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", padding: "0 1rem" }}>
