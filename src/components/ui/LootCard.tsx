@@ -69,9 +69,11 @@ export function LootCard({ item, onClose }: LootCardProps) {
             {/* Main Effect */}
             <div className="mb-6 space-y-2">
                 <h3 style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.75rem", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.05em" }}>Effect</h3>
-                <p style={{ color: "#fff", fontSize: "0.9rem", lineHeight: "1.5", fontWeight: "300" }}>
-                    {item.effect || "No magical effect discerned."}
-                </p>
+                <div style={{ background: "rgba(0,0,0,0.6)", padding: "0.75rem", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.1)" }}>
+                    <p style={{ color: "#fff", fontSize: "0.9rem", lineHeight: "1.5", fontWeight: "300", fontStyle: "italic" }}>
+                        {item.effect || "No magical effect discerned."}
+                    </p>
+                </div>
             </div>
 
             {/* Flavor Text / Quote */}
