@@ -102,8 +102,8 @@ export default function EncountersPage() {
 
             <div style={{ marginBottom: "2rem" }}>
                 <button className="retro-border" onClick={triggerShopAmbush} style={{ borderColor: "red", color: "red", width: "100%" }}>
-                    <h3>⚠️ TRIGGER: SHOP BYPASS</h3>
-                    <p>[FORCE_AMBUSH]</p>
+                    <h3>⚠️ TRIGGER: ZHENTARIM RETRIBUTION</h3>
+                    <p>[RUN_SCENARIO: DEBT_OF_MEMORY]</p>
                 </button>
             </div>
 
