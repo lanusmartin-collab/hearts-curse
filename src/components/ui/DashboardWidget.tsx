@@ -11,6 +11,7 @@ interface DashboardWidgetProps {
     href?: string;
     children?: React.ReactNode;
     className?: string;
+    style?: React.CSSProperties;
     onClick?: () => void;
 }
 
@@ -21,48 +22,54 @@ export default function DashboardWidget({
     href,
     children,
     className,
+    style,
     onClick
 }: DashboardWidgetProps) {
     const content = (
         <>
-            <div className="flex items-center justify-between mb-4 border-b border-[var(--glass-border)] pb-2">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem", borderBottom: "1px solid var(--glass-border)", paddingBottom: "0.5rem" }}>
                 <div>
-                    <h3 className="text-lg font-serif text-[var(--scarlet-accent)] uppercase tracking-wider m-0 text-shadow-sm">
+                    <h3 style={{ fontSize: "1.125rem", fontFamily: "var(--font-serif)", color: "var(--scarlet-accent)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0, textShadow: "0 0 5px rgba(0,0,0,0.5)" }}>
                         {title}
                     </h3>
                     {subtitle && (
-                        <p className="text-xs text-[var(--fg-dim)] font-mono uppercase opacity-70">
+                        <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)", fontFamily: "var(--font-mono)", textTransform: "uppercase", opacity: 0.7, margin: 0 }}>
                             {subtitle}
                         </p>
                     )}
                 </div>
-                {Icon && <Icon className="w-6 h-6 text-[var(--mystic-accent)] opacity-80" />}
+                {Icon && <Icon style={{ width: "24px", height: "24px", color: "var(--mystic-accent)", opacity: 0.8 }} />}
             </div>
-            <div className="text-[var(--fg-color)]">
+            <div style={{ color: "var(--fg-color)" }}>
                 {children}
             </div>
         </>
     );
 
-    const containerClasses = clsx(
-        "relative overflow-hidden p-6 rounded-lg transition-all duration-300 group",
-        "bg-[var(--glass-bg)] border border-[var(--glass-border)] backdrop-blur-md",
-        "hover:border-[var(--mystic-accent)] hover:shadow-[0_0_20px_rgba(109,40,217,0.2)]",
-        className
-    );
+    const containerStyle: React.CSSProperties = {
+        position: "relative",
+        overflow: "hidden",
+        padding: "1.5rem",
+        borderRadius: "0.5rem",
+        transition: "all 0.3s",
+        background: "var(--glass-bg)",
+        border: "1px solid var(--glass-border)",
+        backdropFilter: "blur(10px)",
+        display: "block",
+        cursor: (href || onClick) ? "pointer" : "default",
+        ...style
+    };
 
     if (href) {
         return (
-            <Link href={href} className={containerClasses}>
+            <Link href={href} className={clsx("card", className)} style={containerStyle}>
                 {content}
-                {/* Hover Highlight */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--mystic-accent)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             </Link>
         );
     }
 
     return (
-        <div className={containerClasses} onClick={onClick}>
+        <div className={clsx("card", className)} style={containerStyle} onClick={onClick}>
             {content}
         </div>
     );

@@ -12,33 +12,33 @@ export default function CurseTracker({ simpleView = false }: { simpleView?: bool
         .find(s => days >= s.day) || { name: "Latent", effect: "No visible effects... yet." };
 
     // Derive intensity and label for simple view
-    // Assuming CURSE_MECHANICS.stages might have a 'level' property,
-    // or we can derive it from the index/day.
-    // For now, let's map currentStage.name to a numeric intensity and use currentStage.name as the label.
     const intensityMap: { [key: string]: number } = {
         "Latent": 0,
         "Mild": 1,
         "Moderate": 2,
         "Severe": 3,
         "Critical": 4,
-        // Add more mappings if CURSE_MECHANICS.stages has more names
     };
     const intensity = intensityMap[currentStage.name] !== undefined ? intensityMap[currentStage.name] : 0;
-    const getLabel = (name: string) => name; // The currentStage.name is already the label
+    const getLabel = (name: string) => name;
 
     if (simpleView) {
         return (
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                     <div
-                        className="w-3 h-3 rounded-full bg-[var(--scarlet-accent)] animate-pulse shadow-[0_0_10px_var(--scarlet-accent)]"
-                        style={{ animationDuration: `${(11 - intensity) * 0.2}s` }}
+                        style={{
+                            width: "12px", height: "12px", borderRadius: "50%",
+                            background: "var(--scarlet-accent)",
+                            boxShadow: "0 0 10px var(--scarlet-accent)",
+                            animation: `flicker ${(11 - intensity) * 0.2}s infinite`
+                        }}
                     />
-                    <span className="text-[var(--scarlet-accent)] font-serif font-bold text-lg">
+                    <span style={{ color: "var(--scarlet-accent)", fontFamily: "var(--font-serif)", fontWeight: "bold", fontSize: "1.1rem" }}>
                         LEVEL {intensity}
                     </span>
                 </div>
-                <span className="text-xs text-[var(--fg-dim)] uppercase tracking-wider">
+                <span style={{ fontSize: "0.75rem", color: "var(--fg-dim)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                     {getLabel(currentStage.name)}
                 </span>
             </div>

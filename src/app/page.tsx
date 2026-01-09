@@ -17,88 +17,96 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8 pt-20 max-w-[1600px] mx-auto">
+    <div style={{ minHeight: "100vh", padding: "2rem", paddingTop: "5rem", maxWidth: "1600px", margin: "0 auto" }}>
 
       {/* HEADER SECTION */}
-      <header className="flex flex-col md:flex-row items-end justify-between mb-8 gap-6 border-b border-[var(--glass-border)] pb-6 relative">
-        <div className="flex-1">
-          <h1 className="text-5xl md:text-7xl font-serif text-[var(--scarlet-accent)] mb-2 tracking-tighter"
-            style={{ textShadow: "0 0 30px rgba(138, 28, 28, 0.6)" }}>
+      <header style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "2rem", gap: "1.5rem", borderBottom: "1px solid var(--glass-border)", paddingBottom: "1.5rem" }}>
+        <div style={{ flex: 1 }}>
+          <h1 style={{ fontSize: "clamp(3rem, 8vw, 5rem)", fontFamily: "var(--font-serif)", color: "var(--scarlet-accent)", marginBottom: "0.5rem", textShadow: "0 0 30px rgba(138, 28, 28, 0.6)" }}>
             HEART&apos;S CURSE
           </h1>
-          <p className="font-mono text-[var(--fg-dim)] tracking-[0.3em] uppercase text-sm md:text-base">
-            Campaign Manager <span className="text-[var(--mystic-accent)]">v2.0 // NETHER-OS</span>
+          <p style={{ fontFamily: "var(--font-mono)", color: "var(--fg-dim)", letterSpacing: "0.3em", textTransform: "uppercase", fontSize: "0.9rem" }}>
+            Campaign Manager <span style={{ color: "var(--mystic-accent)" }}>v2.0 // NETHER-OS</span>
           </p>
         </div>
 
         {/* Quick Action: Open PDF Book */}
         <button
           onClick={() => setViewMode("book")}
-          className="group relative px-6 py-3 overflow-hidden rounded bg-[var(--obsidian-base)] border border-[var(--gold-accent)]/50 hover:border-[var(--gold-accent)] transition-all"
+          style={{
+            position: "relative",
+            padding: "0.75rem 1.5rem",
+            background: "var(--obsidian-base)",
+            border: "1px solid rgba(201,188,160,0.5)",
+            color: "var(--gold-accent)",
+            fontFamily: "var(--font-serif)",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem"
+          }}
         >
-          <div className="absolute inset-0 bg-[var(--gold-accent)]/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-          <span className="relative z-10 font-serif text-[var(--gold-accent)] uppercase tracking-widest flex items-center gap-2">
-            <BookOpen className="w-4 h-4" /> Open Campaign Book
-          </span>
+          <BookOpen style={{ width: "16px", height: "16px" }} /> Open Campaign Book
         </button>
       </header>
 
       {/* DASHBOARD GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem" }}>
 
-        {/* LEFT COLUMN: Status & Quick Stats (4 col) */}
-        <div className="md:col-span-4 flex flex-col gap-6">
+        {/* LEFT COLUMN: Status & Quick Stats */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           {/* Curse Widget */}
-          <DashboardWidget title="Threat System" subtitle="Regional Effect" className="border-[var(--scarlet-accent)]/30">
+          <DashboardWidget title="Threat System" subtitle="Regional Effect" style={{ borderColor: "rgba(138, 28, 28, 0.3)" }}>
             <CurseTracker simpleView={true} />
-            <div className="mt-4 text-xs text-[var(--fg-dim)] italic border-t border-[var(--glass-border)] pt-2">
+            <div style={{ marginTop: "1rem", fontSize: "0.75rem", color: "var(--fg-dim)", fontStyle: "italic", borderTop: "1px solid var(--glass-border)", paddingTop: "0.5rem" }}>
               "The shadows lengthen with every passing day..."
             </div>
           </DashboardWidget>
 
           {/* Quick Nav: Archives */}
           <DashboardWidget title="The Archives" subtitle="Lore & History" icon={BookOpen} href="/lore">
-            <div className="text-sm opacity-80 mb-2">Access decrypted Netherese texts and campaign timeline.</div>
-            <div className="h-1 w-full bg-[var(--glass-border)] rounded overflow-hidden">
-              <div className="h-full bg-[var(--mystic-accent)] w-3/4" />
+            <div style={{ fontSize: "0.875rem", opacity: 0.8, marginBottom: "0.5rem" }}>Access decrypted Netherese texts and campaign timeline.</div>
+            <div style={{ height: "4px", width: "100%", background: "var(--glass-border)", borderRadius: "2px", overflow: "hidden" }}>
+              <div style={{ height: "100%", background: "var(--mystic-accent)", width: "75%" }} />
             </div>
-            <div className="text-[10px] text-right mt-1 font-mono text-[var(--mystic-accent)]">DATABANK: 75% DECRYPTED</div>
+            <div style={{ fontSize: "0.6rem", textAlign: "right", marginTop: "0.25rem", fontFamily: "var(--font-mono)", color: "var(--mystic-accent)" }}>DATABANK: 75% DECRYPTED</div>
           </DashboardWidget>
 
           {/* Quick Nav: Bestiary */}
           <DashboardWidget title="Bestiary" subtitle="Monster Compendium" icon={Skull} href="/statblocks">
-            <div className="flex items-center gap-3">
-              <div className="bg-[var(--ink-color)] p-2 rounded border border-[var(--glass-border)]">
-                <Skull className="w-8 h-8 text-[var(--scarlet-accent)]" />
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <div style={{ background: "var(--ink-color)", padding: "0.5rem", borderRadius: "0.25rem", border: "1px solid var(--glass-border)" }}>
+                <Skull style={{ width: "32px", height: "32px", color: "var(--scarlet-accent)" }} />
               </div>
-              <div className="text-sm">
-                <div className="font-bold text-[var(--fg-color)]">100+ ENTRIES</div>
-                <div className="text-[var(--fg-dim)] text-xs">Recently Added: Acererak</div>
+              <div>
+                <div style={{ fontWeight: "bold", color: "var(--fg-color)" }}>100+ ENTRIES</div>
+                <div style={{ color: "var(--fg-dim)", fontSize: "0.75rem" }}>Recently Added: Acererak</div>
               </div>
             </div>
           </DashboardWidget>
         </div>
 
-        {/* MIDDLE COLUMN: Primary Navigation (4 col) */}
-        <div className="md:col-span-4 flex flex-col gap-6">
+        {/* MIDDLE COLUMN: Primary Navigation */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           {/* Market */}
-          <DashboardWidget title="Black Market" subtitle="Shops & Items" icon={ShoppingBag} href="/shops" className="h-[180px]">
-            <div className="h-full bg-[url('/market-bg-pattern.png')] bg-cover bg-center opacity-40 mix-blend-overlay absolute inset-0" />
-            <p className="relative z-10 text-sm">Manage inventory for Korgul, Fimble, and local vendors.</p>
+          <DashboardWidget title="Black Market" subtitle="Shops & Items" icon={ShoppingBag} href="/shops" style={{ minHeight: "180px", backgroundImage: "linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/market-bg-pattern.png')", backgroundSize: "cover", backgroundBlendMode: "overlay" }}>
+            <p style={{ position: "relative", zIndex: 10, fontSize: "0.875rem" }}>Manage inventory for Korgul, Fimble, and local vendors.</p>
           </DashboardWidget>
 
           {/* Cartography */}
-          <DashboardWidget title="Cartography" subtitle="Tactical Maps" icon={Map} href="/maps" className="h-[180px]">
-            <div className="relative z-10 space-y-2">
-              <div className="flex justify-between text-xs border-b border-[var(--glass-border)] pb-1">
+          <DashboardWidget title="Cartography" subtitle="Tactical Maps" icon={Map} href="/maps" style={{ minHeight: "180px" }}>
+            <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid var(--glass-border)", paddingBottom: "0.25rem" }}>
                 <span>SILENT WARDS</span>
-                <span className="text-[var(--gold-accent)]">ACTIVE</span>
+                <span style={{ color: "var(--gold-accent)" }}>ACTIVE</span>
               </div>
-              <div className="flex justify-between text-xs border-b border-[var(--glass-border)] pb-1 opacity-60">
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid var(--glass-border)", paddingBottom: "0.25rem", opacity: 0.6 }}>
                 <span>BEHOLDER LAIR</span>
                 <span>MAPPED</span>
               </div>
-              <div className="flex justify-between text-xs opacity-40">
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", opacity: 0.4 }}>
                 <span>HEART CHAMBER</span>
                 <span>UNKNOWN</span>
               </div>
@@ -106,27 +114,23 @@ export default function Home() {
           </DashboardWidget>
         </div>
 
-        {/* RIGHT COLUMN: Tools & Utils (4 col) */}
-        <div className="md:col-span-4 flex flex-col gap-6">
-          <div className="grid grid-cols-2 gap-4">
-            <DashboardWidget title="Tools" subtitle="Foundry" icon={Hammer} href="/generators" className="aspect-square flex flex-col justify-center text-center">
-            </DashboardWidget>
-            <DashboardWidget title="Editor" subtitle="Notes" icon={PenTool} href="/editor" className="aspect-square flex flex-col justify-center text-center">
-            </DashboardWidget>
-            <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" className="aspect-square flex flex-col justify-center text-center">
-            </DashboardWidget>
-            <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" className="aspect-square flex flex-col justify-center text-center">
-            </DashboardWidget>
+        {/* RIGHT COLUMN: Tools & Utils */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <DashboardWidget title="Tools" subtitle="Foundry" icon={Hammer} href="/generators" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Editor" subtitle="Notes" icon={PenTool} href="/editor" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
           </div>
 
           <DashboardWidget title="Print Lab" subtitle="Physical Handouts" icon={FileText} href="/deliverables">
-            <p className="text-xs text-[var(--fg-dim)]">Generate print-ready assets for player handouts.</p>
+            <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)" }}>Generate print-ready assets for player handouts.</p>
           </DashboardWidget>
         </div>
 
       </div>
 
-      <footer className="mt-12 text-center opacity-30 font-mono text-xs border-t border-[var(--glass-border)] pt-8">
+      <footer style={{ marginTop: "3rem", textAlign: "center", opacity: 0.3, fontFamily: "var(--font-mono)", fontSize: "0.75rem", borderTop: "1px solid var(--glass-border)", paddingTop: "2rem" }}>
         SYSTEM STATUS: STABLE // CONNECTION: SECURE // SHADOWNET: ONLINE
       </footer>
     </div>
