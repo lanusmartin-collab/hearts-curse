@@ -48,7 +48,7 @@ export default function ShopsPage() {
             </div>
 
             <header style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h1>The Market</h1>
+                <h1>The Market <span style={{ fontSize: "0.5em", color: "var(--accent-color)" }}>v2.0</span></h1>
                 <PrintButton />
             </header>
 
