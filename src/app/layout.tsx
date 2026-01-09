@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import DiceRoller from "@/components/ui/DiceRoller";
 
+import SidebarNav from "@/components/ui/SidebarNav";
+
 export const metadata: Metadata = {
   title: "Heart's Curse Campaign",
   description: "DM Tools for the Heart's Curse adventure.",
@@ -27,6 +29,7 @@ export default function RootLayout({
       </head>
       <body>
         <div className="noise-overlay"></div>
+        <SidebarNav />
         <main>{children}</main>
         <DiceRoller />
       </body>

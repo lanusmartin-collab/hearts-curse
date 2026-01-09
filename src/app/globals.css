@@ -1,133 +1,37 @@
 :root {
-  /* Theme: "The Upside Down" / 80s Horror */
-  --bg-color: #0b0b0e;
-  --bg-dark: #050505;
-  --bg-texture: radial-gradient(circle at 50% 50%, #1a0808 0%, #000000 100%);
+  /* THEME: Netherese Obsidian (Global Shell) */
+  --obsidian-base: #0a0a0c;
+  --obsidian-dark: #050505;
+  --obsidian-texture: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 100%);
 
+  /* ACCENTS: Arcane & Blood */
+  --scarlet-accent: #8a1c1c;
+  /* Heart's Curse */
+  --mystic-accent: #6d28d9;
+  /* Netheril Magic */
+  --gold-accent: #c9bca0;
+  /* Ancient Runes */
+
+  /* CONTENT: Parchment Containers */
+  --parchment-bg: #f4e8d1;
+  --parchment-dim: #e6dace;
+  --ink-color: #2c1a1a;
+
+  /* FONTS */
+  --font-header: 'Cinzel', 'Merriweather', serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --max-width: 1600px;
+
+  /* LEGACY ALIASES (For backward compatibility) */
+  --bg-color: var(--obsidian-base);
   --fg-color: #e0e0e0;
-  --fg-dim: #8a8a9b;
-
-  /* Neon Red / Rubine */
-  --accent-color: #ff0909;
-  --accent-glow: rgba(255, 9, 9, 0.5);
-  --accent-dim: #a81818;
-
-  /* Gold/Amber for specific highlights (optional) */
-  --highlight-color: #ffb703;
-
-  --border-color: #331111;
-
-  --glass-bg: rgba(20, 20, 25, 0.7);
-  --glass-border: rgba(255, 9, 9, 0.2);
-
-  /* Fonts */
-  --font-serif: 'Benguiat', 'Merriweather', serif;
-  --font-body: 'Inter', 'Roboto', sans-serif;
-
-  --max-width: 1400px;
-}
-
-/* AD&D 2nd Edition Theme Variables */
-:root {
-  --adnd-parchment: #f4e8d1;
-  --adnd-parchment-dark: #e6dace;
-  --adnd-ink: #2c1a1a;
-  --adnd-red: #8b0000;
-  --adnd-blue: #00008b;
-  --adnd-font-header: 'Bookman Old Style', 'Georgia', serif;
-  --adnd-font-body: 'Arial', sans-serif;
-  /* 2e used concise sans-serif for stats sometimes, or typewriter */
-  --adnd-font-stat: 'Courier New', monospace;
-}
-
-.adnd-theme {
-  --bg-color: var(--adnd-parchment);
-  --fg-color: var(--adnd-ink);
-  --accent-color: var(--adnd-red);
-  --glass-bg: rgba(244, 232, 209, 0.9);
-  --glass-border: var(--adnd-ink);
-  font-family: var(--adnd-font-body);
-  background: repeating-linear-gradient(0deg,
-      transparent,
-      transparent 29px,
-      rgba(139, 69, 19, 0.1) 30px), url("https://www.transparenttextures.com/patterns/aged-paper.png");
-  background-color: var(--adnd-parchment);
-}
-
-.adnd-card {
-  background: #fffef0;
-  border: 1px solid #444;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.adnd-hole {
-  width: 15px;
-  height: 15px;
-  background: #222;
-  border-radius: 50%;
-  position: absolute;
-  left: 10px;
-  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-@keyframes flicker {
-
-  0%,
-  19%,
-  21%,
-  23%,
-  25%,
-  54%,
-  56%,
-  100% {
-    opacity: 1;
-    text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color);
-  }
-
-  20%,
-  24%,
-  55% {
-    opacity: 0.5;
-    text-shadow: none;
-  }
-}
-
-@keyframes scanline {
-  0% {
-    transform: translateY(-100%);
-  }
-
-  100% {
-    transform: translateY(100%);
-  }
-}
-
-@keyframes pulseRed {
-  0% {
-    box-shadow: 0 0 5px var(--accent-dim);
-  }
-
-  50% {
-    box-shadow: 0 0 20px var(--accent-color);
-    border-color: var(--accent-color);
-  }
-
-  100% {
-    box-shadow: 0 0 5px var(--accent-dim);
-  }
-}
-
-.noise-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  --accent-color: var(--scarlet-accent);
+  --accent-dim: #5c1212;
+  --accent-glow: rgba(138, 28, 28, 0.5);
+  --glass-bg: rgba(10, 10, 12, 0.8);
+  --glass-border: rgba(109, 40, 217, 0.3);
 }
 
 * {
@@ -140,8 +44,8 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  background-color: var(--bg-dark);
-  background: var(--bg-texture);
+  background-color: var(--obsidian-dark);
+  background: var(--obsidian-texture);
   background-attachment: fixed;
   color: var(--fg-color);
   font-family: var(--font-body);
@@ -150,22 +54,22 @@ body {
   min-height: 100vh;
 }
 
-/* Scrollbar */
+/* Scrollbar (Amethyst/Obsidian style) */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-dark);
+  background: var(--obsidian-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--accent-dim);
+  background: var(--mystic-accent);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-color);
+  background: var(--scarlet-accent);
 }
 
 h1,
