@@ -28217,6 +28217,18 @@
         "desc": "Larloch is immune to bludgeoning, piercing, and slashing damage from weapons with a bonus of +2 or lower. Weapons with a +3 bonus deal only half damage."
       },
       {
+        "name": "Contingency: Escape",
+        "desc": "If Larloch drops below 50 HP or is subjected to a condition that prevents him from casting spells, a *Contingency* spell immediately activates, teleporting him to a secret safe room (sanctuary) and restoring 100 HP. This ability cannot be countered."
+      },
+      {
+        "name": "Netherese Mastery",
+        "desc": "Larloch has ingrained specific spells into his being. He can cast the following spells once per day each, requiring no components: *Magic Missile, Web, Dispel Magic, Arcane Eye, Animate Dead, Chain Lightning, Control Undead (as Dominate Monster, affects Undead only), Devastate Undead (see Actions), Energy Drain (as Enervation)*."
+      },
+      {
+        "name": "Overwhelming Speed",
+        "desc": "Larloch's thoughts race faster than time. He can take two Reactions per round. In addition, when he casts *Time Stop*, he can take 1 additional turn (total 1d4 + 2 turns)."
+      },
+      {
         "name": "Ioun Stone Shell",
         "desc": "Larloch begins combat with 27 Ioun Stones orbiting him. Each stone has AC 24 and 10 HP. He can use a stone's power as a Reaction or part of a Legendary Action. Using a stone's power causes it to shatter (turn to dust). The stones provide the following one-time effects when used:\n1. **Spell Absorption (Violet)**: Absorbs a spell of 9th level or lower targeting him.\n2. **Dispel Blast (Pale Green)**: Casts 9th-level *Dispel Magic*.\n3. **Fire Shield (Ruby)**: Absorbs 70 fire damage before shattering.\n4. **Cold Shield (Sapphire)**: Absorbs 70 cold damage before shattering.\n5. **Lightning Shield (Topaz)**: Absorbs 70 lightning damage before shattering.\n6. **Counterspell Perfection (Deep Purple)**: Automatically counters a spell of 9th level or lower.\n7. **Temporal Skip (Lavender)**: Grants Larloch a second Turn immediately after this one.\n8. **Teleport (Pearly)**: Teleports Larloch to any location on the same plane without error.\n9. **Healing Burst (Pink)**: Restores 100 HP to Larloch.\n10. **Mana Burn (Orange)**: Target loses a 9th level spell slot (or highest available).\n11. **Reality Anchor (Gold)**: Prevents teleportation within 100ft for 1 round.\n12. **Focus (Clear)**: Larloch maintains concentration on 2 spells at once for 1 minute.\n13. **Vengeance (Crimson)**: Reflects a single attack back at the attacker with double damage.\n14. **Ghost Form (Silver)**: Larloch becomes ethereal until the start of his next turn.\n15. **Clarity (Diamond)**: Larloch automatically succeeds on an Insight check or detects a lie.\n16. **Luck (Agate)**: Larloch rerolls a d20 roll.\n17. **Destiny (Obsidian)**: Forces a player to reroll a d20 roll and take the lower.\n18. **Speed (Emerald)**: Increases Larloch's speed to 120ft for 1 round.\n19. **Weight (Lead)**: Target creature's speed becomes 0 for 1 round (No save).\n20. **Vision (Opal)**: Grants Larloch X-Ray vision for 1 minute.\n21. **Silence (Jet)**: Casts *Silence* centered on himself (he can still cast verbally).\n22. **Fear (Amethyst)**: Casts *Weird* (DC 26) without concentration.\n23. **Charm (Rose)**: Target considers Larloch a close friend for 1 round (Wis DC 26).\n24. **Stasis (Iron)**: Target is placed in a *Forcecage* for 1 round.\n25. **Death (Black)**: Casts *Power Word Kill*.\n26. **Life (White)**: Resurrects a fallen minion with full HP.\n27. **The Master Stone (Prismatic)**: Recreates any one shattered stone."
       },
@@ -28226,7 +28238,7 @@
       },
       {
         "name": "Spellcasting",
-        "desc": "Larloch is a 20th-level spellcaster. His spellcasting ability is Intelligence (spell save DC 27, +19 to hit with spell attacks). He has the following Wizard spells prepared:\nCantrips (at will): *Mage Hand, Prestidigitation, Ray of Frost, Fire Bolt*\n1st-5th Level (At Will): *Shield, Magic Missile, Detect Magic, Mirror Image, Counterspell, Fireball, Lightning Bolt, Misty Step, Telekinesis*\n6th Level (2 slots): *Globe of Invulnerability, Disintegrate*\n7th Level (2 slots): *Finger of Death, Plane Shift*\n8th Level (2 slots): *Dominate Monster, Power Word Stun*\n9th Level (2 slots): *Power Word Kill, Meteor Swarm*"
+        "desc": "Larloch is a 20th-level spellcaster. His spellcasting ability is Intelligence (spell save DC 27, +19 to hit with spell attacks). He has the following Wizard spells prepared:\nCantrips (at will): *Mage Hand, Prestidigitation, Ray of Frost, Fire Bolt*\n1st-5th Level (At Will): *Shield, Magic Missile, Detect Magic, Mirror Image, Counterspell, Fireball, Haste, Lightning Bolt, Misty Step, Telekinesis*\n6th Level (2 slots): *Globe of Invulnerability, Disintegrate*\n7th Level (2 slots): *Finger of Death, Plane Shift*\n8th Level (2 slots): *Dominate Monster, Power Word Stun*\n9th Level (2 slots): *Power Word Kill, Meteor Swarm, Time Stop*"
       },
       {
         "name": "Rejuvenation",
@@ -28236,11 +28248,15 @@
     "actions": [
       {
         "name": "Multiattack",
-        "desc": "Larloch uses Frightful Presence. He then makes three attacks: two with his Staff of the Magi and one with Paralyzing Touch."
+        "desc": "Larloch uses Frightful Presence. He then makes three attacks: two with his Staff of the Magi and one with Paralyzing Touch. He can replace one attack with a use of Devastate Undead."
       },
       {
         "name": "Staff of the Magi",
         "desc": "Melee Weapon Attack: +15 to hit, reach 5 ft., one target. Hit: 1d6 + 6 bludgeoning damage plus 2d6 force damage. The staff has 50 charges. When he hits with it, Larloch can expend 1 charge to deal an extra 2d6 force damage. He regains 4d6 + 2 charges daily at dawn."
+      },
+      {
+        "name": "Devastate Undead",
+        "desc": "Larloch targets one undead creature he controls within 60 feet. The target must make a DC 27 Constitution saving throw (it can voluntarily fail). On a failure, the target takes 10d10 necrotic damage, and Larloch regains a number of Hit Points equal to the damage taken. The target is destroyed if reduced to 0 HP."
       },
       {
         "name": "Arcane Blast",
@@ -28252,7 +28268,7 @@
       },
       {
         "name": "Time Stop (Recharge 6)",
-        "desc": "Larloch briefly stops the flow of time for everyone but himself."
+        "desc": "Larloch briefly stops the flow of time for everyone but himself (see Overwhelming Speed trait)."
       }
     ],
     "legendary": [
