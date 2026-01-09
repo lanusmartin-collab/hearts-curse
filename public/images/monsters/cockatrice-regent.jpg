@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1">
+		<link rel="stylesheet" href="../dnd24/style.css?v=6">
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,500;1,500&display=swap');
+		.col, .cols	{background:white url("../images/fond-dmg.jpg") repeat}
+		.jaune		{background-color:#f1eee7; padding:10px 8px 5px 8px; margin:0 2px 0 2px; border:3px #bebdb8 solid; border-radius:10px}
+  		.jaune h1 	{border-bottom-style:solid; border-bottom-width:1px; font-size:1.8rem; font-family:"Open Sans", arial, sans-serif}
+  		.sansSerif	{font-family:"Open Sans", arial, sans-serif}
+		.red		{color:#6D0000}
+		.type		{color:#666666}
+		.init		{float:right; margin-right:100px}
+		.car		{display:inline-block; margin:0 1px; padding:0px 2px; font-size:0.8rem; color:#666666; width:8%; max-width:31px; text-align:center; vertical-align:bottom}
+		.car1, .car4 {display:inline-block; margin:1px;  padding:2px 4px; width:8%; max-width:31px; text-align:left;   vertical-align:top; font-weight:bold; font-variant:small-caps}
+		.car2, .car5 {display:inline-block; margin:1px;  padding:2px 4px; width:8%; max-width:31px; text-align:center; vertical-align:top; font-weight:bold}
+		.car3, .car6 {display:inline-block; margin:1px;  padding:2px 4px; width:8%; max-width:31px; text-align:center; vertical-align:top}
+		.car1, .car2 {background-color:#e8e6da}
+		.car3 		 {background-color:#dad1ca}
+		.car4, .car5 {background-color:#dddad5}
+		.car6 		 {background-color:#cecac9; margin-bottom:8px}
+		.rub		{color:#6D0000; margin:6px 0 4px 0; border-bottom:1px solid #6D0000; font-size:1.5rem; font-variant:small-caps}
+		.legend		{color:#666666; font-style:italic; line-height:15px; margin-bottom:8px}
+
+		@media only screen and (max-width:999px) {
+			.col1	{padding:6px}
+			.jaune	{padding:10px 5px 5px 5px; margin:0}
+			.car, .car1, .car2, .car3, .car4, .car5, .car6 {max-width:24px; padding:1px}
+			.car	{font-size:0.7rem}
+			.car1, .car2, .car3, .car4, .car5, .car6 {font-size:1.0rem}
+			.init	{margin-right:2px}
+		}
+	</style>
+	<!-- Refinery89 -->
+	<script async src="https://tags.refinery89.com/aideddorg.js"></script>
+	<title>Error &raquo; DnD 2024</title>
+	<meta name='robots' content='noindex, nofollow'>
+</head>
+<body>
+	<div class='col'>
+		<div class='col1'>
+			<p class='warning'>This monster does not exist. Please check the spelling...</p>
+
+			<ol itemscope itemtype="http://schema.org/BreadcrumbList" class='noprint'>
+				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+					<a itemprop="item" href="./"><span itemprop="name">DnD 2024 Monsters</span></a> › ...				    <meta itemprop="position" content="1">
+				</li>
+			</ol>
+		</div><div class='col2'>
+			<div class='picture'></div>
+		</div>
+	</div>
+</body>
+</html>

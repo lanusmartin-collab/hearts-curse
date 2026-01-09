@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Tiamat",
+    "slug": "tiamat",
+    "url": "https://www.aidedd.org/dnd/monstres.php?vo=tiamat"
+  },
+  {
+    "name": "Dust Mephit",
+    "slug": "dust-mephit",
+    "url": "https://www.aidedd.org/dnd/monstres.php?vo=dust-mephit"
+  },
+  {
+    "name": "Ice Mephit",
+    "slug": "ice-mephit",
+    "url": "https://www.aidedd.org/dnd/monstres.php?vo=ice-mephit"
+  },
+  {
+    "name": "Lamia",
+    "slug": "lamia",
+    "url": "https://www.aidedd.org/dnd/monstres.php?vo=lamia"
+  },
+  {
+    "name": "Magma Mephit",
+    "slug": "magma-mephit",
+    "url": "https://www.aidedd.org/dnd/monstres.php?vo=magma-mephit"
+  },
+  {
+    "name": "Pixie",
+    "slug": "pixie",
+    "url": "https://www.aidedd.org/dnd/monstres.php?vo=pixie"
+  },
+  {
+    "name": "Smoke Mephit",
+    "slug": "smoke-mephit",
+    "url": "https://www.aidedd.org/dnd/monstres.php?vo=smoke-mephit"
+  },
+  {
+    "name": "Steam Mephit",
+    "slug": "steam-mephit",
+    "url": "https://www.aidedd.org/dnd/monstres.php?vo=steam-mephit"
+  },
+  {
+    "name": "Abjurer Wizard",
+    "slug": "abjurer-wizard",
+    "url": "https://www.aidedd.org/dnd/monstres.php?vo=abjurer-wizard"
+  }
+]
