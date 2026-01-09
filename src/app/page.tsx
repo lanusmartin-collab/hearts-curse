@@ -57,8 +57,8 @@ export default function Home() {
 
         {/* LEFT COLUMN: Status & Quick Stats */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          {/* Curse Widget */}
-          <DashboardWidget title="Threat System" subtitle="Regional Effect" style={{ borderColor: "rgba(138, 28, 28, 0.3)" }}>
+          {/* Curse Widget - Now clickable to mechanics */}
+          <DashboardWidget title="Threat System" subtitle="Regional Effect" style={{ borderColor: "rgba(138, 28, 28, 0.3)" }} href="/mechanics">
             <CurseTracker simpleView={true} />
             <div style={{ marginTop: "1rem", fontSize: "0.75rem", color: "var(--fg-dim)", fontStyle: "italic", borderTop: "1px solid var(--glass-border)", paddingTop: "0.5rem" }}>
               "The shadows lengthen with every passing day..."
@@ -74,8 +74,8 @@ export default function Home() {
             <div style={{ fontSize: "0.6rem", textAlign: "right", marginTop: "0.25rem", fontFamily: "var(--font-mono)", color: "var(--mystic-accent)" }}>DATABANK: 75% DECRYPTED</div>
           </DashboardWidget>
 
-          {/* Quick Nav: Bestiary */}
-          <DashboardWidget title="Bestiary" subtitle="Monster Compendium" icon={Skull} href="/statblocks">
+          {/* Quick Nav: Bestiary -> Monster Compendium */}
+          <DashboardWidget title="Monster Compendium" subtitle="Bestiary" icon={Skull} href="/statblocks">
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
               <div style={{ background: "var(--ink-color)", padding: "0.5rem", borderRadius: "0.25rem", border: "1px solid var(--glass-border)" }}>
                 <Skull style={{ width: "32px", height: "32px", color: "var(--scarlet-accent)" }} />

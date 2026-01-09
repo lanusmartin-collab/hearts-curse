@@ -19,8 +19,8 @@ export default function LorePage() {
                     <article key={section.id} style={{ marginBottom: "4rem", breakInside: "avoid" }}>
                         <h2 style={{ fontSize: "1.5rem" }}>{section.title}</h2>
                         <div
-                            className="retro-border"
-                            style={{ whiteSpace: "pre-line", fontFamily: "var(--font-mono)" }}
+                            className="parchment-panel"
+                            style={{ whiteSpace: "pre-line" }}
                         >
                             {section.content}
                         </div>

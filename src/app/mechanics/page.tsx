@@ -22,7 +22,7 @@ export default function MechanicsPage() {
                 {/* Prologue Powers */}
                 <section>
                     <h2>{PROLOGUE_POWERS.title}</h2>
-                    <div className="retro-border">
+                    <div className="parchment-panel">
                         <ul>
                             {PROLOGUE_POWERS.bonuses.map((bonus, i) => (
                                 <li key={i} style={{ padding: "0.5rem 0", listStyle: "inside square" }}>{bonus}</li>
@@ -34,7 +34,7 @@ export default function MechanicsPage() {
                 {/* Safe Haven */}
                 <section>
                     <h2>{SAFE_HAVEN.title}</h2>
-                    <div className="retro-border">
+                    <div className="parchment-panel">
                         <p>Access Code: <strong>CANDLEKEEP</strong></p>
                         <ul style={{ marginTop: "1rem" }}>
                             {SAFE_HAVEN.features.map((feat, i) => (

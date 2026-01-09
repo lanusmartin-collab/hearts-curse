@@ -14,7 +14,7 @@ const NAV_ITEMS = [
     { href: "/", label: "Sanctum", icon: Home },
     { href: "/lore", label: "Archives", icon: BookOpen },
     { href: "/shops", label: "The Market", icon: ShoppingBag },
-    { href: "/statblocks", label: "Bestiary", icon: Skull },
+    { href: "/statblocks", label: "Monster Compendium", icon: Skull },
     { href: "/maps", label: "Cartography", icon: Map },
     { href: "/mechanics", label: "Mechanics", icon: Zap },
     { href: "/encounters", label: "Encounters", icon: Swords },

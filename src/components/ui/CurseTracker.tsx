@@ -1,10 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CURSE_MECHANICS } from "@/lib/data/mechanics";
 
 export default function CurseTracker({ simpleView = false }: { simpleView?: boolean }) {
+    // Initialize state lazily to avoid hydration mismatch, but we need useEffect for actual storage access
     const [days, setDays] = useState(0);
+
+    // Load from local storage on mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('curse_days');
+            if (saved) setDays(parseInt(saved, 10));
+        }
+    }, []);
+
+    // Save to local storage whenever days changes (wrapped in helper to avoid useEffect loop or race)
+    const updateDays = (newDays: number) => {
+        const val = Math.max(0, newDays);
+        setDays(val);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('curse_days', val.toString());
+        }
+    };
 
     const currentStage = CURSE_MECHANICS.stages
         .slice()
@@ -54,8 +72,18 @@ export default function CurseTracker({ simpleView = false }: { simpleView?: bool
                     DAY {days}
                 </div>
                 <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
-                    <button onClick={() => setDays(Math.max(0, days - 1))}>[-1 DAY]</button>
-                    <button onClick={() => setDays(days + 1)}>[+1 DAY]</button>
+                    <button
+                        onClick={() => updateDays(days - 1)}
+                        style={{ padding: "0.5rem 1rem", border: "1px solid var(--accent-color)", color: "var(--accent-color)", cursor: "pointer", background: "transparent" }}
+                    >
+                        [-1 DAY]
+                    </button>
+                    <button
+                        onClick={() => updateDays(days + 1)}
+                        style={{ padding: "0.5rem 1rem", border: "1px solid var(--accent-color)", color: "var(--accent-color)", cursor: "pointer", background: "transparent" }}
+                    >
+                        [+1 DAY]
+                    </button>
                 </div>
             </div>
 
