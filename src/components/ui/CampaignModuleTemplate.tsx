@@ -12,6 +12,7 @@ import {
     CAMPAIGN_UNIQUE_ITEMS,
     ITEMS as MAGIC_ITEMS_LIST
 } from '@/lib/data/items';
+import { CURSE_MECHANICS, PROLOGUE_POWERS, SAFE_HAVEN } from '@/lib/data/mechanics';
 
 type CampaignModuleTemplateProps = {
     onClose: () => void;
