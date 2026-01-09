@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ALL_MONSTERS } from "@/lib/data/monsters_2024";
 import { Statblock } from "@/lib/data/statblocks";
 import { ShopItem } from "@/lib/data/items";
-import { generateNPC, generateLootItem, GeneratorTheme } from "@/lib/generators"; // New generators
+import { generateNPC, generateLootItem, generateArtifact, GeneratorTheme } from "@/lib/generators"; // New generators
 import StatblockCard from "@/components/ui/StatblockCard";
 import { LootCard } from "@/components/ui/LootCard";
 import PrintButton from "@/components/ui/PrintButton";
@@ -54,6 +54,11 @@ export default function GeneratorsPage() {
         setResult(null);
     };
 
+    const genArtifact = () => {
+        setLootItem(generateArtifact(currentTheme));
+        setResult(null);
+    };
+
     return (
         <div className="retro-container">
             <div className="no-print" style={{ marginBottom: "2rem" }}>
@@ -62,8 +67,8 @@ export default function GeneratorsPage() {
 
             <header style={{ marginBottom: "3rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                    <h1>The Foundry v4.1</h1>
-                    <p style={{ opacity: 0.6, fontSize: "0.9rem" }}>Fabrication Matrix: {currentTheme}</p>
+                    <h1>The Foundry v5.0</h1>
+                    <p style={{ opacity: 0.6, fontSize: "0.9rem" }}>Fabrication Matrix: {currentTheme} (Artifact Mode Online)</p>
                 </div>
                 <PrintButton />
             </header>
@@ -84,10 +89,11 @@ export default function GeneratorsPage() {
                 </select>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem", marginBottom: "2rem" }} className="no-print">
-                <button onClick={genNPC}>[GENERATE NPC]</button>
-                <button onClick={genMonster}>[GENERATE MONSTER]</button>
-                <button onClick={genLoot}>[GENERATE LOOT]</button>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "0.5rem", marginBottom: "2rem" }} className="no-print">
+                <button onClick={genNPC}>[NPC]</button>
+                <button onClick={genMonster}>[MONSTER]</button>
+                <button onClick={genLoot}>[LOOT]</button>
+                <button onClick={genArtifact} style={{ color: "orange", borderColor: "orange" }}>[ARTIFACT]</button>
             </div>
 
             <div className="retro-border" style={{ minHeight: "400px", display: "flex", justifyContent: "center", alignItems: "start", padding: "2rem" }}>
