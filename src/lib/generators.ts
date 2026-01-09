@@ -222,7 +222,7 @@ export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
         hp: hp,
         hitDice: `${crVal + 2}${cls.hd}`,
         speed: "30 ft.",
-        stats: stats,
+        stats: stats as Statblock['stats'],
         saves: savesList,
         skills: `Perception +${Math.floor((stats.wis - 10) / 2) + pb}`,
         immunities: theme === "Construct" ? "Poison, Psychic" : (theme === "Undead" ? "Necrotic, Poison" : ""),
