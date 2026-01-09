@@ -8,6 +8,7 @@ export const PROLOGUE_POWERS = {
 };
 
 export const CURSE_MECHANICS = {
+    description: "A magical affliction that drains the life force of its victims over 21 days.", // [NEW] Added for Campaign Book
     stages: [
         { day: 3, name: "The Hollow ache", effect: "Cannot regain Hit Dice on Long Rest." },
         { day: 7, name: "The Fading Color", effect: "Disadvantage on Cha checks. Vision limited to 60ft (colorblind)." },
