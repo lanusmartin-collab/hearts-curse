@@ -68,8 +68,8 @@ export function LootCard({ item, onClose }: LootCardProps) {
 
             {/* Main Effect */}
             <div className="mb-6 space-y-2">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Effect</h3>
-                <p className="text-sm text-gray-200 leading-relaxed font-light">
+                <h3 style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.75rem", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.05em" }}>Effect</h3>
+                <p style={{ color: "#fff", fontSize: "0.9rem", lineHeight: "1.5", fontWeight: "300" }}>
                     {item.effect || "No magical effect discerned."}
                 </p>
             </div>
