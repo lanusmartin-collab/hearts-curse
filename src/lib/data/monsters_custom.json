@@ -690,5 +690,40 @@
             }
         ],
         "source": "Custom"
+    },
+    {
+        "slug": "zhentarim-veteran",
+        "name": "Zhentarim Veteran",
+        "size": "Medium",
+        "type": "Humanoid (Any)",
+        "alignment": "Lawful Evil",
+        "ac": 17,
+        "hp": 58,
+        "speed": "30 ft.",
+        "stats": {
+            "str": 16,
+            "dex": 13,
+            "con": 14,
+            "int": 10,
+            "wis": 11,
+            "cha": 10
+        },
+        "skills": "Athletics +5, Perception +2",
+        "cr": "3",
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "Two Longsword attacks. If Shortsword equipped, one Shortsword."
+            },
+            {
+                "name": "Longsword",
+                "desc": "+5 to hit, 1d8+3 slashing."
+            },
+            {
+                "name": "Heavy Crossbow",
+                "desc": "+3 to hit, 100/400 ft., 1d10+1 piercing."
+            }
+        ],
+        "source": "Custom"
     }
 ]
