@@ -52,6 +52,24 @@ export default function InteractiveMap({ src, title, nodes = [], onNodeClick, gr
         setIsDragging(false);
     };
 
+    const handleTouchStart = (e: React.TouchEvent) => {
+        if ((e.target as HTMLElement).closest(".map-node")) return;
+
+        const touch = e.touches[0];
+        setIsDragging(true);
+        setDragStart({ x: touch.clientX - pos.x, y: touch.clientY - pos.y });
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        setPos({ x: touch.clientX - dragStart.x, y: touch.clientY - dragStart.y });
+    };
+
+    const handleTouchEnd = () => {
+        setIsDragging(false);
+    };
+
     // Reset view helper
     const resetView = () => {
         setScale(1);
@@ -67,7 +85,8 @@ export default function InteractiveMap({ src, title, nodes = [], onNodeClick, gr
                 height: "600px",
                 position: "relative",
                 cursor: isDragging ? "grabbing" : "grab",
-                backgroundColor: "#050505"
+                backgroundColor: "#050505",
+                touchAction: "none" // Prevent browser scrolling while dragging map
             }}
         >
             {/* UI Overlay */}
@@ -113,6 +132,9 @@ export default function InteractiveMap({ src, title, nodes = [], onNodeClick, gr
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
                 style={{
                     transform: `translate(${pos.x}px, ${pos.y}px) scale(${scale})`,
                     transition: isDragging ? "none" : "transform 0.2s ease-out",
