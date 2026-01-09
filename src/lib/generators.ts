@@ -60,6 +60,9 @@ const ARMOR: Record<string, { ac: number, type: string, dexMax?: number }> = {
 
 // --- LOOT DATA ---
 const LOOT_TYPES = ["Weapon", "Armor", "Potion", "Scroll", "Wondrous", "Ring", "Wand"];
+const WEAPON_TYPES = ["Longsword", "Shortsword", "Greatsword", "Greataxe", "Dagger", "Maul", "Rapier", "Longbow", "Heavy Crossbow"];
+const ARMOR_TYPES = ["Plate Armor", "Chain Mail", "Scale Mail", "Leather Armor", "Studded Leather", "Breastplate", "Shield"];
+
 const RARITY_ODDS = [
     { name: "Common", chance: 50, costMod: 1, propCount: 0 },
     { name: "Uncommon", chance: 30, costMod: 10, propCount: 1 },
@@ -69,14 +72,58 @@ const RARITY_ODDS = [
 ];
 
 const THEMED_ADJECTIVES: Record<GeneratorTheme, string[]> = {
-    "Surface": ["Rusty", "Golden", "Polished", "Oaken", "Traveler's", "Royal"],
-    "Underdark": ["Obsidian", "Spider-Silk", "Glowing", "Duergar", "Poisoned", "Crystal"],
-    "Undead": ["Bone", "Rotting", "Ghostly", "Necrotic", "Ancient", "Tomb"],
-    "Arcane": ["Aetheral", "Runed", "Floating", "Singing", "Void", "Astral"],
-    "Construct": ["Clockwork", "Brass", "Clicking", "Steam-Powered", "Cogwork", "Mithral"]
+    "Surface": ["Rusty", "Golden", "Polished", "Oaken", "Traveler's", "Royal", "Merchant's", "Knight's"],
+    "Underdark": ["Obsidian", "Spider-Silk", "Glowing", "Duergar", "Poisoned", "Crystal", "Abyssal", "Web-Strung"],
+    "Undead": ["Bone", "Rotting", "Ghostly", "Necrotic", "Ancient", "Tomb", "Funeral", "Grave-dirt"],
+    "Arcane": ["Aetheral", "Runed", "Floating", "Singing", "Void", "Astral", "Prismatic", "Spell-Weaved"],
+    "Construct": ["Clockwork", "Brass", "Clicking", "Steam-Powered", "Cogwork", "Mithral", "Forged", "Automated"]
 };
 
-const LOOT_NOUNS = ["Blade", "Shield", "Amulet", "Ring", "Gem", "Tome", "Boots", "Cloak", "Gloves", "Helm"];
+// Replaced generic LOOT_NOUNS with logic in generator function
+// const LOOT_NOUNS = ["Blade", "Shield", "Amulet", "Ring", "Gem", "Tome", "Boots", "Cloak", "Gloves", "Helm"];
+
+const THEMED_QUOTES: Record<GeneratorTheme, string[]> = {
+    "Surface": [
+        "A fine piece of craftmanship, fit for a lord.",
+        "Simple, sturdy, and reliable. What else do you need?",
+        "Found this in a caravan wreck. Still deadly.",
+        "The gold leaf is peeling, but the steel is true.",
+        "They don't make them like this anymore. Too expensive.",
+        "Smells like old oil and victory."
+    ],
+    "Underdark": [
+        "Be careful. It bites back.",
+        "Forged in the dark, quenching in blood.",
+        "The Drow poisons leave a stain that never washes out.",
+        "Listen close... you can hear the spiders skittering in the metal.",
+        "It glows when the deep gnomes are near.",
+        "A relic of the twisted tunnels."
+    ],
+    "Undead": [
+        "It's cold to the touch, like a dead man's hand.",
+        "Do not ask who wore this last.",
+        "I can still hear them screaming when I hold it.",
+        "It smells of grave dirt and old flowers.",
+        "The rust looks like dried blood. Maybe it is.",
+        "A memory of a life cut short."
+    ],
+    "Arcane": [
+        "It hums with a song I cannot understand.",
+        "Look at the way it bends the light.",
+        "Use with caution. Magic has a price.",
+        "A shard of a broken spell, frozen in matter.",
+        "It feels heavier than it looks. That's the mana.",
+        "Calculated to perfection by dead wizards."
+    ],
+    "Construct": [
+        "The gears still turn, perfect and eternal.",
+        "Precision engineering from a lost age.",
+        "Tick. Tock. It counts down to something.",
+        "Made of mithral and logic.",
+        "It doesn't bleed. It doesn't break.",
+        "The steam vents open when it strikes."
+    ]
+};
 
 const EFFECTS = [
     "Grants +1 to AC.",
@@ -88,13 +135,20 @@ const EFFECTS = [
     "Allows water breathing.",
     "User has advantage on Initiative.",
     "Cannot be terrified.",
-    "Whispers dark secrets to the wearer."
+    "Whispers dark secrets to the wearer.",
+    "Critical hits knock the target prone.",
+    "Returning: Thrown weapons return to hand.",
+    "User ignores difficult terrain.",
+    "Grants Darkvision 60ft.",
+    "Advantage on Perception checks.",
+    "Casts Light on command."
 ];
 
 // --- GENERATORS ---
 
 export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
     // Filter Races by Theme
+    // ... (Same logic as before, just kept for completeness in this file rewrite)
     const availableRaces = RACES.filter(r => r.themes.includes(theme));
     const race = availableRaces[Math.floor(Math.random() * availableRaces.length)] || RACES[0];
 
@@ -191,41 +245,50 @@ export function generateLootItem(theme: GeneratorTheme = "Surface"): ShopItem {
         }
     }
 
-    const type = LOOT_TYPES[Math.floor(Math.random() * LOOT_TYPES.length)];
+    const typeCat = LOOT_TYPES[Math.floor(Math.random() * LOOT_TYPES.length)];
 
     // Theme-based Adjectives
     const adjectives = THEMED_ADJECTIVES[theme] || THEMED_ADJECTIVES["Surface"];
     const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
 
-    const noun = type === "Weapon" ? "Blade" : (type === "Armor" ? "Plate" : LOOT_NOUNS[Math.floor(Math.random() * LOOT_NOUNS.length)]);
+    // [IMPROVED] Specific Item Nouns
+    let noun = "";
+    if (typeCat === "Weapon") noun = WEAPON_TYPES[Math.floor(Math.random() * WEAPON_TYPES.length)];
+    else if (typeCat === "Armor") noun = ARMOR_TYPES[Math.floor(Math.random() * ARMOR_TYPES.length)];
+    else if (typeCat === "Potion") noun = "Potion";
+    else if (typeCat === "Scroll") noun = "Scroll";
+    else if (typeCat === "Wondrous") noun = ["Amulet", "Boots", "Cloak", "Gloves", "Helm", "Bag", "Gem"][Math.floor(Math.random() * 7)];
+    else noun = typeCat; // Ring, Wand remain as base nouns or can be expanded
 
     const name = `${adj} ${noun}`;
 
     const effect = EFFECTS[Math.floor(Math.random() * EFFECTS.length)];
 
     let cost = 50 * rarityObj.costMod;
-    // Add some variance
     cost = Math.floor(cost * (0.8 + Math.random() * 0.4));
 
     const props = [];
-    // GUARANTEE PROPERTIES
-    if (type === "Weapon") props.push("Martial", "Versatile");
-    if (type === "Armor") props.push("Medium Armor");
-    if (type === "Potion" || type === "Scroll") props.push("Consumable");
-    if (type === "Wondrous" || type === "Ring" || type === "Wand") props.push("Wondrous Item");
+    if (typeCat === "Weapon") props.push("Martial", noun.includes("Two-Handed") || noun.includes("Great") ? "Two-Handed" : "Versatile");
+    if (typeCat === "Armor") props.push(noun.includes("Plate") || noun.includes("Splint") ? "Heavy Armor" : "Light/Medium Armor");
+    if (typeCat === "Potion" || typeCat === "Scroll") props.push("Consumable");
+    if (typeCat === "Wondrous" || typeCat === "Ring" || typeCat === "Wand") props.push("Wondrous Item");
 
-    if (theme) props.push(theme + " Origin");
+    if (theme) props.push(theme);
 
     if (rarityObj.name !== "Common") props.push("Magic");
     if (rarityObj.name === "Legendary") props.push("Attunement", "Indestructible");
 
+    // [IMPROVED] Quotes
+    const quotes = THEMED_QUOTES[theme] || THEMED_QUOTES["Surface"];
+    const selectedQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
     return {
         name: name,
-        type: type,
+        type: noun, // Specific type
         rarity: rarityObj.name,
         cost: `${cost} gp`,
         effect: effect,
         properties: props,
-        npcQuote: `A relic from the ${theme} regions.`
+        npcQuote: selectedQuote
     };
 }
