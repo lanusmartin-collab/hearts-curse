@@ -591,6 +591,7 @@
         "skills": "Deception +12, Insight +11, Perception +11, Stealth +13",
         "conditionImmunities": "Charmed, Frightened",
         "cr": "12",
+        "initiative": 12,
         "traits": [
             {
                 "name": "Sneak Attack (1/Turn)",
