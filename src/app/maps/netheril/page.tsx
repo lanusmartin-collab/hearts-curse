@@ -5,7 +5,7 @@ import { useState } from "react";
 import InteractiveMap, { MapNode } from "@/components/ui/InteractiveMap";
 
 const NETHERIL_NODES: MapNode[] = [
-    { id: "1", x: 50, y: 85, label: "The Shattered Gate", type: "encounter", description: "A massive archway of blackstone, humming with void energy. Two 'Echoes' stand guard. Encounter: 2x Netherese Specters." },
+    { id: "1", x: 50, y: 85, label: "The Shattered Gate", type: "encounter", description: "A massive archway of blackstone, humming with void energy. Two &apos;Echoes&apos; stand guard. Encounter: 2x Netherese Specters." },
     { id: "2", x: 50, y: 60, label: "Hall of Mirrors", type: "encounter", description: "A long corridor where reflections show the viewer's death. Wisdom Save DC 16 or Frightened. Trap: Soul Siphon (4d10 Necrotic)." },
     { id: "3", x: 50, y: 25, label: "The Void Altar", type: "boss", description: "The central chamber. Gravity is distorted here (Jump x3). The Balor awaits. BOSS: Balor + 2 Vrocks." },
     { id: "4", x: 50, y: 5, label: "The Treasury", type: "loot", description: "Hidden behind the throne. Protected by a Prismatic Wall. Loot: Prism of the Void." }
@@ -24,7 +24,7 @@ export default function NetherilPage() {
                 <h1 className="text-4xl text-white text-shadow-neon">The Netheril Ruins</h1>
                 <p className="font-mono text-accent mt-2">OPTIONAL QUEST: LEVEL 14+</p>
                 <div className="mt-4 p-4 bg-gray-900 border border-gray-700 text-sm">
-                    Dungeon Overview: The ruins of a crashed Netheril Enclave. The Balor "Ignis-Void" has been bound here by Larloch to guard the Prism.
+                    Dungeon Overview: The ruins of a crashed Netheril Enclave. The Balor &quot;Ignis-Void&quot; has been bound here by Larloch to guard the Prism.
                 </div>
             </header>
 

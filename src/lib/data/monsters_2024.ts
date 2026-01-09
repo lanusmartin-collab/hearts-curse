@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Statblock } from "./statblocks";
 import RAW_DATA from "./monsters_2024_final.json";
 import DROW_DATA from "./drow_monsters.json";

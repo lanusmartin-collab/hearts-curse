@@ -36,7 +36,7 @@ export default function Home() {
           marginBottom: "0.5rem",
           textShadow: "0 0 20px var(--accent-color), 3px 3px 0px #000"
         }}>
-          Heart's Curse
+          Heart&apos;s Curse
         </h1>
         <div style={{
           fontFamily: "var(--font-body)",

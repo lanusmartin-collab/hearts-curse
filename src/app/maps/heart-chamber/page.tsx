@@ -85,7 +85,7 @@ export default function HeartChamberPage() {
                                         <ul className="list-disc pl-4 text-sm space-y-2">
                                             <li><strong>Larloch Ascended:</strong> He has infinite spell slots of 3rd level and lower.</li>
                                             <li><strong>Time Stop:</strong> Casts at start of combat.</li>
-                                            <li><strong>Phylactery Safeguard:</strong> Takes 0 damage until all 3 "Memory Ghosts" in the room are persuaded or destroyed.</li>
+                                            <li><strong>Phylactery Safeguard:</strong> Takes 0 damage until all 3 &quot;Memory Ghosts&quot; in the room are persuaded or destroyed.</li>
                                         </ul>
                                     )}
                                 </div>

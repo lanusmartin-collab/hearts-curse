@@ -53,10 +53,10 @@ export default function ShopsPage() {
             </header>
 
             <div className="no-print" style={{ display: "flex", gap: "1rem", marginBottom: "2rem", flexWrap: "wrap" }}>
-                <button onClick={() => setActiveTab('khelben')} className={clsx(activeTab === 'khelben' && "active")}>Khelben's Gifts</button>
+                <button onClick={() => setActiveTab('khelben')} className={clsx(activeTab === 'khelben' && "active")}>Khelben&apos;s Gifts</button>
                 <button onClick={() => setActiveTab('fimble')} className={clsx(activeTab === 'fimble' && "active")}>The Gilded Coffer</button>
                 <button onClick={() => setActiveTab('iron')} className={clsx(activeTab === 'iron' && "active")}>The Iron Knot</button>
-                <button onClick={() => setActiveTab('crow')} className={clsx(activeTab === 'crow' && "active")}>The Crow's Nest</button>
+                <button onClick={() => setActiveTab('crow')} className={clsx(activeTab === 'crow' && "active")}>The Crow&apos;s Nest</button>
             </div>
 
             <div className="retro-border">
@@ -69,7 +69,7 @@ export default function ShopsPage() {
     );
 }
 
-function ShopList({ title, items, onReplace, onAdd }: { title: string, items: any[], onReplace: (idx: number) => void, onAdd: () => void }) {
+function ShopList({ title, items, onReplace, onAdd }: { title: string, items: ShopItem[], onReplace: (idx: number) => void, onAdd: () => void }) {
 
     // [NEW] Local state for "Sold" visualization before replacement
     // Actually, user said: "mark if a item has been sold so that can be replaced"
@@ -114,7 +114,7 @@ function ShopList({ title, items, onReplace, onAdd }: { title: string, items: an
                                 <td style={{ padding: "0.5rem", verticalAlign: "top", color: "#8a1c1c" }}>{item.cost}</td>
                                 <td style={{ padding: "0.5rem", verticalAlign: "top" }}>
                                     {item.effect && <div>{item.effect}</div>}
-                                    {item.npcQuote && <div style={{ fontStyle: "italic", marginTop: "0.2rem", opacity: 0.8 }}>"{item.npcQuote}"</div>}
+                                    {item.npcQuote && <div style={{ fontStyle: "italic", marginTop: "0.2rem", opacity: 0.8 }}>&quot;{item.npcQuote}&quot;</div>}
                                 </td>
                                 <td className="no-print" style={{ padding: "0.5rem", verticalAlign: "top", textDecoration: "none" }}>
                                     {isSold ? (

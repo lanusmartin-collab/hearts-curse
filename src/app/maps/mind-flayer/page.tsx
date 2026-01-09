@@ -57,7 +57,7 @@ export default function MindFlayerPage() {
                                 <div className="mt-6 p-4 bg-purple-100 border border-purple-500 rounded">
                                     <h3 className="font-bold text-purple-900 mb-2">🧠 BOSS TACTICS</h3>
                                     <ul className="list-disc pl-4 text-sm space-y-2">
-                                        <li><strong>Ulitharid:</strong> Opening move: <em>Mass Suggestion</em> ("Surrender your brains").</li>
+                                        <li><strong>Ulitharid:</strong> Opening move: <em>Mass Suggestion</em> (&quot;Surrender your brains&quot;).</li>
                                         <li><strong>Extract Brain:</strong> Triggers if a PC is grappled by tentacles. 10d10 piercing.</li>
                                         <li><strong>Mind Blast:</strong> Recharges on 5-6. 60ft cone, 4d8 + Stun.</li>
                                     </ul>

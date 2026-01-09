@@ -18,7 +18,7 @@ const RARITY_THEMES: Record<string, { border: string; text: string; bg: string }
 };
 
 export function LootCard({ item, onClose }: LootCardProps) {
-    const theme = RARITY_THEMES[item.rarity] || RARITY_THEMES["Common"];
+    const theme = RARITY_THEMES[item.rarity || "Common"] || RARITY_THEMES["Common"];
 
     return (
         <div
@@ -80,7 +80,7 @@ export function LootCard({ item, onClose }: LootCardProps) {
             {item.npcQuote && (
                 <div className="mt-6 pt-4 border-t border-gray-700/50">
                     <p className="text-xs italic text-gray-500 font-serif text-center">
-                        "{item.npcQuote}"
+                        &quot;{item.npcQuote}&quot;
                     </p>
                 </div>
             )}

@@ -120,7 +120,7 @@ export default function EncountersPage() {
                             <h3 style={{ textAlign: "center", marginBottom: "1rem" }}>-- THREAT IDENTIFIED --</h3>
                             {linkedStatblocks.map(slug => {
                                 const data = MONSTERS_2024[slug];
-                                if (!data) return <div key={slug} style={{ color: 'red' }}>ERROR: Statblock for '{slug}' not found.</div>;
+                                if (!data) return <div key={slug} style={{ color: 'red' }}>ERROR: Statblock for &apos;{slug}&apos; not found.</div>;
                                 return (
                                     <div key={slug} style={{ marginBottom: "2rem" }}>
                                         <StatblockCard data={data} key={slug} />

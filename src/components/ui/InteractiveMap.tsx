@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 
 export type MapNode = {
@@ -219,7 +219,7 @@ export default function InteractiveMap({ src, title, nodes = [], onNodeClick, gr
                             className="map-node"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                onNodeClick && onNodeClick(node);
+                                if (onNodeClick) onNodeClick(node);
                             }}
                             style={{
                                 position: "absolute",

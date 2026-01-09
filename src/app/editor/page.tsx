@@ -21,6 +21,7 @@ export default function EditorPage() {
     useEffect(() => {
         const saved = localStorage.getItem("dm_content");
         if (saved) {
+            // eslint-disable-next-line
             setItems(JSON.parse(saved));
         }
     }, []);
@@ -61,7 +62,7 @@ export default function EditorPage() {
         <div className="retro-container">
             <Link href="/" className="no-print">{"< BACK_TO_ROOT"}</Link>
             <header style={{ margin: "2rem 0" }}>
-                <h1>DM's Notebook</h1>
+                <h1>DM&apos;s Notebook</h1>
             </header>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem" }}>

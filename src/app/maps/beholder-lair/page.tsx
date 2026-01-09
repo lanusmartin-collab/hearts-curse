@@ -22,7 +22,7 @@ export default function BeholderPage() {
             </div>
 
             <header className="mb-8 border-b border-green-800 pb-4">
-                <h1 className="text-4xl text-green-400 text-shadow-neon">The Eye's Domain</h1>
+                <h1 className="text-4xl text-green-400 text-shadow-neon">The Eye&apos;s Domain</h1>
                 <p className="font-mono text-green-300 mt-2">BEHOLDER LAIR: LEVEL 13-15</p>
                 <div className="mt-4 p-4 bg-gray-900 border border-green-900 text-sm text-green-200">
                     <strong>Environmental Effect: Watching Eyes.</strong> You feel constantly watched. Stealth checks are made with Disadvantage.
@@ -59,7 +59,7 @@ export default function BeholderPage() {
                                     <ul className="list-disc pl-4 text-sm space-y-2">
                                         <li><strong>Anti-Magic Cone:</strong> 150ft cone. No magic works inside. Xylantropy keeps this on the strongest caster.</li>
                                         <li><strong>Eye Rays:</strong> Shoots 3 random rays per turn (Charm, Paralyze, Fear, Slow, Enervation, Telekinetic, Sleep, Petrification, Disintegration, Death).</li>
-                                        <li><strong>Legendary Actions:</strong> Can use an Eye Ray at the end of another creature's turn.</li>
+                                        <li><strong>Legendary Actions:</strong> Can use an Eye Ray at the end of another creature&apos;s turn.</li>
                                     </ul>
                                 </div>
                             )}

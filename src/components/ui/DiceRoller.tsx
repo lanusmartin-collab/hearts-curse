@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 
 type DieResult = {
     id: string;
@@ -18,16 +18,15 @@ type RollGroup = {
 };
 
 // SVG Paths for Dice Shapes
-const DieShape = ({ sides, val, className, style }: { sides: number, val: string | number, className?: string, style?: any }) => {
+// SVG Paths for Dice Shapes
+const DieShape = ({ sides, val, className, style }: { sides: number, val: string | number, className?: string, style?: React.CSSProperties }) => {
     let path = "";
-    let viewBox = "0 0 100 100";
-    let textY = "55%";
+    const viewBox = "0 0 100 100";
 
     // Define shapes
     switch (sides) {
         case 4: // Triangle
             path = "M50 5 L95 90 L5 90 Z";
-            textY = "65%";
             break;
         case 6: // Square / Cube
             path = "M10 10 H90 V90 H10 Z";
@@ -39,7 +38,6 @@ const DieShape = ({ sides, val, className, style }: { sides: number, val: string
             break;
         case 10: // Kite
             path = "M50 2 L90 40 L50 98 L10 40 Z"; // Approximately d10 face
-            textY = "45%";
             break;
         case 12: // Pentagon-ish
             path = "M50 2 L95 35 L78 90 H22 L5 35 Z";
@@ -73,7 +71,6 @@ export default function DiceRoller({ onRollComplete }: Props) {
     const [modifier, setModifier] = useState(0);
     const [visorTotal, setVisorTotal] = useState<number | string>("-");
     const [showModifier, setShowModifier] = useState(false);
-    const [history, setHistory] = useState<{ label: string, total: number }[]>([]);
 
     const resultsRef = useRef<HTMLDivElement>(null);
     const diceTypes = [4, 6, 8, 10, 12, 20];
@@ -248,11 +245,6 @@ export default function DiceRoller({ onRollComplete }: Props) {
                 setVisorTotal(diceTotal + mod);
             }, 600);
         }
-
-        setHistory(prev => [{
-            label: formula,
-            total: diceTotal + mod
-        }, ...prev].slice(0, 5));
 
         if (onRollComplete) {
             // Pass simplified results for triggers

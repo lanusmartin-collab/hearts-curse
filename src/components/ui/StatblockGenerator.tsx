@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Statblock } from "@/lib/data/statblocks";
-import { v4 as uuidv4 } from "uuid";
 
 // Helper to calculate modifiers
 const getMod = (score: number) => Math.floor((score - 10) / 2);
@@ -25,13 +24,14 @@ export default function StatblockGenerator({ onSave }: { onSave: (sb: Statblock)
         actions: []
     });
 
-    const handleChange = (field: string, value: any) => {
+    const handleChange = (field: string, value: string | number) => {
         setSb(prev => ({ ...prev, [field]: value }));
     };
 
     const handleStatChange = (stat: string, value: number) => {
         setSb(prev => ({
             ...prev,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             stats: { ...prev.stats, [stat]: value } as any
         }));
     };
@@ -94,11 +94,11 @@ export default function StatblockGenerator({ onSave }: { onSave: (sb: Statblock)
                         <div style={{ textTransform: "uppercase", fontSize: "0.8em" }}>{stat}</div>
                         <input
                             type="number"
-                            value={(sb.stats as any)[stat]}
+                            value={(sb.stats as Record<string, number>)[stat]}
                             onChange={e => handleStatChange(stat, parseInt(e.target.value))}
                             style={{ width: "50px", textAlign: "center" }}
                         />
-                        <div style={{ fontSize: "0.8em" }}>{getMod((sb.stats as any)[stat])}</div>
+                        <div style={{ fontSize: "0.8em" }}>{getMod((sb.stats as Record<string, number>)[stat])}</div>
                     </div>
                 ))}
             </div>

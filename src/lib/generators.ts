@@ -175,7 +175,7 @@ export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
     const race = availableRaces[Math.floor(Math.random() * availableRaces.length)] || RACES[0];
     const availableClasses = CLASSES.filter(c => c.themes.includes(theme));
     const cls = availableClasses[Math.floor(Math.random() * availableClasses.length)] || CLASSES[0];
-    const stats: any = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
+    const stats: Record<string, number> = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
     Object.keys(stats).forEach(k => stats[k] = 8 + Math.floor(Math.random() * 6));
     cls.stats.forEach(s => stats[s] += 2 + Math.floor(Math.random() * 3));
     const crVal = Math.floor(Math.random() * 5);

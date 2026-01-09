@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { CURSE_MECHANICS } from "@/lib/data/mechanics";
-import clsx from "clsx";
 
 export default function CurseTracker() {
     const [days, setDays] = useState(0);

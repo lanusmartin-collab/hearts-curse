@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import InteractiveMap from "@/components/ui/InteractiveMap";
 import DungeonModuleTemplate from "@/components/ui/DungeonModuleTemplate";
-import { CAMPAIGN_MAPS, CampaignMap, MapNode } from "@/lib/data/maps";
+import { CAMPAIGN_MAPS, CampaignMap } from "@/lib/data/maps";
 import { MechanicsDashboard } from "@/components/ui/MechanicsDashboard";
 import DiceRoller from "@/components/ui/DiceRoller";
 import { getRegionalEffect, rollWildMagic } from "@/lib/game/curseLogic";
@@ -37,7 +38,7 @@ export default function MapsPage() {
                     >
                         Print Record
                     </button>
-                    <a href="/" className="retro-btn bg-red-900 text-white text-xs px-3 py-1 no-underline hover:bg-red-700">Back to Main Menu</a>
+                    <Link href="/" className="retro-btn bg-red-900 text-white text-xs px-3 py-1 no-underline hover:bg-red-700">Back to Main Menu</Link>
                 </div>
             </div>
 
@@ -233,7 +234,7 @@ export default function MapsPage() {
 
                 {/* Footer */}
                 <div className="mt-8 pt-4 border-t border-gray-300 text-center text-xs text-gray-500">
-                    Proprietary Campaign Data • Heart's Curse • Do Not Distribute
+                    Proprietary Campaign Data • Heart&apos;s Curse • Do Not Distribute
                 </div>
             </div>
 

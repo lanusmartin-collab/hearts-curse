@@ -37,6 +37,7 @@ export default function StatblocksPage() {
                     localStorage.setItem("custom_statblocks", JSON.stringify(parsed));
                 }
 
+                // eslint-disable-next-line
                 setCustomCreatures(parsed);
             } catch (e) {
                 console.error("Failed to parse custom statblocks", e);

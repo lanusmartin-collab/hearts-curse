@@ -30,7 +30,7 @@ export function MechanicsDashboard({ currentMapId, onRoll }: Props) {
                     onClick={() => setIsExpanded(true)}
                     className="bg-black/80 text-red-500 border border-red-900 px-4 py-2 font-mono text-xs uppercase tracking-widest hover:bg-red-900/20 transition-all flex items-center gap-2"
                 >
-                    <span className="animate-pulse">❤️</span> Heart's Curse: Level {days}
+                    <span className="animate-pulse">❤️</span> Heart&apos;s Curse: Level {days}
                 </button>
             </div>
         );
