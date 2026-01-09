@@ -104,6 +104,11 @@ export default function Home() {
           <h2>Notebook</h2>
           <p style={{ color: "var(--fg-dim)" }}>DM Editor</p>
         </Link>
+
+        <Link href="/deliverables" className="card" style={{ borderColor: "orange" }}>
+          <h2>Prop Fabricator</h2>
+          <p style={{ color: "orange" }}>Printable Handouts</p>
+        </Link>
       </div>
 
       <footer style={{ marginTop: "6rem", opacity: 0.4, fontSize: "0.8rem", fontFamily: "var(--font-mono)" }}>
