@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE, SHOP_AMBUSH_TABLE, SILENT_WARDS_TABLE, LIBRARY_WHISPERS_TABLE, HEART_CHAMBER_TABLE, UNDERDARK_TRAVEL_TABLE, Encounter } from "@/lib/data/encounters";
+import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE, SHOP_AMBUSH_TABLE, SILENT_WARDS_TABLE, LIBRARY_WHISPERS_TABLE, HEART_CHAMBER_TABLE, UNDERDARK_TRAVEL_TABLE, OAKHAVEN_MINES_TABLE, NETHERIL_RUINS_TABLE, OSSUARY_TABLE, ARACH_TINILITH_TABLE, Encounter } from "@/lib/data/encounters";
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
 import StatblockCard from "@/components/ui/StatblockCard";
 import Link from "next/link";
@@ -41,6 +41,8 @@ export default function EncountersPage() {
                 <h1>Encounter Generator</h1>
             </header>
 
+            {/* SECTOR 1: SURFACE */}
+            <h3 style={{ borderBottom: "1px dashed #444", paddingBottom: "0.5rem", marginBottom: "1rem", color: "#888" }}>SECTOR 1: SURFACE</h3>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "3rem" }}>
                 <button className="retro-border" onClick={() => rollTable(TOWN_DAY_TABLE)}>
                     <h3>TOWN (DAY)</h3>
@@ -54,23 +56,52 @@ export default function EncountersPage() {
                     <h3>OUTSKIRTS</h3>
                     <p>[INITIATE_SCAN]</p>
                 </button>
-                <button className="retro-border" onClick={() => rollTable(UNDERDARK_TRAVEL_TABLE)}>
-                    <h3>UNDERDARK TRAVEL</h3>
+            </div>
+
+            {/* SECTOR 2: UNDERDARK */}
+            <h3 style={{ borderBottom: "1px dashed #444", paddingBottom: "0.5rem", marginBottom: "1rem", color: "#888" }}>SECTOR 2: UNDERDARK</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "3rem" }}>
+                <button className="retro-border" onClick={() => rollTable(OAKHAVEN_MINES_TABLE)}>
+                    <h3>MINES (Lv 3-5)</h3>
                     <p>[INITIATE_SCAN]</p>
                 </button>
+                <button className="retro-border" onClick={() => rollTable(UNDERDARK_TRAVEL_TABLE)}>
+                    <h3>DEEP TRAVEL</h3>
+                    <p>[INITIATE_SCAN]</p>
+                </button>
+                <button className="retro-border" onClick={() => rollTable(ARACH_TINILITH_TABLE)}>
+                    <h3>DROW CITY</h3>
+                    <p>[INITIATE_SCAN]</p>
+                </button>
+            </div>
+
+            {/* SECTOR 3: HIGH LEVEL ZONES */}
+            <h3 style={{ borderBottom: "1px dashed #444", paddingBottom: "0.5rem", marginBottom: "1rem", color: "orange" }}>SECTOR 3: RESTRICTED ZONES</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "3rem" }}>
                 <button className="retro-border" onClick={() => rollTable(SILENT_WARDS_TABLE)}>
-                    <h3>DUNGEON: SILENT WARDS</h3>
+                    <h3>SILENT WARDS</h3>
+                    <p>[INITIATE_SCAN]</p>
+                </button>
+                <button className="retro-border" onClick={() => rollTable(NETHERIL_RUINS_TABLE)}>
+                    <h3>NETHERIL VOID</h3>
                     <p>[INITIATE_SCAN]</p>
                 </button>
                 <button className="retro-border" onClick={() => rollTable(LIBRARY_WHISPERS_TABLE)}>
-                    <h3>DUNGEON: LIBRARY</h3>
+                    <h3>LIBRARY</h3>
+                    <p>[INITIATE_SCAN]</p>
+                </button>
+                <button className="retro-border" onClick={() => rollTable(OSSUARY_TABLE)}>
+                    <h3>OSSUARY</h3>
                     <p>[INITIATE_SCAN]</p>
                 </button>
                 <button className="retro-border" onClick={() => rollTable(HEART_CHAMBER_TABLE)}>
-                    <h3>DUNGEON: HEART</h3>
+                    <h3>HEART CHAMBER</h3>
                     <p>[INITIATE_SCAN]</p>
                 </button>
-                <button className="retro-border" onClick={triggerShopAmbush} style={{ borderColor: "red", color: "red" }}>
+            </div>
+
+            <div style={{ marginBottom: "2rem" }}>
+                <button className="retro-border" onClick={triggerShopAmbush} style={{ borderColor: "red", color: "red", width: "100%" }}>
                     <h3>⚠️ TRIGGER: SHOP BYPASS</h3>
                     <p>[FORCE_AMBUSH]</p>
                 </button>
