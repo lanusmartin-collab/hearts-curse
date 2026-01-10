@@ -425,5 +425,6 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
             `}</style>
             </div>
         </div>
+        </div >
     );
 }
