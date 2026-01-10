@@ -38,43 +38,39 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
                         <h4 className="text-[#888] font-header text-xs tracking-widest uppercase">Context Source</h4>
                     </div>
 
-                    <div className="space-y-4">
-                        {Object.entries(regions).map(([regionName, maps]) => maps.length > 0 && (
-                            <div key={regionName}>
-                                <h5 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.2em] mb-2 pl-2">{regionName}</h5>
-                                <div className="space-y-1">
-                                    {maps.map(map => (
-                                        <button
-                                            key={map.id}
-                                            onClick={() => onSelectMap(map.id)}
-                                            className={`
-                                                w-full text-left px-3 py-2 text-[10px] uppercase tracking-wider font-mono border-l-2 transition-all
-                                                ${selectedMapId === map.id
-                                                    ? 'border-[#a32222] bg-[#a32222]/10 text-[#e0e0e0]'
-                                                    : 'border-transparent text-[#666] hover:text-[#ccc] hover:bg-[#111]'}
-                                            `}
-                                        >
-                                            {map.title}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                        {/* Fallback for unassigned maps */}
-                        {CAMPAIGN_MAPS.filter(m => !Object.values(regions).flat().includes(m)).length > 0 && (
-                            <div className="mt-4">
-                                <h5 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.2em] mb-2 pl-2">Other Locations</h5>
-                                {CAMPAIGN_MAPS.filter(m => !Object.values(regions).flat().includes(m)).map(map => (
-                                    <button
-                                        key={map.id}
-                                        onClick={() => onSelectMap(map.id)}
-                                        className={`w-full text-left px-3 py-2 text-[10px] uppercase tracking-wider font-mono border-l-2 transition-all ${selectedMapId === map.id ? 'border-[#a32222] bg-[#a32222]/10 text-[#e0e0e0]' : 'border-transparent text-[#666] hover:text-[#ccc] hover:bg-[#111]'}`}
-                                    >
-                                        {map.title}
-                                    </button>
+                    <div className="px-2">
+                        <div className="relative">
+                            <select
+                                value={selectedMapId}
+                                onChange={(e) => onSelectMap(e.target.value)}
+                                className="w-full bg-[#111] border border-[#333] text-[#ccc] text-[10px] font-mono uppercase tracking-wider py-2 pl-3 pr-8 appearance-none focus:outline-none focus:border-[#a32222] transition-colors rounded-none"
+                            >
+                                {Object.entries(regions).map(([regionName, maps]) => maps.length > 0 && (
+                                    <optgroup key={regionName} label={regionName} className="bg-[#111] text-[#a32222] font-header normal-case font-bold">
+                                        {maps.map(map => (
+                                            <option key={map.id} value={map.id} className="text-[#ccc] bg-[#222] font-mono pl-4">
+                                                {map.title}
+                                            </option>
+                                        ))}
+                                    </optgroup>
                                 ))}
+                                {CAMPAIGN_MAPS.filter(m => !Object.values(regions).flat().includes(m)).length > 0 && (
+                                    <optgroup label="Other Locations" className="bg-[#111] text-[#a32222]">
+                                        {CAMPAIGN_MAPS.filter(m => !Object.values(regions).flat().includes(m)).map(map => (
+                                            <option key={map.id} value={map.id} className="text-[#ccc] bg-[#222]">
+                                                {map.title}
+                                            </option>
+                                        ))}
+                                    </optgroup>
+                                )}
+                            </select>
+                            {/* Custom Arrow Icon */}
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 6L0 0H10L5 6Z" fill="#666" />
+                                </svg>
                             </div>
-                        )}
+                        </div>
                     </div>
                 </div>
 
