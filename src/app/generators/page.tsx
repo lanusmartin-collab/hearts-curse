@@ -2,20 +2,24 @@
 
 import { useState } from "react";
 import { ALL_MONSTERS } from "@/lib/data/monsters_2024";
+import DROW_MONSTERS from "@/lib/data/drow_monsters.json"; // Import Drow data
 import { Statblock } from "@/lib/data/statblocks";
 import { ShopItem } from "@/lib/data/items";
-import { generateNPC, generateLootItem, generateArtifact, GeneratorTheme } from "@/lib/generators"; // New generators
+import { generateNPC, generateLootItem, generateArtifact, GeneratorTheme } from "@/lib/generators";
 import StatblockCard from "@/components/ui/StatblockCard";
 import { LootCard } from "@/components/ui/LootCard";
 import PrintButton from "@/components/ui/PrintButton";
 import Link from "next/link";
 import { NPC_NAMES, NPC_TITLES, NPC_QUIRKS } from "@/lib/data/generator-tables";
-import { CAMPAIGN_MAPS } from "@/lib/data/maps";
+import CommandBar from "@/components/ui/CommandBar";
+import GeneratorSidebar from "@/components/ui/GeneratorSidebar";
 
 export default function GeneratorsPage() {
     const [result, setResult] = useState<Statblock | null>(null);
     const [lootItem, setLootItem] = useState<ShopItem | null>(null);
     const [selectedMapId, setSelectedMapId] = useState<string>("oakhaven");
+    const [activeTool, setActiveTool] = useState<'npc' | 'monster' | 'loot' | 'artifact'>('loot');
+    const [isGenerating, setIsGenerating] = useState(false);
 
     // Helper: Map ID to Theme
     const getTheme = (mapId: string): GeneratorTheme => {
@@ -32,89 +36,132 @@ export default function GeneratorsPage() {
     const HIGH_LEVEL_MAPS = ["mind_flayer", "beholder", "arach", "netheril", "heart_chamber", "catacombs_despair", "ossuary"];
     const isHighLevel = HIGH_LEVEL_MAPS.some(id => selectedMapId.includes(id));
 
-    const genNPC = () => {
-        const sb = generateNPC(currentTheme);
-        // Flavor the name
-        const n = NPC_NAMES[Math.floor(Math.random() * NPC_NAMES.length)];
-        const t = NPC_TITLES[Math.floor(Math.random() * NPC_TITLES.length)];
-        sb.name = `${n} ${t}`;
-        // Add quirk
-        const q = NPC_QUIRKS[Math.floor(Math.random() * NPC_QUIRKS.length)];
-        sb.traits.push({ name: "Quirk", desc: q });
+    const handleGenerate = () => {
+        setIsGenerating(true);
 
-        setResult(sb);
-        setLootItem(null);
-    };
+        // Simulating "Processing" delay for effect
+        setTimeout(() => {
+            if (activeTool === 'npc') {
+                const sb = generateNPC(currentTheme);
+                const n = NPC_NAMES[Math.floor(Math.random() * NPC_NAMES.length)];
+                const t = NPC_TITLES[Math.floor(Math.random() * NPC_TITLES.length)];
+                sb.name = `${n} ${t}`;
+                const q = NPC_QUIRKS[Math.floor(Math.random() * NPC_QUIRKS.length)];
+                sb.traits.push({ name: "Quirk", desc: q });
+                setResult(sb);
+                setLootItem(null);
+            } else if (activeTool === 'monster') {
+                let pool = [...ALL_MONSTERS];
 
-    const genMonster = () => {
-        // Pick random from ALL_MONSTERS
-        const monster = ALL_MONSTERS[Math.floor(Math.random() * ALL_MONSTERS.length)];
-        setResult(monster);
-        setLootItem(null);
-    };
+                // If Underdark/Drow context, inject Drow
+                if (currentTheme === "Underdark" || selectedMapId.includes("arach")) {
+                    // Cast Drow JSON to unknown then Statblock[] to satisfy TS if needed, or rely on structure match
+                    // Assuming structure matches Statblock interface roughly
+                    const drowPool = DROW_MONSTERS as unknown as Statblock[];
+                    pool = [...pool, ...drowPool];
 
-    const genLoot = () => {
-        // [IMPROVED] Pass IsHighLevel context to allow Artifact drops
-        setLootItem(generateLootItem(currentTheme, isHighLevel));
-        setResult(null);
-    };
+                    // Higher weight for theme? (Simple random for now)
+                }
 
-    const genArtifact = () => {
-        setLootItem(generateArtifact(currentTheme));
-        setResult(null);
+                const monster = pool[Math.floor(Math.random() * pool.length)];
+                setResult(monster);
+                setLootItem(null);
+            } else if (activeTool === 'loot') {
+                setLootItem(generateLootItem(currentTheme, isHighLevel));
+                setResult(null);
+            } else if (activeTool === 'artifact') {
+                setLootItem(generateArtifact(currentTheme));
+                setResult(null);
+            }
+            setIsGenerating(false);
+        }, 600);
     };
 
     return (
-        <div className="retro-container">
-            <div className="no-print" style={{ marginBottom: "2rem" }}>
-                <Link href="/">{"< BACK_TO_ROOT"}</Link>
-            </div>
+        <div className="retro-container h-screen flex flex-col overflow-hidden bg-[#050505]">
+            <CommandBar />
 
-            <header style={{ marginBottom: "3rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
-                    <h1>The Foundry v5.0</h1>
-                    <p style={{ opacity: 0.6, fontSize: "0.9rem" }}>Fabrication Matrix: {currentTheme} (Artifact Mode Online)</p>
+            <div className="flex flex-1 overflow-hidden relative">
+                {/* 1. Left Sidebar */}
+                <GeneratorSidebar
+                    selectedMapId={selectedMapId}
+                    onSelectMap={setSelectedMapId}
+                    activeTool={activeTool}
+                    onSelectTool={(t) => { setActiveTool(t); setResult(null); setLootItem(null); }}
+                />
+
+                {/* 2. Main Content */}
+                <div className="flex-1 flex flex-col bg-[#050505] relative overflow-hidden items-center justify-center p-8">
+                    <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('/noise.png')]"></div>
+
+                    {/* Generator Output Area */}
+                    <div className="w-full max-w-4xl h-full flex flex-col gap-6">
+
+                        {/* Status / Header */}
+                        <div className="flex justify-between items-end border-b-2 border-[#a32222]/30 pb-4 shrink-0">
+                            <div>
+                                <h2 className="text-3xl font-header tracking-wider text-[#e0e0e0] mb-1">
+                                    {activeTool === 'npc' && 'PERSONA FABRICATOR'}
+                                    {activeTool === 'monster' && 'ADVERSARY SIMULATOR'}
+                                    {activeTool === 'loot' && 'TREASURE MATRIX'}
+                                    {activeTool === 'artifact' && 'RELIC SYNTHESIZER'}
+                                </h2>
+                                <p className="font-mono text-[10px] text-[#666] uppercase tracking-[0.2em]">
+                                    Context: <span className="text-[#a32222]">{currentTheme.toUpperCase()}</span> // Source: {selectedMapId.replace(/_/g, " ").toUpperCase()}
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={handleGenerate}
+                                disabled={isGenerating}
+                                className={`
+                                    px-8 py-3 bg-[#a32222] text-[#e0e0e0] font-header tracking-widest uppercase text-sm
+                                    border border-[#ff4444] shadow-[0_0_15px_rgba(163,34,34,0.4)]
+                                    hover:bg-[#c42828] hover:shadow-[0_0_25px_rgba(163,34,34,0.6)] hover:scale-105
+                                    active:scale-95 transition-all
+                                    disabled:opacity-50 disabled:cursor-not-allowed
+                                `}
+                            >
+                                {isGenerating ? 'PROCESSING...' : 'INITIATE SEQUENCE'}
+                            </button>
+                        </div>
+
+                        {/* Result Display */}
+                        <div className="flex-1 overflow-auto custom-scrollbar border border-[#222] bg-[#0a0a0a] p-8 relative shadow-inner flex items-center justify-center">
+
+                            {isGenerating ? (
+                                <div className="text-center animate-pulse">
+                                    <div className="text-[#a32222] font-header text-2xl tracking-[0.5em] mb-4">ACCESSING ARCHIVES</div>
+                                    <div className="w-64 h-1 bg-[#222] mx-auto rounded overflow-hidden">
+                                        <div className="h-full bg-[#a32222] w-1/2 animate-slide-right"></div>
+                                    </div>
+                                    <div className="font-mono text-[10px] text-[#444] mt-2 uppercase">Please wait...</div>
+                                </div>
+                            ) : result ? (
+                                <div className="w-full max-w-2xl animate-fade-in">
+                                    <div className="flex justify-end mb-2 no-print">
+                                        <PrintButton />
+                                    </div>
+                                    <StatblockCard data={result} />
+                                </div>
+                            ) : lootItem ? (
+                                <div className="w-full max-w-lg animate-fade-in relative">
+                                    <div className="absolute -top-4 -right-4 no-print z-10">
+                                        <PrintButton />
+                                    </div>
+                                    <LootCard item={lootItem} />
+                                </div>
+                            ) : (
+                                <div className="text-center opacity-20 select-none pointer-events-none">
+                                    <div className="text-6xl mb-4 font-mono text-[#333]">+</div>
+                                    <p className="font-header text-xl tracking-[0.3em] uppercase mb-2">Awaiting Input</p>
+                                    <p className="font-mono text-[10px] uppercase tracking-widest">Select Context & Initiate Generation</p>
+                                </div>
+                            )}
+
+                        </div>
+                    </div>
                 </div>
-                <PrintButton />
-            </header>
-
-            {/* Filter Controls */}
-            <div className="retro-border no-print" style={{ padding: "1rem", marginBottom: "2rem", background: "rgba(0,0,0,0.2)" }}>
-                <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold", fontSize: "0.8rem", textTransform: "uppercase" }}>
-                    Source Signal (Map Context)
-                </label>
-                <select
-                    value={selectedMapId}
-                    onChange={(e) => setSelectedMapId(e.target.value)}
-                    style={{ width: "100%", padding: "0.5rem", background: "black", color: "var(--accent-color)", border: "1px solid #555" }}
-                >
-                    {CAMPAIGN_MAPS.map(m => (
-                        <option key={m.id} value={m.id}>{m.title}</option>
-                    ))}
-                </select>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "0.5rem", marginBottom: "2rem" }} className="no-print">
-                <button onClick={genNPC}>[NPC]</button>
-                <button onClick={genMonster}>[MONSTER]</button>
-                <button onClick={genLoot}>[LOOT]</button>
-                <button onClick={genArtifact} style={{ color: "orange", borderColor: "orange" }}>[ARTIFACT]</button>
-            </div>
-
-            <div className="retro-border" style={{ minHeight: "400px", display: "flex", justifyContent: "center", alignItems: "start", padding: "2rem" }}>
-                {result ? (
-                    <div className="fade-in" style={{ width: "100%" }}>
-                        <h3 style={{ borderBottom: "1px dashed #555", marginBottom: "1rem" }}>Fabrication Result (Bio-Data)</h3>
-                        <StatblockCard data={result} />
-                    </div>
-                ) : lootItem ? (
-                    <div className="fade-in" style={{ width: "100%", maxWidth: "500px" }}>
-                        <h3 style={{ borderBottom: "1px dashed #555", marginBottom: "1rem", textAlign: "center" }}>Fabrication Result (Artifact)</h3>
-                        <LootCard item={lootItem} />
-                    </div>
-                ) : (
-                    <p style={{ opacity: 0.5, paddingTop: "4rem" }}>Select a module to begin fabrication...</p>
-                )}
             </div>
         </div>
     );
