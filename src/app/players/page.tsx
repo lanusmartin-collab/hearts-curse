@@ -155,7 +155,7 @@ export default function PlayersPage() {
                                 key={p.id}
                                 onClick={() => { setSelectedPlayerId(p.id); setSelectedFile(null); setFileFullScreen(false); }}
                                 className={`
-                                    w-full relative group overflow-hidden transition-all duration-300 p-3 h-14 flex items-center justify-between
+                                    w-full relative group overflow-hidden transition-all duration-300 p-3 h-14 flex items-center justify-between border-none
                                     hover:bg-[#111] hover:pl-5
                                     ${selectedPlayerId === p.id
                                         ? 'bg-[#1a0505] pl-5'
