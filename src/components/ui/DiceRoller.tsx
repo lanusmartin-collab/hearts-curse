@@ -256,193 +256,168 @@ export default function DiceRoller({ onRollComplete }: Props) {
     };
 
     return (
-        <div style={{ position: "fixed", bottom: "2rem", right: "2rem", zIndex: 9999 }} className="no-print">
+        <div className="no-print">
             <style>{animationStyles}</style>
 
             {!isOpen && (
                 <button
                     onClick={() => setIsOpen(true)}
-                    style={{
-                        width: "70px",
-                        height: "70px",
-                        borderRadius: "50%",
-                        background: "var(--paper-color)",
-                        border: "2px solid var(--accent-color)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxShadow: "0 0 15px rgba(255, 9, 9, 0.4)",
-                        cursor: "pointer",
-                        transition: "all 0.2s"
-                    }}
-                    className="hover:scale-110"
+                    className="dice-trigger arcane-button"
+                    title="Open Fate Weaver"
                 >
-                    <span style={{ fontSize: "32px" }}>🎲</span>
+                    <span style={{ fontSize: "28px" }}>🎲</span>
                 </button>
             )}
 
             {isOpen && (
-                <div className="retro-border" style={{
-                    position: "absolute",
-                    bottom: "0",
-                    right: "0",
-                    width: "360px",
-                    padding: "1.5rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1rem",
-                    background: "rgba(10, 10, 15, 0.95)"
-                }}>
-                    <div style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        borderBottom: "1px solid var(--border-color)",
-                        paddingBottom: "0.5rem"
-                    }}>
-                        <h3 style={{ margin: 0, fontSize: "1.2rem", color: "var(--accent-color)" }}>FATE WEAVER</h3>
+                <div className="dice-panel glass-panel animate-slide-up">
+                    <div className="p-4" style={{ borderBottom: '1px solid rgba(163,34,34,0.3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to right, #000, #1a0505)' }}>
+                        <h3 style={{ margin: 0, fontSize: "0.9rem", color: "#eecfa1", letterSpacing: "0.2em", textTransform: "uppercase" }}>Fate Weaver</h3>
                         <button
                             onClick={() => setIsOpen(false)}
                             style={{
                                 background: "none",
                                 border: "none",
-                                color: "var(--fg-dim)",
-                                fontSize: "1.5rem",
-                                padding: "0 0.5rem",
-                                minWidth: "auto",
-                                boxShadow: "none"
+                                color: "#666",
+                                cursor: "pointer"
                             }}
                         >
                             ✕
                         </button>
                     </div>
 
-                    <div style={{
-                        background: "rgba(0,0,0,0.6)",
-                        border: "1px solid var(--accent-dim)",
-                        borderRadius: "4px",
-                        padding: "1rem",
-                        textAlign: "center",
-                        minHeight: "5rem",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxShadow: "inset 0 0 30px rgba(0,0,0,0.8)",
-                        position: "relative"
-                    }}>
-                        <span style={{
-                            fontSize: "3rem",
-                            color: "var(--accent-color)",
-                            textShadow: "0 0 15px var(--accent-glow)",
-                            fontFamily: "var(--font-serif)",
-                            transition: "all 0.3s"
+                    <div className="p-4">
+                        <div style={{
+                            background: "rgba(0,0,0,0.6)",
+                            border: "1px solid #333",
+                            borderRadius: "4px",
+                            padding: "1rem",
+                            textAlign: "center",
+                            minHeight: "5rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            boxShadow: "inset 0 0 20px rgba(0,0,0,0.8)",
+                            position: "relative",
+                            marginBottom: "1rem"
                         }}>
-                            {visorTotal}
-                        </span>
-                        {showModifier && (
-                            <div className="modifier-float" style={{
-                                position: "absolute",
-                                bottom: "5px",
-                                right: "10px",
-                                fontSize: "0.9rem",
-                                color: "var(--fg-dim)",
+                            <span style={{
+                                fontSize: "3rem",
+                                color: "#a32222",
+                                textShadow: "0 0 15px rgba(163,34,34,0.5)",
+                                fontFamily: "var(--font-serif)",
+                                transition: "all 0.3s"
                             }}>
-                                {modifier >= 0 ? "+" : ""}{modifier}
-                            </div>
-                        )}
-                    </div>
-
-                    <div ref={resultsRef} className="custom-scrollbar" style={{
-                        maxHeight: "200px",
-                        overflowY: "auto",
-                        padding: "8px",
-                        minHeight: "100px",
-                        background: "rgba(255,255,255,0.02)",
-                        borderRadius: "4px"
-                    }}>
-                        {rollGroups.map((g, i) => (
-                            <div key={i} style={{ marginBottom: "1rem" }}>
-                                <div style={{
+                                {visorTotal}
+                            </span>
+                            {showModifier && (
+                                <div className="modifier-float" style={{
+                                    position: "absolute",
+                                    bottom: "5px",
+                                    right: "10px",
                                     fontSize: "0.8rem",
-                                    color: "var(--fg-dim)",
-                                    marginBottom: "6px",
-                                    fontFamily: "var(--font-mono)",
-                                    textTransform: "uppercase"
+                                    color: "#666",
+                                    fontFamily: "var(--font-mono)"
                                 }}>
-                                    {g.count}d{g.sides}
+                                    {modifier >= 0 ? "+" : ""}{modifier}
                                 </div>
-                                <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                                    {g.results.map((r, ri) => (
-                                        <DieShape
-                                            key={ri}
-                                            sides={r.sides}
-                                            val={r.val}
-                                            className={
-                                                isRolling
-                                                    ? "dice-rolling"
-                                                    : r.isCrit
-                                                        ? "dice-settled crit-success"
-                                                        : r.isCritFail
-                                                            ? "dice-settled crit-fail"
-                                                            : "dice-settled"
-                                            }
-                                        />
-                                    ))}
+                            )}
+                        </div>
+
+                        <div ref={resultsRef} className="custom-scrollbar" style={{
+                            maxHeight: "150px",
+                            overflowY: "auto",
+                            padding: "4px",
+                            marginBottom: "1rem",
+                            border: "1px solid #222",
+                            background: "rgba(0,0,0,0.3)"
+                        }}>
+                            {rollGroups.map((g, i) => (
+                                <div key={i} style={{ marginBottom: "0.8rem" }}>
+                                    <div style={{
+                                        fontSize: "0.7rem",
+                                        color: "#666",
+                                        marginBottom: "4px",
+                                        fontFamily: "var(--font-mono)",
+                                        textTransform: "uppercase"
+                                    }}>
+                                        {g.count}d{g.sides}
+                                    </div>
+                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                                        {g.results.map((r, ri) => (
+                                            <DieShape
+                                                key={ri}
+                                                sides={r.sides}
+                                                val={r.val}
+                                                className={
+                                                    isRolling
+                                                        ? "dice-rolling die-shape"
+                                                        : r.isCrit
+                                                            ? "dice-settled crit-success die-shape"
+                                                            : r.isCritFail
+                                                                ? "dice-settled crit-fail die-shape"
+                                                                : "dice-settled die-shape"
+                                                }
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                        {rollGroups.length === 0 && (
-                            <div style={{ textAlign: "center", color: "var(--fg-dim)", opacity: 0.3, padding: "2rem" }}>
-                                ROLL THE BONES
-                            </div>
-                        )}
-                    </div>
+                            ))}
+                            {rollGroups.length === 0 && (
+                                <div style={{ textAlign: "center", color: "#444", fontSize: "0.7rem", letterSpacing: "0.2em", padding: "1rem" }}>
+                                    Systems Ready
+                                </div>
+                            )}
+                        </div>
 
-                    <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <input
-                            type="text"
-                            value={formula}
-                            onChange={(e) => setFormula(e.target.value)}
-                            placeholder="e.g. 2d6 + 5"
-                            style={{ flex: 1, fontFamily: "var(--font-mono)" }}
-                        />
-                        <button onClick={clear} style={{ minWidth: "40px", padding: 0 }}>✕</button>
-                    </div>
+                        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                            <input
+                                type="text"
+                                value={formula}
+                                onChange={(e) => setFormula(e.target.value)}
+                                placeholder="e.g. 2d6 + 5"
+                                style={{ flex: 1, fontFamily: "var(--font-mono)", fontSize: "0.8rem", background: "#111", border: "1px solid #333", color: "#ccc" }}
+                            />
+                            <button onClick={clear} style={{ minWidth: "30px", padding: 0, border: "1px solid #333", background: "#111", color: "#666" }}>✕</button>
+                        </div>
 
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: "4px" }}>
-                        {diceTypes.map(d => (
-                            <button
-                                key={d}
-                                onClick={() => addToFormula(d)}
-                                disabled={isRolling}
-                                style={{
-                                    padding: "0.5rem 0",
-                                    fontSize: "0.9rem",
-                                    fontFamily: "var(--font-mono)",
-                                    background: "rgba(255,255,255,0.05)",
-                                    border: "1px solid var(--border-color)"
-                                }}
-                            >
-                                d{d}
-                            </button>
-                        ))}
-                    </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: "4px" }}>
+                            {diceTypes.map(d => (
+                                <button
+                                    key={d}
+                                    onClick={() => addToFormula(d)}
+                                    disabled={isRolling}
+                                    style={{
+                                        padding: "0.4rem 0",
+                                        fontSize: "0.8rem",
+                                        fontFamily: "var(--font-mono)",
+                                        background: "rgba(255,255,255,0.02)",
+                                        border: "1px solid #333",
+                                        color: "#888",
+                                        transition: "all 0.2s"
+                                    }}
+                                    className="hover:bg-[#a32222] hover:text-white hover:border-[#a32222]"
+                                >
+                                    d{d}
+                                </button>
+                            ))}
+                        </div>
 
-                    <button
-                        onClick={roll}
-                        disabled={isRolling || !formula}
-                        style={{
-                            width: "100%",
-                            background: "var(--accent-color)",
-                            color: "#000",
-                            fontWeight: "bold",
-                            border: "none",
-                            marginTop: "0.5rem",
-                            boxShadow: "0 0 10px var(--accent-glow)"
-                        }}
-                    >
-                        {isRolling ? "ROLLING..." : "ROLL DESTINY"}
-                    </button>
+                        <button
+                            onClick={roll}
+                            disabled={isRolling || !formula}
+                            style={{
+                                width: "100%",
+                                marginTop: "1rem",
+                                padding: "0.8rem",
+                                fontSize: "0.9rem",
+                                letterSpacing: "0.1em"
+                            }}
+                            className="arcane-button"
+                        >
+                            {isRolling ? "CALCULATING..." : "EXECUTE ROLL"}
+                        </button>
+                    </div>
                 </div>
             )}
         </div>

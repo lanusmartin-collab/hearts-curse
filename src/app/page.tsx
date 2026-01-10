@@ -20,23 +20,25 @@ export default function Home() {
     <div style={{ minHeight: "100vh", padding: "2rem", paddingTop: "5rem", maxWidth: "1600px", margin: "0 auto" }}>
 
       {/* HEADER SECTION */}
-      <header style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "2rem", gap: "1.5rem", borderBottom: "1px solid var(--glass-border)", paddingBottom: "1.5rem" }}>
+      <header className="campaign-header">
         <div style={{ flex: 1 }}>
-          <div style={{ marginBottom: "1rem", border: "2px solid var(--glass-border)", display: "inline-block", boxShadow: "0 0 20px rgba(0,0,0,0.5)" }}>
+          <div style={{ marginBottom: "2rem", display: "inline-block", position: "relative" }}>
+            <div className="animate-pulse-slow" style={{ position: "absolute", inset: "-10px", border: "1px solid rgba(163,34,34,0.3)", borderRadius: "50%", filter: "blur(20px)" }}></div>
             <Image
               src="/cover_art_v8.png"
               alt="Heart's Curse Cover Art"
               width={800}
               height={300}
-              style={{ maxWidth: "100%", height: "auto", display: "block", objectFit: "contain" }}
+              style={{ maxWidth: "100%", height: "auto", display: "block", objectFit: "contain", position: "relative", zIndex: 10, filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.8))" }}
               priority
             />
           </div>
-          <h1 style={{ fontSize: "clamp(3rem, 8vw, 5rem)", fontFamily: "var(--font-serif)", color: "var(--scarlet-accent)", marginBottom: "0.5rem", textShadow: "0 0 30px rgba(138, 28, 28, 0.6)" }}>
+          <h1 className="campaign-title-glitch" data-text="HEART'S CURSE">
             HEART&apos;S CURSE
           </h1>
-          <p style={{ fontFamily: "var(--font-mono)", color: "var(--fg-dim)", letterSpacing: "0.3em", textTransform: "uppercase", fontSize: "0.9rem" }}>
-            Campaign Manager <span style={{ color: "var(--mystic-accent)" }}>v1.2 // HEART'S CURSE</span>
+          <p className="campaign-subtitle">
+            <span className="animate-flicker">● ONLINE</span>
+            Campaign Manager v1.3
           </p>
         </div>
 
