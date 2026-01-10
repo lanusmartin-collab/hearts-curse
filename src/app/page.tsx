@@ -25,7 +25,7 @@ export default function Home() {
           <div style={{ marginBottom: "2rem", display: "inline-block", position: "relative" }}>
             <div className="animate-pulse-slow" style={{ position: "absolute", inset: "-10px", border: "1px solid rgba(163,34,34,0.3)", borderRadius: "50%", filter: "blur(20px)" }}></div>
             <Image
-              src="/cover_art_v8.png"
+              src="/hearts_curse_hero_v9.png"
               alt="Heart's Curse Cover Art"
               width={800}
               height={300}
