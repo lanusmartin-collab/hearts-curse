@@ -145,8 +145,6 @@ export default function GeneratorsPage() {
                             ) : (
                                 <div className="text-center opacity-20 select-none pointer-events-none my-auto">
                                     <div className="text-6xl mb-4 font-mono text-[#333]">+</div>
-                                    <p className="font-header text-xl tracking-[0.3em] uppercase mb-2">Awaiting Input</p>
-                                    <p className="font-mono text-[10px] uppercase tracking-widest">Select Context & Initiate Generation</p>
                                 </div>
                             )}
 

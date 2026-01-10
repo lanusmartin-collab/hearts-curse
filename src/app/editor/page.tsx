@@ -60,7 +60,7 @@ export default function EditorPage() {
 
     return (
         <div className="retro-container">
-            <Link href="/" className="no-print">{"< BACK_TO_ROOT"}</Link>
+            <Link href="/" className="no-print retro-btn bg-red-900 text-white text-xs px-3 py-1 no-underline hover:bg-red-700 animate-heartbeat" style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }}>BACK TO THE SANCTUM</Link>
             <header style={{ margin: "2rem 0" }}>
                 <h1>DM&apos;s Notebook</h1>
             </header>

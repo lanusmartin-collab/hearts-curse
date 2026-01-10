@@ -155,15 +155,15 @@ export default function PlayersPage() {
                                 key={p.id}
                                 onClick={() => { setSelectedPlayerId(p.id); setSelectedFile(null); setFileFullScreen(false); }}
                                 className={`
-                                    w-full relative group overflow-hidden border border-[#333] transition-all duration-300 p-3 h-14 flex items-center justify-between
-                                    shadow-sm hover:shadow-md active:scale-[0.98]
+                                    w-full relative group overflow-hidden border-b border-[#222] transition-all duration-300 p-3 h-14 flex items-center justify-between
+                                    hover:bg-[#111] hover:pl-5
                                     ${selectedPlayerId === p.id
-                                        ? 'bg-[#1a0505] border-[#a32222] shadow-[0_0_15px_rgba(163,34,34,0.3)]'
-                                        : 'bg-[#151515] hover:border-[#666] hover:bg-[#222]'}
+                                        ? 'bg-[#1a0505] border-l-2 border-l-[#a32222] pl-5'
+                                        : 'bg-transparent border-l-2 border-l-transparent'}
                                 `}
                             >
                                 <div className="flex flex-col items-start z-10 pl-2">
-                                    <span className={`font-header tracking-wider text-sm ${p.status.includes('Dead') ? 'line-through text-red-900' : (selectedPlayerId === p.id ? 'text-[#ffcccc] text-shadow-glow' : 'text-[#888] group-hover:text-[#ccc]')}`}>
+                                    <span className={`font-header tracking-wider text-sm ${p.status.includes('Dead') ? 'line-through text-gray-500 opacity-50' : (selectedPlayerId === p.id ? 'text-[#ffcccc] text-shadow-glow animate-heartbeat' : 'text-[#888] group-hover:text-[#ccc] animate-heartbeat')}`}>
                                         {p.name}
                                     </span>
                                     <span className="text-[9px] font-mono text-[#444] uppercase tracking-widest">{p.class}</span>
