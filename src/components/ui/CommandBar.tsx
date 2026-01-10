@@ -11,7 +11,7 @@ export default function CommandBar() {
                 href="/"
                 className="retro-btn bg-red-900 text-white text-xs px-4 py-2 no-underline hover:bg-red-700 animate-heartbeat border border-red-950 shadow-[0_4px_0_#3f0000] active:shadow-none active:translate-y-[4px] transition-all uppercase tracking-wider font-bold"
             >
-                Return to the Sanctum
+                BACK TO THE SANCTUM
             </Link>
         </nav>
     );

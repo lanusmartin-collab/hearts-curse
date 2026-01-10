@@ -56,7 +56,7 @@ export default function ShadowCaster() {
                     <div className="flex justify-between items-center mb-4">
                         <div className="flex items-center gap-2" style={{ color: '#a32222' }}>
                             <Music className="w-4 h-4 animate-pulse-slow" style={{ width: '16px', height: '16px' }} />
-                            <h3 className="text-xs uppercase tracking-widest font-bold" style={{ color: '#eecfa1' }}>Shadow Caster v2.0</h3>
+                            <h3 className="text-xs uppercase tracking-widest font-bold" style={{ color: '#eecfa1' }}>Shadow Caster v2.1</h3>
                         </div>
                         <div className="flex gap-2">
                             <button
