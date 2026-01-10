@@ -131,6 +131,8 @@ export default function Home() {
             <DashboardWidget title="Editor" subtitle="Notes" icon={PenTool} href="/editor" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
             <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
             <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            {/* [NEW] Players Link in Tools Grid */}
+            <DashboardWidget title="Party" subtitle="Players" icon={FileText} href="/players" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
           </div>
 
           <DashboardWidget title="Print Lab" subtitle="Physical Handouts" icon={FileText} href="/deliverables">

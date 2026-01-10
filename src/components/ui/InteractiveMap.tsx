@@ -12,6 +12,7 @@ export type MapNode = {
     onClick?: () => void;
     status?: "active" | "completed" | "locked";
     description?: string;
+    link?: string;
 };
 
 type InteractiveMapProps = {

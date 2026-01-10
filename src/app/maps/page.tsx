@@ -8,15 +8,52 @@ import { CAMPAIGN_MAPS, CampaignMap } from "@/lib/data/maps";
 import { MechanicsDashboard } from "@/components/ui/MechanicsDashboard";
 import DiceRoller from "@/components/ui/DiceRoller";
 import { getRegionalEffect, rollWildMagic } from "@/lib/game/curseLogic";
+import { useRouter } from "next/navigation";
+import {
+    TOWN_DAY_TABLE, OAKHAVEN_MINES_TABLE, UNDERDARK_TRAVEL_TABLE,
+    NETHERIL_RUINS_TABLE, SILENT_WARDS_TABLE, OUTSKIRTS_TABLE,
+    LIBRARY_WHISPERS_TABLE, ARACH_TINILITH_TABLE, HEART_CHAMBER_TABLE, OSSUARY_TABLE
+} from "@/lib/data/encounters";
 
 export default function MapsPage() {
     const [selectedMapId, setSelectedMapId] = useState<string>(CAMPAIGN_MAPS[0].id);
     const [viewMode, setViewMode] = useState<"interactive" | "book">("interactive");
+    const router = useRouter();
 
     const selectedMap = CAMPAIGN_MAPS.find(m => m.id === selectedMapId) || CAMPAIGN_MAPS[0];
 
     // Force Map to re-mount when map changes to reset state
+    // Force Map to re-mount when map changes to reset state
     const mapKey = selectedMap.id;
+
+    const handleRollEncounter = () => {
+        let table = null;
+        switch (selectedMapId) {
+            case 'oakhaven': table = TOWN_DAY_TABLE; break;
+            case 'mines': table = OAKHAVEN_MINES_TABLE; break; // Assuming ID is 'mines' - check maps.ts if fails
+            case 'underdark': table = UNDERDARK_TRAVEL_TABLE; break;
+            case 'netheril': table = NETHERIL_RUINS_TABLE; break;
+            case 'library': table = LIBRARY_WHISPERS_TABLE; break; // Check IDs
+            case 'arach': table = ARACH_TINILITH_TABLE; break;
+            case 'heart': table = HEART_CHAMBER_TABLE; break;
+            case 'ossuary': table = OSSUARY_TABLE; break;
+            case 'silent_wards': table = SILENT_WARDS_TABLE; break;
+            case 'outskirts': table = OUTSKIRTS_TABLE; break;
+            default: table = null;
+        }
+
+        if (!table) {
+            alert("No random encounter table defined for this zone.");
+            return;
+        }
+
+        const roll = Math.floor(Math.random() * 20) + 1;
+        const encounter = table.find(e => roll >= e.roll[0] && roll <= e.roll[1]);
+
+        if (encounter) {
+            alert(`🎲 RANDOM ENCOUNTER [Roll: ${roll}]\n\n⚔️ ${encounter.name}\n\n${encounter.description}`);
+        }
+    };
 
     if (viewMode === "book") {
         return <DungeonModuleTemplate mapData={selectedMap} onClose={() => setViewMode("interactive")} />;
@@ -47,8 +84,11 @@ export default function MapsPage() {
             <div className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}
                 <div className="retro-border w-[300px] bg-[#fdf5c9] text-[#3e2723] flex flex-col shrink-0">
-                    <div className="p-4 border-b-2 border-brown-800 bg-brown-100">
+                    <div className="p-4 border-b-2 border-brown-800 bg-brown-100 flex justify-between items-center">
                         <h3 className="font-bold">LOCATIONS</h3>
+                        <button onClick={handleRollEncounter} className="text-xs bg-red-800 text-white px-2 py-1 rounded hover:bg-red-700 animate-pulse font-bold" title="Roll Random Encounter">
+                            ⚔️ ROLL
+                        </button>
                     </div>
                     <div className="overflow-y-auto flex-1 p-2 space-y-4">
                         {/* Town / Uncategorized */}
@@ -129,7 +169,11 @@ export default function MapsPage() {
                             gridType={selectedMap.gridType || "hex"}
                             nodes={selectedMap.nodes}
                             onNodeClick={(node) => {
-                                alert(`[${node.type.toUpperCase()}] ${node.label}\n\n${node.description || "No details available."}`);
+                                if (node.link) {
+                                    router.push(node.link);
+                                } else {
+                                    alert(`[${node.type.toUpperCase()}] ${node.label}\n\n${node.description || "No details available."}`);
+                                }
                             }}
                         />
                     </div>
