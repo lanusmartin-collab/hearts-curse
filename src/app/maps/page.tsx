@@ -7,6 +7,7 @@ import DungeonModuleTemplate from "@/components/ui/DungeonModuleTemplate";
 import { CAMPAIGN_MAPS, CampaignMap } from "@/lib/data/maps";
 import { MechanicsDashboard } from "@/components/ui/MechanicsDashboard";
 import DiceRoller from "@/components/ui/DiceRoller";
+import RegionalMechanicsWidget from "@/components/ui/RegionalMechanicsWidget";
 import { getRegionalEffect, rollWildMagic } from "@/lib/game/curseLogic";
 import { useRouter } from "next/navigation";
 import {
@@ -160,6 +161,16 @@ export default function MapsPage() {
                     {/* Visual Map */}
                     <div className="flex-1 relative overflow-hidden">
                         <MechanicsDashboard currentMapId={selectedMap.id} />
+
+                        {/* NEW: Regional Mechanics HUD Widget */}
+                        <div className="absolute top-0 left-0 z-30 pointer-events-none w-full h-full">
+                            <RegionalMechanicsWidget
+                                mechanics={selectedMap.mechanics || []}
+                                curseLevel={selectedMap.id === 'heart' ? 'Critical' : (selectedMap.id === 'silent_wards' ? 'High' : 'Low')}
+                                faction={selectedMap.id.includes('town') ? 'Zhentarim' : undefined}
+                            />
+                        </div>
+
                         <DiceRoller onRollComplete={(result) => {
                             const effect = getRegionalEffect(selectedMap.id);
                             // Wild Magic Trigger: d20 roll of 1

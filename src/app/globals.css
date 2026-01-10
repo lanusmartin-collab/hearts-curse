@@ -415,6 +415,24 @@ select:focus {
   animation: flicker 0.3s ease-out;
 }
 
+/* DICE ROLLER STYLES (Tools Dock) */
+.dice-trigger {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  /* Moved to top-right for accessibility */
+  z-index: 9999;
+}
+
+.dice-panel {
+  position: fixed;
+  top: 5.5rem;
+  /* Below the trigger */
+  right: 1.5rem;
+  width: 360px;
+  z-index: 9999;
+}
+
 /* UTILITIES */
 .fixed-bottom-right {
   position: fixed;
