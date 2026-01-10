@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import CommandBar from "@/components/ui/CommandBar";
-import { Skull, Ghost, Plus, Upload, Activity, Biohazard, EyeOff, MicOff, BatteryLow, Stars, FileText, X, Trash2, User, UserPlus, File, Eye } from "lucide-react";
+import { Skull, Ghost, Plus, Upload, Activity, Biohazard, EyeOff, MicOff, BatteryLow, Stars, FileText, X, Trash2, User, UserPlus, File, Eye, Maximize2, Minimize2 } from "lucide-react";
 
 type PlayerStatus = "Normal" | "Dead" | "Cursed" | "Poisoned" | "Blind" | "Deaf" | "Exhausted" | "Stunned";
 
@@ -33,8 +33,8 @@ export default function PlayersPage() {
     const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
     const [newPlayerName, setNewPlayerName] = useState("");
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
-    // Preview now tracks the file object directly for the embed view
     const [selectedFile, setSelectedFile] = useState<{ url: string, type: string, name: string } | null>(null);
+    const [fileFullScreen, setFileFullScreen] = useState(false);
 
     const activePlayer = players.find(p => p.id === selectedPlayerId);
 
@@ -74,10 +74,7 @@ export default function PlayersPage() {
         const file = e.target.files?.[0];
         if (!file) return;
         const fileUrl = URL.createObjectURL(file);
-
-        // Auto-select the new file for preview
         const fileObj = { name: file.name, date: new Date().toLocaleDateString(), url: fileUrl, type: file.type };
-
         setPlayers(players.map(p => {
             if (p.id !== playerId) return p;
             return {
@@ -103,9 +100,9 @@ export default function PlayersPage() {
         <div className="retro-container h-screen flex flex-col overflow-hidden bg-[#050505]">
             <CommandBar />
 
-            <div className="flex flex-1 overflow-hidden">
-                {/* 1. Sidebar - Grimoire Style */}
-                <div className="grimoire-sidebar w-[320px] flex flex-col shrink-0 overflow-hidden z-20 border-r border-[#222] bg-[#0c0c0c]">
+            <div className="flex flex-1 overflow-hidden relative">
+                {/* 1. Sidebar - Grimoire Style (Hidden in Full Screen Mode) */}
+                <div className={`grimoire-sidebar w-[320px] flex flex-col shrink-0 overflow-hidden z-20 border-r border-[#222] bg-[#0c0c0c] transition-all duration-300 ${fileFullScreen ? '-ml-[320px]' : ''}`}>
                     <div className="grimoire-header p-6 border-b border-[#222]">
                         <h3 className="grimoire-title text-base text-[#a32222] font-header tracking-[0.25em] mb-4 text-center border-b border-[#a32222]/20 pb-2">
                             SOUL REGISTER
@@ -140,11 +137,11 @@ export default function PlayersPage() {
                             {players.map(p => (
                                 <div
                                     key={p.id}
-                                    onClick={() => { setSelectedPlayerId(p.id); setSelectedFile(null); }}
+                                    onClick={() => { setSelectedPlayerId(p.id); setSelectedFile(null); setFileFullScreen(false); }}
                                     className={`
                                         cursor-pointer p-4 border transition-all duration-300 flex items-center justify-between group relative overflow-hidden
                                         ${selectedPlayerId === p.id
-                                            ? 'bg-gradient-to-r from-[#1a0505] to-[#0a0a0a] border-[#a32222]/60'
+                                            ? 'bg-gradient-to-r from-[#1a0505] to-[#0a0a0a] border-[#a32222]/60 shadow-lg'
                                             : 'bg-[#0a0a0a] border-[#1a1a1a] hover:border-[#333] hover:bg-[#111]'}
                                     `}
                                 >
@@ -161,180 +158,196 @@ export default function PlayersPage() {
                     </div>
                 </div>
 
-                {/* 2. Main Content - Spacious & Organized */}
-                <div className="flex-1 flex flex-col bg-[#050505] relative overflow-hidden">
-                    {/* Background Texture Overlay */}
+                {/* 2. Main Content */}
+                <div className="flex-1 flex flex-col bg-[#050505] relative overflow-hidden transition-all duration-300">
                     <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('/noise.png')]"></div>
 
                     {activePlayer ? (
-                        <div className="flex-1 flex flex-col h-full pl-8"> {/* Left Padding to separate from sidebar */}
+                        <div className={`flex-1 flex h-full ${fileFullScreen ? 'p-0' : 'p-8 pl-16'} transition-all duration-300 gap-8`}>
 
-                            {/* Header & Status Section (Fixed Top) */}
-                            <div className="shrink-0 p-8 pb-4 border-b border-[#222] bg-[#050505]/95 backdrop-blur z-10 flex flex-col gap-6">
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <h1 className="text-5xl font-header text-[#e0e0e0] tracking-[0.05em] drop-shadow-md mb-2">
-                                            {activePlayer.name}
-                                        </h1>
-                                        <input
-                                            className="bg-transparent border-none text-[#a32222] font-mono text-sm uppercase tracking-[0.2em] w-96 focus:text-[#ff4444] outline-none p-0 transition-colors"
-                                            value={activePlayer.class}
-                                            onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, class: e.target.value } : p))}
-                                            placeholder="CLASS UNKNOWN"
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={() => {
-                                            if (confirm("Remove this soul permanently?")) {
-                                                setPlayers(players.filter(p => p.id !== activePlayer.id));
-                                                setSelectedPlayerId(null);
-                                            }
-                                        }}
-                                        className="text-[#333] hover:text-[#a32222] p-2 transition-colors transform hover:scale-110"
-                                        title="Exile Soul"
-                                    >
-                                        <Trash2 className="w-5 h-5" />
-                                    </button>
-                                </div>
+                            {/* Left Panel: Character Sheet / Scroll (Hidden when File Full Screen) */}
+                            {!fileFullScreen && (
+                                <div className="w-[500px] shrink-0 flex flex-col gap-6 animate-fade-in">
+                                    {/* Scroll/Sheet aesthetic container */}
+                                    <div className="retro-border bg-[#101010] p-1 flex flex-col h-full shadow-2xl relative">
+                                        {/* Decorative corners could go here */}
 
-                                {/* Status Bar - Horizontal Clean Layout */}
-                                <div className="flex items-center gap-4 flex-wrap">
-                                    <span className="text-[#444] font-mono text-[9px] uppercase tracking-[0.2em]">Condition:</span>
-                                    <div className="flex items-center gap-2">
-                                        {(Object.keys(STATUS_CONFIG) as PlayerStatus[]).map(status => {
-                                            const config = STATUS_CONFIG[status];
-                                            const isActive = activePlayer.status.includes(status);
-                                            // Only show 'Normal' if it's the only one, or hide it if we want 'Normal' to be implicit when others are active
-                                            if (status === "Normal") return null;
-
-                                            return (
-                                                <button
-                                                    key={status}
-                                                    onClick={() => toggleStatus(activePlayer.id, status)}
-                                                    className={`
-                                                        px-3 py-1 rounded-sm border flex items-center gap-2 transition-all duration-200 uppercase tracking-widest text-[9px] font-mono
-                                                        ${isActive
-                                                            ? 'border-opacity-100 bg-opacity-20'
-                                                            : 'border-transparent bg-transparent opacity-40 hover:opacity-100 hover:border-[#333]'}
-                                                    `}
-                                                    style={{
-                                                        borderColor: isActive ? config.border : undefined,
-                                                        backgroundColor: isActive ? config.bg : undefined,
-                                                        color: isActive ? config.color : '#666',
-                                                    }}
-                                                >
-                                                    <config.icon className="w-3 h-3" />
-                                                    {status}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Main Split Layout: Info vs Document */}
-                            <div className="flex-1 flex overflow-hidden">
-
-                                {/* Left Column: Chronicles & Inventory (40%) */}
-                                <div className="w-[450px] flex flex-col border-r border-[#222] bg-[#080808]">
-                                    <div className="flex-1 p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
-
-                                        {/* Notes Section */}
-                                        <div className="flex flex-col gap-2 shrink-0 h-[40%]">
-                                            <h3 className="text-[#666] font-mono text-[10px] tracking-[0.3em] uppercase flex items-center gap-2">
-                                                <FileText className="w-3 h-3" /> Chronicles
-                                            </h3>
-                                            <textarea
-                                                className="w-full h-full bg-[#0c0c0c] border border-[#222] p-4 text-[#bfbfbf] font-serif text-sm leading-6 resize-none outline-none focus:border-[#444] transition-colors custom-scrollbar"
-                                                value={activePlayer.notes}
-                                                onChange={(e) => updateNotes(activePlayer.id, e.target.value)}
-                                                placeholder="Notes..."
-                                            />
-                                        </div>
-
-                                        {/* Files List Section */}
-                                        <div className="flex flex-col gap-2 flex-1">
-                                            <div className="flex justify-between items-center">
-                                                <h3 className="text-[#666] font-mono text-[10px] tracking-[0.3em] uppercase flex items-center gap-2">
-                                                    <Upload className="w-3 h-3" /> Archives
-                                                </h3>
-                                                <label className="cursor-pointer text-[#a32222] hover:text-white transition-colors text-[9px] uppercase font-mono px-2 py-1 border border-[#a32222]/30 hover:bg-[#a32222]">
-                                                    + Upload
-                                                    <input type="file" className="hidden" onChange={(e) => handleFileUpload(activePlayer.id, e)} />
-                                                </label>
+                                        <div className="border border-[#333] p-6 flex-1 flex flex-col bg-[#0c0c0c] relative overflow-hidden">
+                                            {/* Header */}
+                                            <div className="border-b-2 border-[#a32222]/50 pb-4 mb-6">
+                                                <input
+                                                    className="w-full bg-transparent border-none text-4xl font-header text-[#e0e0e0] tracking-[0.05em] drop-shadow-md focus:text-[#ff4444] outline-none p-0 mb-1"
+                                                    value={activePlayer.name}
+                                                    onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, name: e.target.value } : p))}
+                                                />
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[#555] font-mono text-[10px] uppercase">Class:</span>
+                                                    <input
+                                                        className="bg-transparent border-b border-[#333] text-[#a32222] font-mono text-xs uppercase tracking-[0.2em] flex-1 focus:border-[#a32222] outline-none"
+                                                        value={activePlayer.class}
+                                                        onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, class: e.target.value } : p))}
+                                                        placeholder="UNKNOWN"
+                                                    />
+                                                </div>
                                             </div>
 
-                                            <div className="flex-1 bg-[#0c0c0c] border border-[#222] p-2 space-y-1 overflow-y-auto custom-scrollbar">
-                                                {activePlayer.files.length === 0 ? (
-                                                    <div className="h-full flex flex-col items-center justify-center text-[#333] text-[10px] font-mono uppercase">
-                                                        <span>No Records</span>
-                                                    </div>
-                                                ) : (
-                                                    activePlayer.files.map((file, i) => (
+                                            {/* Status Grid */}
+                                            <div className="mb-8">
+                                                <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                                                    <Activity className="w-3 h-3" /> Vital Status
+                                                </h4>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    {(Object.keys(STATUS_CONFIG) as PlayerStatus[]).map(status => {
+                                                        const config = STATUS_CONFIG[status];
+                                                        const isActive = activePlayer.status.includes(status);
+                                                        if (status === "Normal") return null;
+                                                        return (
+                                                            <button
+                                                                key={status}
+                                                                onClick={() => toggleStatus(activePlayer.id, status)}
+                                                                className={`
+                                                                    px-2 py-1.5 border flex items-center gap-2 uppercase tracking-wider text-[9px] font-mono transition-all
+                                                                    ${isActive
+                                                                        ? 'bg-[#1a0505] border-[#a32222] text-[#ffcccc]'
+                                                                        : 'bg-transparent border-[#222] text-[#555] hover:border-[#444]'}
+                                                                `}
+                                                            >
+                                                                <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'animate-pulse bg-red-500' : 'bg-[#333]'}`}></div>
+                                                                {status}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+
+                                            {/* Chronicles (Notes) */}
+                                            <div className="flex-1 flex flex-col mb-6">
+                                                <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                                                    <FileText className="w-3 h-3" /> Chronicles
+                                                </h4>
+                                                <textarea
+                                                    className="flex-1 w-full bg-[#080808] border border-[#222] p-4 text-[#aaa] font-serif text-sm leading-6 resize-none outline-none focus:border-[#555] transition-colors custom-scrollbar shadow-inner"
+                                                    value={activePlayer.notes}
+                                                    onChange={(e) => updateNotes(activePlayer.id, e.target.value)}
+                                                    placeholder="Inscribe notes here..."
+                                                />
+                                            </div>
+
+                                            {/* File List */}
+                                            <div className="h-[150px] shrink-0 flex flex-col">
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.2em] flex items-center gap-2">
+                                                        <Upload className="w-3 h-3" /> Archives
+                                                    </h4>
+                                                    <label className="cursor-pointer text-[#888] hover:text-white transition-colors text-[9px] uppercase font-mono px-2 py-0.5 border border-[#333] hover:bg-[#222]">
+                                                        + Upload
+                                                        <input type="file" className="hidden" onChange={(e) => handleFileUpload(activePlayer.id, e)} />
+                                                    </label>
+                                                </div>
+                                                <div className="flex-1 bg-[#080808] border border-[#222] p-1 overflow-y-auto custom-scrollbar shadow-inner">
+                                                    {activePlayer.files.map((file, i) => (
                                                         <div
                                                             key={i}
                                                             onClick={() => file.url && setSelectedFile({ url: file.url, type: file.type || 'unknown', name: file.name })}
                                                             className={`
-                                                                flex items-center justify-between p-2 cursor-pointer border transition-all text-[10px] font-mono group
-                                                                ${selectedFile?.url === file.url
-                                                                    ? 'bg-[#1a1a1a] border-[#444] text-[#e0e0e0]'
-                                                                    : 'bg-transparent border-transparent hover:bg-[#111] text-[#888]'}
+                                                                flex items-center justify-between p-2 cursor-pointer border-b border-[#111] last:border-0 hover:bg-[#111] group
+                                                                ${selectedFile?.url === file.url ? 'bg-[#151515] text-[#ccc]' : 'text-[#666]'}
                                                             `}
                                                         >
                                                             <div className="flex items-center gap-2 truncate">
                                                                 <File className="w-3 h-3" />
-                                                                <span className="truncate">{file.name}</span>
+                                                                <span className="truncate text-[10px] font-mono">{file.name}</span>
                                                             </div>
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); deleteFile(activePlayer.id, i); }}
-                                                                className="text-[#333] hover:text-[#a32222] p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                                className="opacity-0 group-hover:opacity-100 text-[#444] hover:text-[#a32222] transition-all"
                                                             >
                                                                 <X className="w-3 h-3" />
                                                             </button>
                                                         </div>
-                                                    ))
-                                                )}
+                                                    ))}
+                                                </div>
                                             </div>
+
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Right Column: Document Viewer (60% - Full Height) */}
-                                <div className="flex-1 bg-[#050505] flex flex-col relative overflow-hidden">
-                                    {selectedFile ? (
-                                        <div className="h-full flex flex-col">
-                                            <div className="h-8 shrink-0 border-b border-[#222] flex items-center justify-between px-4 bg-[#0a0a0c]">
-                                                <span className="text-[#666] font-mono text-[10px] uppercase tracking-widest">{selectedFile.name}</span>
-                                                <button onClick={() => setSelectedFile(null)} className="text-[#444] hover:text-[#e0e0e0]">
+                                    <div className="flex justify-center">
+                                        <button
+                                            onClick={() => {
+                                                if (confirm("Remove this soul permanently?")) {
+                                                    setPlayers(players.filter(p => p.id !== activePlayer.id));
+                                                    setSelectedPlayerId(null);
+                                                }
+                                            }}
+                                            className="text-[#333] hover:text-[#a32222] transition-colors text-[10px] uppercase tracking-widest flex items-center gap-2"
+                                        >
+                                            <Trash2 className="w-3 h-3" /> Delete Sheet
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Right Panel: Document Viewer (Expands) */}
+                            <div className={`flex-1 flex flex-col bg-[#030303] border border-[#222] relative transition-all duration-300 ${fileFullScreen ? 'h-full w-full border-none z-50' : 'h-full'}`}>
+                                {selectedFile ? (
+                                    <div className="h-full flex flex-col">
+                                        {/* Toolbar */}
+                                        <div className="h-10 shrink-0 border-b border-[#222] flex items-center justify-between px-4 bg-[#080808]">
+                                            <span className="text-[#666] font-mono text-[10px] uppercase tracking-widest flex items-center gap-2">
+                                                <Eye className="w-3 h-3" /> Viewing: {selectedFile.name}
+                                            </span>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => setFileFullScreen(!fileFullScreen)}
+                                                    className="text-[#555] hover:text-[#e0e0e0] p-1.5 hover:bg-[#222] rounded transition-colors"
+                                                    title={fileFullScreen ? "Exit Full Screen" : "Maximize View"}
+                                                >
+                                                    {fileFullScreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                                                </button>
+                                                <button onClick={() => setSelectedFile(null)} className="text-[#555] hover:text-[#e0e0e0] p-1.5 hover:bg-[#222] rounded transition-colors">
                                                     <X className="w-4 h-4" />
                                                 </button>
                                             </div>
-                                            <div className="flex-1 relative bg-[#080808] flex items-center justify-center overflow-auto p-4 custom-scrollbar">
-                                                {selectedFile.type.startsWith('image/') ? (
-                                                    <img src={selectedFile.url} alt="Preview" className="max-w-full h-auto shadow-2xl border border-[#333]" />
-                                                ) : selectedFile.type === 'application/pdf' ? (
-                                                    <iframe src={selectedFile.url} className="w-full h-full border border-[#333] shadow-2xl bg-white" />
-                                                ) : (
-                                                    <div className="text-[#555] font-mono text-xs uppercase tracking-widest border border-[#222] p-8">
-                                                        Preview Unavailable
-                                                    </div>
-                                                )}
-                                            </div>
                                         </div>
-                                    ) : (
-                                        <div className="h-full flex flex-col items-center justify-center text-[#222] select-none">
-                                            <Eye className="w-16 h-16 mb-4 opacity-20" />
-                                            <span className="font-mono text-xs uppercase tracking-widest opacity-30">Select a document to inspect</span>
+
+                                        {/* Content */}
+                                        <div className="flex-1 relative bg-[#050505] flex items-center justify-center overflow-auto p-4 custom-scrollbar">
+                                            {selectedFile.type.startsWith('image/') ? (
+                                                <img
+                                                    src={selectedFile.url}
+                                                    alt="Preview"
+                                                    className={`shadow-2xl border border-[#222] transition-all duration-300 ${fileFullScreen ? 'max-w-none h-auto min-w-[80%] min-h-[90%]' : 'max-w-full max-h-full object-contain'}`}
+                                                />
+                                            ) : selectedFile.type === 'application/pdf' ? (
+                                                <iframe src={selectedFile.url} className="w-full h-full border border-[#222] shadow-2xl bg-white" />
+                                            ) : (
+                                                <div className="text-[#444] font-mono text-xs uppercase tracking-widest border border-[#222] p-12 text-center opacity-50">
+                                                    <p>Format Not Supported</p>
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
+                                    </div>
+                                ) : (
+                                    <div className="h-full flex flex-col items-center justify-center text-[#222] select-none">
+                                        <div className="w-16 h-16 border-2 border-[#1a1a1a] rounded-full flex items-center justify-center mb-4 opacity-50">
+                                            <FileText className="w-6 h-6 opacity-30" />
+                                        </div>
+                                        <p className="font-mono text-[10px] uppercase tracking-widest opacity-30 text-center px-8">
+                                            Select a document from the archives <br />to display it here
+                                        </p>
+                                    </div>
+                                )}
                             </div>
+
                         </div>
                     ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center text-[#333] select-none pointer-events-none">
-                            <Ghost className="w-32 h-32 mb-8 opacity-10 animate-pulse" />
-                            <h2 className="text-3xl font-header tracking-[0.3em] uppercase mb-4 opacity-30 text-[#e0e0e0]">Awaiting Soul Selection</h2>
-                            <p className="font-mono text-xs uppercase tracking-widest opacity-20">Select a registered soul from the left</p>
+                        <div className="flex-1 flex flex-col items-center justify-center h-full text-[#333] select-none pointer-events-none pl-[100px]"> {/* Increased Left Padding for Empty State */}
+                            <div className="flex flex-col items-center">
+                                <Ghost className="w-24 h-24 mb-6 opacity-10 animate-float" />
+                                <h2 className="text-2xl font-header tracking-[0.3em] uppercase mb-2 opacity-30 text-[#e0e0e0]">Awaiting Soul Selection</h2>
+                                <p className="font-mono text-[10px] uppercase tracking-widest opacity-20">Access the register to proceed</p>
+                            </div>
                         </div>
                     )}
                 </div>
