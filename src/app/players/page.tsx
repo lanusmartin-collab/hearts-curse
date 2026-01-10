@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Skull, Shield, Zap, Eye, Ghost, Trash2, Plus, Upload, Heart, Activity } from "lucide-react";
+import { Skull, Shield, Zap, Eye, Ghost, Trash2, Plus, Upload, Heart, Activity, Biohazard, EyeOff, MicOff, BatteryLow, Stars, FileText, X, ChevronDown, ChevronUp } from "lucide-react";
 
 type PlayerStatus = "Normal" | "Dead" | "Cursed" | "Poisoned" | "Blind" | "Deaf" | "Exhausted" | "Stunned";
 
@@ -12,15 +12,27 @@ type PlayerCharacter = {
     class: string;
     status: PlayerStatus[];
     notes: string;
-    files: { name: string; date: string }[];
+    files: { name: string; date: string; url?: string; type?: string }[];
+};
+
+const STATUS_CONFIG: Record<PlayerStatus, { icon: React.ElementType, color: string, border: string, bg: string }> = {
+    Normal: { icon: Heart, color: "#44ff44", border: "#22aa22", bg: "#0a2a0a" },
+    Dead: { icon: Skull, color: "#ff4444", border: "#a32222", bg: "#2a0a0a" },
+    Cursed: { icon: Ghost, color: "#bf80ff", border: "#8c5bbf", bg: "#1a0a2a" },
+    Poisoned: { icon: Biohazard, color: "#44ff88", border: "#22aa55", bg: "#0a1a0a" },
+    Blind: { icon: EyeOff, color: "#aaaaaa", border: "#666666", bg: "#111111" },
+    Deaf: { icon: MicOff, color: "#aaaaaa", border: "#666666", bg: "#111111" },
+    Exhausted: { icon: BatteryLow, color: "#ffaa44", border: "#cc8800", bg: "#2a1a0a" },
+    Stunned: { icon: Stars, color: "#ffff44", border: "#aaaa22", bg: "#2a2a0a" }
 };
 
 export default function PlayersPage() {
-    // Initial data could come from local storage in a real app
     const [players, setPlayers] = useState<PlayerCharacter[]>([
         { id: "1", name: "Valeros", class: "Fighter 5", status: ["Normal"], notes: "Possessed by a ghost?", files: [] }
     ]);
     const [newPlayerName, setNewPlayerName] = useState("");
+    const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
+    const [previewFile, setPreviewFile] = useState<{ url: string, type: string, name: string } | null>(null);
 
     const addPlayer = () => {
         if (!newPlayerName.trim()) return;
@@ -33,13 +45,13 @@ export default function PlayersPage() {
             files: []
         }]);
         setNewPlayerName("");
+        setIsAddMenuOpen(false);
     };
 
     const toggleStatus = (playerId: string, status: PlayerStatus) => {
         setPlayers(players.map(p => {
             if (p.id !== playerId) return p;
 
-            // Handle "Normal" exclusivity
             if (status === "Normal") return { ...p, status: ["Normal"] };
 
             const newStatuses = p.status.includes(status)
@@ -58,11 +70,18 @@ export default function PlayersPage() {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        const fileUrl = URL.createObjectURL(file);
+
         setPlayers(players.map(p => {
             if (p.id !== playerId) return p;
             return {
                 ...p,
-                files: [...p.files, { name: file.name, date: new Date().toLocaleDateString() }]
+                files: [...p.files, {
+                    name: file.name,
+                    date: new Date().toLocaleDateString(),
+                    url: fileUrl,
+                    type: file.type
+                }]
             };
         }));
     };
@@ -72,12 +91,13 @@ export default function PlayersPage() {
             {/* Overlay for Texture */}
             <div style={{ position: 'fixed', inset: 0, opacity: 0.1, backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, #222 1px, #222 2px)", pointerEvents: 'none' }}></div>
 
+            {/* Fix: Increased top padding via style to account for absolute button and clear header */}
             <Link href="/" className="no-print" style={{ position: 'absolute', top: '20px', left: '20px', fontSize: '12px', color: '#ccc', border: '1px solid #333', padding: '8px 16px', textTransform: 'uppercase', letterSpacing: '0.1em', background: 'rgba(5, 5, 5, 0.9)', zIndex: 9999, backdropFilter: 'blur(4px)' }} >
                 {"< RETURN_ROOT"}
             </Link>
 
-            <div className="max-w-7xl mx-auto pt-24 px-8 relative z-10">
-                <header className="flex justify-between items-end mb-16 border-b border-[#a32222] pb-6">
+            <div className="max-w-7xl mx-auto pt-32 px-8 relative z-10">
+                <header className="flex justify-between items-end mb-12 border-b border-[#a32222] pb-6">
                     <div>
                         <h1 className="text-5xl font-header text-[#a32222] drop-shadow-[0_2px_10px_rgba(163,34,34,0.5)] tracking-wide">
                             SOUL DOSSIERS
@@ -87,30 +107,41 @@ export default function PlayersPage() {
                             Current Roster // <Activity className="w-4 h-4 text-[#a32222] animate-pulse" /> Live
                         </p>
                     </div>
-                </header>
 
-                {/* Recruitment Terminal */}
-                <div className="mb-16 p-1 bg-gradient-to-r from-[#1a0505] to-[#050505] border border-[#a32222] shadow-[0_0_20px_rgba(163,34,34,0.1)] max-w-2xl mx-auto transform hover:scale-[1.01] transition-transform duration-300">
-                    <div className="flex items-center">
-                        <div className="bg-[#a32222] h-16 w-16 flex items-center justify-center text-black">
-                            <Plus className="w-8 h-8" />
-                        </div>
-                        <input
-                            type="text"
-                            value={newPlayerName}
-                            onChange={(e) => setNewPlayerName(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && addPlayer()}
-                            placeholder="INITIATE NEW SOUL CONTRACT..."
-                            className="flex-1 bg-transparent p-4 text-xl font-header text-[#e0e0e0] placeholder-[#444] outline-none tracking-wider"
-                        />
-                        <button
-                            onClick={addPlayer}
-                            className="px-8 py-4 font-mono text-[#a32222] hover:bg-[#a32222] hover:text-black transition-colors uppercase tracking-widest text-sm font-bold border-l border-[#333]"
-                        >
-                            Confirm
-                        </button>
+                    {/* Compact Add Menu */}
+                    <div className="relative">
+                        {!isAddMenuOpen ? (
+                            <button
+                                onClick={() => setIsAddMenuOpen(true)}
+                                className="flex items-center gap-2 px-4 py-2 border border-[#333] hover:border-[#a32222] text-[#888] hover:text-[#a32222] transition-colors font-mono text-xs uppercase tracking-widest"
+                            >
+                                <Plus className="w-4 h-4" /> Recruit
+                            </button>
+                        ) : (
+                            <div className="absolute right-0 top-0 w-80 bg-[#0a0a0a] border border-[#a32222] p-4 shadow-xl z-50">
+                                <div className="flex justify-between items-center mb-4">
+                                    <span className="text-xs font-mono text-[#a32222]">NEW ENTRY</span>
+                                    <button onClick={() => setIsAddMenuOpen(false)}><X className="w-4 h-4 text-[#666] hover:text-[#e0e0e0]" /></button>
+                                </div>
+                                <input
+                                    type="text"
+                                    value={newPlayerName}
+                                    onChange={(e) => setNewPlayerName(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && addPlayer()}
+                                    placeholder="Name..."
+                                    className="w-full bg-[#111] border border-[#333] p-2 text-sm text-[#e0e0e0] mb-2 outline-none focus:border-[#a32222]"
+                                    autoFocus
+                                />
+                                <button
+                                    onClick={addPlayer}
+                                    className="w-full bg-[#a32222] text-black font-bold text-xs uppercase py-2 hover:bg-[#c43333] transition-colors"
+                                >
+                                    Confirm Recruitment
+                                </button>
+                            </div>
+                        )}
                     </div>
-                </div>
+                </header>
 
                 {/* Roster Grid */}
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
@@ -127,7 +158,13 @@ export default function PlayersPage() {
                                 <div className="flex-1">
                                     <div className="flex items-center gap-4 mb-2">
                                         <h2 className="text-3xl font-header text-[#e0e0e0]">{player.name}</h2>
-                                        {player.status.includes("Dead") && <Skull className="w-6 h-6 text-red-600 animate-pulse" />}
+                                        {/* Primary Status Icon Display */}
+                                        <div className="flex gap-2">
+                                            {player.status.filter(s => s !== "Normal").map(s => {
+                                                const Config = STATUS_CONFIG[s];
+                                                return <Config.icon key={s} className="w-5 h-5 animate-pulse" style={{ color: Config.color }} />;
+                                            })}
+                                        </div>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <div className="h-[1px] w-8 bg-[#666]"></div>
@@ -149,32 +186,39 @@ export default function PlayersPage() {
                                 </button>
                             </div>
 
-                            {/* Status System */}
+                            {/* Status System with Icons */}
                             <div className="mb-8">
                                 <h3 className="text-xs font-mono font-bold uppercase text-[#555] mb-4 tracking-[0.2em] flex items-center gap-2">
                                     <Zap className="w-3 h-3" /> Vital Status
                                 </h3>
                                 <div className="flex flex-wrap gap-2">
-                                    {["Dead", "Cursed", "Poisoned", "Blind", "Deaf", "Exhausted", "Stunned"].map((status) => (
-                                        <button
-                                            key={status}
-                                            onClick={() => toggleStatus(player.id, status as PlayerStatus)}
-                                            className={`
-                                                px-4 py-1.5 border text-xs font-mono uppercase tracking-wider transition-all duration-200
-                                                ${player.status.includes(status as PlayerStatus)
-                                                    ? 'bg-[#2a0a0a] text-[#ff4444] border-[#a32222] shadow-[0_0_10px_rgba(255,68,68,0.2)]'
-                                                    : 'bg-transparent text-[#444] border-[#222] hover:border-[#666] hover:text-[#bbb]'}
-                                            `}
-                                        >
-                                            {status}
-                                        </button>
-                                    ))}
-                                    <button
-                                        onClick={() => toggleStatus(player.id, "Normal")}
-                                        className={`px-4 py-1.5 border text-xs font-mono uppercase tracking-wider transition-all duration-200 ${player.status.includes("Normal") ? 'bg-[#0a2a0a] text-[#44ff44] border-[#22aa22]' : 'hidden'}`}
-                                    >
-                                        Healthy
-                                    </button>
+                                    {(Object.keys(STATUS_CONFIG) as PlayerStatus[]).map((status) => {
+                                        const Config = STATUS_CONFIG[status];
+                                        const isActive = player.status.includes(status);
+                                        const Icon = Config.icon;
+
+                                        // Hide "Normal" button if any negative status is active to reduce clutter, or keep it as reset
+                                        if (status === "Normal" && player.status.length > 1) return null;
+
+                                        return (
+                                            <button
+                                                key={status}
+                                                onClick={() => toggleStatus(player.id, status)}
+                                                className={`
+                                                    px-3 py-1.5 border text-[10px] font-mono uppercase tracking-wider transition-all duration-200 flex items-center gap-2
+                                                `}
+                                                style={{
+                                                    borderColor: isActive ? Config.border : '#333',
+                                                    color: isActive ? Config.color : '#666',
+                                                    backgroundColor: isActive ? Config.bg : 'transparent',
+                                                    boxShadow: isActive ? `0 0 10px ${Config.color}20` : 'none'
+                                                }}
+                                            >
+                                                <Icon className="w-3 h-3" />
+                                                {status}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
@@ -193,7 +237,7 @@ export default function PlayersPage() {
                                     />
                                 </div>
 
-                                {/* Files */}
+                                {/* Files with Preview */}
                                 <div className="md:col-span-2 flex flex-col h-full bg-[#050505] border border-[#222] relative group/files">
                                     <div className="p-3 border-b border-[#222] flex justify-between items-center bg-[#0a0a0a]">
                                         <span className="text-[10px] font-mono uppercase tracking-widest text-[#555]">Attachments</span>
@@ -210,8 +254,15 @@ export default function PlayersPage() {
                                         ) : (
                                             <ul className="space-y-1">
                                                 {player.files.map((file, i) => (
-                                                    <li key={i} className="bg-[#111] p-2 border-l border-[#a32222] text-[10px] flex justify-between items-center group/item hover:bg-[#1a0505] cursor-pointer transition-colors">
-                                                        <span className="text-[#888] font-mono truncate max-w-[80px]">{file.name}</span>
+                                                    <li
+                                                        key={i}
+                                                        className="bg-[#111] p-2 border-l border-[#a32222] text-[10px] flex justify-between items-center group/item hover:bg-[#1a0505] cursor-pointer transition-colors"
+                                                        onClick={() => file.url && setPreviewFile({ url: file.url, type: file.type || 'unknown', name: file.name })}
+                                                    >
+                                                        <div className="flex items-center gap-2 overflow-hidden">
+                                                            <FileText className="w-3 h-3 text-[#666]" />
+                                                            <span className="text-[#888] font-mono truncate">{file.name}</span>
+                                                        </div>
                                                         <span className="text-[#444]">{file.date}</span>
                                                     </li>
                                                 ))}
@@ -232,6 +283,29 @@ export default function PlayersPage() {
                     )}
                 </div>
             </div>
+
+            {/* File Preview Modal */}
+            {previewFile && (
+                <div className="fixed inset-0 z-[10000] bg-black/80 backdrop-blur-sm flex items-center justify-center p-8">
+                    <div className="bg-[#111] border border-[#a32222] w-full max-w-6xl h-[90vh] flex flex-col shadow-2xl relative">
+                        <div className="flex justify-between items-center p-4 border-b border-[#333] bg-[#0a0a0a]">
+                            <h3 className="text-[#e0e0e0] font-mono text-sm uppercase tracking-widest">{previewFile.name}</h3>
+                            <button onClick={() => setPreviewFile(null)} className="text-[#666] hover:text-[#ff4444]"><X className="w-6 h-6" /></button>
+                        </div>
+                        <div className="flex-1 overflow-hidden bg-[#222]">
+                            {previewFile.type.startsWith('image/') ? (
+                                <img src={previewFile.url} alt="Preview" className="w-full h-full object-contain" />
+                            ) : previewFile.type === 'application/pdf' ? (
+                                <iframe src={previewFile.url} className="w-full h-full" />
+                            ) : (
+                                <div className="flex items-center justify-center h-full text-[#888] font-mono">
+                                    PREVIEW NOT AVAILABLE FOR THIS FILE TYPE
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
