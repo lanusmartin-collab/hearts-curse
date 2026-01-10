@@ -38,47 +38,73 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
     };
 
     return (
-        <div className="fixed inset-0 z-50 bg-gray-100 flex flex-col font-serif print:static print:overflow-visible print:h-auto print:bg-white text-justify leading-snug isolate">
-            {/* Toolbar - No Print */}
-            <div className="no-print w-full bg-black text-white p-2 flex justify-between items-center shadow-lg z-[99999] shrink-0 text-xs md:text-sm relative">
-                <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
-                    <span className="font-bold text-accent uppercase tracking-widest hidden md:inline mr-4">AD&D Campaign Book</span>
+        <div className="fixed inset-0 z-50 bg-gray-100 flex flex-row font-serif print:static print:overflow-visible print:h-auto print:bg-white text-justify leading-snug isolate">
+            {/* Sidebar Controls - No Print */}
+            <div className="no-print w-64 bg-gray-900 text-white flex flex-col shadow-2xl z-[99999] shrink-0 border-r border-gray-700">
+                <div className="p-6 bg-black border-b border-gray-800">
+                    <h2 className="font-bold text-accent text-xl uppercase tracking-widest leading-none">AD&D<br /><span className="text-white text-sm">Campaign Book</span></h2>
+                </div>
 
-                    <div className="flex bg-gray-900 rounded p-1 gap-1">
-                        <button onClick={() => handlePrint('full')} className={`px-3 py-1 rounded transition-colors ${printMode === 'full' ? 'bg-accent text-black font-bold' : 'hover:bg-gray-700'}`}>FULL BOOK</button>
-                        <button onClick={() => handlePrint('intro')} className={`px-3 py-1 rounded transition-colors ${printMode === 'intro' ? 'bg-accent text-black font-bold' : 'hover:bg-gray-700'}`}>INTRO</button>
-                        <button onClick={() => handlePrint('adventure')} className={`px-3 py-1 rounded transition-colors ${printMode === 'adventure' ? 'bg-accent text-black font-bold' : 'hover:bg-gray-700'}`}>ADVENTURES</button>
-                        <button onClick={() => handlePrint('bestiary')} className={`px-3 py-1 rounded transition-colors ${printMode === 'bestiary' ? 'bg-accent text-black font-bold' : 'hover:bg-gray-700'}`}>BESTIARY</button>
-                        <button onClick={() => handlePrint('shops')} className={`px-3 py-1 rounded transition-colors ${printMode === 'shops' ? 'bg-accent text-black font-bold' : 'hover:bg-gray-700'}`}>SHOPS</button>
+                <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                    <div>
+                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Print Sections</h3>
+                        <div className="flex flex-col gap-2">
+                            <button onClick={() => handlePrint('full')} className={`text-left px-4 py-3 rounded transition-all flex items-center gap-3 ${printMode === 'full' ? 'bg-accent text-black font-bold shadow-lg ring-2 ring-white/20' : 'bg-gray-800 hover:bg-gray-700 hover:translate-x-1'}`}>
+                                <span className="w-2 h-2 rounded-full bg-current"></span>
+                                Full Book
+                            </button>
+                            <button onClick={() => handlePrint('intro')} className={`text-left px-4 py-2 rounded transition-all text-sm ${printMode === 'intro' ? 'bg-accent text-black font-bold' : 'text-gray-300 hover:bg-gray-800 hover:pl-5'}`}>Introduction</button>
+                            <button onClick={() => handlePrint('adventure')} className={`text-left px-4 py-2 rounded transition-all text-sm ${printMode === 'adventure' ? 'bg-accent text-black font-bold' : 'text-gray-300 hover:bg-gray-800 hover:pl-5'}`}>Adventures</button>
+                            <button onClick={() => handlePrint('bestiary')} className={`text-left px-4 py-2 rounded transition-all text-sm ${printMode === 'bestiary' ? 'bg-accent text-black font-bold' : 'text-gray-300 hover:bg-gray-800 hover:pl-5'}`}>Bestiary</button>
+                            <button onClick={() => handlePrint('shops')} className={`text-left px-4 py-2 rounded transition-all text-sm ${printMode === 'shops' ? 'bg-accent text-black font-bold' : 'text-gray-300 hover:bg-gray-800 hover:pl-5'}`}>Shops</button>
+                            <button onClick={() => handlePrint('mechanics')} className={`text-left px-4 py-2 rounded transition-all text-sm ${printMode === 'mechanics' ? 'bg-accent text-black font-bold' : 'text-gray-300 hover:bg-gray-800 hover:pl-5'}`}>Mechanics</button>
+                        </div>
                     </div>
                 </div>
-                <button
-                    onClick={onClose}
-                    className="text-gray-400 hover:text-white underline ml-4 whitespace-nowrap"
-                >
-                    Close Viewer
-                </button>
+
+                <div className="p-4 border-t border-gray-800 bg-black/50">
+                    <button
+                        onClick={onClose}
+                        className="w-full py-3 px-4 bg-red-900/50 hover:bg-red-900 text-red-200 rounded border border-red-900/50 uppercase font-bold tracking-wider text-xs transition-colors"
+                    >
+                        Close Viewer
+                    </button>
+                </div>
             </div>
 
             {/* Book Content Container - Scrollable Area */}
-            <div className="flex-1 overflow-y-auto w-full relative z-0">
-                <div className="max-w-[816px] mx-auto bg-white min-h-screen pt-8 pb-12 px-12 shadow-2xl print:shadow-none print:pt-0 print:mx-0 print:w-full print:max-w-none print:px-8">
+            <div className="flex-1 overflow-y-auto w-full relative z-0 bg-gray-200 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+                <div className="max-w-[816px] mx-auto bg-white min-h-screen pt-8 pb-12 px-12 shadow-2xl print:shadow-none print:pt-0 print:mx-0 print:w-full print:max-w-none print:px-8 my-8 print:my-0">
 
                     {/* COVER PAGE (Only in Full Mode) */}
-                    <div className={`print-cover-container min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-black text-white border-8 border-yellow-600 rounded-lg mb-8 print:border-none print:rounded-none ${printMode !== 'full' ? 'print:hidden' : ''}`}>
-                        <Image
-                            src="/cover_art_v8.png"
-                            alt="Heart's Curse Campaign Cover"
-                            fill
-                            className="object-cover opacity-80 grayscale contrast-125"
-                            priority
-                        />
-                        <div className="absolute top-16 left-0 w-full text-center z-10">
-                            <h1 className="text-8xl font-extrabold text-[#d4af37] drop-shadow-[0_5px_5px_rgba(0,0,0,1)] font-serif tracking-tight print:text-black print:text-6xl print:drop-shadow-none" style={{ fontFamily: 'var(--adnd-font-header)' }}>HEART&apos;S CURSE</h1>
-                            <p className="text-2xl text-[#e8dcc5] mt-4 tracking-[0.5em] uppercase font-bold drop-shadow-md print:text-black print:bg-white/90 print:inline-block print:px-4 print:border-2 print:border-black">Advanced Dungeons & Dragons</p>
+                    <div className={`print-cover-container w-full min-h-screen flex flex-col items-center justify-between relative overflow-hidden bg-black border-4 border-yellow-600 rounded-lg mb-8 pt-20 pb-20 print:border-none print:rounded-none ${printMode !== 'full' ? 'print:hidden' : ''}`}>
+                        {/* Background Image - Absolute z-0 */}
+                        <div className="absolute inset-0 z-0">
+                            <Image
+                                src="/cover_art_v8.png"
+                                alt="Heart's Curse Campaign Cover"
+                                fill
+                                className="object-cover opacity-60 grayscale contrast-125"
+                                priority
+                            />
+                            <div className="absolute inset-0 bg-black/30 z-10" /> {/* Dim overlay */}
                         </div>
-                        <div className="absolute bottom-16 z-10 bg-black/80 px-8 py-2 border-2 border-[#d4af37] print:border-black print:bg-white print:text-black">
-                            <p className="text-[#d4af37] print:text-black font-bold uppercase tracking-widest">Campaign Module HC-1</p>
+
+                        {/* Header Content - Relative z-20 */}
+                        <div className="relative z-20 w-full text-center px-4">
+                            <h1 className="text-8xl font-extrabold text-[#d4af37] drop-shadow-[0_5px_5px_rgba(0,0,0,1)] font-serif tracking-tight leading-tight print:text-black print:text-6xl print:drop-shadow-none" style={{ fontFamily: 'var(--adnd-font-header)', textShadow: '0 4px 8px rgba(0,0,0,0.8)' }}>
+                                HEART&apos;S CURSE
+                            </h1>
+                            <p className="text-2xl text-[#e8dcc5] mt-6 tracking-[0.5em] uppercase font-bold drop-shadow-md bg-black/50 inline-block px-6 py-2 rounded border border-[#d4af37]/30 print:text-black print:bg-white/90 print:border-2 print:border-black">
+                                Advanced Dungeons & Dragons
+                            </p>
+                        </div>
+
+                        {/* Footer Content - Relative z-20 */}
+                        <div className="relative z-20 bg-black/80 px-8 py-2 border-2 border-[#d4af37] print:border-black print:bg-white print:text-black shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+                            <p className="text-[#d4af37] print:text-black font-bold uppercase tracking-widest text-lg">
+                                Campaign Module HC-1
+                            </p>
                         </div>
                     </div>
 
@@ -110,7 +136,9 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                             {CAMPAIGN_LORE.map((section) => (
                                 <div key={section.id} className="mb-6 break-inside-avoid">
                                     <h3 className="font-bold uppercase text-lg mb-1 font-serif text-[#8a1c1c]">{section.title}</h3>
-                                    <p className="indent-4 mb-2 whitespace-pre-wrap">{section.content}</p>
+                                    {section.content.split('\n').filter(Boolean).map((para, pIdx) => (
+                                        <p key={pIdx} className="indent-4 mb-2">{para}</p>
+                                    ))}
                                 </div>
                             ))}
                         </div>
@@ -138,7 +166,9 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
 
                                     {/* Boxed Text (Read Aloud) */}
                                     <div className="break-inside-avoid bg-gray-100 border-2 border-black p-4 mb-6 shadow-sm font-serif italic text-sm">
-                                        <p>{mapData.description.replace(/\*\*/g, '')}</p>
+                                        {mapData.description.replace(/\*\*/g, '').split('\n').filter(Boolean).map((p, i) => (
+                                            <p key={i} className="mb-2 last:mb-0">{p}</p>
+                                        ))}
                                     </div>
 
                                     {mapData.mechanics && mapData.mechanics.length > 0 && (
@@ -160,7 +190,18 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                                             height={600}
                                             style={{ width: '100%', height: 'auto' }}
                                         />
-                                        <div className="absolute bottom-0 right-0 bg-white px-2 border-t border-l border-black text-xs font-bold">MAP {index + 1}</div>
+                                        <div className="absolute bottom-0 right-0 bg-white px-2 border-t border-l border-black text-xs font-bold z-10">MAP {index + 1}</div>
+
+                                        {/* Map Markers */}
+                                        {mapData.nodes?.map((node, i) => (
+                                            <div
+                                                key={i}
+                                                className="absolute w-6 h-6 -ml-3 -mt-3 bg-white border-2 border-black rounded-full flex items-center justify-center text-xs font-bold leading-none z-20 shadow-md"
+                                                style={{ left: `${node.x}%`, top: `${node.y}%` }}
+                                            >
+                                                {i + 1}
+                                            </div>
+                                        ))}
                                     </div>
 
                                     <h3 className="break-inside-avoid font-bold uppercase border-b-2 border-black mb-4 text-xl mt-8 column-span-all font-serif text-[#003366]">Encounter Key</h3>
@@ -171,7 +212,9 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                                                 <span className="font-bold text-lg font-serif">{i + 1}. {node.label}</span>
                                                 <span className="text-xs uppercase font-bold text-gray-500">[{node.type}]</span>
                                             </div>
-                                            <p className="indent-4">{node.description}</p>
+                                            {node.description.split('\n').filter(Boolean).map((dp, di) => (
+                                                <p key={di} className="indent-4 mb-1">{dp}</p>
+                                            ))}
                                         </div>
                                     ))}
                                 </div>
@@ -194,18 +237,6 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                                     <h3 className="font-bold text-xl uppercase mb-1 font-serif text-[#003366]">{stat.name}</h3>
                                     <div className="border-b border-black mb-2 pb-1 italic font-serif">{stat.size} {stat.type}, {stat.alignment}</div>
 
-                                    {stat.image && (
-                                        <div className="mb-3 border border-black grayscale contrast-125 opacity-90 relative h-32 w-full overflow-hidden">
-                                            {/* Fallback handled by Next/Image automatically if configured, avoiding complex onError logic for print view */}
-                                            <Image
-                                                src={stat.image}
-                                                alt={stat.name}
-                                                fill
-                                                className="object-cover object-top"
-                                                sizes="200px"
-                                            />
-                                        </div>
-                                    )}
 
                                     <div className="grid grid-cols-2 gap-x-4 gap-y-1 mb-2">
                                         <div><strong>AC:</strong> {stat.ac} ({stat.armorType})</div>
@@ -360,25 +391,25 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
 
                 <style jsx global>{`
                 /* Cover Page Print Optimizations */
-                .print-cover-container {
-                    break-after: page;
-                    page-break-after: always;
-                    height: 100vh;
-                    width: 100%;
-                    position: relative;
-                    background-color: white !important; /* Save ink */
-                    color: black !important;
-                    border: 4px solid black !important;
-                    -webkit-print-color-adjust: exact;
-                    print-color-adjust: exact;
-                }
-
-                .page-break {
-                    page-break-after: always;
-                    break-after: page;
-                }
-
                 @media print {
+                    .print-cover-container {
+                        break-after: page;
+                        page-break-after: always;
+                        height: 100vh;
+                        width: 100%;
+                        position: relative;
+                        background-color: white !important; /* Save ink */
+                        color: black !important;
+                        border: 4px solid black !important;
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;
+                    }
+
+                    .page-break {
+                        page-break-after: always;
+                        break-after: page;
+                    }
+
                     @page {
                         margin: 0.5in;
                         size: letter;
