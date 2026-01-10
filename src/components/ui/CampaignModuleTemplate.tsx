@@ -212,7 +212,7 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                                                 <span className="font-bold text-lg font-serif">{i + 1}. {node.label}</span>
                                                 <span className="text-xs uppercase font-bold text-gray-500">[{node.type}]</span>
                                             </div>
-                                            {node.description.split('\n').filter(Boolean).map((dp, di) => (
+                                            {(node.description || "").split('\n').filter(Boolean).map((dp, di) => (
                                                 <p key={di} className="indent-4 mb-1">{dp}</p>
                                             ))}
                                         </div>
