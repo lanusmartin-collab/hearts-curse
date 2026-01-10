@@ -154,221 +154,222 @@ export default function PlayersPage() {
                             <button
                                 key={p.id}
                                 onClick={() => { setSelectedPlayerId(p.id); setSelectedFile(null); setFileFullScreen(false); }}
-                                w-full relative group overflow-hidden transition-all duration-300 p-3 h-14 flex items-center justify-between !border - 0!outline - none!shadow - none
+                                className={`
+                                    w-full relative group overflow-hidden transition-all duration-300 p-3 h-14 flex items-center justify-between !border-0 !outline-none !shadow-none
                                     hover:bg-[#111] hover:pl-5
-                        ${selectedPlayerId === p.id
-                            ? 'bg-[#1a0505] pl-5'
-                            : 'bg-transparent'}
+                                    ${selectedPlayerId === p.id
+                                        ? 'bg-[#1a0505] pl-5'
+                                        : 'bg-transparent'}
                                 `}
                             >
-                        <div className="flex flex-col items-start z-10 pl-2">
-                            <span className={`font-header tracking-wider text-sm ${p.status.includes('Dead') ? 'line-through text-gray-500 opacity-50' : (selectedPlayerId === p.id ? 'text-[#ffcccc] text-shadow-glow animate-heartbeat' : 'text-[#888] group-hover:text-[#ccc] animate-heartbeat')}`}>
-                                {p.name}
-                            </span>
-                            <span className="text-[9px] font-mono text-[#444] uppercase tracking-widest">{p.class}</span>
-                        </div>
-                        <div className={`p-2 rounded-full border border-transparent ${selectedPlayerId === p.id ? 'bg-[#a32222]/20' : 'bg-transparent'}`}>
-                            <Heart className={`w-4 h-4 transition-all ${selectedPlayerId === p.id ? 'fill-[#a32222] text-[#a32222] animate-heartbeat' : 'text-[#333] group-hover:text-[#555]'}`} />
-                        </div>
+                                <div className="flex flex-col items-start z-10 pl-2">
+                                    <span className={`font-header tracking-wider text-sm ${p.status.includes('Dead') ? 'line-through text-gray-500 opacity-50' : (selectedPlayerId === p.id ? 'text-[#ffcccc] text-shadow-glow animate-heartbeat' : 'text-[#888] group-hover:text-[#ccc] animate-heartbeat')}`}>
+                                        {p.name}
+                                    </span>
+                                    <span className="text-[9px] font-mono text-[#444] uppercase tracking-widest">{p.class}</span>
+                                </div>
+                                <div className={`p-2 rounded-full border border-transparent ${selectedPlayerId === p.id ? 'bg-[#a32222]/20' : 'bg-transparent'}`}>
+                                    <Heart className={`w-4 h-4 transition-all ${selectedPlayerId === p.id ? 'fill-[#a32222] text-[#a32222] animate-heartbeat' : 'text-[#333] group-hover:text-[#555]'}`} />
+                                </div>
 
-                        {selectedPlayerId === p.id && <div className="absolute inset-0 bg-gradient-to-r from-[#a32222]/10 to-transparent pointer-events-none"></div>}
-                    </button>
+                                {selectedPlayerId === p.id && <div className="absolute inset-0 bg-gradient-to-r from-[#a32222]/10 to-transparent pointer-events-none"></div>}
+                            </button>
                         ))}
+                    </div>
                 </div>
-            </div>
 
-            {/* 2. Main Content Area */}
-            <div className={`flex-1 flex flex-col bg-[#050505] relative overflow-hidden transition-all duration-300 ${fileFullScreen ? '' : 'items-center justify-center'}`}>
-                <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('/noise.png')]"></div>
+                {/* 2. Main Content Area */}
+                <div className={`flex-1 flex flex-col bg-[#050505] relative overflow-hidden transition-all duration-300 ${fileFullScreen ? '' : 'items-center justify-center'}`}>
+                    <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('/noise.png')]"></div>
 
-                {activePlayer ? (
-                    <div className={`flex h-full w-full max-w-[1800px] ${fileFullScreen ? 'p-0' : 'p-8 gap-8 pl-20'}`}> {/* Forced pl-20 for separation */}
+                    {activePlayer ? (
+                        <div className={`flex h-full w-full max-w-[1800px] ${fileFullScreen ? 'p-0' : 'p-8 gap-8 pl-20'}`}> {/* Forced pl-20 for separation */}
 
-                        {/* Left: Character Sheet (20% Width - Compact to give Doc Viewer space) */}
-                        {!fileFullScreen && (
-                            <div className="w-[320px] shrink-0 flex flex-col animate-fade-in shadow-2xl self-center" style={{ height: "92%" }}>
-                                {/* Top Border Decoration */}
-                                <div className="h-2 bg-[#1a1a1a] border-x border-t border-[#333] mx-1"></div>
+                            {/* Left: Character Sheet (20% Width - Compact to give Doc Viewer space) */}
+                            {!fileFullScreen && (
+                                <div className="w-[320px] shrink-0 flex flex-col animate-fade-in shadow-2xl self-center" style={{ height: "92%" }}>
+                                    {/* Top Border Decoration */}
+                                    <div className="h-2 bg-[#1a1a1a] border-x border-t border-[#333] mx-1"></div>
 
-                                <div className="flex-1 border border-[#5d4037] p-1 flex flex-col relative bg-[#f0e6d2]" style={{ backgroundColor: '#f0e6d2' }}>
+                                    <div className="flex-1 border border-[#5d4037] p-1 flex flex-col relative bg-[#f0e6d2]" style={{ backgroundColor: '#f0e6d2' }}>
 
-                                    <div className="flex-1 flex flex-col bg-[#f0e6d2] p-6 relative overflow-hidden text-[#1a1a1a]" style={{ backgroundColor: '#f0e6d2', color: '#1a1a1a' }}>
-                                        {/* Header */}
-                                        <div className="border-b-2 border-[#a32222]/30 pb-4 mb-4">
-                                            <div className="flex justify-between items-start mb-2">
-                                                <input
-                                                    className="bg-transparent border-none text-3xl font-header text-[#7a1c1c] tracking-[0.05em] focus:text-[#a32222] outline-none w-full font-serif"
-                                                    value={activePlayer.name}
-                                                    onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, name: e.target.value } : p))}
-                                                />
-                                                <button
-                                                    onClick={() => {
-                                                        if (confirm("Remove this soul permanently?")) {
-                                                            setPlayers(players.filter(p => p.id !== activePlayer.id));
-                                                            setSelectedPlayerId(null);
-                                                        }
-                                                    }}
-                                                    className="text-[#5d4037] hover:text-[#a32222] transition-colors"
-                                                    title="Delete Sheet"
-                                                >
-                                                    <Trash2 className="w-5 h-5" />
-                                                </button>
+                                        <div className="flex-1 flex flex-col bg-[#f0e6d2] p-6 relative overflow-hidden text-[#1a1a1a]" style={{ backgroundColor: '#f0e6d2', color: '#1a1a1a' }}>
+                                            {/* Header */}
+                                            <div className="border-b-2 border-[#a32222]/30 pb-4 mb-4">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <input
+                                                        className="bg-transparent border-none text-3xl font-header text-[#7a1c1c] tracking-[0.05em] focus:text-[#a32222] outline-none w-full font-serif"
+                                                        value={activePlayer.name}
+                                                        onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, name: e.target.value } : p))}
+                                                    />
+                                                    <button
+                                                        onClick={() => {
+                                                            if (confirm("Remove this soul permanently?")) {
+                                                                setPlayers(players.filter(p => p.id !== activePlayer.id));
+                                                                setSelectedPlayerId(null);
+                                                            }
+                                                        }}
+                                                        className="text-[#5d4037] hover:text-[#a32222] transition-colors"
+                                                        title="Delete Sheet"
+                                                    >
+                                                        <Trash2 className="w-5 h-5" />
+                                                    </button>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-[#555] font-mono text-[10px] uppercase">Class & Level:</span>
+                                                    <input
+                                                        className="bg-transparent border-b border-[#5d4037] text-[#1a1a1a] font-mono text-xs uppercase tracking-[0.2em] flex-1 focus:border-[#a32222] outline-none placeholder-[#8c7b75]"
+                                                        value={activePlayer.class}
+                                                        onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, class: e.target.value } : p))}
+                                                        placeholder="UNKNOWN"
+                                                    />
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-[#555] font-mono text-[10px] uppercase">Class & Level:</span>
-                                                <input
-                                                    className="bg-transparent border-b border-[#5d4037] text-[#1a1a1a] font-mono text-xs uppercase tracking-[0.2em] flex-1 focus:border-[#a32222] outline-none placeholder-[#8c7b75]"
-                                                    value={activePlayer.class}
-                                                    onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, class: e.target.value } : p))}
-                                                    placeholder="UNKNOWN"
-                                                />
-                                            </div>
-                                        </div>
 
-                                        <div className="mb-4 bg-[#e6dac3] border border-[#c9bca0] p-3 shadow-inner">
-                                            <h4 className="text-[#5d4037] font-header text-sm tracking-[0.1em] mb-3 text-center border-b border-[#c9bca0] pb-1 font-bold">
-                                                Current Conditions
-                                            </h4>
-                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
-                                                {(Object.keys(STATUS_CONFIG) as PlayerStatus[]).map(status => {
-                                                    const config = STATUS_CONFIG[status];
-                                                    const isActive = activePlayer.status.includes(status);
+                                            <div className="mb-4 bg-[#e6dac3] border border-[#c9bca0] p-3 shadow-inner">
+                                                <h4 className="text-[#5d4037] font-header text-sm tracking-[0.1em] mb-3 text-center border-b border-[#c9bca0] pb-1 font-bold">
+                                                    Current Conditions
+                                                </h4>
+                                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
+                                                    {(Object.keys(STATUS_CONFIG) as PlayerStatus[]).map(status => {
+                                                        const config = STATUS_CONFIG[status];
+                                                        const isActive = activePlayer.status.includes(status);
 
-                                                    return (
-                                                        <button
-                                                            key={status}
-                                                            onClick={() => toggleStatus(activePlayer.id, status)}
-                                                            className={`
+                                                        return (
+                                                            <button
+                                                                key={status}
+                                                                onClick={() => toggleStatus(activePlayer.id, status)}
+                                                                className={`
                                                                     flex items-center gap-2 p-1 transition-all group border border-transparent hover:border-[#a32222]/20
                                                                     ${isActive ? 'opacity-100' : 'opacity-60 hover:opacity-100'}
                                                                 `}
-                                                        >
-                                                            <div className={`
+                                                            >
+                                                                <div className={`
                                                                     w-3 h-3 border border-[#444] flex items-center justify-center transition-colors shrink-0
                                                                     ${isActive ? 'bg-[#a32222] border-[#ff4444]' : 'bg-transparent'}
                                                                 `}>
-                                                                {isActive && <div className="w-1.5 h-1.5 bg-white rounded-full"></div>}
-                                                            </div>
-                                                            <span className={`text-[10px] font-bold uppercase tracking-wider truncate ${isActive ? 'text-[#a32222]' : 'text-[#5d4037]'}`}>
-                                                                {status}
-                                                            </span>
-                                                        </button>
-                                                    );
-                                                })}
+                                                                    {isActive && <div className="w-1.5 h-1.5 bg-white rounded-full"></div>}
+                                                                </div>
+                                                                <span className={`text-[10px] font-bold uppercase tracking-wider truncate ${isActive ? 'text-[#a32222]' : 'text-[#5d4037]'}`}>
+                                                                    {status}
+                                                                </span>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        {/* Notes Area */}
-                                        <div className="flex-1 flex flex-col mb-4">
-                                            <h4 className="text-[#5d4037] font-header text-sm tracking-[0.1em] mb-2 pl-1 font-bold">
-                                                Character Notes
-                                            </h4>
-                                            <textarea
-                                                className="flex-1 w-full bg-[#fdfbf7] border border-[#c9bca0] p-4 text-[#1a1a1a] font-serif text-base leading-6 resize-none outline-none focus:border-[#a32222] transition-colors custom-scrollbar shadow-inner"
-                                                value={activePlayer.notes}
-                                                onChange={(e) => updateNotes(activePlayer.id, e.target.value)}
-                                                placeholder="Enter character notes..."
-                                            />
-                                        </div>
-
-                                        {/* Files List */}
-                                        <div className="h-[25%] shrink-0 flex flex-col mt-4 border-t border-[#c9bca0] pt-4">
-                                            <div className="flex justify-between items-center mb-2 px-1">
-                                                <h4 className="text-[#5d4037] font-header text-sm tracking-[0.1em] font-bold">
-                                                    Attached Archives
+                                            {/* Notes Area */}
+                                            <div className="flex-1 flex flex-col mb-4">
+                                                <h4 className="text-[#5d4037] font-header text-sm tracking-[0.1em] mb-2 pl-1 font-bold">
+                                                    Character Notes
                                                 </h4>
-                                                <label className="cursor-pointer text-[#a32222] hover:text-[#7a1c1c] transition-colors text-[10px] uppercase font-bold tracking-widest">
-                                                    [+ ATTACH]
-                                                    <input type="file" className="hidden" onChange={(e) => handleFileUpload(activePlayer.id, e)} />
-                                                </label>
+                                                <textarea
+                                                    className="flex-1 w-full bg-[#fdfbf7] border border-[#c9bca0] p-4 text-[#1a1a1a] font-serif text-base leading-6 resize-none outline-none focus:border-[#a32222] transition-colors custom-scrollbar shadow-inner"
+                                                    value={activePlayer.notes}
+                                                    onChange={(e) => updateNotes(activePlayer.id, e.target.value)}
+                                                    placeholder="Enter character notes..."
+                                                />
                                             </div>
-                                            <div className="flex-1 bg-[#e6dac3] border border-[#c9bca0] p-1 overflow-y-auto custom-scrollbar shadow-inner">
-                                                {activePlayer.files.map((file, i) => (
-                                                    <div
-                                                        key={i}
-                                                        onClick={() => file.url && setSelectedFile({ url: file.url, type: file.type || 'unknown', name: file.name })}
-                                                        className={`
+
+                                            {/* Files List */}
+                                            <div className="h-[25%] shrink-0 flex flex-col mt-4 border-t border-[#c9bca0] pt-4">
+                                                <div className="flex justify-between items-center mb-2 px-1">
+                                                    <h4 className="text-[#5d4037] font-header text-sm tracking-[0.1em] font-bold">
+                                                        Attached Archives
+                                                    </h4>
+                                                    <label className="cursor-pointer text-[#a32222] hover:text-[#7a1c1c] transition-colors text-[10px] uppercase font-bold tracking-widest">
+                                                        [+ ATTACH]
+                                                        <input type="file" className="hidden" onChange={(e) => handleFileUpload(activePlayer.id, e)} />
+                                                    </label>
+                                                </div>
+                                                <div className="flex-1 bg-[#e6dac3] border border-[#c9bca0] p-1 overflow-y-auto custom-scrollbar shadow-inner">
+                                                    {activePlayer.files.map((file, i) => (
+                                                        <div
+                                                            key={i}
+                                                            onClick={() => file.url && setSelectedFile({ url: file.url, type: file.type || 'unknown', name: file.name })}
+                                                            className={`
                                                                 flex items-center justify-between p-2 cursor-pointer border-b border-[#d1c4a8] last:border-0 hover:bg-[#dcd0b8] group
                                                                 ${selectedFile?.url === file.url ? 'bg-[#dcd0b8] text-[#333]' : 'text-[#444]'}
                                                             `}
-                                                    >
-                                                        <span className="truncate text-[10px] font-mono w-full">{file.name}</span>
-                                                        <button
-                                                            onClick={(e) => { e.stopPropagation(); deleteFile(activePlayer.id, i); }}
-                                                            className="opacity-0 group-hover:opacity-100 text-[#444] hover:text-red-500 ml-2"
                                                         >
-                                                            <X className="w-3 h-3" />
-                                                        </button>
-                                                    </div>
-                                                ))}
+                                                            <span className="truncate text-[10px] font-mono w-full">{file.name}</span>
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); deleteFile(activePlayer.id, i); }}
+                                                                className="opacity-0 group-hover:opacity-100 text-[#444] hover:text-red-500 ml-2"
+                                                            >
+                                                                <X className="w-3 h-3" />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
-                                        </div>
 
-                                    </div>
-                                </div>
-                                {/* Bottom Border Decoration */}
-                                <div className="h-2 bg-[#1a1a1a] border-x border-b border-[#333] mx-1"></div>
-                            </div>
-                        )}
-
-                        {/* Right: Document Viewer (70-75% Width) */}
-                        <div className={`flex flex-col bg-[#030303] border border-[#222] relative transition-all duration-300 ${fileFullScreen ? 'h-full w-full border-none z-50' : 'flex-1 min-w-[600px] h-[92%] self-center shadow-2xl'}`}>
-                            {selectedFile ? (
-                                <div className="h-full flex flex-col">
-                                    <div className="h-10 shrink-0 border-b border-[#222] flex items-center justify-between px-4 bg-[#080808]">
-                                        <span className="text-[#666] font-mono text-[10px] uppercase tracking-widest truncate max-w-[300px]">{selectedFile.name}</span>
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => setFileFullScreen(!fileFullScreen)}
-                                                className="text-[#555] hover:text-[#e0e0e0] p-1.5 hover:bg-[#222] rounded transition-colors"
-                                                title={fileFullScreen ? "Exit Full Screen" : "Maximize View"}
-                                            >
-                                                {fileFullScreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-                                            </button>
-                                            <button onClick={() => setSelectedFile(null)} className="text-[#555] hover:text-[#e0e0e0] p-1.5 hover:bg-[#222] rounded transition-colors">
-                                                <X className="w-4 h-4" />
-                                            </button>
                                         </div>
                                     </div>
-                                    <div className="flex-1 relative bg-[#050505] flex items-center justify-center overflow-auto p-4 custom-scrollbar">
-                                        {selectedFile.type.startsWith('image/') ? (
-                                            <img
-                                                src={selectedFile.url}
-                                                alt="Preview"
-                                                className={`shadow-2xl border border-[#222] transition-all duration-300 ${fileFullScreen ? 'h-auto max-w-[90%]' : 'w-[450px] object-contain bg-black'}`}
-                                            />
-                                        ) : selectedFile.type === 'application/pdf' ? (
-                                            <iframe src={selectedFile.url} className="w-full h-full border border-[#222] shadow-2xl bg-white" />
-                                        ) : (
-                                            <div className="text-[#444] font-mono text-xs uppercase tracking-widest border border-[#222] p-12 text-center opacity-50">
-                                                Format Not Supported
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="h-full flex flex-col items-center justify-center text-[#222] select-none">
-                                    <FileText className="w-16 h-16 mb-4 opacity-10" />
-                                    <div className="text-center">
-                                        <h3 className="text-[#444] font-header text-xl tracking-widest mb-1">ARCHIVE VIEWER</h3>
-                                        <p className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-30 px-8">
-                                            Select a document to inspect
-                                        </p>
-                                    </div>
+                                    {/* Bottom Border Decoration */}
+                                    <div className="h-2 bg-[#1a1a1a] border-x border-b border-[#333] mx-1"></div>
                                 </div>
                             )}
-                        </div>
 
-                    </div>
-                ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center text-[#333] select-none pointer-events-none pl-20"> {/* Fixed separation */}
-                        <Ghost className="w-24 h-24 mb-6 opacity-10 animate-float" />
-                        <h2 className="text-2xl font-header tracking-[0.3em] uppercase mb-2 opacity-30 text-[#e0e0e0]">Awaiting Soul Selection</h2>
-                        <p className="font-mono text-[10px] uppercase tracking-widest opacity-20">Access the register to proceed</p>
-                    </div>
-                )}
+                            {/* Right: Document Viewer (70-75% Width) */}
+                            <div className={`flex flex-col bg-[#030303] border border-[#222] relative transition-all duration-300 ${fileFullScreen ? 'h-full w-full border-none z-50' : 'flex-1 min-w-[600px] h-[92%] self-center shadow-2xl'}`}>
+                                {selectedFile ? (
+                                    <div className="h-full flex flex-col">
+                                        <div className="h-10 shrink-0 border-b border-[#222] flex items-center justify-between px-4 bg-[#080808]">
+                                            <span className="text-[#666] font-mono text-[10px] uppercase tracking-widest truncate max-w-[300px]">{selectedFile.name}</span>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => setFileFullScreen(!fileFullScreen)}
+                                                    className="text-[#555] hover:text-[#e0e0e0] p-1.5 hover:bg-[#222] rounded transition-colors"
+                                                    title={fileFullScreen ? "Exit Full Screen" : "Maximize View"}
+                                                >
+                                                    {fileFullScreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                                                </button>
+                                                <button onClick={() => setSelectedFile(null)} className="text-[#555] hover:text-[#e0e0e0] p-1.5 hover:bg-[#222] rounded transition-colors">
+                                                    <X className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 relative bg-[#050505] flex items-center justify-center overflow-auto p-4 custom-scrollbar">
+                                            {selectedFile.type.startsWith('image/') ? (
+                                                <img
+                                                    src={selectedFile.url}
+                                                    alt="Preview"
+                                                    className={`shadow-2xl border border-[#222] transition-all duration-300 ${fileFullScreen ? 'h-auto max-w-[90%]' : 'w-[450px] object-contain bg-black'}`}
+                                                />
+                                            ) : selectedFile.type === 'application/pdf' ? (
+                                                <iframe src={selectedFile.url} className="w-full h-full border border-[#222] shadow-2xl bg-white" />
+                                            ) : (
+                                                <div className="text-[#444] font-mono text-xs uppercase tracking-widest border border-[#222] p-12 text-center opacity-50">
+                                                    Format Not Supported
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="h-full flex flex-col items-center justify-center text-[#222] select-none">
+                                        <FileText className="w-16 h-16 mb-4 opacity-10" />
+                                        <div className="text-center">
+                                            <h3 className="text-[#444] font-header text-xl tracking-widest mb-1">ARCHIVE VIEWER</h3>
+                                            <p className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-30 px-8">
+                                                Select a document to inspect
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                        </div>
+                    ) : (
+                        <div className="flex-1 flex flex-col items-center justify-center text-[#333] select-none pointer-events-none pl-20"> {/* Fixed separation */}
+                            <Ghost className="w-24 h-24 mb-6 opacity-10 animate-float" />
+                            <h2 className="text-2xl font-header tracking-[0.3em] uppercase mb-2 opacity-30 text-[#e0e0e0]">Awaiting Soul Selection</h2>
+                            <p className="font-mono text-[10px] uppercase tracking-widest opacity-20">Access the register to proceed</p>
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
         </div >
     );
 }
