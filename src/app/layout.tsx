@@ -3,6 +3,7 @@ import "./globals.css";
 import DiceRoller from "@/components/ui/DiceRoller";
 
 import SidebarNav from "@/components/ui/SidebarNav";
+import CurseOverlay from "@/components/ui/CurseOverlay";
 
 export const metadata: Metadata = {
   title: "Heart's Curse Campaign",
@@ -32,6 +33,7 @@ export default function RootLayout({
       </head>
       <body>
         <AudioProvider>
+          <CurseOverlay />
           <div className="noise-overlay"></div>
           <SidebarNav />
           <main>{children}</main>
