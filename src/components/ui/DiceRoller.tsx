@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+
+type Position = { x: number; y: number };
 
 type DieResult = {
     id: string;
@@ -261,17 +263,39 @@ export default function DiceRoller({ onRollComplete }: Props) {
 
             {!isOpen && (
                 <button
-                    onClick={() => setIsOpen(true)}
+                    onClick={() => !isDragging && setIsOpen(true)}
+                    onMouseDown={handleMouseDown}
                     className="dice-trigger arcane-button"
-                    title="Open Fate Weaver"
+                    title="Open Fate Weaver (Drag to Move)"
+                    style={{
+                        position: 'fixed',
+                        left: position.x,
+                        top: position.y,
+                        bottom: 'auto',
+                        right: 'auto',
+                        cursor: isDragging ? 'grabbing' : 'grab',
+                        transform: isDragging ? 'scale(1.1)' : 'scale(1)',
+                        zIndex: 10000 // Ensure always on top
+                    }}
                 >
-                    <span style={{ fontSize: "28px" }}>🎲</span>
+                    <span style={{ fontSize: "28px", pointerEvents: 'none' }}>🎲</span>
                 </button>
             )}
 
             {isOpen && (
-                <div className="dice-panel glass-panel animate-slide-up">
-                    <div className="p-4" style={{ borderBottom: '1px solid rgba(163,34,34,0.3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to right, #000, #1a0505)' }}>
+                <div
+                    className="dice-panel glass-panel animate-slide-up"
+                    style={{
+                        position: 'fixed',
+                        left: Math.min(position.x - 300, window.innerWidth - 380), // Keep panel on screen relative to button
+                        top: Math.min(position.y - 400, window.innerHeight - 500),
+                        bottom: 'auto',
+                        right: 'auto',
+                        width: '360px',
+                        zIndex: 10000
+                    }}
+                >
+                    <div className="p-4" onMouseDown={handleMouseDown} style={{ borderBottom: '1px solid rgba(163,34,34,0.3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to right, #000, #1a0505)', cursor: 'grab' }}>
                         <h3 style={{ margin: 0, fontSize: "0.9rem", color: "#eecfa1", letterSpacing: "0.2em", textTransform: "uppercase" }}>Fate Weaver</h3>
                         <button
                             onClick={() => setIsOpen(false)}
