@@ -20,7 +20,6 @@ type RollGroup = {
 };
 
 // SVG Paths for Dice Shapes
-// SVG Paths for Dice Shapes
 const DieShape = ({ sides, val, className, style }: { sides: number, val: string | number, className?: string, style?: React.CSSProperties }) => {
     let path = "";
     const viewBox = "0 0 100 100";
@@ -32,8 +31,6 @@ const DieShape = ({ sides, val, className, style }: { sides: number, val: string
             break;
         case 6: // Square / Cube
             path = "M10 10 H90 V90 H10 Z";
-            // Make it look slightly 3D
-            // path = "M10 10 H90 V90 H10 Z M10 10 L25 25 M90 10 L75 25 M90 90 L75 75 M10 90 L25 75 M25 25 H75 V75 H25 Z"; 
             break;
         case 8: // Diamond
             path = "M50 2 L95 50 L50 98 L5 50 Z";
@@ -74,8 +71,54 @@ export default function DiceRoller({ onRollComplete }: Props) {
     const [visorTotal, setVisorTotal] = useState<number | string>("-");
     const [showModifier, setShowModifier] = useState(false);
 
+    // Draggable State
+    const [position, setPosition] = useState<Position>({ x: typeof window !== 'undefined' ? window.innerWidth - 80 : 1000, y: typeof window !== 'undefined' ? window.innerHeight - 80 : 800 });
+    const [isDragging, setIsDragging] = useState(false);
+    const dragOffset = useRef({ x: 0, y: 0 });
+
     const resultsRef = useRef<HTMLDivElement>(null);
     const diceTypes = [4, 6, 8, 10, 12, 20];
+
+    useEffect(() => {
+        const savedPos = localStorage.getItem("dicePos");
+        if (savedPos) {
+            setPosition(JSON.parse(savedPos));
+        }
+    }, []);
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        setIsDragging(true);
+        dragOffset.current = {
+            x: e.clientX - position.x,
+            y: e.clientY - position.y
+        };
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+        if (!isDragging) return;
+        const newX = e.clientX - dragOffset.current.x;
+        const newY = e.clientY - dragOffset.current.y;
+        setPosition({ x: newX, y: newY });
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+        localStorage.setItem("dicePos", JSON.stringify(position));
+    };
+
+    useEffect(() => {
+        if (isDragging) {
+            window.addEventListener("mousemove", handleMouseMove);
+            window.addEventListener("mouseup", handleMouseUp);
+        } else {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
+        }
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
+        };
+    }, [isDragging]);
 
     const animationStyles = `
         @keyframes pixel-spin {
@@ -287,8 +330,8 @@ export default function DiceRoller({ onRollComplete }: Props) {
                     className="dice-panel glass-panel animate-slide-up"
                     style={{
                         position: 'fixed',
-                        left: Math.min(position.x - 300, window.innerWidth - 380), // Keep panel on screen relative to button
-                        top: Math.min(position.y - 400, window.innerHeight - 500),
+                        left: Math.min(position.x - 300, (typeof window !== 'undefined' ? window.innerWidth : 1000) - 380),
+                        top: Math.min(position.y - 400, (typeof window !== 'undefined' ? window.innerHeight : 800) - 500),
                         bottom: 'auto',
                         right: 'auto',
                         width: '360px',
