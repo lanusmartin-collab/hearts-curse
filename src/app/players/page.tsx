@@ -187,7 +187,7 @@ export default function PlayersPage() {
 
                             {/* Left: Character Sheet (20% Width - Compact to give Doc Viewer space) */}
                             {!fileFullScreen && (
-                                <div className="w-[22%] min-w-[320px] shrink-0 flex flex-col animate-fade-in shadow-2xl self-center" style={{ height: "92%" }}>
+                                <div className="w-[320px] shrink-0 flex flex-col animate-fade-in shadow-2xl self-center" style={{ height: "92%" }}>
                                     {/* Top Border Decoration */}
                                     <div className="h-2 bg-[#1a1a1a] border-x border-t border-[#333] mx-1"></div>
 
@@ -231,7 +231,7 @@ export default function PlayersPage() {
                                                 <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.3em] mb-3 text-center border-b border-[#222] pb-1">
                                                     Current Conditions
                                                 </h4>
-                                                <div className="grid grid-cols-2 gap-2"> {/* Removed responsive columns to force 2-col structure */}
+                                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
                                                     {(Object.keys(STATUS_CONFIG) as PlayerStatus[]).map(status => {
                                                         const config = STATUS_CONFIG[status];
                                                         const isActive = activePlayer.status.includes(status);
@@ -314,7 +314,7 @@ export default function PlayersPage() {
                             )}
 
                             {/* Right: Document Viewer (70-75% Width) */}
-                            <div className={`flex flex-col bg-[#030303] border border-[#222] relative transition-all duration-300 ${fileFullScreen ? 'h-full w-full border-none z-50' : 'flex-1 h-[92%] self-center shadow-2xl'}`}>
+                            <div className={`flex flex-col bg-[#030303] border border-[#222] relative transition-all duration-300 ${fileFullScreen ? 'h-full w-full border-none z-50' : 'flex-1 min-w-[600px] h-[92%] self-center shadow-2xl'}`}>
                                 {selectedFile ? (
                                     <div className="h-full flex flex-col">
                                         <div className="h-10 shrink-0 border-b border-[#222] flex items-center justify-between px-4 bg-[#080808]">
