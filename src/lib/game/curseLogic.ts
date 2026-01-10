@@ -2,8 +2,10 @@ import { CURSE_MECHANICS, WILD_MAGIC_TABLE, SILENT_WARDS_MECHANIC } from "@/lib/
 
 export type CurseStage = {
     day: number;
-    name: string;
+    name: "Dormant" | "Awakened" | "Rising" | "Critical";
     effect: string;
+    visualClass: string; // CSS class for global overlay
+    audioCue?: string;
 };
 
 export type RegionalEffect = {
@@ -12,14 +14,21 @@ export type RegionalEffect = {
     trigger?: string;
 };
 
+const CURSE_PROGRESSION: CurseStage[] = [
+    { day: 0, name: "Dormant", effect: "The air feels heavy, but silent.", visualClass: "" },
+    { day: 5, name: "Awakened", effect: "Faint whispers can be heard in the silence.", visualClass: "curse-stage-1" },
+    { day: 10, name: "Rising", effect: "Shadows seem to lengthen and move on their own.", visualClass: "curse-stage-2" },
+    { day: 15, name: "Critical", effect: "Reality flickers. The Heart's beat is audible.", visualClass: "curse-stage-3" }
+];
+
 export function getCurseStage(days: number): CurseStage {
-    // Find the highest stage that matches the day count
-    const stage = CURSE_MECHANICS.stages
+    // Find saturation point
+    const stage = CURSE_PROGRESSION
         .slice()
         .reverse()
         .find(s => days >= s.day);
 
-    return stage || { day: 0, name: "Latent", effect: "No visible effects... yet." };
+    return stage || CURSE_PROGRESSION[0];
 }
 
 export function getRegionalEffect(mapId: string): RegionalEffect | null {
@@ -36,7 +45,20 @@ export function getRegionalEffect(mapId: string): RegionalEffect | null {
             trigger: "Cast spell level 1+"
         };
     }
-    // Add more map-specific logic here
+    if (mapId.includes("town")) {
+        return {
+            title: "Zhentarim Law",
+            description: "Guards are doubled. Prices +20%. Open casting is illegal.",
+            trigger: "Interaction"
+        };
+    }
+    if (mapId === "heart") {
+        return {
+            title: "Reality Hemorrhage",
+            description: "The veil is torn. Magic always surges. Gravity is subjective.",
+            trigger: "Constant"
+        };
+    }
     return null;
 }
 

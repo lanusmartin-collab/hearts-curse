@@ -659,6 +659,140 @@ select:focus {
   letter-spacing: 0.1em;
 }
 
+/* GRIMOIRE SIDEBAR STYLES */
+.grimoire-sidebar {
+  background: var(--obsidian-base);
+  border-right: 4px double #4a0404;
+  position: relative;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.8);
+}
+
+.grimoire-sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent 20%),
+    repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(163, 34, 34, 0.1) 2px);
+  z-index: 1;
+}
+
+.grimoire-header {
+  padding: 1.5rem;
+  background: linear-gradient(to bottom, #1a0505, #0a0a0c);
+  border-bottom: 1px solid #a32222;
+  text-align: center;
+  position: relative;
+}
+
+.grimoire-title {
+  font-family: var(--font-header);
+  color: var(--gold-accent);
+  font-size: 1.2rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(201, 188, 160, 0.3);
+}
+
+.grimoire-category {
+  margin-top: 1rem;
+}
+
+.grimoire-cat-header {
+  font-family: var(--font-header);
+  font-size: 0.8rem;
+  color: #666;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #333;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.grimoire-item {
+  padding: 0.8rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: #888;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.grimoire-item:hover {
+  background: rgba(163, 34, 34, 0.1);
+  color: #ccc;
+  padding-left: 2rem;
+}
+
+.grimoire-item.active {
+  background: linear-gradient(90deg, rgba(163, 34, 34, 0.2), transparent);
+  color: var(--gold-accent);
+  border-left: 3px solid var(--scarlet-accent);
+  text-shadow: 0 0 5px rgba(163, 34, 34, 0.5);
+  padding-left: 2rem;
+}
+
+.grimoire-item.active::after {
+  content: '✦';
+  position: absolute;
+  right: 1rem;
+  color: var(--scarlet-accent);
+  animation: pulse-slow 2s infinite;
+}
+
+/* HEARTBEAT ANIMATION */
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  15% {
+    transform: scale(1.05);
+    opacity: 1;
+    filter: brightness(1.2);
+  }
+
+  30% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  45% {
+    transform: scale(1.03);
+    opacity: 1;
+    filter: brightness(1.1);
+  }
+
+  60% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 3s infinite ease-in-out;
+}
+
+.animate-heartbeat:hover {
+  animation-duration: 0.8s;
+  /* Panic mode on hover */
+}
+
 .mb-4 {
   margin-bottom: 1rem;
 }

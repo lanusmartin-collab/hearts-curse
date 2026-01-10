@@ -84,72 +84,62 @@ export default function MapsPage() {
                     >
                         Print Record
                     </button>
-                    <Link href="/" className="retro-btn bg-red-900 text-white text-xs px-3 py-1 no-underline hover:bg-red-700">Back to Main Menu</Link>
+                    <Link href="/" className="retro-btn bg-red-900 text-white text-xs px-3 py-1 no-underline hover:bg-red-700 animate-heartbeat">Back to Main Menu</Link>
                 </div>
             </div>
 
             <div className="flex flex-1 overflow-hidden">
-                {/* Sidebar */}
-                <div className="retro-border w-[300px] bg-[#fdf5c9] text-[#3e2723] flex flex-col shrink-0">
-                    <div className="p-4 border-b-2 border-brown-800 bg-brown-100 flex justify-between items-center">
-                        <h3 className="font-bold">LOCATIONS</h3>
-                        <button onClick={handleRollEncounter} className="text-xs bg-red-800 text-white px-2 py-1 rounded hover:bg-red-700 animate-pulse font-bold" title="Roll Random Encounter">
-                            ⚔️ ROLL
+                {/* Sidebar - Grimoire Style */}
+                <div className="grimoire-sidebar w-[300px] flex flex-col shrink-0 overflow-hidden z-20">
+                    <div className="grimoire-header">
+                        <h3 className="grimoire-title">REALM ATLAS</h3>
+                        <button onClick={handleRollEncounter} className="mt-2 text-xs bg-red-900/50 border border-red-700 text-red-100 px-4 py-1 rounded animate-heartbeat hover:bg-red-800 transition-colors uppercase tracking-widest" title="Determine Fate">
+                            ⚔️ Roll Encounter
                         </button>
                     </div>
-                    <div className="overflow-y-auto flex-1 p-2 space-y-4">
+
+                    <div className="overflow-y-auto flex-1 custom-scrollbar">
                         {/* Town / Uncategorized */}
-                        <div>
+                        <div className="grimoire-category">
+                            <h4 className="grimoire-cat-header">Oakhaven Region</h4>
                             {CAMPAIGN_MAPS.filter(m => !m.category).map(m => (
                                 <div
                                     key={m.id}
                                     onClick={() => setSelectedMapId(m.id)}
-                                    className={`
-                                        p-3 cursor-pointer transition-all border border-transparent rounded mb-1
-                                        ${selectedMap.id === m.id
-                                            ? "bg-red-900 text-white border-red-900 shadow-md font-bold"
-                                            : "hover:bg-brown-200 hover:border-brown-400"}
-                                    `}
+                                    className={`grimoire-item ${selectedMap.id === m.id ? 'active' : ''} animate-heartbeat`}
+                                    style={{ animationDelay: `${Math.random() * 2}s` }} /* Randomize beat */
                                 >
-                                    <div className="text-sm uppercase tracking-wider">{m.title}</div>
+                                    <span>{m.title}</span>
                                 </div>
                             ))}
                         </div>
 
                         {/* Main Quest */}
-                        <div>
-                            <h4 className="text-xs font-bold uppercase text-gray-500 mb-2 px-1 border-b border-gray-400">Main Quest</h4>
+                        <div className="grimoire-category">
+                            <h4 className="grimoire-cat-header">Main Quest</h4>
                             {CAMPAIGN_MAPS.filter(m => m.category === "Main Quest").map(m => (
                                 <div
                                     key={m.id}
                                     onClick={() => setSelectedMapId(m.id)}
-                                    className={`
-                                        p-3 cursor-pointer transition-all border border-transparent rounded mb-1
-                                        ${selectedMap.id === m.id
-                                            ? "bg-red-900 text-white border-red-900 shadow-md font-bold"
-                                            : "hover:bg-brown-200 hover:border-brown-400"}
-                                    `}
+                                    className={`grimoire-item ${selectedMap.id === m.id ? 'active' : ''} animate-heartbeat`}
+                                    style={{ animationDelay: `${Math.random() * 2}s` }}
                                 >
-                                    <div className="text-sm uppercase tracking-wider">{m.title}</div>
+                                    <span>{m.title}</span>
                                 </div>
                             ))}
                         </div>
 
                         {/* Plot Twist */}
-                        <div>
-                            <h4 className="text-xs font-bold uppercase text-gray-500 mb-2 px-1 border-b border-gray-400">Plot Twist</h4>
+                        <div className="grimoire-category">
+                            <h4 className="grimoire-cat-header">Hidden Truths</h4>
                             {CAMPAIGN_MAPS.filter(m => m.category === "Plot Twist").map(m => (
                                 <div
                                     key={m.id}
                                     onClick={() => setSelectedMapId(m.id)}
-                                    className={`
-                                        p-3 cursor-pointer transition-all border border-transparent rounded mb-1
-                                        ${selectedMap.id === m.id
-                                            ? "bg-red-900 text-white border-red-900 shadow-md font-bold"
-                                            : "hover:bg-brown-200 hover:border-brown-400"}
-                                    `}
+                                    className={`grimoire-item ${selectedMap.id === m.id ? 'active' : ''} animate-heartbeat`}
+                                    style={{ animationDelay: `${Math.random() * 2}s` }}
                                 >
-                                    <div className="text-sm uppercase tracking-wider">{m.title}</div>
+                                    <span>{m.title}</span>
                                 </div>
                             ))}
                         </div>
