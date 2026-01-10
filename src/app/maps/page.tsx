@@ -10,8 +10,10 @@ import DiceRoller from "@/components/ui/DiceRoller";
 import { getRegionalEffect, rollWildMagic } from "@/lib/game/curseLogic";
 
 export default function MapsPage() {
-    const [selectedMap, setSelectedMap] = useState<CampaignMap>(CAMPAIGN_MAPS[0]);
+    const [selectedMapId, setSelectedMapId] = useState<string>(CAMPAIGN_MAPS[0].id);
     const [viewMode, setViewMode] = useState<"interactive" | "book">("interactive");
+
+    const selectedMap = CAMPAIGN_MAPS.find(m => m.id === selectedMapId) || CAMPAIGN_MAPS[0];
 
     // Force Map to re-mount when map changes to reset state
     const mapKey = selectedMap.id;
@@ -54,7 +56,7 @@ export default function MapsPage() {
                             {CAMPAIGN_MAPS.filter(m => !m.category).map(m => (
                                 <div
                                     key={m.id}
-                                    onClick={() => setSelectedMap(m)}
+                                    onClick={() => setSelectedMapId(m.id)}
                                     className={`
                                         p-3 cursor-pointer transition-all border border-transparent rounded mb-1
                                         ${selectedMap.id === m.id
@@ -73,7 +75,7 @@ export default function MapsPage() {
                             {CAMPAIGN_MAPS.filter(m => m.category === "Main Quest").map(m => (
                                 <div
                                     key={m.id}
-                                    onClick={() => setSelectedMap(m)}
+                                    onClick={() => setSelectedMapId(m.id)}
                                     className={`
                                         p-3 cursor-pointer transition-all border border-transparent rounded mb-1
                                         ${selectedMap.id === m.id
@@ -92,7 +94,7 @@ export default function MapsPage() {
                             {CAMPAIGN_MAPS.filter(m => m.category === "Plot Twist").map(m => (
                                 <div
                                     key={m.id}
-                                    onClick={() => setSelectedMap(m)}
+                                    onClick={() => setSelectedMapId(m.id)}
                                     className={`
                                         p-3 cursor-pointer transition-all border border-transparent rounded mb-1
                                         ${selectedMap.id === m.id
