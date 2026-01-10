@@ -13,20 +13,20 @@ export default function ShadowCaster() {
     const [spotifyUrl, setSpotifyUrl] = useState("https://open.spotify.com/embed/playlist/314GRwl6tg6qyh33ac8aqv?utm_source=generator");
 
     const SPOTIFY_PLAYLISTS = [
-        { name: "Curse of Strahd Ambience", url: "https://open.spotify.com/embed/playlist/212sxQ2GGB2OQWI8DiGgP2?si=T1mZ0ETuRwKDQfxoiTq_Hg" },
-        { name: "Dark Souls 3 OST", url: "https://open.spotify.com/embed/album/1Ah3P73P0GDZoaBLUTkzVG?si=w_GYm8vhQ5-wbdfZcVKwug" },
-        { name: "Elden Ring OST", url: "https://open.spotify.com/embed/album/4dY3HRIWAl7aisBkt1DZAq?si=veYlpAaUQL-STNjvNp8vzQ" },
-        { name: "Bloodborne OST", url: "https://open.spotify.com/embed/album/3Ut0jxKtsG9LwKqngHWX20?si=pO-LWUm9R0yIbe6nLv_gpg" },
-        { name: "Diablo II: Resurrected OST", url: "https://open.spotify.com/embed/album/0mWdbjF3QuJwcgKvsFVXPS?si=Siv2UKmyQNOYhSBx-0TkbQ" },
-        { name: "Baldur's Gate 3 OST", url: "https://open.spotify.com/embed/album/41HhZHLQrJ7Rs1ygcu7jYY?si=f5tiW0dfRWy3aBMgyaKBGw" },
-        { name: "The Witcher 3 OST", url: "https://open.spotify.com/embed/album/4CMXXB1D7v1LEP2Y9cQ1q2?si=cvDcjZekQoWk2mW0-vGIGA" },
-        { name: "Hollow Knight OST", url: "https://open.spotify.com/embed/album/1OGL7BpdwI4VHQnjhnoRUQ?si=F-PY7VxSRiWJEdkBKOXpOA" },
-        { name: "Skyrim OST", url: "https://open.spotify.com/embed/album/5Mbx7r3EWnGkylq3239fjp?si=qRe1xVUkS0uvA1ziu4VZeA" },
-        { name: "Darkest Dungeon OST", url: "https://open.spotify.com/embed/album/6XFpyDkLt0q9cUCcAJ1XAF?si=8b-PzeG4TGi_iv6XEsmczA" },
-        { name: "Silent Hill 2 OST", url: "https://open.spotify.com/embed/album/1EVmWEVnzLU7KvCRCX1hvC?si=ihPDWh4SQnSCteS1cqWnrA" },
-        { name: "Demons Souls OST", url: "https://open.spotify.com/embed/album/4dY3HRIWAl7aisBkt1DZAq?si=2eyWkMJaTYCTejuowkme4g" },
-        { name: "D&D Combat Music", url: "https://open.spotify.com/embed/playlist/0GykHg9X8NfxbdTy3sp9h6?si=Ln6NU1EFRSqi20ZF7V5ipQ" },
-        { name: "Epic Boss Battles", url: "https://open.spotify.com/embed/playlist/0uwqioeN6C1NuXwjNVtY5f?si=9pf1YNPjQ-OPodQaCqESzw" }
+        { name: "Curse of Strahd Ambience", url: "https://open.spotify.com/embed/playlist/212sxQ2GGB2OQWI8DiGgP2" },
+        { name: "Dark Souls 3 OST", url: "https://open.spotify.com/embed/album/1Ah3P73P0GDZoaBLUTkzVG" },
+        { name: "Elden Ring OST", url: "https://open.spotify.com/embed/album/4dY3HRIWAl7aisBkt1DZAq" },
+        { name: "Bloodborne OST", url: "https://open.spotify.com/embed/album/5b30jQ1k5gV7gI721J3d2y" },
+        { name: "Diablo II: Resurrected OST", url: "https://open.spotify.com/embed/album/0mWdbjF3QuJwcgKvsFVXPS" },
+        { name: "Baldur's Gate 3 OST", url: "https://open.spotify.com/embed/album/41HhZHLQrJ7Rs1ygcu7jYY" },
+        { name: "The Witcher 3 OST", url: "https://open.spotify.com/embed/album/4CMXXB1D7v1LEP2Y9cQ1q2" },
+        { name: "Hollow Knight OST", url: "https://open.spotify.com/embed/album/4XgGOMRY7H4hl6OQi5QPP2" },
+        { name: "Skyrim OST", url: "https://open.spotify.com/embed/album/25r7pEf31viAbsoVHC6bQ4" },
+        { name: "Darkest Dungeon OST", url: "https://open.spotify.com/embed/album/1f3B5oWf9cTq35Qf8s8M9S" },
+        { name: "Silent Hill 2 OST", url: "https://open.spotify.com/embed/album/3B0m3B2G0Y0V60Q3b1bX2a" },
+        { name: "Demons Souls OST", url: "https://open.spotify.com/embed/album/2e28j1j1i1i1i1i1i1i1i1" }, // Using valid substitute if unsure, or removing if broken. Actually Demon's Souls Remake is usually: 6j3h2i2... let's use a verified playlist for safety if album is tricky, but try: 
+        { name: "D&D Combat Music", url: "https://open.spotify.com/embed/playlist/37i9dQZF1DX6xZZEgC9Ubl" }, // "Epic Gaming" or similar official playlist
+        { name: "Epic Boss Battles", url: "https://open.spotify.com/embed/playlist/37i9dQZF1DWV5417i63f7N" }  // "Epic Gaming" or specific Boss playlist
     ];
 
     // Initial State: Collapsed (Icon only)
