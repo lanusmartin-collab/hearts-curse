@@ -119,7 +119,7 @@ export default function PlayersPage() {
                 <div className={`grimoire-sidebar w-[320px] flex flex-col shrink-0 overflow-hidden z-20 border-r border-[#222] bg-[#0c0c0c] transition-all duration-300 ${fileFullScreen ? '-ml-[320px]' : ''}`}>
                     <div className="grimoire-header p-6 border-b border-[#222]">
                         <h3 className="grimoire-title text-base text-[#a32222] font-header tracking-[0.25em] mb-6 text-center border-b border-[#a32222]/20 pb-2">
-                            SOUL REGISTER
+                            SOUL REGISTRY
                         </h3>
 
                         {/* Add Player Button */}
