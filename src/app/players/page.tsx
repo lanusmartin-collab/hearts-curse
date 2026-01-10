@@ -74,7 +74,7 @@ export default function PlayersPage() {
             }
 
             // Default back to Normal if empty
-            if (newStatuses.length === 0) newStatuses = ["Normal"];
+            if (newStatuses.length === 0) newStatuses = ["Normal"] as PlayerStatus[];
 
             return { ...p, status: newStatuses };
         }));
