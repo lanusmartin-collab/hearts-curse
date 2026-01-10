@@ -16,9 +16,12 @@ import {
     LIBRARY_WHISPERS_TABLE, ARACH_TINILITH_TABLE, HEART_CHAMBER_TABLE, OSSUARY_TABLE
 } from "@/lib/data/encounters";
 
+import QuestJournal from "@/components/ui/QuestJournal";
+
 export default function MapsPage() {
     const [selectedMapId, setSelectedMapId] = useState<string>(CAMPAIGN_MAPS[0].id);
     const [viewMode, setViewMode] = useState<"interactive" | "book">("interactive");
+    const [showJournal, setShowJournal] = useState(false);
     const router = useRouter();
 
     const selectedMap = CAMPAIGN_MAPS.find(m => m.id === selectedMapId) || CAMPAIGN_MAPS[0];
@@ -93,9 +96,14 @@ export default function MapsPage() {
                 <div className="grimoire-sidebar w-[300px] flex flex-col shrink-0 overflow-hidden z-20">
                     <div className="grimoire-header">
                         <h3 className="grimoire-title">REALM ATLAS</h3>
-                        <button onClick={handleRollEncounter} className="mt-2 text-xs bg-red-900/50 border border-red-700 text-red-100 px-4 py-1 rounded animate-heartbeat hover:bg-red-800 transition-colors uppercase tracking-widest" title="Determine Fate">
-                            ⚔️ Roll Encounter
-                        </button>
+                        <div className="flex gap-2 justify-center mt-2">
+                            <button onClick={handleRollEncounter} className="text-xs bg-red-900/50 border border-red-700 text-red-100 px-3 py-1 rounded animate-heartbeat hover:bg-red-800 transition-colors uppercase tracking-widest" title="Determine Fate">
+                                ⚔️ Roll
+                            </button>
+                            <button onClick={() => setShowJournal(true)} className="text-xs bg-amber-900/50 border border-amber-700 text-amber-100 px-3 py-1 rounded hover:bg-amber-800 transition-colors uppercase tracking-widest" title="Open Quest Log">
+                                📜 Journal
+                            </button>
+                        </div>
                     </div>
 
                     <div className="overflow-y-auto flex-1 custom-scrollbar">
@@ -151,6 +159,8 @@ export default function MapsPage() {
                     {/* Visual Map */}
                     <div className="flex-1 relative overflow-hidden">
                         <MechanicsDashboard currentMapId={selectedMap.id} />
+
+                        {showJournal && <QuestJournal onClose={() => setShowJournal(false)} />}
 
                         {/* NEW: Regional Mechanics HUD Widget */}
                         <div className="absolute top-0 left-0 z-30 pointer-events-none w-full h-full">

@@ -48,7 +48,10 @@ const OAKHAVEN: CampaignMap = {
         { id: "crows_nest", x: 60, y: 5, label: "The Crow's Nest", type: "info", description: "**ZHENTARIM MARKET:** A black market hidden on the cliff edge. 'The Crow' sells illicit goods and poisons. **SERVICES:** Fence stolen goods, buy *Drow Poison*.", link: "/shops?tab=crow" },
         { id: "bridge", x: 50, y: 90, label: "The Looping Bridge", type: "entrance", description: "**THE OUTER MISTS:** A stone bridge crossing a sluggish grey river. **CURSE:** Any attempt to cross it loops the traveler back to the Town Square. The mist is impenetrable and whispers your name." },
         { id: "forge", x: 15, y: 20, label: "The Artisan's Row", type: "encounter", description: "**THE IRON KNOT:** Kaelen Muldar's forge (Top-Left) is cold, covered in grey ash. **HAUNT:** The sound of a ghostly hammer rings eternally. **LOOT:** *Adamantine Ingot* found in the cold coals, still warm to the touch.", link: "/shops?tab=iron" },
-        { id: "cliff", x: 85, y: 20, label: "The Cliffside Ascent", type: "encounter", description: "**PATH TO CASTLE:** A steep, winding path (Top-Right) leads to Mournwatch. **ENCOUNTER:** 'The Night Shard'. 3 Assassins (Zhentarim & Cultist alliance) ambush the party from the shadows. They drop a *Dagger of Venom*." }
+        { id: "cliff", x: 85, y: 20, label: "The Cliffside Ascent", type: "encounter", description: "**PATH TO CASTLE:** A steep, winding path (Top-Right) leads to Mournwatch. **ENCOUNTER:** 'The Night Shard'. 3 Assassins (Zhentarim & Cultist alliance) ambush the party from the shadows. They drop a *Dagger of Venom*." },
+        { id: "shrine", x: 10, y: 40, label: "Ancient Shrine (Lore)", type: "info", description: "**LORE:** A crumbled statue of Mystra. Reading the inscription (DC 14 Religion) reveals: 'When the Heart stops, the Weave unravels.' You feel a moment of peace here (+1d4 Temp HP)." },
+        { id: "outpost", x: 90, y: 35, label: "Abandoned Outpost", type: "encounter", description: "**COMBAT:** An old watchtower. **THREAT:** 4 Ghouls wearing tattered town guard uniforms. They are eating a horse carcass. **LOOT:** *Potion of Vitality* in a saddlebag." },
+        { id: "grove", x: 35, y: 10, label: "Whispering Grove", type: "trap", description: "**SKILL CHECK:** The trees lean in. **SURVIVAL DC 13:** The roots try to trip you (Prone). **ARCANA DC 15:** You hear the trees gossiping. They say 'The Library is not on this plane'." }
     ],
     description: `
 **Location:** Hub (Starting Point)
@@ -115,7 +118,8 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
             { id: "furnace", x: 20, y: 80, label: "Furnace Room (Bottom-Left)", type: "quest", description: "**SCENE:** Lava pools illuminate the room with angry red light. **LOOT:** *Potion of Fire Resistance* (x2) and the **Ruby Keystone** resting in the flames." },
             { id: "vault", x: 80, y: 80, label: "Void Vault (Bottom-Right)", type: "quest", description: "**SCENE:** A floating platform over a starry void. **MECHANIC:** Zero Gravity. **LOOT:** *Driftglobe* (Essential for the dark layers below) and the **Emerald Keystone**.", itemId: "Driftglobe" },
             { id: "boss", x: 50, y: 50, label: "The Minotaur's Ghosts", type: "boss", description: "**BOSS:** Goristroi the Lost. A Minotaur spirit bound to the maze. **MECHANIC:** He can phase through walls (Incorporeal Movement). Drops *Horn of Blasting*." },
-            { id: "exit", x: 50, y: 15, label: "Stairs to Library", type: "entrance", description: "**LOCKED:** Requires 3 Keystones (Ruby, Sapphire, Emerald) to open the spiral stairs. They decend upward into the ceiling." }
+            { id: "exit", x: 50, y: 15, label: "Stairs to Library", type: "entrance", description: "**LOCKED:** Requires 3 Keystones (Ruby, Sapphire, Emerald) to open the spiral stairs. They decend upward into the ceiling." },
+            { id: "hidden_cell", x: 10, y: 50, label: "The Hidden Cell", type: "info", description: "**SECRET:** A small room behind a fake wall. Scratched on the floor: 'Rotation is the key. North becomes East. Wait for the click.' (Hint for Puzzle)." }
         ],
         description: `
 **Location:** Castle Mournwatch (First Floor)

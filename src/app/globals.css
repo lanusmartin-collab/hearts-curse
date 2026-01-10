@@ -21,6 +21,8 @@
   --font-header: 'Cinzel', 'Merriweather', serif;
   --font-body: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --font-handwriting: 'Dancing Script', cursive;
+  /* Fallback */
 
   --max-width: 1600px;
 
@@ -657,6 +659,10 @@ select:focus {
 
 .tracking-widest {
   letter-spacing: 0.1em;
+}
+
+.font-handwriting {
+  font-family: var(--font-handwriting), serif;
 }
 
 /* GRIMOIRE SIDEBAR STYLES */
