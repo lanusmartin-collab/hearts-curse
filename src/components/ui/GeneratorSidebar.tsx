@@ -81,70 +81,44 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
                         <h4 className="text-[#888] font-header text-xs tracking-widest uppercase">Fabrication Type</h4>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-2">
+                    <div className="grid grid-cols-1 gap-1">
                         <button
                             onClick={() => onSelectTool('loot')}
-                            className={`p-3 border flex items-center gap-3 transition-all group ${activeTool === 'loot' ? 'bg-[#1a0505] border-[#a32222] shadow-[0_0_10px_rgba(163,34,34,0.2)]' : 'bg-[#111] border-[#333] hover:border-[#666]'}`}
+                            className={`grimoire-item ${activeTool === 'loot' ? 'active' : ''}`}
                         >
-                            <div className={`p-2 rounded-full border ${activeTool === 'loot' ? 'bg-[#a32222] border-[#ff4444]' : 'bg-[#222] border-[#444]'}`}>
-                                <Shield className={`w-4 h-4 ${activeTool === 'loot' ? 'text-white' : 'text-[#666]'}`} />
-                            </div>
-                            <div className="text-left">
-                                <div className={`font-header text-sm tracking-wider ${activeTool === 'loot' ? 'text-[#e0e0e0] text-shadow-glow' : 'text-[#888]'}`}>TREASURE</div>
-                                <div className="text-[9px] text-[#555] font-mono uppercase">Loot & Rewards</div>
-                            </div>
+                            <Shield className="w-4 h-4 text-[#666]" />
+                            <span>TREASURE</span>
                         </button>
 
                         <button
                             onClick={() => onSelectTool('npc')}
-                            className={`p-3 border flex items-center gap-3 transition-all group ${activeTool === 'npc' ? 'bg-[#1a0505] border-[#a32222] shadow-[0_0_10px_rgba(163,34,34,0.2)]' : 'bg-[#111] border-[#333] hover:border-[#666]'}`}
+                            className={`grimoire-item ${activeTool === 'npc' ? 'active' : ''}`}
                         >
-                            <div className={`p-2 rounded-full border ${activeTool === 'npc' ? 'bg-[#a32222] border-[#ff4444]' : 'bg-[#222] border-[#444]'}`}>
-                                <User className={`w-4 h-4 ${activeTool === 'npc' ? 'text-white' : 'text-[#666]'}`} />
-                            </div>
-                            <div className="text-left">
-                                <div className={`font-header text-sm tracking-wider ${activeTool === 'npc' ? 'text-[#e0e0e0] text-shadow-glow' : 'text-[#888]'}`}>CHARACTER</div>
-                                <div className="text-[9px] text-[#555] font-mono uppercase">NPC Generator</div>
-                            </div>
+                            <User className="w-4 h-4 text-[#666]" />
+                            <span>CHARACTER</span>
                         </button>
 
                         <button
                             onClick={() => onSelectTool('monster')}
-                            className={`p-3 border flex items-center gap-3 transition-all group ${activeTool === 'monster' ? 'bg-[#1a0505] border-[#a32222] shadow-[0_0_10px_rgba(163,34,34,0.2)]' : 'bg-[#111] border-[#333] hover:border-[#666]'}`}
+                            className={`grimoire-item ${activeTool === 'monster' ? 'active' : ''}`}
                         >
-                            <div className={`p-2 rounded-full border ${activeTool === 'monster' ? 'bg-[#a32222] border-[#ff4444]' : 'bg-[#222] border-[#444]'}`}>
-                                <Ghost className={`w-4 h-4 ${activeTool === 'monster' ? 'text-white' : 'text-[#666]'}`} />
-                            </div>
-                            <div className="text-left">
-                                <div className={`font-header text-sm tracking-wider ${activeTool === 'monster' ? 'text-[#e0e0e0] text-shadow-glow' : 'text-[#888]'}`}>ADVERSARY</div>
-                                <div className="text-[9px] text-[#555] font-mono uppercase">Monster / Foe</div>
-                            </div>
+                            <Ghost className="w-4 h-4 text-[#666]" />
+                            <span>ADVERSARY</span>
                         </button>
 
                         <button
                             onClick={() => onSelectTool('artifact')}
-                            className={`p-3 border flex items-center gap-3 transition-all group ${activeTool === 'artifact' ? 'bg-[#331a00] border-[#ffaa00] shadow-[0_0_10px_rgba(255,170,0,0.2)]' : 'bg-[#111] border-[#333] hover:border-[#666]'}`}
+                            className={`grimoire-item ${activeTool === 'artifact' ? 'active' : ''}`}
                         >
-                            <div className={`p-2 rounded-full border ${activeTool === 'artifact' ? 'bg-[#ffaa00] border-[#ffeebb]' : 'bg-[#222] border-[#444]'}`}>
-                                <Scroll className={`w-4 h-4 ${activeTool === 'artifact' ? 'text-black' : 'text-[#666]'}`} />
-                            </div>
-                            <div className="text-left">
-                                <div className={`font-header text-sm tracking-wider ${activeTool === 'artifact' ? 'text-[#ffcc00] text-shadow-glow' : 'text-[#888]'}`}>ARTIFACT</div>
-                                <div className="text-[9px] text-[#555] font-mono uppercase">Legendary Item</div>
-                            </div>
+                            <Scroll className="w-4 h-4 text-[#666]" />
+                            <span>ARTIFACT</span>
                         </button>
                     </div>
                 </div>
 
             </div>
 
-            {/* Footer / Status */}
-            <div className="p-4 border-t border-[#222] bg-[#080808]">
-                <div className="flex items-center justify-between text-[9px] font-mono text-[#444]">
-                    <span>SYSTEM STATUS</span>
-                    <span className="text-[#a32222] animate-pulse">● ONLINE</span>
-                </div>
-            </div>
+
         </div>
     );
 }

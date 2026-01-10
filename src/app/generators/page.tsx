@@ -93,15 +93,7 @@ export default function GeneratorsPage() {
                     {/* Header Fixed Area */}
                     <div className="flex justify-between items-end border-b-2 border-[#a32222]/30 p-8 pb-4 shrink-0 bg-[#050505] z-10">
                         <div>
-                            <h2 className="text-3xl font-header tracking-wider text-[#e0e0e0] mb-1">
-                                {activeTool === 'npc' && 'PERSONA FABRICATOR'}
-                                {activeTool === 'monster' && 'ADVERSARY SIMULATOR'}
-                                {activeTool === 'loot' && 'TREASURE MATRIX'}
-                                {activeTool === 'artifact' && 'RELIC SYNTHESIZER'}
-                            </h2>
-                            <p className="font-mono text-[10px] text-[#666] uppercase tracking-[0.2em]">
-                                Context: <span className="text-[#a32222]">{currentTheme.toUpperCase()}</span> // Source: {selectedMapId.replace(/_/g, " ").toUpperCase()}
-                            </p>
+                            {/* Headers removed as requested */}
                         </div>
 
                         <button
@@ -115,7 +107,7 @@ export default function GeneratorsPage() {
                                 disabled:opacity-50 disabled:cursor-not-allowed
                             `}
                         >
-                            {isGenerating ? 'PROCESSING...' : 'INITIATE SEQUENCE'}
+                            {isGenerating ? 'PROCESSING...' : 'GENERATE'}
                         </button>
                     </div>
 
@@ -135,7 +127,7 @@ export default function GeneratorsPage() {
                             ) : result ? (
                                 <div className="w-full animate-fade-in">
                                     <div className="flex justify-between items-center mb-4 pb-2 border-b border-[#333] w-full">
-                                        <div className="font-mono text-[10px] text-[#666]">RESULT_OUTPUT_LOG</div>
+                                        <div className="font-mono text-[10px] text-[#666]"></div>
                                         <div className="no-print"><PrintButton /></div>
                                     </div>
                                     {/* Statblock container with min-width to prevent squishing */}
