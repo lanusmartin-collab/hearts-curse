@@ -13,6 +13,12 @@ import {
     ITEMS as MAGIC_ITEMS_LIST
 } from '@/lib/data/items';
 import { CURSE_MECHANICS, PROLOGUE_POWERS, SAFE_HAVEN } from '@/lib/data/mechanics';
+import {
+    TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE,
+    OAKHAVEN_MINES_TABLE, UNDERDARK_TRAVEL_TABLE, ARACH_TINILITH_TABLE,
+    SILENT_WARDS_TABLE, NETHERIL_RUINS_TABLE, LIBRARY_WHISPERS_TABLE,
+    HEART_CHAMBER_TABLE, OSSUARY_TABLE
+} from '@/lib/data/encounters';
 
 type CampaignModuleTemplateProps = {
     onClose: () => void;
@@ -25,17 +31,32 @@ const FLAVOR_QUOTES: Record<string, { text: string; author: string }> = {
     ch3: { text: "Knowledge is the only treasure that kills you for finding it.", author: "Rhaugilath the Ageless" },
     ch4: { text: "The heart of the world is broken. I intend to stop the bleeding.", author: "Vez'nan the Deceiver" },
     bestiary: { text: "They are not monsters. They are merely the hungry children of the void.", author: "Xylantropy" },
-    shops: { text: "Gold? No, I deal in years. How many do you have left?", author: "Fimble Futterly" }
+    shops: { text: "Gold? No, I deal in years. How many do you have left?", author: "Fimble Futterly" },
+    encounters: { text: "You cannot prepare for what does not want to be found.", author: "Drizzt Do'Urden" }
 };
 
 export default function CampaignModuleTemplate({ onClose }: CampaignModuleTemplateProps) {
-    const [printMode, setPrintMode] = useState<'full' | 'intro' | 'adventure' | 'bestiary' | 'shops' | 'mechanics'>('full');
+    const [printMode, setPrintMode] = useState<'full' | 'intro' | 'adventure' | 'bestiary' | 'shops' | 'mechanics' | 'encounters'>('full');
 
     const handlePrint = (mode: typeof printMode) => {
         setPrintMode(mode);
         // Small delay to allow state to propagate before printing
         setTimeout(() => window.print(), 100);
     };
+
+    const ALL_TABLES = [
+        { title: "Oakhaven (Day)", table: TOWN_DAY_TABLE },
+        { title: "Oakhaven (Night)", table: TOWN_NIGHT_TABLE },
+        { title: "Outskirts & Wilderness", table: OUTSKIRTS_TABLE },
+        { title: "Oakhaven Mines", table: OAKHAVEN_MINES_TABLE },
+        { title: "Underdark Travel", table: UNDERDARK_TRAVEL_TABLE },
+        { title: "The Silent Wards", table: SILENT_WARDS_TABLE },
+        { title: "Netheril Ruins", table: NETHERIL_RUINS_TABLE },
+        { title: "Library of Whispers", table: LIBRARY_WHISPERS_TABLE },
+        { title: "Arach-Tinilith (Drow City)", table: ARACH_TINILITH_TABLE },
+        { title: "The Heart Chamber", table: HEART_CHAMBER_TABLE },
+        { title: "The Ossuary", table: OSSUARY_TABLE },
+    ];
 
     return (
         <div className="fixed inset-0 z-50 bg-gray-100 flex flex-row font-serif print:static print:overflow-visible print:h-auto print:bg-white text-justify leading-snug isolate">
@@ -58,6 +79,7 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                             <button onClick={() => handlePrint('bestiary')} className={`text-left px-4 py-2 rounded transition-all text-sm ${printMode === 'bestiary' ? 'bg-accent text-black font-bold' : 'text-gray-300 hover:bg-gray-800 hover:pl-5'}`}>Bestiary</button>
                             <button onClick={() => handlePrint('shops')} className={`text-left px-4 py-2 rounded transition-all text-sm ${printMode === 'shops' ? 'bg-accent text-black font-bold' : 'text-gray-300 hover:bg-gray-800 hover:pl-5'}`}>Shops</button>
                             <button onClick={() => handlePrint('mechanics')} className={`text-left px-4 py-2 rounded transition-all text-sm ${printMode === 'mechanics' ? 'bg-accent text-black font-bold' : 'text-gray-300 hover:bg-gray-800 hover:pl-5'}`}>Mechanics</button>
+                            <button onClick={() => handlePrint('encounters')} className={`text-left px-4 py-2 rounded transition-all text-sm ${printMode === 'encounters' ? 'bg-accent text-black font-bold' : 'text-gray-300 hover:bg-gray-800 hover:pl-5'}`}>Encounter Tables</button>
                         </div>
                     </div>
                 </div>
@@ -120,6 +142,7 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                             <li><strong>Appendix B:</strong> Magic Items & Artifacts</li>
                             <li><strong>Appendix C:</strong> Mercantile Ledger</li>
                             <li><strong>Appendix D:</strong> Global Mechanics</li>
+                            <li><strong>Appendix E:</strong> Random Encounter Tables</li>
                         </ul>
                     </div>
 
@@ -380,6 +403,40 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                                     {SAFE_HAVEN.features.map((f, i) => <li key={i}>{f}</li>)}
                                 </ul>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* --- ENCOUNTERS SECTION --- */}
+                    <div className={`${printMode !== 'full' && printMode !== 'encounters' ? 'print:hidden' : ''} break-after-page page-break`}>
+                        <h2 className="text-4xl font-bold uppercase border-b-4 border-black mb-8 mt-12 font-serif text-center">Appendix E: Random Encounter Tables</h2>
+
+                        <div className="break-inside-avoid mb-8 p-4 bg-gray-100 border-l-4 border-black italic shadow-inner">
+                            &quot;{FLAVOR_QUOTES.encounters.text}&quot;
+                            <div className="text-right mt-2 text-xs font-bold not-italic">— {FLAVOR_QUOTES.encounters.author}</div>
+                        </div>
+
+                        <div className="columns-2 gap-8 text-sm">
+                            {ALL_TABLES.map((section, idx) => (
+                                <div key={idx} className="break-inside-avoid border-2 border-black p-4 mb-8">
+                                    <h3 className="text-xl font-bold uppercase border-b-2 border-black mb-4 font-serif">{section.title}</h3>
+                                    <div className="space-y-4">
+                                        {section.table.map((enc, eIdx) => (
+                                            <div key={eIdx} className="border-b border-gray-300 pb-2 last:border-0">
+                                                <div className="flex justify-between items-baseline mb-1">
+                                                    <span className="font-bold text-md">{enc.roll[0] === enc.roll[1] ? enc.roll[0] : `${enc.roll[0]} - ${enc.roll[1]}`}</span>
+                                                    <span className="font-bold uppercase text-xs">{enc.name}</span>
+                                                </div>
+                                                <p className="italic text-xs leading-snug">{enc.description}</p>
+                                                {enc.monsters && enc.monsters.length > 0 && (
+                                                    <div className="text-[10px] font-bold mt-1 text-gray-600 uppercase">
+                                                        Threats: {enc.monsters.map(m => m.replace(/-/g, ' ')).join(', ')}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
