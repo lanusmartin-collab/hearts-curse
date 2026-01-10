@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ALL_MONSTERS } from "@/lib/data/monsters_2024";
-import DROW_MONSTERS from "@/lib/data/drow_monsters.json"; // Import Drow data
+import DROW_MONSTERS from "@/lib/data/drow_monsters.json";
 import { Statblock } from "@/lib/data/statblocks";
 import { ShopItem } from "@/lib/data/items";
 import { generateNPC, generateLootItem, generateArtifact, GeneratorTheme } from "@/lib/generators";
@@ -55,12 +55,8 @@ export default function GeneratorsPage() {
 
                 // If Underdark/Drow context, inject Drow
                 if (currentTheme === "Underdark" || selectedMapId.includes("arach")) {
-                    // Cast Drow JSON to unknown then Statblock[] to satisfy TS if needed, or rely on structure match
-                    // Assuming structure matches Statblock interface roughly
                     const drowPool = DROW_MONSTERS as unknown as Statblock[];
                     pool = [...pool, ...drowPool];
-
-                    // Higher weight for theme? (Simple random for now)
                 }
 
                 const monster = pool[Math.floor(Math.random() * pool.length)];
@@ -91,80 +87,81 @@ export default function GeneratorsPage() {
                 />
 
                 {/* 2. Main Content */}
-                <div className="flex-1 flex flex-col bg-[#050505] relative overflow-hidden items-center justify-center p-8">
+                <div className="flex-1 flex flex-col bg-[#050505] relative overflow-hidden">
                     <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('/noise.png')]"></div>
 
-                    {/* Generator Output Area */}
-                    <div className="w-full max-w-4xl h-full flex flex-col gap-6">
-
-                        {/* Status / Header */}
-                        <div className="flex justify-between items-end border-b-2 border-[#a32222]/30 pb-4 shrink-0">
-                            <div>
-                                <h2 className="text-3xl font-header tracking-wider text-[#e0e0e0] mb-1">
-                                    {activeTool === 'npc' && 'PERSONA FABRICATOR'}
-                                    {activeTool === 'monster' && 'ADVERSARY SIMULATOR'}
-                                    {activeTool === 'loot' && 'TREASURE MATRIX'}
-                                    {activeTool === 'artifact' && 'RELIC SYNTHESIZER'}
-                                </h2>
-                                <p className="font-mono text-[10px] text-[#666] uppercase tracking-[0.2em]">
-                                    Context: <span className="text-[#a32222]">{currentTheme.toUpperCase()}</span> // Source: {selectedMapId.replace(/_/g, " ").toUpperCase()}
-                                </p>
-                            </div>
-
-                            <button
-                                onClick={handleGenerate}
-                                disabled={isGenerating}
-                                className={`
-                                    px-8 py-3 bg-[#a32222] text-[#e0e0e0] font-header tracking-widest uppercase text-sm
-                                    border border-[#ff4444] shadow-[0_0_15px_rgba(163,34,34,0.4)]
-                                    hover:bg-[#c42828] hover:shadow-[0_0_25px_rgba(163,34,34,0.6)] hover:scale-105
-                                    active:scale-95 transition-all
-                                    disabled:opacity-50 disabled:cursor-not-allowed
-                                `}
-                            >
-                                {isGenerating ? 'PROCESSING...' : 'INITIATE SEQUENCE'}
-                            </button>
+                    {/* Header Fixed Area */}
+                    <div className="flex justify-between items-end border-b-2 border-[#a32222]/30 p-8 pb-4 shrink-0 bg-[#050505] z-10">
+                        <div>
+                            <h2 className="text-3xl font-header tracking-wider text-[#e0e0e0] mb-1">
+                                {activeTool === 'npc' && 'PERSONA FABRICATOR'}
+                                {activeTool === 'monster' && 'ADVERSARY SIMULATOR'}
+                                {activeTool === 'loot' && 'TREASURE MATRIX'}
+                                {activeTool === 'artifact' && 'RELIC SYNTHESIZER'}
+                            </h2>
+                            <p className="font-mono text-[10px] text-[#666] uppercase tracking-[0.2em]">
+                                Context: <span className="text-[#a32222]">{currentTheme.toUpperCase()}</span> // Source: {selectedMapId.replace(/_/g, " ").toUpperCase()}
+                            </p>
                         </div>
 
-                        {/* Result Display - Relaxed & Scrollable */}
-                        <div className="flex-1 overflow-auto custom-scrollbar p-8 flex items-start justify-center">
-                            {/* Removed max-w-2xl constraint, added min-width to prevent squish */}
-                            <div className="w-full max-w-5xl min-h-[500px] border border-[#222] bg-[#0a0a0a] p-8 relative shadow-inner flex flex-col items-center">
+                        <button
+                            onClick={handleGenerate}
+                            disabled={isGenerating}
+                            className={`
+                                px-8 py-3 bg-[#a32222] text-[#e0e0e0] font-header tracking-widest uppercase text-sm
+                                border border-[#ff4444] shadow-[0_0_15px_rgba(163,34,34,0.4)]
+                                hover:bg-[#c42828] hover:shadow-[0_0_25px_rgba(163,34,34,0.6)] hover:scale-105
+                                active:scale-95 transition-all
+                                disabled:opacity-50 disabled:cursor-not-allowed
+                            `}
+                        >
+                            {isGenerating ? 'PROCESSING...' : 'INITIATE SEQUENCE'}
+                        </button>
+                    </div>
 
-                                {isGenerating ? (
-                                    <div className="text-center animate-pulse my-auto">
-                                        <div className="text-[#a32222] font-header text-2xl tracking-[0.5em] mb-4">ACCESSING ARCHIVES</div>
-                                        <div className="w-64 h-1 bg-[#222] mx-auto rounded overflow-hidden">
-                                            <div className="h-full bg-[#a32222] w-1/2 animate-slide-right"></div>
-                                        </div>
-                                        <div className="font-mono text-[10px] text-[#444] mt-2 uppercase">Please wait...</div>
+                    {/* Result Display - Relaxed & Scrollable */}
+                    <div className="flex-1 overflow-auto custom-scrollbar p-8 flex items-start justify-center">
+                        {/* Removed max-w-2xl constraint, added min-width to prevent squish */}
+                        <div className="w-full max-w-5xl min-h-[500px] border border-[#222] bg-[#0a0a0a] p-8 relative shadow-inner flex flex-col items-center">
+
+                            {isGenerating ? (
+                                <div className="text-center animate-pulse my-auto">
+                                    <div className="text-[#a32222] font-header text-2xl tracking-[0.5em] mb-4">ACCESSING ARCHIVES</div>
+                                    <div className="w-64 h-1 bg-[#222] mx-auto rounded overflow-hidden">
+                                        <div className="h-full bg-[#a32222] w-1/2 animate-slide-right"></div>
                                     </div>
-                                ) : result ? (
-                                    <div className="w-full max-w-2xl animate-fade-in">
-                                        <div className="flex justify-end mb-2 no-print">
-                                            <PrintButton />
-                                        </div>
+                                    <div className="font-mono text-[10px] text-[#444] mt-2 uppercase">Please wait...</div>
+                                </div>
+                            ) : result ? (
+                                <div className="w-full animate-fade-in">
+                                    <div className="flex justify-between items-center mb-4 pb-2 border-b border-[#333] w-full">
+                                        <div className="font-mono text-[10px] text-[#666]">RESULT_OUTPUT_LOG</div>
+                                        <div className="no-print"><PrintButton /></div>
+                                    </div>
+                                    {/* Statblock container with min-width to prevent squishing */}
+                                    <div className="min-w-[600px] mx-auto">
                                         <StatblockCard data={result} />
                                     </div>
-                                ) : lootItem ? (
-                                    <div className="w-full max-w-lg animate-fade-in relative">
-                                        <div className="absolute -top-4 -right-4 no-print z-10">
-                                            <PrintButton />
-                                        </div>
-                                        <LootCard item={lootItem} />
+                                </div>
+                            ) : lootItem ? (
+                                <div className="w-full max-w-lg animate-fade-in relative my-auto">
+                                    <div className="absolute -top-10 right-0 no-print z-10">
+                                        <PrintButton />
                                     </div>
-                                ) : (
-                                    <div className="text-center opacity-20 select-none pointer-events-none">
-                                        <div className="text-6xl mb-4 font-mono text-[#333]">+</div>
-                                        <p className="font-header text-xl tracking-[0.3em] uppercase mb-2">Awaiting Input</p>
-                                        <p className="font-mono text-[10px] uppercase tracking-widest">Select Context & Initiate Generation</p>
-                                    </div>
-                                )}
+                                    <LootCard item={lootItem} />
+                                </div>
+                            ) : (
+                                <div className="text-center opacity-20 select-none pointer-events-none my-auto">
+                                    <div className="text-6xl mb-4 font-mono text-[#333]">+</div>
+                                    <p className="font-header text-xl tracking-[0.3em] uppercase mb-2">Awaiting Input</p>
+                                    <p className="font-mono text-[10px] uppercase tracking-widest">Select Context & Initiate Generation</p>
+                                </div>
+                            )}
 
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            );
+        </div>
+    );
 }
