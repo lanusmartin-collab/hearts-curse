@@ -184,7 +184,7 @@ export default function ShadowCaster() {
                                     value={spotifyUrl}
                                 >
                                     {SPOTIFY_PLAYLISTS.map((pl, i) => (
-                                        <option key={i} value={pl.url}>{pl.name}</option>
+                                        <option key={i} value={pl.url} style={{ backgroundColor: '#111', color: '#e0e0e0' }}>{pl.name}</option>
                                     ))}
                                 </select>
 
