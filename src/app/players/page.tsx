@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import PrintButton from "@/components/ui/PrintButton";
-import { Skull, Shield, Zap, Eye, Ghost, Trash2, Plus, Upload } from "lucide-react";
+import { Skull, Shield, Zap, Eye, Ghost, Trash2, Plus, Upload, Heart, Activity } from "lucide-react";
 
 type PlayerStatus = "Normal" | "Dead" | "Cursed" | "Poisoned" | "Blind" | "Deaf" | "Exhausted" | "Stunned";
 
@@ -17,6 +16,7 @@ type PlayerCharacter = {
 };
 
 export default function PlayersPage() {
+    // Initial data could come from local storage in a real app
     const [players, setPlayers] = useState<PlayerCharacter[]>([
         { id: "1", name: "Valeros", class: "Fighter 5", status: ["Normal"], notes: "Possessed by a ghost?", files: [] }
     ]);
@@ -58,7 +58,6 @@ export default function PlayersPage() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // Simulation: We just store name/date since we lack backend storage
         setPlayers(players.map(p => {
             if (p.id !== playerId) return p;
             return {
@@ -69,76 +68,91 @@ export default function PlayersPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] text-[#ccc] p-8 pb-32" style={{ backgroundImage: "url('/noise.png')" }}>
-            <div className="fixed inset-0 pointer-events-none z-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 50% 50%, #2a0a0a 0%, #000 80%)" }}></div>
+        <div style={{ minHeight: '100vh', background: '#050505', backgroundImage: 'var(--obsidian-texture)', color: '#e0e0e0', paddingBottom: '8rem' }} className="font-body">
+            {/* Overlay for Texture */}
+            <div style={{ position: 'fixed', inset: 0, opacity: 0.1, backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, #222 1px, #222 2px)", pointerEvents: 'none' }}></div>
 
-            <div className="relative z-10 max-w-7xl mx-auto">
-                <header className="flex justify-between items-center mb-10 border-b border-[#333] pb-6">
+            <Link href="/" className="no-print" style={{ position: 'fixed', top: '20px', left: '20px', fontSize: '12px', color: '#ccc', border: '1px solid #333', padding: '8px 16px', textTransform: 'uppercase', letterSpacing: '0.1em', background: 'rgba(5, 5, 5, 0.9)', zIndex: 9999, backdropFilter: 'blur(4px)' }} >
+                {"< RETURN_ROOT"}
+            </Link>
+
+            <div className="max-w-7xl mx-auto pt-24 px-8 relative z-10">
+                <header className="flex justify-between items-end mb-16 border-b border-[#a32222] pb-6">
                     <div>
-                        <h1 className="text-4xl font-serif text-[#a32222] tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">ADVENTURING PARTY</h1>
-                        <p className="font-mono text-xs text-[#666] mt-2 tracking-[0.2em] uppercase">ROSTER STATUS // <span className="text-[#a32222] animate-pulse">LIVE FEED</span></p>
-                    </div>
-                    <div className="flex gap-4">
-                        <Link href="/" className="px-4 py-2 border border-[#333] hover:border-[#a32222] text-[#666] hover:text-[#a32222] text-xs uppercase tracking-widest transition-colors">
-                            Exit Module
-                        </Link>
+                        <h1 className="text-5xl font-header text-[#a32222] drop-shadow-[0_2px_10px_rgba(163,34,34,0.5)] tracking-wide">
+                            SOUL DOSSIERS
+                        </h1>
+                        <div className="h-1 w-32 bg-[#a32222] mt-2 mb-2"></div>
+                        <p className="font-mono text-sm text-[#888] tracking-[0.3em] uppercase flex items-center gap-2">
+                            Current Roster // <Activity className="w-4 h-4 text-[#a32222] animate-pulse" /> Live
+                        </p>
                     </div>
                 </header>
 
-                {/* Add Player */}
-                <div className="no-print mb-12 p-1 bg-[#111] border border-[#333] flex items-center max-w-lg mx-auto shadow-2xl">
-                    <input
-                        type="text"
-                        value={newPlayerName}
-                        onChange={(e) => setNewPlayerName(e.target.value)}
-                        placeholder="RECRUIT NEW SOUL..."
-                        className="flex-1 bg-transparent p-4 text-[#eee] font-serif placeholder-[#444] outline-none"
-                    />
-                    <button
-                        onClick={addPlayer}
-                        className="bg-[#2a0a0a] hover:bg-[#4a0a0a] text-[#a32222] p-4 border-l border-[#333] transition-colors"
-                    >
-                        <Plus className="w-5 h-5" />
-                    </button>
+                {/* Recruitment Terminal */}
+                <div className="mb-16 p-1 bg-gradient-to-r from-[#1a0505] to-[#050505] border border-[#a32222] shadow-[0_0_20px_rgba(163,34,34,0.1)] max-w-2xl mx-auto transform hover:scale-[1.01] transition-transform duration-300">
+                    <div className="flex items-center">
+                        <div className="bg-[#a32222] h-16 w-16 flex items-center justify-center text-black">
+                            <Plus className="w-8 h-8" />
+                        </div>
+                        <input
+                            type="text"
+                            value={newPlayerName}
+                            onChange={(e) => setNewPlayerName(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && addPlayer()}
+                            placeholder="INITIATE NEW SOUL CONTRACT..."
+                            className="flex-1 bg-transparent p-4 text-xl font-header text-[#e0e0e0] placeholder-[#444] outline-none tracking-wider"
+                        />
+                        <button
+                            onClick={addPlayer}
+                            className="px-8 py-4 font-mono text-[#a32222] hover:bg-[#a32222] hover:text-black transition-colors uppercase tracking-widest text-sm font-bold border-l border-[#333]"
+                        >
+                            Confirm
+                        </button>
+                    </div>
                 </div>
 
-                {/* Roster */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Roster Grid */}
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
                     {players.map(player => (
-                        <div key={player.id} className="relative group bg-[#0e0e0e] border border-[#222] p-6 shadow-xl hover:border-[#444] transition-all">
-                            {/* Decorative Corner */}
-                            <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-[#a32222]/30"></div>
-                            <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-[#a32222]/30"></div>
+                        <div key={player.id} className="relative group bg-[#0a0a0c] border border-[#333] p-8 shadow-2xl transition-all duration-300 hover:border-[#a32222] hover:shadow-[0_0_30px_rgba(163,34,34,0.1)]">
+                            {/* Decorative Corners (Retro feel) */}
+                            <div className="absolute top-0 left-0 w-2 h-2 bg-[#a32222]"></div>
+                            <div className="absolute top-0 right-0 w-2 h-2 bg-[#a32222]"></div>
+                            <div className="absolute bottom-0 left-0 w-2 h-2 bg-[#a32222]"></div>
+                            <div className="absolute bottom-0 right-0 w-2 h-2 bg-[#a32222]"></div>
 
-                            {/* Header Image / Name */}
-                            <div className="flex justify-between items-start mb-6 border-b border-[#222] pb-4">
+                            {/* Header Section */}
+                            <div className="flex justify-between items-start mb-8 border-b border-[#222] pb-6">
                                 <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-1">
-                                        <h2 className="text-2xl font-serif text-[#e0e0e0] tracking-wide">{player.name}</h2>
-                                        {player.status.includes("Dead") && <Skull className="w-5 h-5 text-red-600" />}
+                                    <div className="flex items-center gap-4 mb-2">
+                                        <h2 className="text-3xl font-header text-[#e0e0e0]">{player.name}</h2>
+                                        {player.status.includes("Dead") && <Skull className="w-6 h-6 text-red-600 animate-pulse" />}
                                     </div>
-                                    <input
-                                        className="text-xs text-[#666] bg-transparent border-none uppercase tracking-widest w-full focus:text-[#eee] outline-none"
-                                        defaultValue={player.class}
-                                        placeholder="CLASS / LEVEL"
-                                        onChange={(e) => {
-                                            setPlayers(players.map(p => (p.id === player.id ? { ...p, class: e.target.value } : p)));
-                                        }}
-                                    />
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-[1px] w-8 bg-[#666]"></div>
+                                        <input
+                                            className="text-sm font-mono text-[#888] bg-transparent border-none uppercase tracking-widest w-full focus:text-[#a32222] outline-none"
+                                            defaultValue={player.class}
+                                            placeholder="CLASS_UNKNOWN // LEVEL_0"
+                                            onChange={(e) => {
+                                                setPlayers(players.map(p => (p.id === player.id ? { ...p, class: e.target.value } : p)));
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                                {/* Delete Button */}
                                 <button
                                     onClick={() => setPlayers(players.filter(p => p.id !== player.id))}
-                                    className="opacity-0 group-hover:opacity-100 transition-opacity text-[#444] hover:text-[#a32222] p-2"
+                                    className="text-[#333] hover:text-[#a32222] transition-colors p-2"
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-5 h-5" />
                                 </button>
                             </div>
 
-                            {/* Status Toggles */}
-                            <div className="mb-6">
-                                <h3 className="text-[10px] font-bold uppercase text-[#444] mb-3 tracking-widest flex items-center gap-2">
-                                    <Zap className="w-3 h-3" /> Conditions
+                            {/* Status System */}
+                            <div className="mb-8">
+                                <h3 className="text-xs font-mono font-bold uppercase text-[#555] mb-4 tracking-[0.2em] flex items-center gap-2">
+                                    <Zap className="w-3 h-3" /> Vital Status
                                 </h3>
                                 <div className="flex flex-wrap gap-2">
                                     {["Dead", "Cursed", "Poisoned", "Blind", "Deaf", "Exhausted", "Stunned"].map((status) => (
@@ -146,51 +160,58 @@ export default function PlayersPage() {
                                             key={status}
                                             onClick={() => toggleStatus(player.id, status as PlayerStatus)}
                                             className={`
-                                                text-[10px] px-3 py-1 border transition-all uppercase tracking-wider
+                                                px-4 py-1.5 border text-xs font-mono uppercase tracking-wider transition-all duration-200
                                                 ${player.status.includes(status as PlayerStatus)
-                                                    ? 'bg-[#2a0a0a] text-[#ff4444] border-[#a32222] shadow-[0_0_10px_rgba(163,34,34,0.3)]'
-                                                    : 'bg-[#151515] text-[#555] border-[#333] hover:border-[#555] hover:text-[#888]'}
+                                                    ? 'bg-[#2a0a0a] text-[#ff4444] border-[#a32222] shadow-[0_0_10px_rgba(255,68,68,0.2)]'
+                                                    : 'bg-transparent text-[#444] border-[#222] hover:border-[#666] hover:text-[#bbb]'}
                                             `}
                                         >
                                             {status}
                                         </button>
                                     ))}
+                                    <button
+                                        onClick={() => toggleStatus(player.id, "Normal")}
+                                        className={`px-4 py-1.5 border text-xs font-mono uppercase tracking-wider transition-all duration-200 ${player.status.includes("Normal") ? 'bg-[#0a2a0a] text-[#44ff44] border-[#22aa22]' : 'hidden'}`}
+                                    >
+                                        Healthy
+                                    </button>
                                 </div>
                             </div>
 
-                            {/* Grid Layout for Notes & Files */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Notes Area */}
-                                <div>
-                                    <h3 className="text-[10px] font-bold uppercase text-[#444] mb-3 tracking-widest flex items-center gap-2">
-                                        <Eye className="w-3 h-3" /> Observation Log
+                            {/* Data Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+                                {/* Notes */}
+                                <div className="md:col-span-3">
+                                    <h3 className="text-xs font-mono font-bold uppercase text-[#555] mb-4 tracking-[0.2em] flex items-center gap-2">
+                                        <Eye className="w-3 h-3" /> Observations
                                     </h3>
                                     <textarea
-                                        className="w-full h-32 bg-[#080808] border border-[#222] p-3 text-xs font-mono text-[#888] resize-none focus:border-[#444] focus:text-[#ccc] outline-none"
+                                        className="w-full h-40 bg-[#050505] border border-[#222] p-4 text-sm text-[#aaa] font-serif leading-relaxed resize-none focus:border-[#a32222] focus:shadow-[0_0_15px_rgba(0,0,0,0.5)] outline-none transition-all placeholder-[#333]"
                                         value={player.notes}
                                         onChange={(e) => updateNotes(player.id, e.target.value)}
-                                        placeholder="// Enter notes..."
+                                        placeholder="Record strange behaviors, pacts, or sudden alignments shifts..."
                                     />
                                 </div>
 
-                                {/* File Attachment */}
-                                <div>
-                                    <h3 className="text-[10px] font-bold uppercase text-[#444] mb-3 tracking-widest flex items-center justify-between">
-                                        <span className="flex items-center gap-2"><Shield className="w-3 h-3" /> Dossier</span>
-                                        <label className="cursor-pointer text-[#444] hover:text-[#a32222] transition-colors">
+                                {/* Files */}
+                                <div className="md:col-span-2 flex flex-col h-full bg-[#050505] border border-[#222] relative group/files">
+                                    <div className="p-3 border-b border-[#222] flex justify-between items-center bg-[#0a0a0a]">
+                                        <span className="text-[10px] font-mono uppercase tracking-widest text-[#555]">Attachments</span>
+                                        <label className="cursor-pointer text-[#555] hover:text-[#a32222] transition-colors">
                                             <Upload className="w-3 h-3" />
-                                            <input type="file" className="hidden" onChange={(e) => handleFileUpload(player.id, e)} accept=".pdf,.doc,.docx,.xls,.xlsx" />
+                                            <input type="file" className="hidden" onChange={(e) => handleFileUpload(player.id, e)} />
                                         </label>
-                                    </h3>
-
-                                    <div className="h-32 bg-[#080808] border border-[#222] p-2 overflow-y-auto scrollbar-thin scrollbar-thumb-[#333]">
+                                    </div>
+                                    <div className="flex-1 p-2 overflow-y-auto custom-scrollbar">
                                         {player.files.length === 0 ? (
-                                            <div className="h-full flex items-center justify-center text-[10px] text-[#333] italic">No records found</div>
+                                            <div className="h-full flex items-center justify-center">
+                                                <span className="text-[10px] font-mono text-[#333] uppercase">No Data</span>
+                                            </div>
                                         ) : (
-                                            <ul className="space-y-2">
+                                            <ul className="space-y-1">
                                                 {player.files.map((file, i) => (
-                                                    <li key={i} className="bg-[#111] p-2 border-l-2 border-[#a32222] text-[10px] flex justify-between group/file">
-                                                        <span className="text-[#888] truncate max-w-[100px]">{file.name}</span>
+                                                    <li key={i} className="bg-[#111] p-2 border-l border-[#a32222] text-[10px] flex justify-between items-center group/item hover:bg-[#1a0505] cursor-pointer transition-colors">
+                                                        <span className="text-[#888] font-mono truncate max-w-[80px]">{file.name}</span>
                                                         <span className="text-[#444]">{file.date}</span>
                                                     </li>
                                                 ))}
@@ -203,9 +224,10 @@ export default function PlayersPage() {
                     ))}
 
                     {players.length === 0 && (
-                        <div className="col-span-1 lg:col-span-2 text-center py-20 border border-dashed border-[#333]">
-                            <Ghost className="w-8 h-8 text-[#222] mx-auto mb-4" />
-                            <p className="text-[#444] font-serif tracking-widest text-sm">NO SOULS DETECTED</p>
+                        <div className="col-span-1 xl:col-span-2 text-center py-32 border border-dashed border-[#222] rounded bg-[#0a0a0a]">
+                            <Ghost className="w-12 h-12 text-[#222] mx-auto mb-6" />
+                            <p className="text-[#444] font-header tracking-widest text-lg uppercase">Archive Empty</p>
+                            <p className="text-[#333] font-mono text-xs mt-2">Begin recruitment protocol</p>
                         </div>
                     )}
                 </div>

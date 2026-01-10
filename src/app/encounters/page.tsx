@@ -94,7 +94,7 @@ function EncountersContent() {
             {/* Background Effects */}
             <div style={{ position: 'fixed', inset: 0, opacity: 0.1, backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, #222 1px, #222 2px)", pointerEvents: 'none' }}></div>
 
-            <Link href="/" className="no-print" style={{ position: 'absolute', top: '20px', left: '20px', fontSize: '10px', color: '#666', border: '1px solid #333', padding: '4px 8px', textTransform: 'uppercase', letterSpacing: '0.1em' }} >
+            <Link href="/" className="no-print" style={{ position: 'fixed', top: '20px', left: '20px', fontSize: '12px', color: '#ccc', border: '1px solid #333', padding: '8px 16px', textTransform: 'uppercase', letterSpacing: '0.1em', background: 'rgba(5, 5, 5, 0.9)', zIndex: 9999, backdropFilter: 'blur(4px)' }} >
                 {"< RETURN_ROOT"}
             </Link>
 
