@@ -38,9 +38,9 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
     };
 
     return (
-        <div className="fixed inset-0 z-50 bg-gray-100 overflow-y-auto text-black font-serif print:static print:overflow-visible print:h-auto print:bg-white text-justify leading-snug">
+        <div className="fixed inset-0 z-50 bg-gray-100 flex flex-col font-serif print:static print:overflow-visible print:h-auto print:bg-white text-justify leading-snug isolate">
             {/* Toolbar - No Print */}
-            <div className="no-print fixed top-0 left-0 w-full bg-black text-white p-2 flex justify-between items-center shadow-lg z-[9999] text-xs md:text-sm">
+            <div className="no-print w-full bg-black text-white p-2 flex justify-between items-center shadow-lg z-[99999] shrink-0 text-xs md:text-sm relative">
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
                     <span className="font-bold text-accent uppercase tracking-widest hidden md:inline mr-4">AD&D Campaign Book</span>
 
@@ -61,7 +61,7 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
             </div>
 
             {/* Book Content Container - Scrollable Area */}
-            <div className="flex-1 overflow-y-auto w-full">
+            <div className="flex-1 overflow-y-auto w-full relative z-0">
                 <div className="max-w-[816px] mx-auto bg-white min-h-screen pt-8 pb-12 px-12 shadow-2xl print:shadow-none print:pt-0 print:mx-0 print:w-full print:max-w-none print:px-8">
 
                     {/* COVER PAGE (Only in Full Mode) */}
