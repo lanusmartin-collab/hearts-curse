@@ -72,7 +72,8 @@ export default function DiceRoller({ onRollComplete }: Props) {
     const [showModifier, setShowModifier] = useState(false);
 
     // Draggable State
-    const [position, setPosition] = useState<Position>({ x: typeof window !== 'undefined' ? window.innerWidth - 80 : 1000, y: typeof window !== 'undefined' ? window.innerHeight - 80 : 800 });
+    // Initial state safe for SSR, updated in useEffect
+    const [position, setPosition] = useState<Position>({ x: 1000, y: 800 });
     const [isDragging, setIsDragging] = useState(false);
     const dragOffset = useRef({ x: 0, y: 0 });
 
@@ -80,13 +81,31 @@ export default function DiceRoller({ onRollComplete }: Props) {
     const diceTypes = [4, 6, 8, 10, 12, 20];
 
     useEffect(() => {
+        // Hydrate position from localStorage or default to bottom-right
         const savedPos = localStorage.getItem("dicePos");
         if (savedPos) {
-            setPosition(JSON.parse(savedPos));
+            try {
+                const parsed = JSON.parse(savedPos);
+                if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
+                    setPosition(parsed);
+                    return;
+                }
+            } catch (e) {
+                console.error("Failed to parse dice position", e);
+            }
         }
+
+        // Default relative to window if no valid save
+        setPosition({
+            x: window.innerWidth - 100,
+            y: window.innerHeight - 100
+        });
     }, []);
 
     const handleMouseDown = (e: React.MouseEvent) => {
+        // Prevent default browser drag behavior (ghost image)
+        e.preventDefault();
+
         setIsDragging(true);
         dragOffset.current = {
             x: e.clientX - position.x,
@@ -96,8 +115,18 @@ export default function DiceRoller({ onRollComplete }: Props) {
 
     const handleMouseMove = (e: MouseEvent) => {
         if (!isDragging) return;
-        const newX = e.clientX - dragOffset.current.x;
-        const newY = e.clientY - dragOffset.current.y;
+
+        let newX = e.clientX - dragOffset.current.x;
+        let newY = e.clientY - dragOffset.current.y;
+
+        // Bounds Checking: Keep button on screen
+        const padding = 10;
+        const buttonWidth = 60;
+        const buttonHeight = 60;
+
+        newX = Math.max(padding, Math.min(newX, window.innerWidth - buttonWidth - padding));
+        newY = Math.max(padding, Math.min(newY, window.innerHeight - buttonHeight - padding));
+
         setPosition({ x: newX, y: newY });
     };
 
