@@ -155,11 +155,11 @@ export default function PlayersPage() {
                                 key={p.id}
                                 onClick={() => { setSelectedPlayerId(p.id); setSelectedFile(null); setFileFullScreen(false); }}
                                 className={`
-                                    w-full relative group overflow-hidden border-b border-[#222] transition-all duration-300 p-3 h-14 flex items-center justify-between
+                                    w-full relative group overflow-hidden transition-all duration-300 p-3 h-14 flex items-center justify-between
                                     hover:bg-[#111] hover:pl-5
                                     ${selectedPlayerId === p.id
-                                        ? 'bg-[#1a0505] border-l-2 border-l-[#a32222] pl-5'
-                                        : 'bg-transparent border-l-2 border-l-transparent'}
+                                        ? 'bg-[#1a0505] pl-5'
+                                        : 'bg-transparent'}
                                 `}
                             >
                                 <div className="flex flex-col items-start z-10 pl-2">
@@ -191,14 +191,14 @@ export default function PlayersPage() {
                                     {/* Top Border Decoration */}
                                     <div className="h-2 bg-[#1a1a1a] border-x border-t border-[#333] mx-1"></div>
 
-                                    <div className="flex-1 bg-[#101010] border border-[#333] p-1 flex flex-col relative">
+                                    <div className="flex-1 border border-[#5d4037] p-1 flex flex-col relative bg-[#f0e6d2]">
 
-                                        <div className="flex-1 flex flex-col bg-[#0c0c0c] border border-[#1a1a1a] p-6 relative overflow-hidden">
+                                        <div className="flex-1 flex flex-col bg-[#f0e6d2] p-6 relative overflow-hidden text-[#1a1a1a]">
                                             {/* Header */}
                                             <div className="border-b-2 border-[#a32222]/30 pb-4 mb-4">
                                                 <div className="flex justify-between items-start mb-2">
                                                     <input
-                                                        className="bg-transparent border-none text-3xl font-header text-[#e0e0e0] tracking-[0.05em] focus:text-[#ff4444] outline-none w-full"
+                                                        className="bg-transparent border-none text-3xl font-header text-[#7a1c1c] tracking-[0.05em] focus:text-[#a32222] outline-none w-full font-serif"
                                                         value={activePlayer.name}
                                                         onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, name: e.target.value } : p))}
                                                     />
@@ -209,7 +209,7 @@ export default function PlayersPage() {
                                                                 setSelectedPlayerId(null);
                                                             }
                                                         }}
-                                                        className="text-[#333] hover:text-[#a32222] transition-colors"
+                                                        className="text-[#5d4037] hover:text-[#a32222] transition-colors"
                                                         title="Delete Sheet"
                                                     >
                                                         <Trash2 className="w-5 h-5" />
@@ -218,7 +218,7 @@ export default function PlayersPage() {
                                                 <div className="flex items-center gap-3">
                                                     <span className="text-[#555] font-mono text-[10px] uppercase">Class & Level:</span>
                                                     <input
-                                                        className="bg-transparent border-b border-[#333] text-[#a32222] font-mono text-xs uppercase tracking-[0.2em] flex-1 focus:border-[#a32222] outline-none"
+                                                        className="bg-transparent border-b border-[#5d4037] text-[#1a1a1a] font-mono text-xs uppercase tracking-[0.2em] flex-1 focus:border-[#a32222] outline-none placeholder-[#8c7b75]"
                                                         value={activePlayer.class}
                                                         onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, class: e.target.value } : p))}
                                                         placeholder="UNKNOWN"
@@ -226,9 +226,8 @@ export default function PlayersPage() {
                                                 </div>
                                             </div>
 
-                                            {/* Status Grid - FORCED 2 COLUMN MINIMUM */}
-                                            <div className="mb-4 bg-[#080808] border border-[#1a1a1a] p-3">
-                                                <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.3em] mb-3 text-center border-b border-[#222] pb-1">
+                                            <div className="mb-4 bg-[#e6dac3] border border-[#c9bca0] p-3 shadow-inner">
+                                                <h4 className="text-[#5d4037] font-header text-sm tracking-[0.1em] mb-3 text-center border-b border-[#c9bca0] pb-1 font-bold">
                                                     Current Conditions
                                                 </h4>
                                                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
@@ -241,8 +240,8 @@ export default function PlayersPage() {
                                                                 key={status}
                                                                 onClick={() => toggleStatus(activePlayer.id, status)}
                                                                 className={`
-                                                                    flex items-center gap-2 p-1 transition-all group
-                                                                    ${isActive ? 'opacity-100' : 'opacity-40 hover:opacity-100'}
+                                                                    flex items-center gap-2 p-1 transition-all group border border-transparent hover:border-[#a32222]/20
+                                                                    ${isActive ? 'opacity-100' : 'opacity-60 hover:opacity-100'}
                                                                 `}
                                                             >
                                                                 <div className={`
@@ -251,7 +250,7 @@ export default function PlayersPage() {
                                                                 `}>
                                                                     {isActive && <div className="w-1.5 h-1.5 bg-white rounded-full"></div>}
                                                                 </div>
-                                                                <span className={`text-[9px] font-mono uppercase tracking-wider truncate ${isActive ? 'text-[#e0e0e0]' : 'text-[#666]'}`}>
+                                                                <span className={`text-[10px] font-bold uppercase tracking-wider truncate ${isActive ? 'text-[#a32222]' : 'text-[#5d4037]'}`}>
                                                                     {status}
                                                                 </span>
                                                             </button>
@@ -262,11 +261,11 @@ export default function PlayersPage() {
 
                                             {/* Notes Area */}
                                             <div className="flex-1 flex flex-col mb-4">
-                                                <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.3em] mb-2 pl-1">
+                                                <h4 className="text-[#5d4037] font-header text-sm tracking-[0.1em] mb-2 pl-1 font-bold">
                                                     Character Notes
                                                 </h4>
                                                 <textarea
-                                                    className="flex-1 w-full bg-[#080808] border border-[#222] p-4 text-[#bfbfbf] font-serif text-sm leading-6 resize-none outline-none focus:border-[#444] transition-colors custom-scrollbar shadow-inner"
+                                                    className="flex-1 w-full bg-[#fdfbf7] border border-[#c9bca0] p-4 text-[#1a1a1a] font-serif text-base leading-6 resize-none outline-none focus:border-[#a32222] transition-colors custom-scrollbar shadow-inner"
                                                     value={activePlayer.notes}
                                                     onChange={(e) => updateNotes(activePlayer.id, e.target.value)}
                                                     placeholder="Enter character notes..."
@@ -274,24 +273,24 @@ export default function PlayersPage() {
                                             </div>
 
                                             {/* Files List */}
-                                            <div className="h-[25%] shrink-0 flex flex-col">
+                                            <div className="h-[25%] shrink-0 flex flex-col mt-4 border-t border-[#c9bca0] pt-4">
                                                 <div className="flex justify-between items-center mb-2 px-1">
-                                                    <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.3em]">
+                                                    <h4 className="text-[#5d4037] font-header text-sm tracking-[0.1em] font-bold">
                                                         Attached Archives
                                                     </h4>
-                                                    <label className="cursor-pointer text-[#666] hover:text-[#a32222] transition-colors text-[9px] uppercase">
-                                                        [+ UPLOAD]
+                                                    <label className="cursor-pointer text-[#a32222] hover:text-[#7a1c1c] transition-colors text-[10px] uppercase font-bold tracking-widest">
+                                                        [+ ATTACH]
                                                         <input type="file" className="hidden" onChange={(e) => handleFileUpload(activePlayer.id, e)} />
                                                     </label>
                                                 </div>
-                                                <div className="flex-1 bg-[#080808] border border-[#222] p-1 overflow-y-auto custom-scrollbar">
+                                                <div className="flex-1 bg-[#e6dac3] border border-[#c9bca0] p-1 overflow-y-auto custom-scrollbar shadow-inner">
                                                     {activePlayer.files.map((file, i) => (
                                                         <div
                                                             key={i}
                                                             onClick={() => file.url && setSelectedFile({ url: file.url, type: file.type || 'unknown', name: file.name })}
                                                             className={`
-                                                                flex items-center justify-between p-2 cursor-pointer border-b border-[#1a1a1a] last:border-0 hover:bg-[#111] group
-                                                                ${selectedFile?.url === file.url ? 'bg-[#151515] text-[#e0e0e0]' : 'text-[#666]'}
+                                                                flex items-center justify-between p-2 cursor-pointer border-b border-[#d1c4a8] last:border-0 hover:bg-[#dcd0b8] group
+                                                                ${selectedFile?.url === file.url ? 'bg-[#dcd0b8] text-[#333]' : 'text-[#444]'}
                                                             `}
                                                         >
                                                             <span className="truncate text-[10px] font-mono w-full">{file.name}</span>

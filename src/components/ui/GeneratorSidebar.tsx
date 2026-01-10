@@ -20,7 +20,7 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
     };
 
     return (
-        <div className="grimoire-sidebar w-auto min-w-[200px] max-w-[300px] flex flex-col shrink-0 overflow-hidden z-20 border-r border-[#222] bg-[#0c0c0c] h-full shadow-2xl">
+        <div className="grimoire-sidebar w-auto min-w-[200px] max-w-[300px] flex flex-col shrink-0 overflow-hidden z-20 bg-[#0c0c0c] h-full shadow-2xl">
             {/* Header */}
             <div className="grimoire-header p-6 border-b border-[#222]">
                 <h3 className="grimoire-title text-base text-[#a32222] font-header tracking-[0.25em] mb-2 text-center">

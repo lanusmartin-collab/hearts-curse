@@ -13,9 +13,20 @@ export default function ShadowCaster() {
     const [spotifyUrl, setSpotifyUrl] = useState("https://open.spotify.com/embed/playlist/314GRwl6tg6qyh33ac8aqv?utm_source=generator");
 
     const SPOTIFY_PLAYLISTS = [
-        { name: "Curse of Strahd / Dark Ambience", url: "https://open.spotify.com/embed/playlist/314GRwl6tg6qyh33ac8aqv?utm_source=generator" },
-        { name: "Dark Souls OST", url: "https://open.spotify.com/embed/album/0xhIDcWedKalYBS9WjHk8E?utm_source=generator" },
-        { name: "Elden Ring OST", url: "https://open.spotify.com/embed/album/6JR4qLOXu96krMWxBTpXSR?utm_source=generator" }
+        { name: "Curse of Strahd Ambience", url: "https://open.spotify.com/embed/playlist/212sxQ2GGB2OQWI8DiGgP2?si=T1mZ0ETuRwKDQfxoiTq_Hg" },
+        { name: "Dark Souls 3 OST", url: "https://open.spotify.com/embed/album/1Ah3P73P0GDZoaBLUTkzVG?si=w_GYm8vhQ5-wbdfZcVKwug" },
+        { name: "Elden Ring OST", url: "https://open.spotify.com/embed/album/4dY3HRIWAl7aisBkt1DZAq?si=veYlpAaUQL-STNjvNp8vzQ" },
+        { name: "Bloodborne OST", url: "https://open.spotify.com/embed/album/3Ut0jxKtsG9LwKqngHWX20?si=pO-LWUm9R0yIbe6nLv_gpg" },
+        { name: "Diablo II: Resurrected OST", url: "https://open.spotify.com/embed/album/0mWdbjF3QuJwcgKvsFVXPS?si=Siv2UKmyQNOYhSBx-0TkbQ" },
+        { name: "Baldur's Gate 3 OST", url: "https://open.spotify.com/embed/album/41HhZHLQrJ7Rs1ygcu7jYY?si=f5tiW0dfRWy3aBMgyaKBGw" },
+        { name: "The Witcher 3 OST", url: "https://open.spotify.com/embed/album/4CMXXB1D7v1LEP2Y9cQ1q2?si=cvDcjZekQoWk2mW0-vGIGA" },
+        { name: "Hollow Knight OST", url: "https://open.spotify.com/embed/album/1OGL7BpdwI4VHQnjhnoRUQ?si=F-PY7VxSRiWJEdkBKOXpOA" },
+        { name: "Skyrim OST", url: "https://open.spotify.com/embed/album/5Mbx7r3EWnGkylq3239fjp?si=qRe1xVUkS0uvA1ziu4VZeA" },
+        { name: "Darkest Dungeon OST", url: "https://open.spotify.com/embed/album/6XFpyDkLt0q9cUCcAJ1XAF?si=8b-PzeG4TGi_iv6XEsmczA" },
+        { name: "Silent Hill 2 OST", url: "https://open.spotify.com/embed/album/1EVmWEVnzLU7KvCRCX1hvC?si=ihPDWh4SQnSCteS1cqWnrA" },
+        { name: "Demons Souls OST", url: "https://open.spotify.com/embed/album/4dY3HRIWAl7aisBkt1DZAq?si=2eyWkMJaTYCTejuowkme4g" },
+        { name: "D&D Combat Music", url: "https://open.spotify.com/embed/playlist/0GykHg9X8NfxbdTy3sp9h6?si=Ln6NU1EFRSqi20ZF7V5ipQ" },
+        { name: "Epic Boss Battles", url: "https://open.spotify.com/embed/playlist/0uwqioeN6C1NuXwjNVtY5f?si=9pf1YNPjQ-OPodQaCqESzw" }
     ];
 
     // Initial State: Collapsed (Icon only)
