@@ -23,17 +23,16 @@ export default function MapsPage() {
     const selectedMap = CAMPAIGN_MAPS.find(m => m.id === selectedMapId) || CAMPAIGN_MAPS[0];
 
     // Force Map to re-mount when map changes to reset state
-    // Force Map to re-mount when map changes to reset state
     const mapKey = selectedMap.id;
 
     const handleRollEncounter = () => {
         let table = null;
         switch (selectedMapId) {
             case 'oakhaven': table = TOWN_DAY_TABLE; break;
-            case 'mines': table = OAKHAVEN_MINES_TABLE; break; // Assuming ID is 'mines' - check maps.ts if fails
+            case 'mines': table = OAKHAVEN_MINES_TABLE; break;
             case 'underdark': table = UNDERDARK_TRAVEL_TABLE; break;
             case 'netheril': table = NETHERIL_RUINS_TABLE; break;
-            case 'library': table = LIBRARY_WHISPERS_TABLE; break; // Check IDs
+            case 'library': table = LIBRARY_WHISPERS_TABLE; break;
             case 'arach': table = ARACH_TINILITH_TABLE; break;
             case 'heart': table = HEART_CHAMBER_TABLE; break;
             case 'ossuary': table = OSSUARY_TABLE; break;
@@ -51,7 +50,14 @@ export default function MapsPage() {
         const encounter = table.find(e => roll >= e.roll[0] && roll <= e.roll[1]);
 
         if (encounter) {
-            alert(`🎲 RANDOM ENCOUNTER [Roll: ${roll}]\n\n⚔️ ${encounter.name}\n\n${encounter.description}`);
+            // Encode data for URL
+            const params = new URLSearchParams({
+                roll: roll.toString(),
+                name: encounter.name,
+                desc: encounter.description,
+                monsters: JSON.stringify(encounter.monsters || [])
+            });
+            router.push(`/encounters?${params.toString()}`);
         }
     };
 

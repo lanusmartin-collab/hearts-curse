@@ -6,10 +6,44 @@ import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
 import StatblockCard from "@/components/ui/StatblockCard";
 import Link from "next/link";
 
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
+
 export default function EncountersPage() {
+    return (
+        <Suspense fallback={<div className="text-center p-10 text-[#555]">Initializing Scanners...</div>}>
+            <EncountersContent />
+        </Suspense>
+    );
+}
+
+function EncountersContent() {
+    const searchParams = useSearchParams();
     const [result, setResult] = useState<Encounter | null>(null);
     const [linkedStatblocks, setLinkedStatblocks] = useState<string[]>([]);
     const [lastRoll, setLastRoll] = useState(0);
+
+    // Initial Load from URL
+    useEffect(() => {
+        const rollParam = searchParams.get('roll');
+        const nameParam = searchParams.get('name');
+        const descParam = searchParams.get('desc');
+        const monsterParam = searchParams.get('monsters');
+
+        if (rollParam && nameParam) {
+            setLastRoll(parseInt(rollParam));
+            setResult({
+                roll: [0, 0], // Dummy
+                name: nameParam,
+                description: descParam || "",
+                monsters: monsterParam ? JSON.parse(monsterParam) : []
+            });
+            if (monsterParam) {
+                setLinkedStatblocks(JSON.parse(monsterParam));
+            }
+            // Clear URL mostly to keep it clean? Or keep it for sharing? Keeping it is better.
+        }
+    }, [searchParams]);
 
     const rollTable = (table: Encounter[]) => {
         const d20 = Math.floor(Math.random() * 20) + 1;
