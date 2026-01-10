@@ -18,146 +18,168 @@ export default function ShadowCaster() {
         { name: "Elden Ring OST", url: "https://open.spotify.com/embed/album/6JR4qLOXu96krMWxBTpXSR?utm_source=generator" }
     ];
 
+    // Initial State: Collapsed (Icon only)
     if (!isExpanded) {
         return (
             <button
                 onClick={() => setIsExpanded(true)}
-                className="fixed bottom-6 right-6 z-[90] group transition-transform hover:scale-110"
+                className="fixed-bottom-right arcane-button animate-pulse-slow"
                 title="Open Arcane Engine"
             >
-                <div className="absolute inset-0 bg-[#a32222] opacity-20 Blur-xl rounded-full animate-pulse-slow"></div>
-                <div className="relative bg-black/90 text-[#a32222] border border-[#a32222] rounded-full p-4 shadow-[0_0_20px_rgba(163,34,34,0.4)] ring-2 ring-black/50">
-                    {isPlaying ? (
-                        <Music className="w-6 h-6 animate-spin-slow drop-shadow-[0_0_5px_currentColor]" />
-                    ) : (
-                        <Music className="w-6 h-6" />
-                    )}
-                </div>
+                {isPlaying ? (
+                    <Music className="w-6 h-6 animate-spin-slow" style={{ width: '24px', height: '24px' }} />
+                ) : (
+                    <Music className="w-6 h-6" style={{ width: '24px', height: '24px' }} />
+                )}
             </button>
         );
     }
 
     return (
-        <div className="fixed bottom-6 right-6 z-[90] w-80 perspective-1000 animate-in slide-in-from-bottom-8 duration-500 fade-in">
+        <div className="fixed-bottom-right animate-slide-up" style={{ width: '320px', zIndex: 90 }}>
             {/* Main Panel */}
-            <div className="bg-[#0a0a0a]/95 text-white border border-[#a32222]/50 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8),0_0_20px_rgba(163,34,34,0.2)] backdrop-blur-xl overflow-hidden flex flex-col font-sans ring-1 ring-white/10">
+            <div className="glass-panel">
                 {/* Header */}
-                <div className="relative p-4 border-b border-[#a32222]/30 bg-gradient-to-r from-black via-[#1a0505] to-black">
-                    <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#a32222] to-transparent opacity-50"></div>
+                <div className="p-4" style={{ borderBottom: '1px solid rgba(163,34,34,0.3)', background: 'linear-gradient(to right, #000, #1a0505, #000)' }}>
 
                     <div className="flex justify-between items-center mb-4">
-                        <div className="flex items-center gap-2 text-[#a32222]">
-                            <Music className="w-4 h-4 animate-pulse" />
-                            <h3 className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#eecfa1]">Shadow Caster v2.0</h3>
+                        <div className="flex items-center gap-2" style={{ color: '#a32222' }}>
+                            <Music className="w-4 h-4 animate-pulse-slow" style={{ width: '16px', height: '16px' }} />
+                            <h3 className="text-xs uppercase tracking-widest font-bold" style={{ color: '#eecfa1' }}>Shadow Caster v2.0</h3>
                         </div>
-                        <div className="flex gap-1 bg-black/50 p-1 rounded-lg border border-white/5">
+                        <div className="flex gap-2">
                             <button
                                 onClick={() => setActiveTab('local')}
-                                className={clsx(
-                                    "px-3 py-1 text-[9px] uppercase font-bold rounded transition-all",
-                                    activeTab === 'local' ? "bg-[#a32222] text-white shadow-lg" : "text-[#666] hover:text-[#bbb]"
-                                )}
+                                className="text-xs font-bold uppercase"
+                                style={{
+                                    padding: '4px 8px',
+                                    borderRadius: '4px',
+                                    background: activeTab === 'local' ? '#a32222' : 'transparent',
+                                    color: activeTab === 'local' ? '#fff' : '#666',
+                                    border: 'none'
+                                }}
                             >
                                 Local
                             </button>
                             <button
                                 onClick={() => setActiveTab('spotify')}
-                                className={clsx(
-                                    "px-3 py-1 text-[9px] uppercase font-bold rounded transition-all",
-                                    activeTab === 'spotify' ? "bg-[#1DB954] text-black shadow-lg" : "text-[#666] hover:text-[#bbb]"
-                                )}
+                                className="text-xs font-bold uppercase"
+                                style={{
+                                    padding: '4px 8px',
+                                    borderRadius: '4px',
+                                    background: activeTab === 'spotify' ? '#1DB954' : 'transparent',
+                                    color: activeTab === 'spotify' ? '#000' : '#666',
+                                    border: 'none'
+                                }}
                             >
                                 Spotify
                             </button>
+                            <button onClick={() => setIsExpanded(false)} style={{ color: '#666', border: 'none', padding: 0 }}>
+                                <ChevronDown style={{ width: '16px', height: '16px' }} />
+                            </button>
                         </div>
-                        <button onClick={() => setIsExpanded(false)} className="text-[#666] hover:text-[#a32222] transition-colors ml-2">
-                            <ChevronDown className="w-4 h-4" />
-                        </button>
                     </div>
 
                     {/* Content Area */}
-                    <div className="relative min-h-[140px]">
+                    <div style={{ minHeight: '140px' }}>
                         {activeTab === 'local' && (
-                            <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
-                                {/* Visulizer Simulation */}
-                                <div className="flex items-end justify-center gap-[2px] h-12 mb-2 opacity-50 mask-gradient-b">
+                            <div className="flex-col gap-4">
+                                {/* Visualizer Simulation */}
+                                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: '2px', height: '40px', marginBottom: '10px', opacity: 0.5 }}>
                                     {[...Array(20)].map((_, i) => (
                                         <div
                                             key={i}
-                                            className="w-1 bg-[#a32222]"
                                             style={{
+                                                width: '4px',
+                                                backgroundColor: '#a32222',
                                                 height: isPlaying ? `${Math.random() * 100}%` : '5%',
-                                                transition: 'height 0.2s ease',
-                                                animation: isPlaying ? `bounce ${0.5 + Math.random()}s infinite` : 'none'
+                                                transition: 'height 0.2s ease'
                                             }}
                                         />
                                     ))}
                                 </div>
 
-                                <div className="text-center">
-                                    <div className="text-sm font-bold truncate text-[#eecfa1] mb-1 font-serif tracking-wide drop-shadow-md">
+                                <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                                    <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#eecfa1', marginBottom: '4px' }}>
                                         {currentTrack?.title || "Awaiting Input..."}
                                     </div>
-                                    <div className="text-[10px] text-[#888] uppercase tracking-widest">{currentTrack?.category || "System Idle"}</div>
+                                    <div style={{ fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                                        {currentTrack?.category || "System Idle"}
+                                    </div>
                                 </div>
 
-                                <div className="flex items-center gap-4 px-2">
+                                <div className="flex items-center justify-between gap-4">
                                     <button
                                         onClick={togglePlay}
                                         disabled={!currentTrack}
-                                        className="bg-[#a32222] text-white rounded-full p-3 hover:bg-[#c93333] hover:scale-105 transition-all shadow-[0_0_15px_rgba(163,34,34,0.4)] disabled:opacity-50 disabled:grayscale"
+                                        style={{
+                                            background: '#a32222',
+                                            color: '#fff',
+                                            borderRadius: '50%',
+                                            padding: '12px',
+                                            border: 'none',
+                                            boxShadow: '0 0 15px rgba(163,34,34,0.4)',
+                                            opacity: !currentTrack ? 0.5 : 1
+                                        }}
                                     >
-                                        {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
+                                        {isPlaying ? <Pause style={{ width: '20px', height: '20px', fill: 'currentColor' }} /> : <Play style={{ width: '20px', height: '20px', fill: 'currentColor', marginLeft: '2px' }} />}
                                     </button>
 
-                                    <div className="flex-1 space-y-2">
-                                        <div className="flex items-center gap-2">
-                                            <button onClick={toggleMute} className="text-[#666] hover:text-[#eecfa1]">
-                                                {isMuted || volume === 0 ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
-                                            </button>
-                                            <input
-                                                type="range"
-                                                min="0"
-                                                max="1"
-                                                step="0.01"
-                                                value={isMuted ? 0 : volume}
-                                                onChange={(e) => setVolume(parseFloat(e.target.value))}
-                                                className="w-full h-1 bg-[#333] rounded-lg appearance-none cursor-pointer accent-[#a32222]"
-                                            />
-                                        </div>
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <button onClick={toggleMute} style={{ color: '#666', border: 'none' }}>
+                                            {isMuted || volume === 0 ? <VolumeX style={{ width: '16px', height: '16px' }} /> : <Volume2 style={{ width: '16px', height: '16px' }} />}
+                                        </button>
+                                        <input
+                                            type="range"
+                                            min="0"
+                                            max="1"
+                                            step="0.01"
+                                            value={isMuted ? 0 : volume}
+                                            onChange={(e) => setVolume(parseFloat(e.target.value))}
+                                            style={{ width: '100%', accentColor: '#a32222', height: '4px', background: '#333', borderRadius: '2px' }}
+                                        />
                                     </div>
 
                                     <button
                                         onClick={() => setShowPlaylist(!showPlaylist)}
-                                        className={clsx(
-                                            "p-2 rounded transition-colors",
-                                            showPlaylist ? 'text-[#a32222] bg-[#a32222]/10' : 'text-[#666] hover:text-[#eecfa1]'
-                                        )}
+                                        style={{
+                                            padding: '8px',
+                                            borderRadius: '4px',
+                                            color: showPlaylist ? '#a32222' : '#666',
+                                            background: showPlaylist ? 'rgba(163,34,34,0.1)' : 'transparent',
+                                            border: 'none'
+                                        }}
                                     >
-                                        <ListMusic className="w-5 h-5" />
+                                        <ListMusic style={{ width: '20px', height: '20px' }} />
                                     </button>
                                 </div>
                             </div>
                         )}
 
                         {activeTab === 'spotify' && (
-                            <div className="space-y-3 animate-in fade-in slide-in-from-right-4 duration-300">
+                            <div className="flex-col gap-2">
                                 <select
-                                    className="w-full bg-[#111] border border-[#333] rounded text-[10px] p-2 text-[#ccc] focus:border-[#1DB954] outline-none transition-colors"
+                                    style={{
+                                        width: '100%',
+                                        background: '#111',
+                                        border: '1px solid #333',
+                                        borderRadius: '4px',
+                                        fontSize: '0.75rem',
+                                        padding: '8px',
+                                        color: '#ccc',
+                                        marginBottom: '10px'
+                                    }}
                                     onChange={(e) => setSpotifyUrl(e.target.value)}
                                     value={spotifyUrl}
                                 >
                                     {SPOTIFY_PLAYLISTS.map((pl, i) => (
                                         <option key={i} value={pl.url}>{pl.name}</option>
                                     ))}
-                                    # </select>
+                                </select>
 
                                 <iframe
-                                    style={{ borderRadius: "8px", boxShadow: "0 4px 20px rgba(0,0,0,0.5)" }}
+                                    style={{ borderRadius: "8px", border: "none", width: "100%", height: "152px" }}
                                     src={spotifyUrl}
-                                    width="100%"
-                                    height="152"
-                                    frameBorder="0"
                                     allowFullScreen
                                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                                     loading="lazy"

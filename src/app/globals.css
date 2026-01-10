@@ -319,3 +319,328 @@ select:focus {
 .node-badge {
   display: none;
 }
+
+/* =========================================
+   ARCANE ENGINE & THREAT TERMINAL STYLES
+   (Replacing missing Tailwind Utilities)
+   ========================================= */
+
+/* ANIMATIONS */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-scan {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0.9;
+  }
+
+  5%,
+  10% {
+    opacity: 0.2;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out forwards;
+}
+
+.animate-slide-scan {
+  animation: slide-scan 2s linear infinite;
+}
+
+.animate-flicker {
+  animation: flicker 0.3s ease-out;
+}
+
+/* UTILITIES */
+.fixed-bottom-right {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+}
+
+.glass-panel {
+  background: rgba(10, 10, 12, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(163, 34, 34, 0.4);
+  box-shadow:
+    0 0 20px rgba(163, 34, 34, 0.1),
+    0 10px 40px rgba(0, 0, 0, 0.8);
+  border-radius: 12px;
+  color: #fff;
+  overflow: hidden;
+}
+
+.arcane-button {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #a32222;
+  color: #a32222;
+  border-radius: 50%;
+  padding: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(163, 34, 34, 0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arcane-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px rgba(163, 34, 34, 0.6);
+  background: #a32222;
+  color: #fff;
+}
+
+/* THREAT TERMINAL (Encounters Layout) */
+.terminal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+@media (min-width: 1024px) {
+  .terminal-grid {
+    grid-template-columns: 250px 1fr;
+  }
+}
+
+.terminal-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  margin-top: 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+.terminal-title {
+  font-family: var(--font-header);
+  font-size: 3rem;
+  color: #a32222;
+  text-shadow: 0 0 10px rgba(163, 34, 34, 0.5);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.control-btn {
+  width: 100%;
+  text-align: left;
+  padding: 1rem;
+  background: #0e0e0e;
+  border: 1px solid #333;
+  color: #ccc;
+  position: relative;
+  transition: all 0.3s;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.control-btn:hover {
+  border-color: #666;
+  background: #151515;
+}
+
+.control-btn.highlight {
+  border-color: rgba(212, 175, 55, 0.3);
+  color: #eecfa1;
+}
+
+.control-btn.highlight:hover {
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.control-label {
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.control-sub {
+  font-size: 0.65rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 0.2rem;
+  display: block;
+}
+
+.terminal-display {
+  background: #080808;
+  border: 1px solid #333;
+  min-height: 500px;
+  padding: 2rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.corner-dec {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  border-color: #a32222;
+  border-style: solid;
+}
+
+.tl {
+  top: 0;
+  left: 0;
+  border-width: 2px 0 0 2px;
+}
+
+.tr {
+  top: 0;
+  right: 0;
+  border-width: 2px 2px 0 0;
+}
+
+.bl {
+  bottom: 0;
+  left: 0;
+  border-width: 0 0 2px 2px;
+}
+
+.br {
+  bottom: 0;
+  right: 0;
+  border-width: 0 2px 2px 0;
+}
+
+.section-header {
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #222;
+  color: #666;
+}
+
+/* FLEX & GRID HELPER CLASSES (Since Tailwind is missing) */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.tracking-widest {
+  letter-spacing: 0.1em;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}

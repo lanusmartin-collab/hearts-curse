@@ -74,61 +74,62 @@ function EncountersContent() {
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] text-[#ccc] p-4 md:p-8 font-sans pb-32 relative overflow-hidden">
+        <div style={{ minHeight: '100vh', background: '#050505', color: '#ccc', fontFamily: 'sans-serif', paddingBottom: '8rem', position: 'relative' }}>
             {/* Background Effects */}
-            <div className="fixed inset-0 pointer-events-none opacity-30" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, #111 1px, #111 2px)" }}></div>
-            <div className="fixed inset-0 pointer-events-none opacity-20" style={{ backgroundImage: "radial-gradient(circle at 50% 50%, #1a0505 0%, #000 80%)" }}></div>
+            <div style={{ position: 'fixed', inset: 0, opacity: 0.1, backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, #222 1px, #222 2px)", pointerEvents: 'none' }}></div>
 
-            <Link href="/" className="no-print absolute top-6 left-6 text-[10px] text-[#444] hover:text-[#a32222] font-mono tracking-widest border border-[#222] px-3 py-1 bg-black z-20 hover:border-[#a32222] transition-colors">
+            <Link href="/" className="no-print" style={{ position: 'absolute', top: '20px', left: '20px', fontSize: '10px', color: '#666', border: '1px solid #333', padding: '4px 8px', textTransform: 'uppercase', letterSpacing: '0.1em' }} >
                 {"< RETURN_ROOT"}
             </Link>
 
-            <header className="relative z-10 text-center mb-12 mt-8">
-                <h1 className="text-4xl md:text-6xl font-serif text-[#a32222] tracking-widest drop-shadow-[0_0_10px_rgba(163,34,34,0.6)]">THREAT ASSESSMENT</h1>
-                <div className="h-[1px] w-32 bg-[#a32222] mx-auto mt-4 mb-2"></div>
-                <p className="font-mono text-[10px] text-[#666] tracking-[0.3em] uppercase">Tactical Encounter Generation System // v3.1</p>
+            <header className="terminal-header">
+                <h1 className="terminal-title">THREAT ASSESSMENT</h1>
+                <div style={{ height: '1px', width: '100px', background: '#a32222', margin: '1rem auto' }}></div>
+                <p style={{ fontFamily: 'monospace', fontSize: '10px', color: '#666', letterSpacing: '0.3em', textTransform: 'uppercase' }}>Tactical Encounter Generation System // v3.1</p>
             </header>
 
-            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8 relative z-10">
+            <div className="terminal-grid">
 
                 {/* LEFT COLUMN: CONTROLS */}
-                <div className="lg:col-span-1 space-y-8">
+                <div className="flex-col gap-4">
                     {/* SECTOR 1 */}
-                    <div className="space-y-2">
-                        <h3 className="text-[10px] font-bold text-[#666] uppercase tracking-widest border-b border-[#222] pb-1">Sector 01: Surface</h3>
-                        <div className="grid grid-cols-1 gap-2">
-                            <ControlButton label="Town (Day)" sub="Standard Patrol" onClick={() => rollTable(TOWN_DAY_TABLE)} />
-                            <ControlButton label="Town (Night)" sub="High Alert" onClick={() => rollTable(TOWN_NIGHT_TABLE)} />
-                            <ControlButton label="Outskirts" sub="Wilderness" onClick={() => rollTable(OUTSKIRTS_TABLE)} />
-                        </div>
+                    <div>
+                        <h3 className="section-header">Sector 01: Surface</h3>
+                        <ControlButton label="Town (Day)" sub="Standard Patrol" onClick={() => rollTable(TOWN_DAY_TABLE)} />
+                        <ControlButton label="Town (Night)" sub="High Alert" onClick={() => rollTable(TOWN_NIGHT_TABLE)} />
+                        <ControlButton label="Outskirts" sub="Wilderness" onClick={() => rollTable(OUTSKIRTS_TABLE)} />
                     </div>
 
                     {/* SECTOR 2 */}
-                    <div className="space-y-2">
-                        <h3 className="text-[10px] font-bold text-[#666] uppercase tracking-widest border-b border-[#222] pb-1">Sector 02: Deep</h3>
-                        <div className="grid grid-cols-1 gap-2">
-                            <ControlButton label="Mines (Lv 3-5)" sub="Subterranean" onClick={() => rollTable(OAKHAVEN_MINES_TABLE)} />
-                            <ControlButton label="Deep Travel" sub="Underdark" onClick={() => rollTable(UNDERDARK_TRAVEL_TABLE)} />
-                            <ControlButton label="Drow City" sub="Arach-Tinilith" onClick={() => rollTable(ARACH_TINILITH_TABLE)} />
-                        </div>
+                    <div>
+                        <h3 className="section-header">Sector 02: Deep</h3>
+                        <ControlButton label="Mines (Lv 3-5)" sub="Subterranean" onClick={() => rollTable(OAKHAVEN_MINES_TABLE)} />
+                        <ControlButton label="Deep Travel" sub="Underdark" onClick={() => rollTable(UNDERDARK_TRAVEL_TABLE)} />
+                        <ControlButton label="Drow City" sub="Arach-Tinilith" onClick={() => rollTable(ARACH_TINILITH_TABLE)} />
                     </div>
 
                     {/* SECTOR 3 */}
-                    <div className="space-y-2">
-                        <h3 className="text-[10px] font-bold text-[#d4af37] uppercase tracking-widest border-b border-[#d4af37]/30 pb-1">Sector 03: Restricted</h3>
-                        <div className="grid grid-cols-2 gap-2">
-                            <ControlButton label="Silent Wards" sub="Hazard" highlight onClick={() => rollTable(SILENT_WARDS_TABLE)} />
-                            <ControlButton label="Netheril Void" sub="Arcane" highlight onClick={() => rollTable(NETHERIL_RUINS_TABLE)} />
-                            <ControlButton label="Library" sub="Forbidden" highlight onClick={() => rollTable(LIBRARY_WHISPERS_TABLE)} />
-                            <ControlButton label="Ossuary" sub="Undead" highlight onClick={() => rollTable(OSSUARY_TABLE)} />
-                            <ControlButton label="Heart" sub="Unknown" highlight onClick={() => rollTable(HEART_CHAMBER_TABLE)} />
-                        </div>
+                    <div>
+                        <h3 className="section-header" style={{ color: '#d4af37', borderColor: '#d4af37' }}>Sector 03: Restricted</h3>
+                        <ControlButton label="Silent Wards" sub="Hazard" highlight onClick={() => rollTable(SILENT_WARDS_TABLE)} />
+                        <ControlButton label="Netheril Void" sub="Arcane" highlight onClick={() => rollTable(NETHERIL_RUINS_TABLE)} />
+                        <ControlButton label="Library" sub="Forbidden" highlight onClick={() => rollTable(LIBRARY_WHISPERS_TABLE)} />
                     </div>
 
-                    <div className="pt-4 border-t border-[#222]">
+                    <div style={{ paddingTop: '1rem', borderTop: '1px solid #222' }}>
                         <button
                             onClick={triggerShopAmbush}
-                            className="w-full bg-[#1a0505] border border-[#a32222] text-[#ff4444] p-3 text-xs font-bold uppercase tracking-widest hover:bg-[#a32222] hover:text-black transition-all shadow-[0_0_10px_rgba(163,34,34,0.2)] animate-pulse-slow"
+                            style={{
+                                width: '100%',
+                                background: '#1a0505',
+                                border: '1px solid #a32222',
+                                color: '#ff4444',
+                                padding: '12px',
+                                fontWeight: 'bold',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.1em'
+                            }}
+                            className="animate-pulse-slow"
                         >
                             ⚠️ Zhentarim Ambush
                         </button>
@@ -136,61 +137,58 @@ function EncountersContent() {
                 </div>
 
                 {/* RIGHT COLUMN: DISPLAY */}
-                <div className="lg:col-span-3">
-                    <div className="bg-[#0a0a0a] border border-[#333] min-h-[500px] p-8 relative flex flex-col items-center justify-center text-center shadow-2xl">
-                        {/* Corner Decorations */}
-                        <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-[#a32222]"></div>
-                        <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-[#a32222]"></div>
-                        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-[#a32222]"></div>
-                        <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-[#a32222]"></div>
+                <div className="terminal-display">
+                    <div className="corner-dec tl"></div>
+                    <div className="corner-dec tr"></div>
+                    <div className="corner-dec bl"></div>
+                    <div className="corner-dec br"></div>
 
-                        {!result && !isScanning && (
-                            <div className="text-[#333] animate-pulse">
-                                <div className="text-6xl mb-4 opacity-20">☢</div>
-                                <p className="font-mono text-sm tracking-widest uppercase">Awaiting Sector Selection...</p>
+                    {!result && !isScanning && (
+                        <div style={{ textAlign: 'center', opacity: 0.5 }} className="animate-pulse-slow">
+                            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>☢</div>
+                            <p style={{ fontFamily: 'monospace', fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Awaiting Sector Selection...</p>
+                        </div>
+                    )}
+
+                    {isScanning && (
+                        <div style={{ color: '#a32222', fontFamily: 'monospace', fontWeight: 'bold', letterSpacing: '0.2em' }}>
+                            [ SYSTEM SCANNING... ]
+                            <div style={{ height: '4px', width: '200px', background: '#333', marginTop: '1rem', overflow: 'hidden' }}>
+                                <div className="animate-slide-scan" style={{ height: '100%', width: '50%', background: '#a32222' }}></div>
                             </div>
-                        )}
+                        </div>
+                    )}
 
-                        {isScanning && (
-                            <div className="text-[#a32222] font-mono font-bold tracking-widest animate-pulse">
-                                [ SYSTEM SCANNING... ]
-                                <div className="mt-4 h-1 w-32 bg-[#333] mx-auto overflow-hidden">
-                                    <div className="h-full bg-[#a32222] w-1/2 animate-slide-scan"></div>
-                                </div>
+                    {result && !isScanning && (
+                        <div className="animate-flicker" style={{ width: '100%', maxWidth: '600px', textAlign: 'center' }}>
+                            <div style={{ fontFamily: 'monospace', color: '#a32222', fontSize: '0.8rem', marginBottom: '1rem', letterSpacing: '0.2em', borderBottom: '1px solid #333', display: 'inline-block', paddingBottom: '0.5rem' }}>
+                                Result Analysis // Roll: {lastRoll}
                             </div>
-                        )}
+                            <h2 style={{ fontSize: '2.5rem', fontFamily: 'serif', color: '#e0e0e0', marginBottom: '1.5rem', textShadow: '0 4px 10px rgba(0,0,0,0.8)' }}>{result.name}</h2>
+                            <p style={{ color: '#888', fontStyle: 'italic', marginBottom: '2rem', lineHeight: '1.6' }}>
+                                "{result.description}"
+                            </p>
 
-                        {result && !isScanning && (
-                            <div className="w-full max-w-2xl animate-in zoom-in-95 duration-300">
-                                <div className="font-mono text-[#a32222] text-sm mb-2 tracking-[0.5em] uppercase border-b border-[#a32222]/30 pb-2 inline-block">
-                                    Result Analysis // Roll: {lastRoll}
-                                </div>
-                                <h2 className="text-4xl font-serif text-[#e0e0e0] mb-6 drop-shadow-md">{result.name}</h2>
-                                <p className="text-[#888] font-serif text-lg leading-relaxed mb-10 italic">
-                                    "{result.description}"
-                                </p>
-
-                                {linkedStatblocks.length > 0 ? (
-                                    <div className="text-left bg-[#111] border border-[#222] p-6 relative">
-                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0a0a0a] px-4 text-[#a32222] text-[10px] font-bold uppercase tracking-widest border border-[#222]">
-                                            Hostiles Detected
-                                        </div>
-                                        <div className="space-y-8 mt-4">
-                                            {linkedStatblocks.map(slug => {
-                                                const data = MONSTERS_2024[slug];
-                                                if (!data) return <div key={slug} className="text-red-500 font-mono text-xs">Error: {slug} not found</div>;
-                                                return <StatblockCard data={data} key={slug} />;
-                                            })}
-                                        </div>
+                            {linkedStatblocks.length > 0 ? (
+                                <div style={{ textAlign: 'left', background: '#111', border: '1px solid #222', padding: '1.5rem', position: 'relative', marginTop: '2rem' }}>
+                                    <div style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: '#0a0a0a', padding: '0 10px', color: '#a32222', fontSize: '0.7rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em', border: '1px solid #222' }}>
+                                        Hostiles Detected
                                     </div>
-                                ) : (
-                                    <div className="text-[#444] font-mono text-xs uppercase tracking-widest border border-[#222] p-4 inline-block">
-                                        No Hostile Signatures Detected
+                                    <div className="flex-col gap-4" style={{ marginTop: '1rem' }}>
+                                        {linkedStatblocks.map(slug => {
+                                            const data = MONSTERS_2024[slug];
+                                            if (!data) return <div key={slug} style={{ color: 'red' }}>Error: {slug} not found</div>;
+                                            return <StatblockCard data={data} key={slug} />;
+                                        })}
                                     </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                                </div>
+                            ) : (
+                                <div style={{ border: '1px dashed #333', padding: '1rem', color: '#444', fontFamily: 'monospace', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                                    No Hostile Signatures Detected
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -201,19 +199,10 @@ function ControlButton({ label, sub, highlight, onClick }: { label: string, sub:
     return (
         <button
             onClick={onClick}
-            className={`
-                group relative w-full text-left p-3 border transition-all duration-300 overflow-hidden
-                ${highlight
-                    ? 'bg-[#1a1205] border-[#d4af37]/30 hover:border-[#d4af37] text-[#eecfa1]'
-                    : 'bg-[#0e0e0e] border-[#222] hover:border-[#666] text-[#ccc]'}
-            `}
+            className={`control-btn ${highlight ? 'highlight' : ''}`}
         >
-            <div className={`absolute top-0 right-0 w-2 h-2 border-t border-r transition-all duration-300 ${highlight ? 'border-[#d4af37]' : 'border-[#444] group-hover:border-[#ccc]'}`}></div>
-            <div className="relative z-10">
-                <div className="text-xs font-bold uppercase tracking-wider">{label}</div>
-                <div className={`text-[9px] uppercase tracking-widest mt-1 ${highlight ? 'text-[#d4af37]/60' : 'text-[#555]'}`}>{sub}</div>
-            </div>
-            <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 bg-gradient-to-r ${highlight ? 'from-[#d4af37]/10' : 'from-[#fff]/5'} to-transparent`}></div>
+            <span className="control-label">{label}</span>
+            <span className="control-sub">{sub}</span>
         </button>
     );
 }
