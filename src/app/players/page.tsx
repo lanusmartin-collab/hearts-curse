@@ -9,7 +9,15 @@ type PlayerStatus = "Normal" | "Dead" | "Cursed" | "Poisoned" | "Blind" | "Deaf"
 type PlayerCharacter = {
     id: string;
     name: string;
+    race: string;
     class: string;
+    alignment: string;
+    stats: { str: number; dex: number; con: number; int: number; wis: number; cha: number };
+    ac: number;
+    hp: number;
+    maxHp: number;
+    speed: string;
+    avatarUrl?: string;
     status: PlayerStatus[];
     notes: string;
     files: { name: string; date: string; url?: string; type?: string }[];
@@ -28,7 +36,21 @@ const STATUS_CONFIG: Record<PlayerStatus, { icon: React.ElementType, color: stri
 
 export default function PlayersPage() {
     const [players, setPlayers] = useState<PlayerCharacter[]>([
-        { id: "1", name: "Valeros", class: "Fighter 5", status: ["Normal"], notes: "Possessed by a ghost?", files: [] }
+        {
+            id: "1",
+            name: "Valeros",
+            race: "Human",
+            class: "Fighter 5",
+            alignment: "Neutral Good",
+            stats: { str: 16, dex: 14, con: 15, int: 10, wis: 12, cha: 13 },
+            ac: 18,
+            hp: 44,
+            maxHp: 44,
+            speed: "30 ft",
+            status: ["Normal"],
+            notes: "Possessed by a ghost?",
+            files: []
+        }
     ]);
     const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
     const [newPlayerName, setNewPlayerName] = useState("");
@@ -41,11 +63,18 @@ export default function PlayersPage() {
     const addPlayer = () => {
         if (!newPlayerName.trim()) return;
         const newId = Date.now().toString();
-        const newPlayer = {
+        const newPlayer: PlayerCharacter = {
             id: newId,
             name: newPlayerName,
-            class: "Unknown",
-            status: ["Normal"] as PlayerStatus[],
+            race: "Unknown",
+            class: "Commoner 1",
+            alignment: "Unaligned",
+            stats: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
+            ac: 10,
+            hp: 10,
+            maxHp: 10,
+            speed: "30 ft",
+            status: ["Normal"],
             notes: "",
             files: []
         };
@@ -179,7 +208,12 @@ export default function PlayersPage() {
                 </div>
 
                 {/* 2. Main Content Area */}
-                <div className={`flex-1 flex flex-col bg-[#050505] relative overflow-hidden transition-all duration-300 ${fileFullScreen ? '' : 'items-center justify-center'}`}>
+                <div
+                    className={`flex-1 flex flex-col bg-[#050505] relative overflow-hidden transition-all duration-300 ${fileFullScreen ? '' : 'items-center justify-center'}`}
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) setSelectedPlayerId(null);
+                    }}
+                >
                     <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('/noise.png')]"></div>
 
                     {activePlayer ? (
@@ -194,36 +228,131 @@ export default function PlayersPage() {
                                     <div className="flex-1 border border-[#5d4037] p-1 flex flex-col relative bg-[#f0e6d2]" style={{ backgroundColor: '#f0e6d2' }}>
 
                                         <div className="flex-1 flex flex-col bg-[#f0e6d2] p-6 relative overflow-hidden text-[#1a1a1a]" style={{ backgroundColor: '#f0e6d2', color: '#1a1a1a' }}>
-                                            {/* Header */}
-                                            <div className="border-b-2 border-[#a32222]/30 pb-4 mb-4">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <input
-                                                        className="bg-transparent border-none text-3xl font-header text-[#7a1c1c] tracking-[0.05em] focus:text-[#a32222] outline-none w-full font-serif"
-                                                        value={activePlayer.name}
-                                                        onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, name: e.target.value } : p))}
-                                                    />
-                                                    <button
-                                                        onClick={() => {
-                                                            if (confirm("Remove this soul permanently?")) {
-                                                                setPlayers(players.filter(p => p.id !== activePlayer.id));
-                                                                setSelectedPlayerId(null);
-                                                            }
-                                                        }}
-                                                        className="text-[#5d4037] hover:text-[#a32222] transition-colors"
-                                                        title="Delete Sheet"
-                                                    >
-                                                        <Trash2 className="w-5 h-5" />
-                                                    </button>
+                                            {/* Header Section with Avatar */}
+                                            <div className="flex gap-4 border-b-2 border-[#a32222]/30 pb-4 mb-4">
+                                                {activePlayer.avatarUrl && (
+                                                    <div className="w-24 h-24 shrink-0 border-2 border-[#5d4037] bg-black shadow-lg overflow-hidden relative group">
+                                                        <img src={activePlayer.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                                                        <button
+                                                            onClick={() => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, avatarUrl: undefined } : p))}
+                                                            className="absolute inset-0 bg-black/50 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                                                        >
+                                                            <X className="w-6 h-6" />
+                                                        </button>
+                                                    </div>
+                                                )}
+
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex justify-between items-start mb-1">
+                                                        <input
+                                                            className="bg-transparent border-none text-3xl font-header text-[#7a1c1c] tracking-[0.05em] focus:text-[#a32222] outline-none w-full font-serif font-bold placeholder-[#7a1c1c]/50"
+                                                            value={activePlayer.name}
+                                                            onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, name: e.target.value } : p))}
+                                                            placeholder="NAME"
+                                                        />
+                                                        <button
+                                                            onClick={() => {
+                                                                if (confirm("Remove this soul permanently?")) {
+                                                                    setPlayers(players.filter(p => p.id !== activePlayer.id));
+                                                                    setSelectedPlayerId(null);
+                                                                }
+                                                            }}
+                                                            className="text-[#5d4037] hover:text-[#a32222] transition-colors pt-2"
+                                                            title="Delete Sheet"
+                                                        >
+                                                            <Trash2 className="w-5 h-5" />
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="flex flex-wrap gap-2 text-xs font-serif italic text-[#444] items-center mb-3">
+                                                        <input
+                                                            className="bg-transparent border-b border-transparent hover:border-[#a32222]/30 focus:border-[#a32222] outline-none w-20 placeholder-[#888]"
+                                                            value={activePlayer.race || ""}
+                                                            onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, race: e.target.value } : p))}
+                                                            placeholder="Race"
+                                                        />
+                                                        <span>•</span>
+                                                        <input
+                                                            className="bg-transparent border-b border-transparent hover:border-[#a32222]/30 focus:border-[#a32222] outline-none w-24 placeholder-[#888]"
+                                                            value={activePlayer.class || ""}
+                                                            onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, class: e.target.value } : p))}
+                                                            placeholder="Class"
+                                                        />
+                                                        <span>•</span>
+                                                        <input
+                                                            className="bg-transparent border-b border-transparent hover:border-[#a32222]/30 focus:border-[#a32222] outline-none w-24 placeholder-[#888]"
+                                                            value={activePlayer.alignment || ""}
+                                                            onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, alignment: e.target.value } : p))}
+                                                            placeholder="Alignment"
+                                                        />
+                                                    </div>
+
+                                                    {/* Quick Stats Row: AC, HP, Speed */}
+                                                    <div className="flex items-center justify-between gap-2 border-t border-[#a32222]/10 pt-2">
+                                                        <div className="flex flex-col items-center">
+                                                            <span className="font-header text-[9px] uppercase font-bold text-[#a32222]">AC</span>
+                                                            <div className="relative w-10 h-10 flex items-center justify-center bg-[url('/shield-outline.png')] bg-contain bg-center bg-no-repeat">
+                                                                <input
+                                                                    className="w-8 text-center bg-transparent outline-none font-bold text-lg text-[#1a1a1a]"
+                                                                    value={activePlayer.ac || 10}
+                                                                    type="number"
+                                                                    onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, ac: parseInt(e.target.value) || 10 } : p))}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex flex-col items-center flex-1 mx-2">
+                                                            <span className="font-header text-[9px] uppercase font-bold text-[#a32222]">Hit Points</span>
+                                                            <div className="flex items-center gap-1 border border-[#a32222] rounded px-2 py-1 bg-white/50 w-full justify-center">
+                                                                <Heart className="w-3 h-3 text-[#a32222] fill-[#a32222]" />
+                                                                <input
+                                                                    className="w-8 text-right bg-transparent outline-none font-bold text-[#1a1a1a]"
+                                                                    value={activePlayer.hp || 0}
+                                                                    type="number"
+                                                                    onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, hp: parseInt(e.target.value) || 0 } : p))}
+                                                                />
+                                                                <span className="text-[#666]">/</span>
+                                                                <input
+                                                                    className="w-8 text-left bg-transparent outline-none font-bold text-[#666]"
+                                                                    value={activePlayer.maxHp || 0}
+                                                                    type="number"
+                                                                    onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, maxHp: parseInt(e.target.value) || 0 } : p))}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex flex-col items-center">
+                                                            <span className="font-header text-[9px] uppercase font-bold text-[#a32222]">Speed</span>
+                                                            <input
+                                                                className="w-12 text-center border-b border-[#a32222]/20 outline-none font-bold text-[#1a1a1a] bg-transparent"
+                                                                value={activePlayer.speed || "30 ft"}
+                                                                onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, speed: e.target.value } : p))}
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-3">
-                                                    <span className="text-[#555] font-mono text-[10px] uppercase">Class & Level:</span>
-                                                    <input
-                                                        className="bg-transparent border-b border-[#5d4037] text-[#1a1a1a] font-mono text-xs uppercase tracking-[0.2em] flex-1 focus:border-[#a32222] outline-none placeholder-[#8c7b75]"
-                                                        value={activePlayer.class}
-                                                        onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, class: e.target.value } : p))}
-                                                        placeholder="UNKNOWN"
-                                                    />
-                                                </div>
+                                            </div>
+
+                                            {/* Ability Scores Grid */}
+                                            <div className="grid grid-cols-6 gap-1 mb-4">
+                                                {Object.entries(activePlayer.stats || {}).map(([stat, score]) => {
+                                                    const mod = Math.floor((score - 10) / 2);
+                                                    return (
+                                                        <div key={stat} className="flex flex-col items-center bg-[#e6dac3] border border-[#a32222]/30 p-1 rounded relative group">
+                                                            <span className="text-[8px] font-bold uppercase text-[#5d4037]">{stat}</span>
+                                                            <span className="text-sm font-bold text-[#1a1a1a]">{mod >= 0 ? '+' : ''}{mod}</span>
+                                                            <div className="w-6 h-6 rounded-full border border-[#a32222]/20 bg-white flex items-center justify-center absolute -bottom-2 shadow-sm">
+                                                                <input
+                                                                    className="w-full h-full text-center bg-transparent outline-none text-[8px] font-bold text-[#666]"
+                                                                    value={score}
+                                                                    type="number"
+                                                                    onChange={(e) => {
+                                                                        const val = parseInt(e.target.value) || 10;
+                                                                        setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, stats: { ...p.stats, [stat]: val } } : p));
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
 
                                             <div className="mb-4 bg-[#e6dac3] border border-[#c9bca0] p-3 shadow-inner">
@@ -238,7 +367,10 @@ export default function PlayersPage() {
                                                         return (
                                                             <button
                                                                 key={status}
-                                                                onClick={() => toggleStatus(activePlayer.id, status)}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    toggleStatus(activePlayer.id, status);
+                                                                }}
                                                                 className={`
                                                                     flex items-center gap-2 p-1 transition-all group border border-transparent hover:border-[#a32222]/20
                                                                     ${isActive ? 'opacity-100' : 'opacity-60 hover:opacity-100'}
@@ -300,6 +432,18 @@ export default function PlayersPage() {
                                                             >
                                                                 <X className="w-3 h-3" />
                                                             </button>
+                                                            {file.type?.startsWith("image/") && (
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, avatarUrl: file.url } : p));
+                                                                    }}
+                                                                    className="opacity-0 group-hover:opacity-100 text-[#444] hover:text-[#a32222] ml-2 text-[8px] font-bold uppercase tracking-wider border border-[#a32222] rounded px-1"
+                                                                    title="Set as Portrait"
+                                                                >
+                                                                    Use as Portrait
+                                                                </button>
+                                                            )}
                                                         </div>
                                                     ))}
                                                 </div>
