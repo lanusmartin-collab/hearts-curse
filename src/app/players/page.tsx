@@ -126,7 +126,7 @@ export default function PlayersPage() {
                         {!isAddMenuOpen ? (
                             <button
                                 onClick={() => setIsAddMenuOpen(true)}
-                                className="w-full text-[10px] uppercase tracking-[0.2em] px-4 py-3 border border-[#333] hover:border-[#a32222] text-[#666] hover:text-[#e0e0e0] flex items-center justify-center gap-2 transition-all group"
+                                className="w-full text-[10px] uppercase tracking-[0.2em] px-4 py-3 border border-[#333] hover:border-[#a32222] text-[#666] hover:text-[#e0e0e0] flex items-center justify-center gap-2 transition-all group active:scale-95"
                             >
                                 <Plus className="w-3 h-3 group-hover:text-[#a32222]" /> Register New Soul
                             </button>
@@ -155,10 +155,11 @@ export default function PlayersPage() {
                                 key={p.id}
                                 onClick={() => { setSelectedPlayerId(p.id); setSelectedFile(null); setFileFullScreen(false); }}
                                 className={`
-                                    w-full relative group overflow-hidden border transition-all duration-300 p-3 h-14 flex items-center justify-between
+                                    w-full relative group overflow-hidden border border-[#333] transition-all duration-300 p-3 h-14 flex items-center justify-between
+                                    shadow-sm hover:shadow-md active:scale-[0.98]
                                     ${selectedPlayerId === p.id
-                                        ? 'bg-[#1a0505] border-[#a32222] shadow-[0_0_15px_rgba(163,34,34,0.2)]'
-                                        : 'bg-[#111] border-[#222] hover:border-[#444] hover:bg-[#161616] hover:animate-heartbeat'}
+                                        ? 'bg-[#1a0505] border-[#a32222] shadow-[0_0_15px_rgba(163,34,34,0.3)]'
+                                        : 'bg-[#151515] hover:border-[#666] hover:bg-[#222]'}
                                 `}
                             >
                                 <div className="flex flex-col items-start z-10 pl-2">
@@ -167,7 +168,9 @@ export default function PlayersPage() {
                                     </span>
                                     <span className="text-[9px] font-mono text-[#444] uppercase tracking-widest">{p.class}</span>
                                 </div>
-                                <Heart className={`w-4 h-4 mr-2 transition-all ${selectedPlayerId === p.id ? 'fill-[#a32222] text-[#a32222] animate-pulse' : 'text-[#333] group-hover:text-[#555]'}`} />
+                                <div className={`p-2 rounded-full border border-transparent ${selectedPlayerId === p.id ? 'bg-[#a32222]/20' : 'bg-transparent'}`}>
+                                    <Heart className={`w-4 h-4 transition-all ${selectedPlayerId === p.id ? 'fill-[#a32222] text-[#a32222] animate-heartbeat' : 'text-[#333] group-hover:text-[#555]'}`} />
+                                </div>
 
                                 {selectedPlayerId === p.id && <div className="absolute inset-0 bg-gradient-to-r from-[#a32222]/10 to-transparent pointer-events-none"></div>}
                             </button>
@@ -180,22 +183,22 @@ export default function PlayersPage() {
                     <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('/noise.png')]"></div>
 
                     {activePlayer ? (
-                        <div className={`flex h-full w-full max-w-[1600px] ${fileFullScreen ? 'p-0' : 'p-8 gap-12'}`}>
+                        <div className={`flex h-full w-full max-w-[1800px] ${fileFullScreen ? 'p-0' : 'p-8 gap-8 pl-20'}`}> {/* Forced pl-20 for separation */}
 
-                            {/* Left: Character Sheet (Scroll Style) */}
+                            {/* Left: Character Sheet (25% Width - Smaller as requested) */}
                             {!fileFullScreen && (
-                                <div className="w-[500px] shrink-0 flex flex-col animate-fade-in shadow-2xl self-center" style={{ height: "90%" }}>
+                                <div className="w-[28%] min-w-[380px] shrink-0 flex flex-col animate-fade-in shadow-2xl self-center" style={{ height: "92%" }}>
                                     {/* Top Border Decoration */}
                                     <div className="h-2 bg-[#1a1a1a] border-x border-t border-[#333] mx-1"></div>
 
                                     <div className="flex-1 bg-[#101010] border border-[#333] p-1 flex flex-col relative">
 
-                                        <div className="flex-1 flex flex-col bg-[#0c0c0c] border border-[#1a1a1a] p-8 relative overflow-hidden">
+                                        <div className="flex-1 flex flex-col bg-[#0c0c0c] border border-[#1a1a1a] p-6 relative overflow-hidden">
                                             {/* Header */}
-                                            <div className="border-b-2 border-[#a32222]/30 pb-6 mb-6">
+                                            <div className="border-b-2 border-[#a32222]/30 pb-4 mb-4">
                                                 <div className="flex justify-between items-start mb-2">
                                                     <input
-                                                        className="bg-transparent border-none text-4xl font-header text-[#e0e0e0] tracking-[0.05em] focus:text-[#ff4444] outline-none w-full"
+                                                        className="bg-transparent border-none text-3xl font-header text-[#e0e0e0] tracking-[0.05em] focus:text-[#ff4444] outline-none w-full"
                                                         value={activePlayer.name}
                                                         onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, name: e.target.value } : p))}
                                                     />
@@ -215,7 +218,7 @@ export default function PlayersPage() {
                                                 <div className="flex items-center gap-3">
                                                     <span className="text-[#555] font-mono text-[10px] uppercase">Class & Level:</span>
                                                     <input
-                                                        className="bg-transparent border-b border-[#333] text-[#a32222] font-mono text-sm uppercase tracking-[0.2em] flex-1 focus:border-[#a32222] outline-none"
+                                                        className="bg-transparent border-b border-[#333] text-[#a32222] font-mono text-xs uppercase tracking-[0.2em] flex-1 focus:border-[#a32222] outline-none"
                                                         value={activePlayer.class}
                                                         onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, class: e.target.value } : p))}
                                                         placeholder="UNKNOWN"
@@ -223,12 +226,12 @@ export default function PlayersPage() {
                                                 </div>
                                             </div>
 
-                                            {/* Status Grid - AD&D Checklist Style */}
-                                            <div className="mb-8 bg-[#080808] border border-[#1a1a1a] p-4">
-                                                <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.3em] mb-4 text-center border-b border-[#222] pb-2">
+                                            {/* Status Grid - 3 Column for better fit */}
+                                            <div className="mb-4 bg-[#080808] border border-[#1a1a1a] p-3">
+                                                <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.3em] mb-3 text-center border-b border-[#222] pb-1">
                                                     Current Conditions
                                                 </h4>
-                                                <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-2"> {/* Responsive Columns */}
                                                     {(Object.keys(STATUS_CONFIG) as PlayerStatus[]).map(status => {
                                                         const config = STATUS_CONFIG[status];
                                                         const isActive = activePlayer.status.includes(status);
@@ -238,17 +241,17 @@ export default function PlayersPage() {
                                                                 key={status}
                                                                 onClick={() => toggleStatus(activePlayer.id, status)}
                                                                 className={`
-                                                                    flex items-center gap-3 p-1.5 transition-all group
+                                                                    flex items-center gap-2 p-1 transition-all group
                                                                     ${isActive ? 'opacity-100' : 'opacity-40 hover:opacity-100'}
                                                                 `}
                                                             >
                                                                 <div className={`
-                                                                    w-3 h-3 border border-[#444] flex items-center justify-center transition-colors
+                                                                    w-3 h-3 border border-[#444] flex items-center justify-center transition-colors shrink-0
                                                                     ${isActive ? 'bg-[#a32222] border-[#ff4444]' : 'bg-transparent'}
                                                                 `}>
                                                                     {isActive && <div className="w-1.5 h-1.5 bg-white rounded-full"></div>}
                                                                 </div>
-                                                                <span className={`text-[10px] font-mono uppercase tracking-wider ${isActive ? 'text-[#e0e0e0]' : 'text-[#666]'}`}>
+                                                                <span className={`text-[9px] font-mono uppercase tracking-wider truncate ${isActive ? 'text-[#e0e0e0]' : 'text-[#666]'}`}>
                                                                     {status}
                                                                 </span>
                                                             </button>
@@ -271,7 +274,7 @@ export default function PlayersPage() {
                                             </div>
 
                                             {/* Files List */}
-                                            <div className="h-[20%] shrink-0 flex flex-col">
+                                            <div className="h-[25%] shrink-0 flex flex-col">
                                                 <div className="flex justify-between items-center mb-2 px-1">
                                                     <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.3em]">
                                                         Attached Archives
@@ -310,8 +313,8 @@ export default function PlayersPage() {
                                 </div>
                             )}
 
-                            {/* Right: Document Viewer */}
-                            <div className={`flex flex-col bg-[#030303] border border-[#222] relative transition-all duration-300 ${fileFullScreen ? 'h-full w-full border-none z-50' : 'flex-1 h-[90%] self-center shadow-xl'}`}>
+                            {/* Right: Document Viewer (70-75% Width) */}
+                            <div className={`flex flex-col bg-[#030303] border border-[#222] relative transition-all duration-300 ${fileFullScreen ? 'h-full w-full border-none z-50' : 'flex-1 h-[92%] self-center shadow-2xl'}`}>
                                 {selectedFile ? (
                                     <div className="h-full flex flex-col">
                                         <div className="h-10 shrink-0 border-b border-[#222] flex items-center justify-between px-4 bg-[#080808]">
@@ -347,17 +350,20 @@ export default function PlayersPage() {
                                     </div>
                                 ) : (
                                     <div className="h-full flex flex-col items-center justify-center text-[#222] select-none">
-                                        <FileText className="w-12 h-12 mb-4 opacity-20" />
-                                        <p className="font-mono text-[10px] uppercase tracking-widest opacity-30 text-center px-8">
-                                            Select a document to inspect
-                                        </p>
+                                        <FileText className="w-16 h-16 mb-4 opacity-10" />
+                                        <div className="text-center">
+                                            <h3 className="text-[#444] font-header text-xl tracking-widest mb-1">ARCHIVE VIEWER</h3>
+                                            <p className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-30 px-8">
+                                                Select a document to inspect
+                                            </p>
+                                        </div>
                                     </div>
                                 )}
                             </div>
 
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center h-full text-[#333] select-none pointer-events-none">
+                        <div className="flex-1 flex flex-col items-center justify-center text-[#333] select-none pointer-events-none pl-20"> {/* Fixed separation */}
                             <Ghost className="w-24 h-24 mb-6 opacity-10 animate-float" />
                             <h2 className="text-2xl font-header tracking-[0.3em] uppercase mb-2 opacity-30 text-[#e0e0e0]">Awaiting Soul Selection</h2>
                             <p className="font-mono text-[10px] uppercase tracking-widest opacity-20">Access the register to proceed</p>
