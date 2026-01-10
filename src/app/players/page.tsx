@@ -185,9 +185,9 @@ export default function PlayersPage() {
                     {activePlayer ? (
                         <div className={`flex h-full w-full max-w-[1800px] ${fileFullScreen ? 'p-0' : 'p-8 gap-8 pl-20'}`}> {/* Forced pl-20 for separation */}
 
-                            {/* Left: Character Sheet (25% Width - Smaller as requested) */}
+                            {/* Left: Character Sheet (20% Width - Compact to give Doc Viewer space) */}
                             {!fileFullScreen && (
-                                <div className="w-[28%] min-w-[380px] shrink-0 flex flex-col animate-fade-in shadow-2xl self-center" style={{ height: "92%" }}>
+                                <div className="w-[22%] min-w-[320px] shrink-0 flex flex-col animate-fade-in shadow-2xl self-center" style={{ height: "92%" }}>
                                     {/* Top Border Decoration */}
                                     <div className="h-2 bg-[#1a1a1a] border-x border-t border-[#333] mx-1"></div>
 
@@ -226,12 +226,12 @@ export default function PlayersPage() {
                                                 </div>
                                             </div>
 
-                                            {/* Status Grid - 3 Column for better fit */}
+                                            {/* Status Grid - FORCED 2 COLUMN MINIMUM */}
                                             <div className="mb-4 bg-[#080808] border border-[#1a1a1a] p-3">
                                                 <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.3em] mb-3 text-center border-b border-[#222] pb-1">
                                                     Current Conditions
                                                 </h4>
-                                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-2"> {/* Responsive Columns */}
+                                                <div className="grid grid-cols-2 gap-2"> {/* Removed responsive columns to force 2-col structure */}
                                                     {(Object.keys(STATUS_CONFIG) as PlayerStatus[]).map(status => {
                                                         const config = STATUS_CONFIG[status];
                                                         const isActive = activePlayer.status.includes(status);

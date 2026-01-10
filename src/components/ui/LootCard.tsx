@@ -1,7 +1,7 @@
 "use client";
 
 import { ShopItem } from "@/lib/data/items";
-import Image from "next/image";
+import { Sword, Shield, Scroll, Beaker, Hexagon, Gem } from "lucide-react";
 
 export function LootCard({ item }: { item: ShopItem }) {
     // Helper for rarity colors (AD&D style: subtle metallic inks)
@@ -15,6 +15,22 @@ export function LootCard({ item }: { item: ShopItem }) {
             case "artifact": return "#4b0082"; // Indigo
             default: return "#333";
         }
+    };
+
+    // Helper to get icon
+    const getIcon = () => {
+        const lowerName = item.name.toLowerCase();
+        const lowerType = item.type?.toLowerCase() || "";
+
+        const iconStyle = { width: "48px", height: "48px", color: getRarityColor(item.rarity || "Common"), marginBottom: "10px", opacity: 0.8 };
+
+        if (lowerType.includes("weapon") || lowerName.includes("sword") || lowerName.includes("blade") || lowerName.includes("bow")) return <Sword style={iconStyle} />;
+        if (lowerType.includes("armor") || lowerName.includes("shield") || lowerName.includes("plate") || lowerName.includes("helm")) return <Shield style={iconStyle} />;
+        if (lowerType.includes("potion") || lowerName.includes("potion") || lowerName.includes("elixir")) return <Beaker style={iconStyle} />;
+        if (lowerType.includes("scroll") || lowerName.includes("scroll") || lowerName.includes("tome")) return <Scroll style={iconStyle} />;
+        if (lowerType.includes("ring") || lowerName.includes("ring") || lowerName.includes("amulet") || lowerName.includes("gem")) return <Gem style={iconStyle} />;
+
+        return <Hexagon style={iconStyle} />; // Default
     };
 
     return (
@@ -43,7 +59,11 @@ export function LootCard({ item }: { item: ShopItem }) {
             <div style={{ position: "absolute", bottom: "6px", right: "6px", width: "12px", height: "12px", borderBottom: "3px solid #5d4037", borderRight: "3px solid #5d4037" }} />
 
             {/* Header */}
-            <div style={{ borderBottom: `2px solid ${getRarityColor(item.rarity || "Common")}`, paddingBottom: "0.5rem", marginBottom: "1rem", textAlign: "center" }}>
+            <div style={{ borderBottom: `2px solid ${getRarityColor(item.rarity || "Common")}`, paddingBottom: "0.5rem", marginBottom: "1rem", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
+
+                {/* Icon */}
+                {getIcon()}
+
                 <h3 style={{
                     margin: 0,
                     fontFamily: "var(--adnd-font-header)",

@@ -126,43 +126,45 @@ export default function GeneratorsPage() {
                             </button>
                         </div>
 
-                        {/* Result Display */}
-                        <div className="flex-1 overflow-auto custom-scrollbar border border-[#222] bg-[#0a0a0a] p-8 relative shadow-inner flex items-center justify-center">
+                        {/* Result Display - Relaxed & Scrollable */}
+                        <div className="flex-1 overflow-auto custom-scrollbar p-8 flex items-start justify-center">
+                            {/* Removed max-w-2xl constraint, added min-width to prevent squish */}
+                            <div className="w-full max-w-5xl min-h-[500px] border border-[#222] bg-[#0a0a0a] p-8 relative shadow-inner flex flex-col items-center">
 
-                            {isGenerating ? (
-                                <div className="text-center animate-pulse">
-                                    <div className="text-[#a32222] font-header text-2xl tracking-[0.5em] mb-4">ACCESSING ARCHIVES</div>
-                                    <div className="w-64 h-1 bg-[#222] mx-auto rounded overflow-hidden">
-                                        <div className="h-full bg-[#a32222] w-1/2 animate-slide-right"></div>
+                                {isGenerating ? (
+                                    <div className="text-center animate-pulse my-auto">
+                                        <div className="text-[#a32222] font-header text-2xl tracking-[0.5em] mb-4">ACCESSING ARCHIVES</div>
+                                        <div className="w-64 h-1 bg-[#222] mx-auto rounded overflow-hidden">
+                                            <div className="h-full bg-[#a32222] w-1/2 animate-slide-right"></div>
+                                        </div>
+                                        <div className="font-mono text-[10px] text-[#444] mt-2 uppercase">Please wait...</div>
                                     </div>
-                                    <div className="font-mono text-[10px] text-[#444] mt-2 uppercase">Please wait...</div>
-                                </div>
-                            ) : result ? (
-                                <div className="w-full max-w-2xl animate-fade-in">
-                                    <div className="flex justify-end mb-2 no-print">
-                                        <PrintButton />
+                                ) : result ? (
+                                    <div className="w-full max-w-2xl animate-fade-in">
+                                        <div className="flex justify-end mb-2 no-print">
+                                            <PrintButton />
+                                        </div>
+                                        <StatblockCard data={result} />
                                     </div>
-                                    <StatblockCard data={result} />
-                                </div>
-                            ) : lootItem ? (
-                                <div className="w-full max-w-lg animate-fade-in relative">
-                                    <div className="absolute -top-4 -right-4 no-print z-10">
-                                        <PrintButton />
+                                ) : lootItem ? (
+                                    <div className="w-full max-w-lg animate-fade-in relative">
+                                        <div className="absolute -top-4 -right-4 no-print z-10">
+                                            <PrintButton />
+                                        </div>
+                                        <LootCard item={lootItem} />
                                     </div>
-                                    <LootCard item={lootItem} />
-                                </div>
-                            ) : (
-                                <div className="text-center opacity-20 select-none pointer-events-none">
-                                    <div className="text-6xl mb-4 font-mono text-[#333]">+</div>
-                                    <p className="font-header text-xl tracking-[0.3em] uppercase mb-2">Awaiting Input</p>
-                                    <p className="font-mono text-[10px] uppercase tracking-widest">Select Context & Initiate Generation</p>
-                                </div>
-                            )}
+                                ) : (
+                                    <div className="text-center opacity-20 select-none pointer-events-none">
+                                        <div className="text-6xl mb-4 font-mono text-[#333]">+</div>
+                                        <p className="font-header text-xl tracking-[0.3em] uppercase mb-2">Awaiting Input</p>
+                                        <p className="font-mono text-[10px] uppercase tracking-widest">Select Context & Initiate Generation</p>
+                                    </div>
+                                )}
 
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+            );
 }
