@@ -65,7 +65,7 @@ export default function PlayersPage() {
             }
 
             // Remove Normal if adding something else
-            let newStatuses = p.status.filter(s => s !== "Normal");
+            let newStatuses: PlayerStatus[] = p.status.filter(s => s !== "Normal");
 
             if (newStatuses.includes(status)) {
                 newStatuses = newStatuses.filter(s => s !== status);
