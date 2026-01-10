@@ -71,9 +71,8 @@ export default function DiceRoller({ onRollComplete }: Props) {
     const [visorTotal, setVisorTotal] = useState<number | string>("-");
     const [showModifier, setShowModifier] = useState(false);
 
-    // Draggable State
-    // Initial state safe for SSR, updated in useEffect
-    const [position, setPosition] = useState<Position>({ x: 1000, y: 800 });
+    // Draggable State - DEFAULT TO UPPER RIGHT
+    const [position, setPosition] = useState<Position>({ x: 1000, y: 100 });
     const [isDragging, setIsDragging] = useState(false);
     const dragOffset = useRef({ x: 0, y: 0 });
 
@@ -81,7 +80,6 @@ export default function DiceRoller({ onRollComplete }: Props) {
     const diceTypes = [4, 6, 8, 10, 12, 20];
 
     useEffect(() => {
-        // Hydrate position from localStorage or default to bottom-right
         const savedPos = localStorage.getItem("dicePos");
         if (savedPos) {
             try {
@@ -93,20 +91,21 @@ export default function DiceRoller({ onRollComplete }: Props) {
             } catch (e) {
                 console.error("Failed to parse dice position", e);
             }
+        } else {
+            // Updated default position logic: Top Right
+            setPosition({
+                x: window.innerWidth - 100,
+                y: 50 // Top padding
+            });
         }
-
-        // Default relative to window if no valid save
-        setPosition({
-            x: window.innerWidth - 100,
-            y: window.innerHeight - 100
-        });
     }, []);
 
     const handleMouseDown = (e: React.MouseEvent) => {
-        // Prevent default browser drag behavior (ghost image)
         e.preventDefault();
-
         setIsDragging(true);
+        // Correct offset calculation: distance from mouse to top-left of element
+        // Using getBoundingClientRect ensures we account for scroll or other shifts if necessary, 
+        // though strictly 'position' is what we are rendering at.
         dragOffset.current = {
             x: e.clientX - position.x,
             y: e.clientY - position.y
@@ -119,13 +118,15 @@ export default function DiceRoller({ onRollComplete }: Props) {
         let newX = e.clientX - dragOffset.current.x;
         let newY = e.clientY - dragOffset.current.y;
 
-        // Bounds Checking: Keep button on screen
+        // Bounds Checking
         const padding = 10;
-        const buttonWidth = 60;
-        const buttonHeight = 60;
+        const buttonSize = 60;
 
-        newX = Math.max(padding, Math.min(newX, window.innerWidth - buttonWidth - padding));
-        newY = Math.max(padding, Math.min(newY, window.innerHeight - buttonHeight - padding));
+        const maxX = window.innerWidth - buttonSize - padding;
+        const maxY = window.innerHeight - buttonSize - padding;
+
+        newX = Math.max(padding, Math.min(newX, maxX));
+        newY = Math.max(padding, Math.min(newY, maxY));
 
         setPosition({ x: newX, y: newY });
     };
@@ -329,6 +330,36 @@ export default function DiceRoller({ onRollComplete }: Props) {
         }
     };
 
+    // Calculate smart position for panel
+    const getPanelPosition = () => {
+        const panelWidth = 360;
+        const panelHeight = 500; // Estimated max height
+
+        let left = position.x - 300;
+        let top = position.y - 400;
+
+        // If off right screen, shift left
+        if (typeof window !== 'undefined') {
+            if (position.x + 100 > window.innerWidth) {
+                left = position.x - panelWidth + 50;
+            } else if (left < 10) {
+                // Check left edge
+                left = 10;
+            }
+
+            // Check top edge
+            if (top < 10) {
+                top = 10;
+            } else if (top + panelHeight > window.innerHeight) {
+                top = window.innerHeight - panelHeight - 10;
+            }
+        }
+
+        return { left, top };
+    };
+
+    const panelPos = getPanelPosition();
+
     return (
         <div className="no-print">
             <style>{animationStyles}</style>
@@ -359,8 +390,8 @@ export default function DiceRoller({ onRollComplete }: Props) {
                     className="dice-panel glass-panel animate-slide-up"
                     style={{
                         position: 'fixed',
-                        left: Math.min(position.x - 300, (typeof window !== 'undefined' ? window.innerWidth : 1000) - 380),
-                        top: Math.min(position.y - 400, (typeof window !== 'undefined' ? window.innerHeight : 800) - 500),
+                        left: panelPos.left,
+                        top: panelPos.top,
                         bottom: 'auto',
                         right: 'auto',
                         width: '360px',
