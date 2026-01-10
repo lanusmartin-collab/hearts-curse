@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import CommandBar from "@/components/ui/CommandBar";
-import { Skull, Ghost, Plus, Upload, Activity, Biohazard, EyeOff, MicOff, BatteryLow, Stars, FileText, X, Trash2, User, UserPlus, File, Eye, Maximize2, Minimize2 } from "lucide-react";
+import { Skull, Ghost, Plus, Upload, Activity, Biohazard, EyeOff, MicOff, BatteryLow, Stars, FileText, X, Trash2, User, UserPlus, File, Eye, Maximize2, Minimize2, Heart } from "lucide-react";
 
 type PlayerStatus = "Normal" | "Dead" | "Cursed" | "Poisoned" | "Blind" | "Deaf" | "Exhausted" | "Stunned";
 
@@ -58,11 +58,25 @@ export default function PlayersPage() {
     const toggleStatus = (playerId: string, status: PlayerStatus) => {
         setPlayers(players.map(p => {
             if (p.id !== playerId) return p;
-            if (status === "Normal") return { ...p, status: ["Normal"] };
-            const newStatuses = p.status.includes(status)
-                ? p.status.filter(s => s !== status)
-                : [...p.status.filter(s => s !== "Normal"), status];
-            return { ...p, status: newStatuses.length === 0 ? ["Normal"] : newStatuses };
+
+            // Handle Normal toggle
+            if (status === "Normal") {
+                return { ...p, status: ["Normal"] };
+            }
+
+            // Remove Normal if adding something else
+            let newStatuses = p.status.filter(s => s !== "Normal");
+
+            if (newStatuses.includes(status)) {
+                newStatuses = newStatuses.filter(s => s !== status);
+            } else {
+                newStatuses.push(status);
+            }
+
+            // Default back to Normal if empty
+            if (newStatuses.length === 0) newStatuses = ["Normal"];
+
+            return { ...p, status: newStatuses };
         }));
     };
 
@@ -101,21 +115,23 @@ export default function PlayersPage() {
             <CommandBar />
 
             <div className="flex flex-1 overflow-hidden relative">
-                {/* 1. Sidebar - Grimoire Style (Hidden in Full Screen Mode) */}
+                {/* 1. Sidebar - Soul Register */}
                 <div className={`grimoire-sidebar w-[320px] flex flex-col shrink-0 overflow-hidden z-20 border-r border-[#222] bg-[#0c0c0c] transition-all duration-300 ${fileFullScreen ? '-ml-[320px]' : ''}`}>
                     <div className="grimoire-header p-6 border-b border-[#222]">
-                        <h3 className="grimoire-title text-base text-[#a32222] font-header tracking-[0.25em] mb-4 text-center border-b border-[#a32222]/20 pb-2">
+                        <h3 className="grimoire-title text-base text-[#a32222] font-header tracking-[0.25em] mb-6 text-center border-b border-[#a32222]/20 pb-2">
                             SOUL REGISTER
                         </h3>
-                        <button
-                            onClick={() => setIsAddMenuOpen(!isAddMenuOpen)}
-                            className="text-[10px] bg-transparent border border-[#333] text-[#888] px-4 py-3 w-full hover:border-[#a32222] hover:text-[#e0e0e0] transition-all uppercase tracking-[0.2em] flex items-center justify-center gap-2"
-                        >
-                            <UserPlus className="w-3 h-3" /> Register New Soul
-                        </button>
 
-                        {isAddMenuOpen && (
-                            <div className="mt-2 p-3 bg-[#000] border border-[#a32222]/50 animate-slide-up">
+                        {/* Add Player Button */}
+                        {!isAddMenuOpen ? (
+                            <button
+                                onClick={() => setIsAddMenuOpen(true)}
+                                className="w-full text-[10px] uppercase tracking-[0.2em] px-4 py-3 border border-[#333] hover:border-[#a32222] text-[#666] hover:text-[#e0e0e0] flex items-center justify-center gap-2 transition-all group"
+                            >
+                                <Plus className="w-3 h-3 group-hover:text-[#a32222]" /> Register New Soul
+                            </button>
+                        ) : (
+                            <div className="p-3 bg-[#000] border border-[#a32222]/50 animate-slide-up">
                                 <input
                                     type="text"
                                     value={newPlayerName}
@@ -125,65 +141,81 @@ export default function PlayersPage() {
                                     className="w-full bg-[#111] border border-[#333] p-2 text-xs text-[#e0e0e0] mb-2 focus:border-[#a32222] outline-none font-mono"
                                     autoFocus
                                 />
-                                <button onClick={addPlayer} className="w-full bg-[#a32222] hover:bg-[#c42828] text-white text-[10px] uppercase py-2 tracking-widest font-bold transition-colors">
-                                    Confirm
-                                </button>
+                                <div className="flex gap-2">
+                                    <button onClick={addPlayer} className="flex-1 bg-[#a32222] hover:bg-[#c42828] text-white text-[10px] uppercase py-1 tracking-widest font-bold transition-colors">Confirm</button>
+                                    <button onClick={() => setIsAddMenuOpen(false)} className="px-3 bg-[#222] hover:bg-[#333] text-[#888] text-[10px]">X</button>
+                                </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="overflow-y-auto flex-1 custom-scrollbar bg-[#080808]">
-                        <div className="p-3 space-y-2">
-                            {players.map(p => (
-                                <div
-                                    key={p.id}
-                                    onClick={() => { setSelectedPlayerId(p.id); setSelectedFile(null); setFileFullScreen(false); }}
-                                    className={`
-                                        cursor-pointer p-4 border transition-all duration-300 flex items-center justify-between group relative overflow-hidden
-                                        ${selectedPlayerId === p.id
-                                            ? 'bg-gradient-to-r from-[#1a0505] to-[#0a0a0a] border-[#a32222]/60 shadow-lg'
-                                            : 'bg-[#0a0a0a] border-[#1a1a1a] hover:border-[#333] hover:bg-[#111]'}
-                                    `}
-                                >
-                                    <div className="flex flex-col relative z-10">
-                                        <span className={`font-header tracking-wider text-sm transition-colors ${p.status.includes('Dead') ? 'line-through text-red-900' : (selectedPlayerId === p.id ? 'text-[#ffcccc] text-shadow-glow' : 'text-[#888]')}`}>
-                                            {p.name}
-                                        </span>
-                                        <span className="text-[9px] font-mono text-[#444] uppercase tracking-widest mt-1">{p.class}</span>
-                                    </div>
-                                    {selectedPlayerId === p.id && <div className="absolute right-0 top-0 bottom-0 w-1 bg-[#a32222] shadow-[0_0_10px_#a32222]"></div>}
+                    <div className="overflow-y-auto flex-1 custom-scrollbar bg-[#080808] p-4 space-y-3">
+                        {players.map(p => (
+                            <button
+                                key={p.id}
+                                onClick={() => { setSelectedPlayerId(p.id); setSelectedFile(null); setFileFullScreen(false); }}
+                                className={`
+                                    w-full relative group overflow-hidden border transition-all duration-300 p-3 h-14 flex items-center justify-between
+                                    ${selectedPlayerId === p.id
+                                        ? 'bg-[#1a0505] border-[#a32222] shadow-[0_0_15px_rgba(163,34,34,0.2)]'
+                                        : 'bg-[#111] border-[#222] hover:border-[#444] hover:bg-[#161616] hover:animate-heartbeat'}
+                                `}
+                            >
+                                <div className="flex flex-col items-start z-10 pl-2">
+                                    <span className={`font-header tracking-wider text-sm ${p.status.includes('Dead') ? 'line-through text-red-900' : (selectedPlayerId === p.id ? 'text-[#ffcccc] text-shadow-glow' : 'text-[#888] group-hover:text-[#ccc]')}`}>
+                                        {p.name}
+                                    </span>
+                                    <span className="text-[9px] font-mono text-[#444] uppercase tracking-widest">{p.class}</span>
                                 </div>
-                            ))}
-                        </div>
+                                <Heart className={`w-4 h-4 mr-2 transition-all ${selectedPlayerId === p.id ? 'fill-[#a32222] text-[#a32222] animate-pulse' : 'text-[#333] group-hover:text-[#555]'}`} />
+
+                                {selectedPlayerId === p.id && <div className="absolute inset-0 bg-gradient-to-r from-[#a32222]/10 to-transparent pointer-events-none"></div>}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
-                {/* 2. Main Content */}
-                <div className="flex-1 flex flex-col bg-[#050505] relative overflow-hidden transition-all duration-300">
+                {/* 2. Main Content Area */}
+                <div className={`flex-1 flex flex-col bg-[#050505] relative overflow-hidden transition-all duration-300 ${fileFullScreen ? '' : 'items-center justify-center'}`}>
                     <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('/noise.png')]"></div>
 
                     {activePlayer ? (
-                        <div className={`flex-1 flex h-full ${fileFullScreen ? 'p-0' : 'p-8 pl-16'} transition-all duration-300 gap-8`}>
+                        <div className={`flex h-full w-full max-w-[1600px] ${fileFullScreen ? 'p-0' : 'p-8 gap-12'}`}>
 
-                            {/* Left Panel: Character Sheet / Scroll (Hidden when File Full Screen) */}
+                            {/* Left: Character Sheet (Scroll Style) */}
                             {!fileFullScreen && (
-                                <div className="w-[500px] shrink-0 flex flex-col gap-6 animate-fade-in">
-                                    {/* Scroll/Sheet aesthetic container */}
-                                    <div className="retro-border bg-[#101010] p-1 flex flex-col h-full shadow-2xl relative">
-                                        {/* Decorative corners could go here */}
+                                <div className="w-[500px] shrink-0 flex flex-col animate-fade-in shadow-2xl self-center" style={{ height: "90%" }}>
+                                    {/* Top Border Decoration */}
+                                    <div className="h-2 bg-[#1a1a1a] border-x border-t border-[#333] mx-1"></div>
 
-                                        <div className="border border-[#333] p-6 flex-1 flex flex-col bg-[#0c0c0c] relative overflow-hidden">
+                                    <div className="flex-1 bg-[#101010] border border-[#333] p-1 flex flex-col relative">
+
+                                        <div className="flex-1 flex flex-col bg-[#0c0c0c] border border-[#1a1a1a] p-8 relative overflow-hidden">
                                             {/* Header */}
-                                            <div className="border-b-2 border-[#a32222]/50 pb-4 mb-6">
-                                                <input
-                                                    className="w-full bg-transparent border-none text-4xl font-header text-[#e0e0e0] tracking-[0.05em] drop-shadow-md focus:text-[#ff4444] outline-none p-0 mb-1"
-                                                    value={activePlayer.name}
-                                                    onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, name: e.target.value } : p))}
-                                                />
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-[#555] font-mono text-[10px] uppercase">Class:</span>
+                                            <div className="border-b-2 border-[#a32222]/30 pb-6 mb-6">
+                                                <div className="flex justify-between items-start mb-2">
                                                     <input
-                                                        className="bg-transparent border-b border-[#333] text-[#a32222] font-mono text-xs uppercase tracking-[0.2em] flex-1 focus:border-[#a32222] outline-none"
+                                                        className="bg-transparent border-none text-4xl font-header text-[#e0e0e0] tracking-[0.05em] focus:text-[#ff4444] outline-none w-full"
+                                                        value={activePlayer.name}
+                                                        onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, name: e.target.value } : p))}
+                                                    />
+                                                    <button
+                                                        onClick={() => {
+                                                            if (confirm("Remove this soul permanently?")) {
+                                                                setPlayers(players.filter(p => p.id !== activePlayer.id));
+                                                                setSelectedPlayerId(null);
+                                                            }
+                                                        }}
+                                                        className="text-[#333] hover:text-[#a32222] transition-colors"
+                                                        title="Delete Sheet"
+                                                    >
+                                                        <Trash2 className="w-5 h-5" />
+                                                    </button>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-[#555] font-mono text-[10px] uppercase">Class & Level:</span>
+                                                    <input
+                                                        className="bg-transparent border-b border-[#333] text-[#a32222] font-mono text-sm uppercase tracking-[0.2em] flex-1 focus:border-[#a32222] outline-none"
                                                         value={activePlayer.class}
                                                         onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, class: e.target.value } : p))}
                                                         placeholder="UNKNOWN"
@@ -191,76 +223,78 @@ export default function PlayersPage() {
                                                 </div>
                                             </div>
 
-                                            {/* Status Grid */}
-                                            <div className="mb-8">
-                                                <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                                                    <Activity className="w-3 h-3" /> Vital Status
+                                            {/* Status Grid - AD&D Checklist Style */}
+                                            <div className="mb-8 bg-[#080808] border border-[#1a1a1a] p-4">
+                                                <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.3em] mb-4 text-center border-b border-[#222] pb-2">
+                                                    Current Conditions
                                                 </h4>
-                                                <div className="grid grid-cols-2 gap-2">
+                                                <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                                                     {(Object.keys(STATUS_CONFIG) as PlayerStatus[]).map(status => {
                                                         const config = STATUS_CONFIG[status];
                                                         const isActive = activePlayer.status.includes(status);
-                                                        if (status === "Normal") return null;
+
                                                         return (
                                                             <button
                                                                 key={status}
                                                                 onClick={() => toggleStatus(activePlayer.id, status)}
                                                                 className={`
-                                                                    px-2 py-1.5 border flex items-center gap-2 uppercase tracking-wider text-[9px] font-mono transition-all
-                                                                    ${isActive
-                                                                        ? 'bg-[#1a0505] border-[#a32222] text-[#ffcccc]'
-                                                                        : 'bg-transparent border-[#222] text-[#555] hover:border-[#444]'}
+                                                                    flex items-center gap-3 p-1.5 transition-all group
+                                                                    ${isActive ? 'opacity-100' : 'opacity-40 hover:opacity-100'}
                                                                 `}
                                                             >
-                                                                <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'animate-pulse bg-red-500' : 'bg-[#333]'}`}></div>
-                                                                {status}
+                                                                <div className={`
+                                                                    w-3 h-3 border border-[#444] flex items-center justify-center transition-colors
+                                                                    ${isActive ? 'bg-[#a32222] border-[#ff4444]' : 'bg-transparent'}
+                                                                `}>
+                                                                    {isActive && <div className="w-1.5 h-1.5 bg-white rounded-full"></div>}
+                                                                </div>
+                                                                <span className={`text-[10px] font-mono uppercase tracking-wider ${isActive ? 'text-[#e0e0e0]' : 'text-[#666]'}`}>
+                                                                    {status}
+                                                                </span>
                                                             </button>
                                                         );
                                                     })}
                                                 </div>
                                             </div>
 
-                                            {/* Chronicles (Notes) */}
-                                            <div className="flex-1 flex flex-col mb-6">
-                                                <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                                                    <FileText className="w-3 h-3" /> Chronicles
+                                            {/* Notes Area */}
+                                            <div className="flex-1 flex flex-col mb-4">
+                                                <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.3em] mb-2 pl-1">
+                                                    Character Notes
                                                 </h4>
                                                 <textarea
-                                                    className="flex-1 w-full bg-[#080808] border border-[#222] p-4 text-[#aaa] font-serif text-sm leading-6 resize-none outline-none focus:border-[#555] transition-colors custom-scrollbar shadow-inner"
+                                                    className="flex-1 w-full bg-[#080808] border border-[#222] p-4 text-[#bfbfbf] font-serif text-sm leading-6 resize-none outline-none focus:border-[#444] transition-colors custom-scrollbar shadow-inner"
                                                     value={activePlayer.notes}
                                                     onChange={(e) => updateNotes(activePlayer.id, e.target.value)}
-                                                    placeholder="Inscribe notes here..."
+                                                    placeholder="Enter character notes..."
                                                 />
                                             </div>
 
-                                            {/* File List */}
-                                            <div className="h-[150px] shrink-0 flex flex-col">
-                                                <div className="flex justify-between items-center mb-2">
-                                                    <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.2em] flex items-center gap-2">
-                                                        <Upload className="w-3 h-3" /> Archives
+                                            {/* Files List */}
+                                            <div className="h-[20%] shrink-0 flex flex-col">
+                                                <div className="flex justify-between items-center mb-2 px-1">
+                                                    <h4 className="text-[#444] font-mono text-[9px] uppercase tracking-[0.3em]">
+                                                        Attached Archives
                                                     </h4>
-                                                    <label className="cursor-pointer text-[#888] hover:text-white transition-colors text-[9px] uppercase font-mono px-2 py-0.5 border border-[#333] hover:bg-[#222]">
-                                                        + Upload
+                                                    <label className="cursor-pointer text-[#666] hover:text-[#a32222] transition-colors text-[9px] uppercase">
+                                                        [+ UPLOAD]
                                                         <input type="file" className="hidden" onChange={(e) => handleFileUpload(activePlayer.id, e)} />
                                                     </label>
                                                 </div>
-                                                <div className="flex-1 bg-[#080808] border border-[#222] p-1 overflow-y-auto custom-scrollbar shadow-inner">
+                                                <div className="flex-1 bg-[#080808] border border-[#222] p-1 overflow-y-auto custom-scrollbar">
                                                     {activePlayer.files.map((file, i) => (
                                                         <div
                                                             key={i}
                                                             onClick={() => file.url && setSelectedFile({ url: file.url, type: file.type || 'unknown', name: file.name })}
                                                             className={`
-                                                                flex items-center justify-between p-2 cursor-pointer border-b border-[#111] last:border-0 hover:bg-[#111] group
-                                                                ${selectedFile?.url === file.url ? 'bg-[#151515] text-[#ccc]' : 'text-[#666]'}
+                                                                flex items-center justify-between p-2 cursor-pointer border-b border-[#1a1a1a] last:border-0 hover:bg-[#111] group
+                                                                ${selectedFile?.url === file.url ? 'bg-[#151515] text-[#e0e0e0]' : 'text-[#666]'}
                                                             `}
                                                         >
-                                                            <div className="flex items-center gap-2 truncate">
-                                                                <File className="w-3 h-3" />
-                                                                <span className="truncate text-[10px] font-mono">{file.name}</span>
-                                                            </div>
+                                                            <span className="truncate text-[10px] font-mono w-full">{file.name}</span>
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); deleteFile(activePlayer.id, i); }}
-                                                                className="opacity-0 group-hover:opacity-100 text-[#444] hover:text-[#a32222] transition-all"
+                                                                className="opacity-0 group-hover:opacity-100 text-[#444] hover:text-red-500 ml-2"
                                                             >
                                                                 <X className="w-3 h-3" />
                                                             </button>
@@ -271,32 +305,17 @@ export default function PlayersPage() {
 
                                         </div>
                                     </div>
-
-                                    <div className="flex justify-center">
-                                        <button
-                                            onClick={() => {
-                                                if (confirm("Remove this soul permanently?")) {
-                                                    setPlayers(players.filter(p => p.id !== activePlayer.id));
-                                                    setSelectedPlayerId(null);
-                                                }
-                                            }}
-                                            className="text-[#333] hover:text-[#a32222] transition-colors text-[10px] uppercase tracking-widest flex items-center gap-2"
-                                        >
-                                            <Trash2 className="w-3 h-3" /> Delete Sheet
-                                        </button>
-                                    </div>
+                                    {/* Bottom Border Decoration */}
+                                    <div className="h-2 bg-[#1a1a1a] border-x border-b border-[#333] mx-1"></div>
                                 </div>
                             )}
 
-                            {/* Right Panel: Document Viewer (Expands) */}
-                            <div className={`flex-1 flex flex-col bg-[#030303] border border-[#222] relative transition-all duration-300 ${fileFullScreen ? 'h-full w-full border-none z-50' : 'h-full'}`}>
+                            {/* Right: Document Viewer */}
+                            <div className={`flex flex-col bg-[#030303] border border-[#222] relative transition-all duration-300 ${fileFullScreen ? 'h-full w-full border-none z-50' : 'flex-1 h-[90%] self-center shadow-xl'}`}>
                                 {selectedFile ? (
                                     <div className="h-full flex flex-col">
-                                        {/* Toolbar */}
                                         <div className="h-10 shrink-0 border-b border-[#222] flex items-center justify-between px-4 bg-[#080808]">
-                                            <span className="text-[#666] font-mono text-[10px] uppercase tracking-widest flex items-center gap-2">
-                                                <Eye className="w-3 h-3" /> Viewing: {selectedFile.name}
-                                            </span>
+                                            <span className="text-[#666] font-mono text-[10px] uppercase tracking-widest truncate max-w-[300px]">{selectedFile.name}</span>
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() => setFileFullScreen(!fileFullScreen)}
@@ -310,31 +329,27 @@ export default function PlayersPage() {
                                                 </button>
                                             </div>
                                         </div>
-
-                                        {/* Content */}
                                         <div className="flex-1 relative bg-[#050505] flex items-center justify-center overflow-auto p-4 custom-scrollbar">
                                             {selectedFile.type.startsWith('image/') ? (
                                                 <img
                                                     src={selectedFile.url}
                                                     alt="Preview"
-                                                    className={`shadow-2xl border border-[#222] transition-all duration-300 ${fileFullScreen ? 'max-w-none h-auto min-w-[80%] min-h-[90%]' : 'max-w-full max-h-full object-contain'}`}
+                                                    className={`shadow-2xl border border-[#222] transition-all duration-300 ${fileFullScreen ? 'h-auto max-w-[90%]' : 'max-h-full max-w-full object-contain'}`}
                                                 />
                                             ) : selectedFile.type === 'application/pdf' ? (
                                                 <iframe src={selectedFile.url} className="w-full h-full border border-[#222] shadow-2xl bg-white" />
                                             ) : (
                                                 <div className="text-[#444] font-mono text-xs uppercase tracking-widest border border-[#222] p-12 text-center opacity-50">
-                                                    <p>Format Not Supported</p>
+                                                    Format Not Supported
                                                 </div>
                                             )}
                                         </div>
                                     </div>
                                 ) : (
                                     <div className="h-full flex flex-col items-center justify-center text-[#222] select-none">
-                                        <div className="w-16 h-16 border-2 border-[#1a1a1a] rounded-full flex items-center justify-center mb-4 opacity-50">
-                                            <FileText className="w-6 h-6 opacity-30" />
-                                        </div>
+                                        <FileText className="w-12 h-12 mb-4 opacity-20" />
                                         <p className="font-mono text-[10px] uppercase tracking-widest opacity-30 text-center px-8">
-                                            Select a document from the archives <br />to display it here
+                                            Select a document to inspect
                                         </p>
                                     </div>
                                 )}
@@ -342,12 +357,10 @@ export default function PlayersPage() {
 
                         </div>
                     ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center h-full text-[#333] select-none pointer-events-none pl-[100px]"> {/* Increased Left Padding for Empty State */}
-                            <div className="flex flex-col items-center">
-                                <Ghost className="w-24 h-24 mb-6 opacity-10 animate-float" />
-                                <h2 className="text-2xl font-header tracking-[0.3em] uppercase mb-2 opacity-30 text-[#e0e0e0]">Awaiting Soul Selection</h2>
-                                <p className="font-mono text-[10px] uppercase tracking-widest opacity-20">Access the register to proceed</p>
-                            </div>
+                        <div className="flex flex-col items-center justify-center h-full text-[#333] select-none pointer-events-none">
+                            <Ghost className="w-24 h-24 mb-6 opacity-10 animate-float" />
+                            <h2 className="text-2xl font-header tracking-[0.3em] uppercase mb-2 opacity-30 text-[#e0e0e0]">Awaiting Soul Selection</h2>
+                            <p className="font-mono text-[10px] uppercase tracking-widest opacity-20">Access the register to proceed</p>
                         </div>
                     )}
                 </div>
