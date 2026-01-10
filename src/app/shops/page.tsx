@@ -4,7 +4,7 @@ import { useState } from "react";
 import { KHELBEN_GIFTS, FIMBLE_INVENTORY, IRON_KNOT_SERVICES, CROW_NEST_INVENTORY, ShopItem } from '@/lib/data/items';
 import { generateLootItem, GeneratorTheme } from "@/lib/generators";
 import PrintButton from "@/components/ui/PrintButton";
-import Link from 'next/link';
+import CommandBar from "@/components/ui/CommandBar";
 import clsx from 'clsx';
 
 export default function ShopsPage() {
@@ -43,11 +43,9 @@ export default function ShopsPage() {
 
     return (
         <div className="retro-container">
-            <div className="no-print" style={{ marginBottom: "2rem" }}>
-                <Link href="/">{"< BACK_TO_ROOT"}</Link>
-            </div>
+            <CommandBar />
 
-            <header style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <header style={{ marginTop: "2rem", marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <h1>The Market <span style={{ fontSize: "0.5em", color: "var(--accent-color)" }}>v2.0</span></h1>
                 <PrintButton />
             </header>

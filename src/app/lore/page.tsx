@@ -1,13 +1,11 @@
 import { CAMPAIGN_LORE, FACTIONS } from "@/lib/data/lore";
 import PrintButton from "@/components/ui/PrintButton";
-import Link from "next/link";
+import CommandBar from "@/components/ui/CommandBar";
 
 export default function LorePage() {
     return (
         <div className="retro-container">
-            <div className="no-print" style={{ marginBottom: "2rem" }}>
-                <Link href="/">{"< BACK_TO_ROOT"}</Link>
-            </div>
+            <CommandBar />
 
             <header style={{ marginBottom: "3rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <h1>The Archives</h1>
