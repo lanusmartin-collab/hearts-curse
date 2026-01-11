@@ -204,11 +204,51 @@ export default function StatblockCard({ data }: { data: Statblock }) {
                         textShadow: "none"
                     }}>Legendary Actions</h3>
                     <p style={{ marginBottom: "0.5rem", fontSize: "1rem" }}>
-                        The {data.name} can take 3 legendary actions...
+                        The {data.name} can take 3 legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature's turn. The {data.name} regains spent legendary actions at the start of its turn.
                     </p>
                     {data.legendary.map((action, i) => (
                         <div key={i} style={{ marginBottom: "0.8rem" }}>
-                            <strong>{action.name}.</strong> {action.desc}
+                            {renderTrait(action)}
+                        </div>
+                    ))}
+                </>
+            )}
+
+            {/* Bonus Actions */}
+            {data.bonus_actions && Array.isArray(data.bonus_actions) && data.bonus_actions.length > 0 && (
+                <>
+                    <h3 style={{
+                        fontFamily: "var(--adnd-font-header)",
+                        color: "var(--adnd-blue)",
+                        borderBottom: "1px solid var(--adnd-blue)",
+                        marginTop: "1.5rem",
+                        marginBottom: "1rem",
+                        fontSize: "1.4rem",
+                        textShadow: "none"
+                    }}>Bonus Actions</h3>
+                    {data.bonus_actions.map((action, i) => (
+                        <div key={i} style={{ marginBottom: "0.8rem" }}>
+                            {renderTrait(action)}
+                        </div>
+                    ))}
+                </>
+            )}
+
+            {/* Reactions */}
+            {data.reactions && Array.isArray(data.reactions) && data.reactions.length > 0 && (
+                <>
+                    <h3 style={{
+                        fontFamily: "var(--adnd-font-header)",
+                        color: "var(--adnd-blue)",
+                        borderBottom: "1px solid var(--adnd-blue)",
+                        marginTop: "1.5rem",
+                        marginBottom: "1rem",
+                        fontSize: "1.4rem",
+                        textShadow: "none"
+                    }}>Reactions</h3>
+                    {data.reactions.map((action, i) => (
+                        <div key={i} style={{ marginBottom: "0.8rem" }}>
+                            {renderTrait(action)}
                         </div>
                     ))}
                 </>

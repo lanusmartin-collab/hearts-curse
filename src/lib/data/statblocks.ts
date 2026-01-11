@@ -20,6 +20,8 @@ export type Statblock = {
     xp: number;
     traits: { name: string; desc: string }[];
     actions: { name: string; desc: string; attack?: string; damage?: string }[];
+    bonus_actions?: { name: string; desc: string }[];
+    reactions?: { name: string; desc: string }[];
     legendary?: { name: string; desc: string }[];
     lair?: string[];
     treasure?: string;
