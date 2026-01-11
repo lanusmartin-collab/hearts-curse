@@ -158,6 +158,65 @@ export const STATBLOCKS: Record<string, Statblock> = {
             { name: "Wing Attack (Costs 2 Actions)", desc: "Beats wings. Each creature within 15 ft. DC 23 Dex save or take 15 (2d6+8) bludgeoning and be prone. Dracolich flies up to half speed." }
         ]
     },
+    "vanko": {
+        name: "Vanko the Silk",
+        size: "Medium", type: "Humanoid (Human)", alignment: "Lawful Evil",
+        ac: 15, armorType: "Robes of the Archmagi", hp: 99, hitDice: "18d8 + 18", speed: "30 ft., fly 40 ft.",
+        stats: { str: 10, dex: 16, con: 12, int: 20, wis: 14, cha: 18 },
+        saves: "Int +10, Wis +7, Cha +9",
+        skills: "Deception +14, Insight +12, Persuasion +14, Arcana +10",
+        immunities: "None",
+        resistances: "Magic damage (Robes)",
+        languages: "Common, Elvish, Draconic, Undercommon, Infernal",
+        cr: "13", xp: 10000,
+        traits: [
+            { name: "Magic Resistance", desc: "Advantage on saves vs spells." },
+            { name: "Cunning Action", desc: "Bonus action: Dash, Disengage, Hide." },
+            { name: "Spellcasting", desc: "14th level Wizard (Enchanter/Illusionist). Int DC 18. Slots: 1st-7th.\nAt Will: Friends, Mage Hand, Prestidigitation.\n1st: Shield, Mage Armor, Charm Person.\n2nd: Misty Step, Detect Thoughts, Hold Person.\n3rd: Counterspell, Fly, Tongues.\n4th: Dimension Door, Greater Invisibility.\n5th: Mislead, Wall of Force, Dominate Person.\n6th: Mass Suggestion, Globe of Invulnerability.\n7th: Forcecage, Teleport." },
+            { name: "Special Equipment", desc: "Vanko carries a Ring of Mind Shielding, Robes of the Archmagi (Black), and a Staff of Power." }
+        ],
+        actions: [
+            { name: "Staff of Power", desc: "Melee (+10 to hit): 1d6+5 bludgeoning + 1d6 force. Spell (+10 to hit): Uses charges." },
+            { name: "Diplomatic Immunity (Recharge 5-6)", desc: "Vanko creates a sanctuary field. For 1 minute, any creature attempting to attack him must make a DC 18 Wis save. On failure, they lose the attack." },
+        ],
+        bonus_actions: [
+            { name: "Command Guardian", desc: "Vanko verbally commands one connected Shield Guardian to move up to its speed and make one attack." }
+        ],
+        reactions: [
+            { name: "Redirect Attack", desc: "When targeted by an attack, Vanko can swap places with a Guardian within 5ft. The Guardian takes the hit." },
+            { name: "Arcane Deflection", desc: "+2 AC or +4 to Save against one attack." }
+        ],
+        legendary: [
+            { name: "Cast Cantrip", desc: "Casts a cantrip." },
+            { name: "Command Guardian", desc: "Uses Command Guardian bonus action." },
+            { name: "Tactical Displacement (2 Actions)", desc: "Vanko and one willing creature within 30ft teleport, swapping places." }
+        ],
+        treasure: "Ring of Mind Shielding, Staff of Power, Bank Notes worth 50,000gp"
+    },
+    "zhentarim_guardian": {
+        name: "Zhentarim Shield Guardian",
+        size: "Large", type: "Construct", alignment: "Unaligned",
+        ac: 17, armorType: "Natural Armor", hp: 142, hitDice: "15d10 + 60", speed: "30 ft.",
+        stats: { str: 18, dex: 8, con: 18, int: 7, wis: 10, cha: 3 },
+        saves: "", skills: "",
+        immunities: "Poison",
+        conditionImmunities: "Charmed, Exhaustion, Frightened, Paralyzed, Poisoned",
+        senses: "Blindsight 10 ft., Darkvision 60 ft.",
+        languages: "Understands Vanko",
+        cr: "7", xp: 2900,
+        traits: [
+            { name: "Bound", desc: "Magically bound to an amulet worn by Vanko. Vanko knows its location and can cast spells through it." },
+            { name: "Shield", desc: "If within 5ft of Vanko, grants him +2 AC." },
+            { name: "Spell Storing", desc: "Can store one 4th level spell. Currently: Dimension Door (Trigger: Vanko drops below 50% HP, teleports Vanko to safety)." }
+        ],
+        actions: [
+            { name: "Multiattack", desc: "Two fist attacks." },
+            { name: "Fist", desc: "+7 to hit, 2d6+4 bludgeoning." }
+        ],
+        reactions: [
+            { name: "Shield", desc: "When Vanko is hit by an attack within 5 ft, the Guardian takes half the damage." }
+        ]
+    },
     "night_shard": {
         name: "The Night Shard",
         size: "Medium",

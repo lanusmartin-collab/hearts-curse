@@ -170,9 +170,15 @@ export const OUTSKIRTS_TABLE: Encounter[] = [
 
 export const SHOP_AMBUSH_TABLE: Encounter[] = [
     {
-        roll: [1, 20],
+        roll: [1, 10],
         name: "The Debt of Memory",
         description: "SCENE: A courier delivers a heavy iron box instead of the goods. Inside is the Shopkeeper's severed hand and a note: 'The Black Network cannot be charmed.' \n\nAMBUSH: Ignacio (Zhentarim Lord) steps from invisibility with his personal bodyguard, 'The Wall' (Juggernaut), and a Counterspell Mage. \n\nIGNACIO'S PARANOIA: He believes the Modify Memory was a Psionic/Mind Flayer attack. 'Tell me where the Colony is, Drow-lovers.' \n\nSIDEBAR: The Mercenary PC receives a *Sending*: '7,000 Platinum to walk away. Khelben never needs to know.'",
-        monsters: ["ignacio-zhentarim-lord", "zhentarim-juggernaut", "mage", "zhentarim-veteran"]
+        monsters: ["ignacio", "varth", "mage"]
+    },
+    {
+        roll: [11, 20],
+        name: "Diplomatic Immunity",
+        description: "SCENE: Vanko the Silk awaits the party, flanked by THREE Shield Guardians. He offers a *Ring of Mind Shielding* or *Sword of Wounding* as a 'Token of Apology' for Ignacio's rudeness.\n\nTACTIC: If attacked, Vanko uses *Sanctuary* and *Mislead* to let his Guardians tank. He does not want to fight but will defend his ledger.",
+        monsters: ["vanko", "zhentarim_guardian", "zhentarim_guardian", "zhentarim_guardian"]
     }
 ];
