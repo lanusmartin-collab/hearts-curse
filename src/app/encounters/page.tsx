@@ -156,6 +156,13 @@ function EncountersContent() {
                             <ControlButton label="Library" sub="Forbidden" highlight onClick={() => rollTable(LIBRARY_WHISPERS_TABLE)} />
                         </div>
 
+                        {/* SECTOR 4 */}
+                        <div>
+                            <h3 className="section-header" style={{ color: '#ff0000', borderColor: '#ff0000' }}>Sector 04: Nightmare</h3>
+                            <ControlButton label="Heart Chamber" sub="Boss Zone" highlight onClick={() => rollTable(HEART_CHAMBER_TABLE)} />
+                            <ControlButton label="Ossuary" sub="Undead" highlight onClick={() => rollTable(OSSUARY_TABLE)} />
+                        </div>
+
                         <div style={{ paddingTop: '1rem', borderTop: '1px solid #222' }}>
                             <button
                                 onClick={triggerShopAmbush}
