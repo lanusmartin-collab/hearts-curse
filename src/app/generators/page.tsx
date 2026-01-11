@@ -143,11 +143,7 @@ export default function GeneratorsPage() {
                     {/* Header Fixed Area */}
                     <div className="flex justify-between items-end border-b-2 border-[#a32222]/30 p-8 pb-4 shrink-0 bg-[#050505] z-10">
                         <div>
-                            {activeTool === 'register' ? (
-                                <h2 className="text-[#a32222] font-header text-xl tracking-[0.2em]">REGISTERED FABRICATIONS</h2>
-                            ) : (
-                                <h2 className="text-[#a32222] font-header text-xl tracking-[0.2em]">{activeTool.toUpperCase()} GENERATOR</h2>
-                            )}
+                            <h2 className="text-[#a32222] font-header text-xl tracking-[0.2em]">THE FOUNDRY</h2>
                         </div>
 
                         {activeTool !== 'register' && (
@@ -189,27 +185,53 @@ export default function GeneratorsPage() {
                                             <div
                                                 key={item.id}
                                                 onClick={() => loadFromRegistry(item)}
-                                                className="group flex items-center justify-between p-3 border border-[#333] bg-[#111] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
+                                                className="group flex flex-col p-4 border border-[#333] bg-[#111] hover:bg-[#1a1a1a] cursor-pointer transition-colors gap-2"
                                             >
-                                                <div className="flex items-center gap-4">
-                                                    <span className={`text-[10px] font-mono uppercase px-2 py-1 border ${item.type === 'loot' ? 'border-[#ffd700] text-[#ffd700]' :
-                                                            item.type === 'artifact' ? 'border-[#ff00ff] text-[#ff00ff]' :
-                                                                'border-[#a32222] text-[#a32222]'
-                                                        }`}>
-                                                        {item.type}
-                                                    </span>
-                                                    <span className="text-[#ccc] font-medium tracking-wide">{item.name}</span>
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-4">
+                                                        <span className={`text-[10px] font-mono uppercase px-2 py-1 border ${item.type === 'loot' ? 'border-[#ffd700] text-[#ffd700]' :
+                                                                item.type === 'artifact' ? 'border-[#ff00ff] text-[#ff00ff]' :
+                                                                    'border-[#a32222] text-[#a32222]'
+                                                            }`}>
+                                                            {item.type}
+                                                        </span>
+                                                        <span className="text-[#ccc] font-medium tracking-wide text-lg">{item.name}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                        <span className="text-[10px] text-[#555] font-mono">{item.timestamp.toLocaleTimeString()}</span>
+                                                        <button
+                                                            onClick={(e) => deleteFromRegistry(item.id, e)}
+                                                            className="text-[#444] hover:text-red-500 transition-colors p-2"
+                                                            title="Delete from Register"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-4">
-                                                    <span className="text-[10px] text-[#555] font-mono">{item.timestamp.toLocaleTimeString()}</span>
-                                                    <button
-                                                        onClick={(e) => deleteFromRegistry(item.id, e)}
-                                                        className="text-[#444] hover:text-red-500 transition-colors p-2"
-                                                        title="Delete from Register"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </button>
-                                                </div>
+
+                                                {/* Details Section */}
+                                                {(item.type === 'loot' || item.type === 'artifact') && (
+                                                    <div className="pl-[calc(2rem-2px)] border-l border-[#333] ml-2 mt-2 space-y-2">
+                                                        <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-wider">
+                                                            {item.data.rarity && <span className="text-[#a32222]">{item.data.rarity}</span>}
+                                                            {item.data.type && <span className="text-[#666]">// {item.data.type}</span>}
+                                                            {item.data.cost && <span className="text-[#444]">// Value: {item.data.cost}</span>}
+                                                        </div>
+
+                                                        {item.data.properties && item.data.properties.length > 0 && (
+                                                            <div className="text-xs text-[#888] font-mono">
+                                                                <span className="text-[#555]">PROPERTIES: </span>
+                                                                {item.data.properties.join(", ")}
+                                                            </div>
+                                                        )}
+
+                                                        {item.data.effect && (
+                                                            <div className="text-sm text-[#aaa] font-serif italic leading-relaxed">
+                                                                "{item.data.effect}"
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                         ))
                                     )}
