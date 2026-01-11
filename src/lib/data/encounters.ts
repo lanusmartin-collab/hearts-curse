@@ -188,3 +188,73 @@ export const SHOP_AMBUSH_TABLE: Encounter[] = [
         monsters: ["auditor", "eraser", "cleaner"]
     }
 ];
+
+export const CASTLE_MOURNWATCH_TABLE: Encounter[] = [
+    { roll: [1, 2], name: "Wild Magic Surge", description: "SCENE: A stray spell hits the courtyard. \nEFFECT: Roll on the Wild Magic Table. Gravity might reverse (Dex save DC 15) or everyone turns blue.", monsters: [] },
+    { roll: [3, 4], name: "Red Wizard Patrol", description: "SCENE: Thayan Wizards levitating over the ramparts. \nCOMBAT: 1 Mage and 2 Thugs (Guards). They spot anyone not disguised.", monsters: ["mage", "thug"] },
+    { roll: [5, 6], name: "Undead Archers", description: "SCENE: Skeleton archers on the high walls. \nHAZARD: Volley fire! DC 14 Dex save or take 3d6 Piercing. They are out of range.", monsters: ["skeleton"] },
+    { roll: [7, 8], name: "Gargoyle Ambush", description: "SCENE: The statues turn comfortably. \nAMBUSH: 4 Gargoyles swoop down to drop PCs off the edge.", monsters: ["gargoyle"] },
+    { roll: [9, 10], name: "Chain Break", description: "SCENE: One of the massive shadow-chains snaps. \nHAZARD: The island tilts. DC 16 Dex save or slide 20ft towards the edge.", monsters: [] },
+    { roll: [11, 12], name: "Spectral Knight", description: "SCENE: A Ghost Knight challenges the party to a duel. \nHONOR: 1v1 Combat. Win: He grants passage. Loss: He takes 1 Hit Die max HP.", monsters: ["ghost"] },
+    { roll: [13, 14], name: "Necrotic Fog", description: "SCENE: Black clouds roll in. \nEFFECT: Visibility 5ft. Taking an action deals 1d4 Necrotic damage.", monsters: [] },
+    { roll: [15, 16], name: "Captured Rebel", description: "SCENE: A Zhentarim defector is being hung continuously (revived and hung again). \nCHOICE: Rescue him for intel on Varth, or leave him.", monsters: ["zombie"] },
+    { roll: [17, 18], name: "Varth's Gaze", description: "SCENE: The General watches from the balcony. \nEFFECT: DC 15 Wis save or Frightened for 1 minute.", monsters: [] },
+    { roll: [19, 19], name: "Loot Wagon", description: "SCENE: A wagon of supplies for the siege. \nLOOT: 3 Potions of Healing and a barrel of explosives.", monsters: [] },
+    { roll: [20, 20], name: "The Gatekeeper", description: "SCENE: A Death Knight blocks the path. \nCOMBAT: High difficulty. He guards the key to the Geodes.", monsters: ["death-knight"] }
+];
+
+export const CATACOMBS_DESPAIR_TABLE: Encounter[] = [
+    { roll: [1, 2], name: "Weeping Wall", description: "SCENE: The faces in the stone wall are crying. \nEFFECT: Touching the tears causes 1d6 Psychic damage and a memory of sorrow.", monsters: [] },
+    { roll: [3, 4], name: "Caged Souls", description: "SCENE: A soul-cage rattles. \nINTERACTION: The soul begs for release. Breaking the cage (AC 18) releases a Specter (Confused).", monsters: ["specter"] },
+    { roll: [5, 6], name: "Grave Robbers", description: "SCENE: 3 Ghouls are digging up a fresh grave. \nCOMBAT: They fight fiercely over a shiny ring.", monsters: ["ghoul"] },
+    { roll: [7, 8], name: "The Warden's Pet", description: "SCENE: Chains rattle in the dark. \nCOMBAT: A Bone Devil (The Warden's favorite) is hunting escaped souls.", monsters: ["bone-devil"] },
+    { roll: [9, 10], name: "Despair Field", description: "SCENE: A wave of hopelessness hits. \nMECHANIC: DC 15 Cha save. Failure: Disadvantage on all rolls for 10 minutes.", monsters: [] },
+    { roll: [11, 12], name: "Lost Adventurer", description: "SCENE: A skeleton in plate mail holding a diary. \nLOOT: Diary gives a hint to the 'Vault of Despair'.", monsters: [] },
+    { roll: [13, 14], name: "Shadow Essence", description: "SCENE: A pool of liquid shadow. \nEFFECT: Drinking it grants Darkvision but imparts Sunlight Sensitivity.", monsters: [] },
+    { roll: [15, 16], name: "Larva Mage", description: "SCENE: A figure made of worms approaches. \nCOMBAT: A Star Spawn Larva Mage (or reskinned Mage). Extremely dangerous.", monsters: ["mage"] },
+    { roll: [17, 18], name: "Banshee's wail", description: "SCENE: Distant screaming gets closer. \nTHREAT: Brace for a Banshee attack.", monsters: ["banshee"] },
+    { roll: [19, 19], name: "Moment of Peace", description: "SCENE: A single ray of light breaks the gloom. \nHEAL: Standing in it restores 2d8 HP.", monsters: [] },
+    { roll: [20, 20], name: "Avatar of Woe", description: "SCENE: The Shadow Dragon flies overhead. \nHAZARD: His breath weapon strafes the walkway. 10d6 Necrotic damage (Dex save half).", monsters: [] }
+];
+
+export const DWARVEN_RUINS_TABLE: Encounter[] = [
+    { roll: [1, 2], name: "Drow Patrol", description: "SCENE: 4 Drow led by an Elite Warrior. \nTACTIC: They use Darkness and Faerie Fire. They want prisoners.", monsters: ["drow", "drow-elite-warrior"] },
+    { roll: [3, 4], name: "Giant Spider Ambush", description: "SCENE: Webs cover the ceiling. \nCOMBAT: 3 Giant Spiders descend silently. Web attacks to restrain.", monsters: ["giant-spider"] },
+    { roll: [5, 6], name: "Dwarven Ghost", description: "SCENE: A ghostly smith works at a cold anvil. \nQUEST: 'Light the forge...' He marks a hidden armory on the map.", monsters: ["ghost"] },
+    { roll: [7, 8], name: "Web Trap", description: "SCENE: Invisible tripwires. \nTRAP: DC 15 Dex save or restrained and bells ring, alerting nearby Drow.", monsters: [] },
+    { roll: [9, 10], name: "Drider Outcast", description: "SCENE: A Drider cursed by Lolth is eating a Drow. \nSOCIAL: He hates the Drow more than you. Temporary ally?", monsters: ["drider"] },
+    { roll: [11, 12], name: "Slave Pen Breakout", description: "SCENE: 2 Quaggoths chasing a Gnome slave. \nCHOICE: Intervene or hide. The Gnome knows the gate password.", monsters: ["quaggoth"] },
+    { roll: [13, 14], name: "Baenre Inquisitor", description: "SCENE: A Drow Priestess of Lolth questioning a prisoner. \nCOMBAT: High threat. She has spells.", monsters: ["drow-priestess-of-lolth"] },
+    { roll: [15, 16], name: "Roper Decoy", description: "SCENE: A stalagmite looks suspicious. \nCOMBAT: It's a Roper. It tries to drag PCs into the chasm.", monsters: ["roper"] },
+    { roll: [17, 18], name: "Loot Cache", description: "SCENE: A hidden Drow supply crate. \nLOOT: 2 Drow Poison vials and a Potion of Climbing.", monsters: [] },
+    { roll: [19, 19], name: "The Silence", description: "SCENE: Absolute silence falls. \nTHREAT: Someone cast Silence. An assassin is near.", monsters: ["assassin"] },
+    { roll: [20, 20], name: "Yaz'mina's Avatar", description: "SCENE: A projection of the High Priestess. \nEFFECT: She curses the party. -1d4 to attempts to stealth for 1 hour.", monsters: [] }
+];
+
+export const MIND_FLAYER_COLONY_TABLE: Encounter[] = [
+    { roll: [1, 2], name: "Psionic blast", description: "SCENE: A headache splits your skull. \nEFFECT: 3d6 Psychic damage to everyone. Int save DC 14 for half.", monsters: [] },
+    { roll: [3, 4], name: "Intellect Devourers", description: "SCENE: Brain-cats on legs skitter by. \nCOMBAT: 3 Intellect Devourers looking for bodies. Protect the Barbarian!", monsters: ["intellect-devourer"] },
+    { roll: [5, 6], name: "Thrall Patrol", description: "SCENE: 4 Grimlocks with glazed eyes. \nCOMBAT: They fight to the death. Mindless.", monsters: ["grimlock"] },
+    { roll: [7, 8], name: "Mind Flayer Arcanist", description: "SCENE: An Illithid floating and reading a scroll. \nCOMBAT: Uses magic and psionics. Deadly.", monsters: ["mind-flayer"] },
+    { roll: [9, 10], name: "Tadpole Pool", description: "SCENE: A brine pool full of tadpoles. \nHAZARD: DC 12 Dex save near edge or fall in. Infestation risk.", monsters: [] },
+    { roll: [11, 12], name: "Captured NPC", description: "SCENE: An NPC from Oakhaven is being strapped to a chair. \nQUEST: Save them before ceremorphosis (1d4 rounds).", monsters: ["mind-flayer"] },
+    { roll: [13, 14], name: "Githyanki Raiding Party", description: "SCENE: A Githyanki Knight and 2 Warriors warp in. \nSOCIAL: Enemy of my enemy? They are hunting Illithids.", monsters: ["githyanki-knight"] },
+    { roll: [15, 16], name: "Elder Brain Resonance", description: "SCENE: The Hive Mind speaks. \nSAVE: DC 16 Wis save or be Stunned 1 round.", monsters: [] },
+    { roll: [17, 18], name: "Strange Tech", description: "SCENE: Alien machinery humming. \nCHECK: DC 20 Arcana to activate. Restores a spell slot.", monsters: [] },
+    { roll: [19, 19], name: "Neothelid Tremor", description: "SCENE: The massive worm passes nearby. \nEFFECT: Knockdown. Everyone Prone.", monsters: [] },
+    { roll: [20, 20], name: "The Ulitharid", description: "SCENE: A 6-tentacled Mind Flayer lord. \nBOSS: Run or die. He commands respect.", monsters: ["mind-flayer"] }
+];
+
+export const BEHOLDER_LAIR_TABLE: Encounter[] = [
+    { roll: [1, 2], name: "Disintegration Ray", description: "SCENE: A stray beam cuts the darkness. \nSAVE: DC 16 Dex save or take 10d8 Force damage. Terrain destroyed.", monsters: [] },
+    { roll: [3, 4], name: "Gauth Guards", description: "SCENE: 2 Lesser Beholders (Gauths) eating magic items. \nCOMBAT: They drain magic charges from items.", monsters: ["gauth"] },
+    { roll: [5, 6], name: "Anti-Magic Cone", description: "SCENE: All magic items turn off for 1 minute. \nPANIC: You are vulnerable. Something is watching.", monsters: [] },
+    { roll: [7, 8], name: "Petrified Victim", description: "SCENE: A remarkably detailed statue of a rogue. \nLOOT: A Potion of Greater Healing in its stone pouch.", monsters: [] },
+    { roll: [9, 10], name: "Vertical Ambush", description: "SCENE: Death from above. \nCOMBAT: 3 Grell descend silently with tentacles.", monsters: ["grell"] },
+    { roll: [11, 12], name: "Spectator Guardian", description: "SCENE: A Spectator guarding a chest. \nSOCIAL: It is bored. It might let you look for a joke.", monsters: ["spectator"] },
+    { roll: [13, 14], name: "Gravity Flip", description: "SCENE: The lair's magic glitched. \nEFFECT: Gravity reverses. Fall to the ceiling (3d6 dmg).", monsters: [] },
+    { roll: [15, 16], name: "Eyes in the Dark", description: "SCENE: Hundreds of tiny eyes open on the walls. \nEFFECT: Disadvantage on Stealth. Xylantropy knows where you are.", monsters: [] },
+    { roll: [17, 18], name: "Death Kiss", description: "SCENE: A massive blood-drinking beholder-kin. \nCOMBAT: Grapples and drains blood.", monsters: ["grell"] },
+    { roll: [19, 19], name: "Xylantropy's Laugh", description: "SCENE: Deep booming laughter. \nEFFECT: DC 16 Wis save or Frightened.", monsters: [] },
+    { roll: [20, 20], name: "The Hoard", description: "SCENE: You find a stash Xylantropy forgot. \nLOOT: Level 15 Spell Scroll and 500gp.", monsters: [] }
+];

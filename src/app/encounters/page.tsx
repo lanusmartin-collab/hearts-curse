@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE, SHOP_AMBUSH_TABLE, SILENT_WARDS_TABLE, LIBRARY_WHISPERS_TABLE, HEART_CHAMBER_TABLE, UNDERDARK_TRAVEL_TABLE, OAKHAVEN_MINES_TABLE, NETHERIL_RUINS_TABLE, OSSUARY_TABLE, ARACH_TINILITH_TABLE, Encounter } from "@/lib/data/encounters";
+import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE, SHOP_AMBUSH_TABLE, SILENT_WARDS_TABLE, LIBRARY_WHISPERS_TABLE, HEART_CHAMBER_TABLE, UNDERDARK_TRAVEL_TABLE, OAKHAVEN_MINES_TABLE, NETHERIL_RUINS_TABLE, OSSUARY_TABLE, ARACH_TINILITH_TABLE, CASTLE_MOURNWATCH_TABLE, CATACOMBS_DESPAIR_TABLE, DWARVEN_RUINS_TABLE, MIND_FLAYER_COLONY_TABLE, BEHOLDER_LAIR_TABLE, Encounter } from "@/lib/data/encounters";
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
 import StatblockCard from "@/components/ui/StatblockCard";
 import Link from "next/link";
@@ -85,12 +85,21 @@ function EncountersContent() {
         { id: "town_night", title: "Sector 01: Oakhaven (Night)", table: TOWN_NIGHT_TABLE },
         { id: "outskirts", title: "Sector 01: Outskirts", table: OUTSKIRTS_TABLE },
         { id: "ambush", title: "Sector 01: Shop Ambush", table: SHOP_AMBUSH_TABLE },
+
+        { id: "castle", title: "Sector 01.5: Castle Mournwatch", table: CASTLE_MOURNWATCH_TABLE }, // NEW
+
         { id: "mines", title: "Sector 02: Mines", table: OAKHAVEN_MINES_TABLE },
+        { id: "dwarven", title: "Sector 02: Dwarven Ruins", table: DWARVEN_RUINS_TABLE }, // NEW
         { id: "underdark", title: "Sector 02: Deep Travel", table: UNDERDARK_TRAVEL_TABLE },
+        { id: "mindflayer", title: "Sector 02: Synaptic Deep", table: MIND_FLAYER_COLONY_TABLE }, // NEW
+        { id: "beholder", title: "Sector 02: Eye's Domain", table: BEHOLDER_LAIR_TABLE }, // NEW
         { id: "drow", title: "Sector 02: Drow City", table: ARACH_TINILITH_TABLE },
+
         { id: "silent", title: "Sector 03: Silent Wards", table: SILENT_WARDS_TABLE },
         { id: "netheril", title: "Sector 03: Netheril Void", table: NETHERIL_RUINS_TABLE },
         { id: "library", title: "Sector 03: Library", table: LIBRARY_WHISPERS_TABLE },
+        { id: "catacombs", title: "Sector 03: Catacombs of Despair", table: CATACOMBS_DESPAIR_TABLE }, // NEW
+
         { id: "heart", title: "Sector 04: Heart Chamber", table: HEART_CHAMBER_TABLE },
         { id: "ossuary", title: "Sector 04: Ossuary", table: OSSUARY_TABLE },
     ];
@@ -138,13 +147,17 @@ function EncountersContent() {
                             <ControlButton label="Town (Day)" sub="Standard Patrol" onClick={() => rollTable(TOWN_DAY_TABLE)} />
                             <ControlButton label="Town (Night)" sub="High Alert" onClick={() => rollTable(TOWN_NIGHT_TABLE)} />
                             <ControlButton label="Outskirts" sub="Wilderness" onClick={() => rollTable(OUTSKIRTS_TABLE)} />
+                            <ControlButton label="Castle Siege" sub="War Zone" highlight onClick={() => rollTable(CASTLE_MOURNWATCH_TABLE)} />
                         </div>
 
                         {/* SECTOR 2 */}
                         <div>
                             <h3 className="section-header">Sector 02: Deep</h3>
                             <ControlButton label="Mines (Lv 3-5)" sub="Subterranean" onClick={() => rollTable(OAKHAVEN_MINES_TABLE)} />
+                            <ControlButton label="Dwarven Ruins" sub="Tieg Duran" onClick={() => rollTable(DWARVEN_RUINS_TABLE)} />
                             <ControlButton label="Deep Travel" sub="Underdark" onClick={() => rollTable(UNDERDARK_TRAVEL_TABLE)} />
+                            <ControlButton label="Mind Flayer Colony" sub="Psionic" highlight onClick={() => rollTable(MIND_FLAYER_COLONY_TABLE)} />
+                            <ControlButton label="Beholder Lair" sub="Anti-Magic" highlight onClick={() => rollTable(BEHOLDER_LAIR_TABLE)} />
                             <ControlButton label="Drow City" sub="Arach-Tinilith" onClick={() => rollTable(ARACH_TINILITH_TABLE)} />
                         </div>
 
@@ -154,6 +167,7 @@ function EncountersContent() {
                             <ControlButton label="Silent Wards" sub="Hazard" highlight onClick={() => rollTable(SILENT_WARDS_TABLE)} />
                             <ControlButton label="Netheril Void" sub="Arcane" highlight onClick={() => rollTable(NETHERIL_RUINS_TABLE)} />
                             <ControlButton label="Library" sub="Forbidden" highlight onClick={() => rollTable(LIBRARY_WHISPERS_TABLE)} />
+                            <ControlButton label="Catacombs" sub="Despair" highlight onClick={() => rollTable(CATACOMBS_DESPAIR_TABLE)} />
                         </div>
 
                         {/* SECTOR 4 */}
