@@ -170,15 +170,21 @@ export const OUTSKIRTS_TABLE: Encounter[] = [
 
 export const SHOP_AMBUSH_TABLE: Encounter[] = [
     {
-        roll: [1, 10],
+        roll: [1, 8],
         name: "The Debt of Memory",
         description: "SCENE: A courier delivers a heavy iron box instead of the goods. Inside is the Shopkeeper's severed hand and a note: 'The Black Network cannot be charmed.' \n\nAMBUSH: Ignacio (Zhentarim Lord) steps from invisibility with his personal bodyguard, 'The Wall' (Juggernaut), and a Counterspell Mage. \n\nIGNACIO'S PARANOIA: He believes the Modify Memory was a Psionic/Mind Flayer attack. 'Tell me where the Colony is, Drow-lovers.' \n\nSIDEBAR: The Mercenary PC receives a *Sending*: '7,000 Platinum to walk away. Khelben never needs to know.'",
         monsters: ["ignacio", "varth", "mage"]
     },
     {
-        roll: [11, 20],
+        roll: [9, 15],
         name: "Diplomatic Immunity",
         description: "SCENE: Vanko the Silk awaits the party, flanked by THREE Shield Guardians. He offers a *Ring of Mind Shielding* or *Staff of Charming* (calling it a 'Gentleman's Cane') as a 'Token of Apology'.\n\nTACTIC: If attacked, Vanko uses *Sanctuary* and *Mislead* to let his Guardians tank. He creates illusions of himself to confuse attackers while he coats his hidden dagger.",
         monsters: ["vanko", "zhentarim_guardian", "zhentarim_guardian", "zhentarim_guardian"]
+    },
+    {
+        roll: [16, 20],
+        name: "Audit in Progress",
+        description: "SCENE: The area is unnaturally quiet. A *Silence* spell blankets the shop. The Red Ledger team has arrived to 'balance the books'.\n\nTACTIC: The Auditor (Maximilian) maintains *Silence* on casters and uses Counterspell. The Eraser (Sniper) takes shots from 200ft away (Stealth). The Cleaner (Monk) rushes in to decompose the bodies.\n\nNOTE: This only triggers if the party has killed Vanko or betrayed the Zhentarim significantly.",
+        monsters: ["auditor", "eraser", "cleaner"]
     }
 ];

@@ -198,15 +198,23 @@ export const STATBLOCKS: Record<string, Statblock> = {
     },
     "zhentarim_guardian": {
         name: "Zhentarim Shield Guardian",
-        size: "Large", type: "Construct", alignment: "Unaligned",
-        ac: 17, armorType: "Natural Armor", hp: 142, hitDice: "15d10 + 60", speed: "30 ft.",
+        size: "Large",
+        type: "Construct",
+        alignment: "Unaligned",
+        ac: 17,
+        armorType: "Natural Armor",
+        hp: 142,
+        hitDice: "15d10 + 60",
+        speed: "30 ft.",
         stats: { str: 18, dex: 8, con: 18, int: 7, wis: 10, cha: 3 },
-        saves: "", skills: "",
+        saves: "",
+        skills: "",
         immunities: "Poison",
         conditionImmunities: "Charmed, Exhaustion, Frightened, Paralyzed, Poisoned",
         senses: "Blindsight 10 ft., Darkvision 60 ft.",
         languages: "Understands Vanko",
-        cr: "7", xp: 2900,
+        cr: "7",
+        xp: 2900,
         traits: [
             { name: "Bound", desc: "Magically bound to an amulet worn by Vanko. Vanko knows its location and can cast spells through it." },
             { name: "Shield", desc: "If within 5ft of Vanko, grants him +2 AC." },
@@ -218,34 +226,70 @@ export const STATBLOCKS: Record<string, Statblock> = {
         ],
         reactions: [
             { name: "Shield", desc: "When Vanko is hit by an attack within 5 ft, the Guardian takes half the damage." }
-        ]
+        ],
+        treasure: ""
     },
-    "night_shard": {
-        name: "The Night Shard",
+    "ignacio": {
+        name: "Ignacio (The Adjuster)",
         size: "Medium",
-        type: "Humanoid (Elf)",
-        alignment: "Neutral Evil",
-        ac: 19,
-        armorType: "Studded Leather",
-        hp: 155,
-        hitDice: "18d8 + 72",
-        speed: "40 ft.",
-        stats: { str: 12, dex: 22, con: 16, int: 14, wis: 16, cha: 14 },
-        saves: "Dex +11, Int +7",
-        skills: "Acrobatics +11, Stealth +16, Perception +8",
+        type: "Humanoid (Human, Zhentarim)",
+        alignment: "Lawful Evil",
+        ac: 17,
+        armorType: "Studded Leather +2",
+        hp: 165,
+        hitDice: "22d8 + 66",
+        speed: "30 ft.",
+        stats: { str: 10, dex: 20, con: 16, int: 18, wis: 16, cha: 18 },
+        saves: "Dex +10, Int +9, Cha +9",
+        skills: "Deception +14, Insight +13, Persuasion +14, Sleight of Hand +15",
         immunities: "None",
-        languages: "Common, Elvish, Undercommon",
-        cr: "15",
-        xp: 13000,
+        senses: "Passive Perception 13",
+        languages: "Common, Thieves' Cant, Infernal, Undercommon",
+        cr: "14",
+        xp: 11500,
         traits: [
-            { name: "Assassinate", desc: "Advantage on attack rolls against creatures that haven't taken a turn. Hit is auto-crit if surprised." },
-            { name: "Shadow Step", desc: "Bonus action to teleport 60ft from dim light to dim light." }
+            { name: "Coin of Fate", desc: "Ignacio flips a coin at the start of his turn. Heads: He crits on 18-20 and has advantage on saves. Tails: The first enemy he hits takes extra 4d6 necrotic damage." },
+            { name: "Cunning Action", desc: "Bonus action: Dash, Disengage, Hide." },
+            { name: "Evasion", desc: "Half damage on Dex save fail, no damage on success." }
         ],
         actions: [
-            { name: "Multiattack", desc: "Makes three attacks with Dagger +2." },
-            { name: "Dagger +2", desc: "+13 to hit, reach 5ft. Hit: 1d4 + 8 piercing + 4d6 poison." }
+            { name: "Multiattack", desc: "Three Rapier attacks." },
+            { name: "Rapier of Shared Suffering", desc: "+10 to hit, reach 5 ft. Hit: 1d8+5 piercing + 3d6 psychic." },
+            { name: "Debt Collection (Recharge 5-6)", desc: "Target one creature within 30ft. DC 18 Cha save. On fail, take psychic damage equal to half the HP the target has lost from its maximum. (Max 60 dmg)." }
         ],
-        treasure: "Dagger +2 (Venom), Ring of Protection"
+        treasure: "Rapier of Shared Suffering, Coin of Twisted Fate"
+    },
+    "varth": {
+        name: "General Varth",
+        size: "Medium",
+        type: "Undead (Death Knight)",
+        alignment: "Chaotic Evil",
+        ac: 20,
+        armorType: "Plate Armor +2",
+        hp: 247,
+        hitDice: "19d8 + 95",
+        speed: "30 ft.",
+        stats: { str: 20, dex: 11, con: 20, int: 12, wis: 16, cha: 18 },
+        saves: "Dex +6, Wis +9, Cha +10",
+        skills: "Athletics +11, Perception +9, Intimidation +10",
+        immunities: "Necrotic, Poison",
+        conditionImmunities: "Exhaustion, Frightened, Poisoned",
+        senses: "Darkvision 120 ft., Passive Perception 19",
+        languages: "Abyssal, Common, Draconic",
+        cr: "17",
+        xp: 18000,
+        traits: [
+            { name: "Magic Resistance", desc: "Advantage on saving throws against spells and other magical effects." },
+            { name: "Marshal Undead", desc: "Unless incapacitated, Varth and undead within 60 ft have advantage on saving throws against being turned." },
+            { name: "Nightmare Mount", desc: "Varth rides a Nightmare. While mounted, attacks against him have disadvantage unless the attacker is also mounted or flying." }
+        ],
+        actions: [
+            { name: "Multiattack", desc: "Varth makes three attacks with his Hellfire Greatsword." },
+            { name: "Hellfire Greatsword", desc: "+11 to hit, reach 5 ft. Hit: 4d6+5 slashing + 4d6 fire damage." },
+            { name: "Hellfire Orb (1/Day)", desc: "Hurls a magical ball of fire that explodes at a point he can see within 120 ft. Each creature in a 20-ft radius sphere must make a DC 18 Dex save. Fail: 10d6 fire + 10d6 necrotic damage. Success: Half damage." },
+            { name: "Horn of the Abyss (1/Day)", desc: "Varth blows a warhorn. Summons 1d4 Shadow Demons or 1d6 Undead Soldiers (Wights) in unoccupied spaces within 60ft. They roll initiative and act on their own." }
+        ],
+        treasure: "Hellfire Greatsword, Plate Armor +2"
     },
     "jarlaxle": {
         name: "Jarlaxle Baenre", size: "Medium", type: "Humanoid (Drow)", alignment: "Chaotic Neutral",
@@ -509,38 +553,7 @@ export const STATBLOCKS: Record<string, Statblock> = {
             { name: "Crush Hope (3 Actions)", desc: "Target one creature Umbravos can see. Target must make DC 19 Charisma save. Failure: Target falls Prone and is Stunned until end of next turn, overwhelmed by grief." }
         ]
     },
-    "varth": {
-        name: "General Varth",
-        size: "Medium",
-        type: "Undead (Death Knight)",
-        alignment: "Chaotic Evil",
-        ac: 20,
-        armorType: "Plate Armor +2",
-        hp: 247,
-        hitDice: "19d8 + 95",
-        speed: "30 ft.",
-        stats: { str: 20, dex: 11, con: 20, int: 12, wis: 16, cha: 18 },
-        saves: "Dex +6, Wis +9, Cha +10",
-        skills: "Athletics +11, Perception +9, Intimidation +10",
-        immunities: "Necrotic, Poison",
-        conditionImmunities: "Exhaustion, Frightened, Poisoned",
-        senses: "Darkvision 120 ft., Passive Perception 19",
-        languages: "Abyssal, Common, Draconic",
-        cr: "17",
-        xp: 18000,
-        traits: [
-            { name: "Magic Resistance", desc: "Advantage on saving throws against spells and other magical effects." },
-            { name: "Marshal Undead", desc: "Unless incapacitated, Varth and undead within 60 ft have advantage on saving throws against being turned." },
-            { name: "Nightmare Mount", desc: "Varth rides a Nightmare. While mounted, attacks against him have disadvantage unless the attacker is also mounted or flying." }
-        ],
-        actions: [
-            { name: "Multiattack", desc: "Varth makes three attacks with his Hellfire Greatsword." },
-            { name: "Hellfire Greatsword", desc: "+11 to hit, reach 5 ft. Hit: 4d6+5 slashing + 4d6 fire damage." },
-            { name: "Hellfire Orb (1/Day)", desc: "Hurls a magical ball of fire that explodes at a point he can see within 120 ft. Each creature in a 20-ft radius sphere must make a DC 18 Dex save. Fail: 10d6 fire + 10d6 necrotic damage. Success: Half damage." },
-            { name: "Horn of the Abyss (1/Day)", desc: "Varth blows a warhorn. Summons 1d4 Shadow Demons or 1d6 Undead Soldiers (Wights) in unoccupied spaces within 60ft. They roll initiative and act on their own." }
-        ],
-        treasure: "Hellfire Greatsword, Plate Armor +2"
-    },
+
     "foreman": {
         name: "The Patchwork Foreman",
         size: "Large",
@@ -730,36 +743,7 @@ export const STATBLOCKS: Record<string, Statblock> = {
         ],
         treasure: "Staff of Power (Very Rare), Spellbook"
     },
-    "ignacio": {
-        name: "Ignacio (The Adjuster)",
-        size: "Medium",
-        type: "Humanoid (Human, Zhentarim)",
-        alignment: "Lawful Evil",
-        ac: 17,
-        armorType: "Studded Leather +2",
-        hp: 165,
-        hitDice: "22d8 + 66",
-        speed: "30 ft.",
-        stats: { str: 10, dex: 20, con: 16, int: 18, wis: 16, cha: 18 },
-        saves: "Dex +10, Int +9, Cha +9",
-        skills: "Deception +14, Insight +13, Persuasion +14, Sleight of Hand +15",
-        immunities: "None",
-        senses: "Passive Perception 13",
-        languages: "Common, Thieves' Cant, Infernal, Undercommon",
-        cr: "14",
-        xp: 11500,
-        traits: [
-            { name: "Coin of Fate", desc: "Ignacio flips a coin at the start of his turn. Heads: He crits on 18-20 and has advantage on saves. Tails: The first enemy he hits takes extra 4d6 necrotic damage." },
-            { name: "Cunning Action", desc: "Bonus action: Dash, Disengage, Hide." },
-            { name: "Evasion", desc: "Half damage on Dex save fail, no damage on success." }
-        ],
-        actions: [
-            { name: "Multiattack", desc: "Three Rapier attacks." },
-            { name: "Rapier of Shared Suffering", desc: "+10 to hit, reach 5 ft. Hit: 1d8+5 piercing + 3d6 psychic." },
-            { name: "Debt Collection (Recharge 5-6)", desc: "Target one creature within 30ft. DC 18 Cha save. On fail, take psychic damage equal to half the HP the target has lost from its maximum. (Max 60 dmg)." }
-        ],
-        treasure: "Rapier of Shared Suffering, Coin of Twisted Fate"
-    },
+
     "elias": {
         name: "Elias Thornefield",
         size: "Medium",
@@ -1020,5 +1004,87 @@ export const STATBLOCKS: Record<string, Statblock> = {
             { name: "Divine Command (Costs 3 Actions)", desc: "Lolth chooses one creature within 60ft. DC 24 Wis save. Failure: Creature uses its reaction to attack an ally of Lolth's choice." }
         ],
         treasure: "Divine Spark (Story Item), Blood of a God"
+    },
+    "eraser": {
+        name: "The Eraser (Valerius Kaine)",
+        size: "Medium", type: "Humanoid (Human)", alignment: "Lawful Evil",
+        ac: 17, armorType: "Studded Leather", hp: 110, hitDice: "20d8 + 20", speed: "30 ft., climb 30 ft.",
+        stats: { str: 12, dex: 20, con: 12, int: 16, wis: 18, cha: 10 },
+        saves: "Dex +9, Wis +8",
+        skills: "Stealth +13, Perception +12, Survival +8",
+        immunities: "None",
+        senses: "Darkvision 120 ft., Passive Perception 22",
+        languages: "Common, Thieves' Cant, Infernal",
+        cr: "11", xp: 7200,
+        traits: [
+            { name: "Sharpshooter", desc: "Attacking at long range doesn't impose disadvantage. Ignores half and three-quarters cover." },
+            { name: "Stealthy Position", desc: "If The Eraser is hidden, he remains hidden after making an attack if he misses." },
+            { name: "Sniper's Nest", desc: "Advantage on attack rolls if he hasn't moved this turn." }
+        ],
+        actions: [
+            { name: "Multiattack", desc: "Two attacks with The Silencer." },
+            { name: "The Silencer", desc: "Ranged Weapon Attack: +11 to hit, range 100/400 ft. Hit: 2d10+5 piercing + 2d6 necrotic. Attacks made with this weapon make no sound." },
+            { name: "Called Shot (Recharge 5-6)", desc: "The Eraser targets a vitals point. +11 to hit. Hit: 4d10+5 piercing. Target must make a DC 16 Con save. Failure: Stunned until the end of the Eraser's next turn (Headshot) or prone and speed 0 (Leg shot)." }
+        ],
+        bonus_actions: [
+            { name: "Cunning Action", desc: "Dash, Disengage, or Hide." }
+        ],
+        treasure: "The Silencer (Heavy Crossbow +2, Silent), Cloak of Elvenkind"
+    },
+    "cleaner": {
+        name: "The Cleaner (Sister Acidsoul)",
+        size: "Medium", type: "Humanoid (Elf, Monk)", alignment: "Lawful Evil",
+        ac: 18, armorType: "Unarmored Defense", hp: 99, hitDice: "18d8 + 18", speed: "50 ft.",
+        stats: { str: 10, dex: 20, con: 12, int: 14, wis: 18, cha: 10 },
+        saves: "Dex +9, Con +5",
+        skills: "Acrobatics +9, Medicine +8, Stealth +9, Alchemist's Supplies +10",
+        immunities: "Poison, Acid",
+        conditionImmunities: "Poisoned",
+        senses: "Darkvision 60 ft.",
+        languages: "Common, Elvish, Undercommon",
+        cr: "10", xp: 5900,
+        traits: [
+            { name: "Acid Absorption", desc: "Whenever The Cleaner is subjected to Acid damage, she takes no damage and regains HP equal to half the damage dealt." },
+            { name: "Evasion", desc: "Half damage on Dex save fail, no damage on success." },
+            { name: "Liquid Movement", desc: "The Cleaner can squeeze through spaces as small as 1 inch wide without squeezing." }
+        ],
+        actions: [
+            { name: "Multiattack", desc: "Three Unarmed Strikes or Acid Flasks." },
+            { name: "Corrosive Touch", desc: "Melee: +9 to hit, reach 5ft. Hit: 1d8+5 bludgeoning + 2d6 acid." },
+            { name: "Alchemical Solvent", desc: "Ranged: +9 to hit, range 20/60 ft. Hit: 4d6 acid. Hit or miss, runs within 5ft of target take 2d6 acid damage." },
+            { name: "Dissolution (Grapple Only)", desc: "Target grappled by The Cleaner must make DC 16 Con save. Failure: 6d8 Acid damage. Success: Half damage." }
+        ],
+        reactions: [
+            { name: "Slow Fall", desc: "Reduces falling damage by 50." }
+        ],
+        treasure: "Vial of Universal Solvent, Goggles of Night"
+    },
+    "auditor": {
+        name: "The Auditor (Maximilian Void)",
+        size: "Medium", type: "Humanoid (Human)", alignment: "Lawful Evil",
+        ac: 16, armorType: "Mage Armor (Permanent)", hp: 135, hitDice: "18d8 + 54", speed: "30 ft.",
+        stats: { str: 16, dex: 14, con: 16, int: 18, wis: 14, cha: 12 },
+        saves: "Str +7, Con +7, Int +8, Wis +6",
+        skills: "Arcana +12, Investigation +12, Perception +6",
+        immunities: "None",
+        senses: "Passive Perception 16",
+        languages: "Common, Abyssal, Infernal, Draconic",
+        cr: "12", xp: 8400,
+        traits: [
+            { name: "Magic Resistance", desc: "Advantage on saving throws against spells and other magical effects." },
+            { name: "Arcane Sight", desc: "Maximilian can see magical auras up to 120ft (as Detect Magic, always active). Can see Invisibility." },
+            { name: "Mage Slayer", desc: "When he damages a creature concentrating on a spell, that creature has disadvantage on the saving throw." }
+        ],
+        actions: [
+            { name: "Multiattack", desc: "Three Null-Blade attacks." },
+            { name: "Null-Blade", desc: "Melee: +8 to hit, reach 5ft. Hit: 1d8+4 slashing + 2d8 force. Target must make a DC 16 Con save or be unable to cast spells until the end of its next turn." },
+            { name: "Cast Silence (At Will)", desc: "Casts Silence (no concentration required)." },
+            { name: "Dispel Touch", desc: "Melee Spell Attack: +8 to hit. Ends one spell of 5th level or lower on the target." }
+        ],
+        reactions: [
+            { name: "Arcane Interruption (3/Day)", desc: "When a creature within 60ft casts a spell, Maximilian casts Counterspell (5th level)." },
+            { name: "Mage Slayer Attack", desc: "When a creature within 5ft casts a spell, Maximilian makes a melee attack against it." }
+        ],
+        treasure: "Null-Blade (Longsword, Rare), Ring of Spell Turning"
     }
 };
