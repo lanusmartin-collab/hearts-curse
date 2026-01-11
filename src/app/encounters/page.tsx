@@ -67,10 +67,15 @@ function EncountersContent() {
     const triggerShopAmbush = () => {
         setIsScanning(true);
         setTimeout(() => {
-            setLastRoll(20);
-            const ambush = SHOP_AMBUSH_TABLE[0];
-            setResult(ambush);
-            setLinkedStatblocks(ambush.monsters || []);
+            const d20 = Math.floor(Math.random() * 20) + 1;
+            setLastRoll(d20);
+
+            // Find match
+            const match = SHOP_AMBUSH_TABLE.find(e => d20 >= e.roll[0] && d20 <= e.roll[1]);
+            const encounter = match || SHOP_AMBUSH_TABLE[0]; // Fallback
+
+            setResult(encounter);
+            setLinkedStatblocks(encounter.monsters || []);
             setIsScanning(false);
         }, 500);
     };
@@ -79,6 +84,7 @@ function EncountersContent() {
         { id: "town_day", title: "Sector 01: Oakhaven (Day)", table: TOWN_DAY_TABLE },
         { id: "town_night", title: "Sector 01: Oakhaven (Night)", table: TOWN_NIGHT_TABLE },
         { id: "outskirts", title: "Sector 01: Outskirts", table: OUTSKIRTS_TABLE },
+        { id: "ambush", title: "Sector 01: Shop Ambush", table: SHOP_AMBUSH_TABLE },
         { id: "mines", title: "Sector 02: Mines", table: OAKHAVEN_MINES_TABLE },
         { id: "underdark", title: "Sector 02: Deep Travel", table: UNDERDARK_TRAVEL_TABLE },
         { id: "drow", title: "Sector 02: Drow City", table: ARACH_TINILITH_TABLE },
