@@ -14,12 +14,23 @@ import { NPC_NAMES, NPC_TITLES, NPC_QUIRKS } from "@/lib/data/generator-tables";
 import CommandBar from "@/components/ui/CommandBar";
 import GeneratorSidebar from "@/components/ui/GeneratorSidebar";
 
+import { Trash2 } from "lucide-react";
+
+type RegistryItem = {
+    id: number;
+    type: 'npc' | 'monster' | 'loot' | 'artifact';
+    name: string;
+    data: any;
+    timestamp: Date;
+};
+
 export default function GeneratorsPage() {
     const [result, setResult] = useState<Statblock | null>(null);
     const [lootItem, setLootItem] = useState<ShopItem | null>(null);
     const [selectedMapId, setSelectedMapId] = useState<string>("oakhaven");
-    const [activeTool, setActiveTool] = useState<'npc' | 'monster' | 'loot' | 'artifact'>('loot');
+    const [activeTool, setActiveTool] = useState<'npc' | 'monster' | 'loot' | 'artifact' | 'register'>('loot');
     const [isGenerating, setIsGenerating] = useState(false);
+    const [registry, setRegistry] = useState<RegistryItem[]>([]);
 
     // Helper: Map ID to Theme
     const getTheme = (mapId: string): GeneratorTheme => {
@@ -36,6 +47,33 @@ export default function GeneratorsPage() {
     const HIGH_LEVEL_MAPS = ["mind_flayer", "beholder", "arach", "netheril", "heart_chamber", "catacombs_despair", "ossuary"];
     const isHighLevel = HIGH_LEVEL_MAPS.some(id => selectedMapId.includes(id));
 
+    const addToRegistry = (type: 'npc' | 'monster' | 'loot' | 'artifact', data: any) => {
+        const newItem: RegistryItem = {
+            id: Date.now(),
+            type,
+            name: data.name || "Unknown Item",
+            data,
+            timestamp: new Date()
+        };
+        setRegistry(prev => [newItem, ...prev]);
+    };
+
+    const deleteFromRegistry = (id: number, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setRegistry(prev => prev.filter(item => item.id !== id));
+    };
+
+    const loadFromRegistry = (item: RegistryItem) => {
+        setActiveTool(item.type);
+        if (item.type === 'loot' || item.type === 'artifact') {
+            setLootItem(item.data);
+            setResult(null);
+        } else {
+            setResult(item.data);
+            setLootItem(null);
+        }
+    };
+
     const handleGenerate = () => {
         setIsGenerating(true);
 
@@ -50,6 +88,7 @@ export default function GeneratorsPage() {
                 sb.traits.push({ name: "Quirk", desc: q });
                 setResult(sb);
                 setLootItem(null);
+                addToRegistry('npc', sb);
             } else if (activeTool === 'monster') {
                 let pool = [...ALL_MONSTERS];
 
@@ -62,12 +101,17 @@ export default function GeneratorsPage() {
                 const monster = pool[Math.floor(Math.random() * pool.length)];
                 setResult(monster);
                 setLootItem(null);
+                addToRegistry('monster', monster);
             } else if (activeTool === 'loot') {
-                setLootItem(generateLootItem(currentTheme, isHighLevel));
+                const item = generateLootItem(currentTheme, isHighLevel);
+                setLootItem(item);
                 setResult(null);
+                addToRegistry('loot', item);
             } else if (activeTool === 'artifact') {
-                setLootItem(generateArtifact(currentTheme));
+                const item = generateArtifact(currentTheme);
+                setLootItem(item);
                 setResult(null);
+                addToRegistry('artifact', item);
             }
             setIsGenerating(false);
         }, 600);
@@ -83,7 +127,13 @@ export default function GeneratorsPage() {
                     selectedMapId={selectedMapId}
                     onSelectMap={setSelectedMapId}
                     activeTool={activeTool}
-                    onSelectTool={(t) => { setActiveTool(t); setResult(null); setLootItem(null); }}
+                    onSelectTool={(t) => {
+                        if (t !== 'register') {
+                            setResult(null);
+                            setLootItem(null);
+                        }
+                        setActiveTool(t);
+                    }}
                 />
 
                 {/* 2. Main Content */}
@@ -93,27 +143,32 @@ export default function GeneratorsPage() {
                     {/* Header Fixed Area */}
                     <div className="flex justify-between items-end border-b-2 border-[#a32222]/30 p-8 pb-4 shrink-0 bg-[#050505] z-10">
                         <div>
-                            {/* Headers removed as requested */}
+                            {activeTool === 'register' ? (
+                                <h2 className="text-[#a32222] font-header text-xl tracking-[0.2em]">REGISTERED FABRICATIONS</h2>
+                            ) : (
+                                <h2 className="text-[#a32222] font-header text-xl tracking-[0.2em]">{activeTool.toUpperCase()} GENERATOR</h2>
+                            )}
                         </div>
 
-                        <button
-                            onClick={handleGenerate}
-                            disabled={isGenerating}
-                            className={`
-                                px-8 py-3 bg-[#a32222] text-[#e0e0e0] font-header tracking-widest uppercase text-sm
-                                border border-[#ff4444] shadow-[0_0_15px_rgba(163,34,34,0.4)]
-                                hover:bg-[#c42828] hover:shadow-[0_0_25px_rgba(163,34,34,0.6)] hover:scale-105
-                                active:scale-95 transition-all
-                                disabled:opacity-50 disabled:cursor-not-allowed
-                            `}
-                        >
-                            {isGenerating ? 'PROCESSING...' : 'GENERATE'}
-                        </button>
+                        {activeTool !== 'register' && (
+                            <button
+                                onClick={handleGenerate}
+                                disabled={isGenerating}
+                                className={`
+                                    px-8 py-3 bg-[#a32222] text-[#e0e0e0] font-header tracking-widest uppercase text-sm
+                                    border border-[#ff4444] shadow-[0_0_15px_rgba(163,34,34,0.4)]
+                                    hover:bg-[#c42828] hover:shadow-[0_0_25px_rgba(163,34,34,0.6)] hover:scale-105
+                                    active:scale-95 transition-all
+                                    disabled:opacity-50 disabled:cursor-not-allowed
+                                `}
+                            >
+                                {isGenerating ? 'PROCESSING...' : 'GENERATE'}
+                            </button>
+                        )}
                     </div>
 
                     {/* Result Display - Relaxed & Scrollable */}
                     <div className="flex-1 overflow-auto custom-scrollbar p-8 flex items-start justify-center">
-                        {/* Removed max-w-2xl constraint, added min-width to prevent squish */}
                         <div className="w-full max-w-5xl min-h-[500px] border border-[#222] bg-[#0a0a0a] p-8 relative shadow-inner flex flex-col items-center">
 
                             {isGenerating ? (
@@ -123,6 +178,41 @@ export default function GeneratorsPage() {
                                         <div className="h-full bg-[#a32222] w-1/2 animate-slide-right"></div>
                                     </div>
                                     <div className="font-mono text-[10px] text-[#444] mt-2 uppercase">Please wait...</div>
+                                </div>
+                            ) : activeTool === 'register' ? (
+                                // REGISTER VIEW
+                                <div className="w-full flex flex-col gap-2">
+                                    {registry.length === 0 ? (
+                                        <div className="text-center text-[#444] font-mono mt-10">NO ITEMS IN REGISTER</div>
+                                    ) : (
+                                        registry.map((item) => (
+                                            <div
+                                                key={item.id}
+                                                onClick={() => loadFromRegistry(item)}
+                                                className="group flex items-center justify-between p-3 border border-[#333] bg-[#111] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    <span className={`text-[10px] font-mono uppercase px-2 py-1 border ${item.type === 'loot' ? 'border-[#ffd700] text-[#ffd700]' :
+                                                            item.type === 'artifact' ? 'border-[#ff00ff] text-[#ff00ff]' :
+                                                                'border-[#a32222] text-[#a32222]'
+                                                        }`}>
+                                                        {item.type}
+                                                    </span>
+                                                    <span className="text-[#ccc] font-medium tracking-wide">{item.name}</span>
+                                                </div>
+                                                <div className="flex items-center gap-4">
+                                                    <span className="text-[10px] text-[#555] font-mono">{item.timestamp.toLocaleTimeString()}</span>
+                                                    <button
+                                                        onClick={(e) => deleteFromRegistry(item.id, e)}
+                                                        className="text-[#444] hover:text-red-500 transition-colors p-2"
+                                                        title="Delete from Register"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
                                 </div>
                             ) : result ? (
                                 <div className="w-full animate-fade-in">

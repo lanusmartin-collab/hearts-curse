@@ -1,13 +1,13 @@
 "use client";
 
-import { Map as MapIcon, Box, Skull, User, Sword, Shield, Scroll, Ghost } from "lucide-react";
+import { Map as MapIcon, Box, Skull, User, Sword, Shield, Scroll, Ghost, ClipboardList } from "lucide-react";
 import { CAMPAIGN_MAPS } from "@/lib/data/maps";
 
 type GeneratorSidebarProps = {
     selectedMapId: string;
     onSelectMap: (id: string) => void;
-    activeTool: 'npc' | 'monster' | 'loot' | 'artifact';
-    onSelectTool: (tool: 'npc' | 'monster' | 'loot' | 'artifact') => void;
+    activeTool: 'npc' | 'monster' | 'loot' | 'artifact' | 'register';
+    onSelectTool: (tool: 'npc' | 'monster' | 'loot' | 'artifact' | 'register') => void;
 };
 
 export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeTool, onSelectTool }: GeneratorSidebarProps) {
@@ -112,6 +112,16 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
                         >
                             <Scroll className="w-4 h-4 text-[#666]" />
                             <span>ARTIFACT</span>
+                        </button>
+
+                        <div className="h-px bg-[#222] my-2"></div>
+
+                        <button
+                            onClick={() => onSelectTool('register')}
+                            className={`grimoire-item ${activeTool === 'register' ? 'active' : ''}`}
+                        >
+                            <ClipboardList className="w-4 h-4 text-[#666]" />
+                            <span>REGISTER</span>
                         </button>
                     </div>
                 </div>
