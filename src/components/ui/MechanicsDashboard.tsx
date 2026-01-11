@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getCurseStage, getRegionalEffect, rollWildMagic } from '@/lib/game/curseLogic';
 
 type Props = {
@@ -12,6 +12,32 @@ export function MechanicsDashboard({ currentMapId, onRoll }: Props) {
     const [days, setDays] = useState(1);
     const [wildMagicResult, setWildMagicResult] = useState<string | null>(null);
     const [isExpanded, setIsExpanded] = useState(false);
+
+    // Sync with LocalStorage and CurseTracker
+    useEffect(() => {
+        const loadDays = () => {
+            if (typeof window !== 'undefined') {
+                const saved = localStorage.getItem('curse_days');
+                if (saved) setDays(parseInt(saved, 10));
+            }
+        };
+        loadDays(); // Initial load
+        window.addEventListener('storage', loadDays);
+        window.addEventListener('curse-update', loadDays);
+        return () => {
+            window.removeEventListener('storage', loadDays);
+            window.removeEventListener('curse-update', loadDays);
+        };
+    }, []);
+
+    const updateDays = (newDays: number) => {
+        const val = Math.max(0, newDays);
+        setDays(val);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('curse_days', val.toString());
+            window.dispatchEvent(new Event('curse-update'));
+        }
+    };
 
     const curseStage = getCurseStage(days);
     const regionalEffect = getRegionalEffect(currentMapId);
@@ -57,9 +83,9 @@ export function MechanicsDashboard({ currentMapId, onRoll }: Props) {
                     <div className="flex justify-between items-center mb-2">
                         <span className="uppercase text-gray-500">Infection Day</span>
                         <div className="flex items-center gap-2">
-                            <button onClick={() => setDays(Math.max(0, days - 1))} className="hover:text-white px-1">[-]</button>
+                            <button onClick={() => updateDays(days - 1)} className="hover:text-white px-1">[-]</button>
                             <span className="text-xl text-white font-bold">{days}</span>
-                            <button onClick={() => setDays(days + 1)} className="hover:text-white px-1">[+]</button>
+                            <button onClick={() => updateDays(days + 1)} className="hover:text-white px-1">[+]</button>
                         </div>
                     </div>
                     <div className="bg-red-900/10 border border-red-900/30 p-2 rounded">
