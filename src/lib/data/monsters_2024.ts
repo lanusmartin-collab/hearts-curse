@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Statblock } from "./statblocks";
+import { Statblock, STATBLOCKS } from "./statblocks";
 import RAW_DATA from "./monsters_2024_final.json";
 import DROW_DATA from "./drow_monsters.json";
 import CUSTOM_DATA from "./monsters_custom.json";
@@ -50,6 +50,11 @@ function mapToStatblock(m: any): Statblock {
   if (m.slug) {
     typedData[m.slug] = mapToStatblock(m);
   }
+});
+
+// 4. Load Code-Defined Statblocks (Highest Priority)
+Object.entries(STATBLOCKS).forEach(([key, val]) => {
+  typedData[key] = val;
 });
 
 export const MONSTERS_2024 = typedData;
