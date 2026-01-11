@@ -178,7 +178,7 @@ export const SHOP_AMBUSH_TABLE: Encounter[] = [
     {
         roll: [11, 20],
         name: "Diplomatic Immunity",
-        description: "SCENE: Vanko the Silk awaits the party, flanked by THREE Shield Guardians. He offers a *Ring of Mind Shielding* or *Sword of Wounding* as a 'Token of Apology' for Ignacio's rudeness.\n\nTACTIC: If attacked, Vanko uses *Sanctuary* and *Mislead* to let his Guardians tank. He does not want to fight but will defend his ledger.",
+        description: "SCENE: Vanko the Silk awaits the party, flanked by THREE Shield Guardians. He offers a *Ring of Mind Shielding* or *Staff of Charming* (calling it a 'Gentleman's Cane') as a 'Token of Apology'.\n\nTACTIC: If attacked, Vanko uses *Sanctuary* and *Mislead* to let his Guardians tank. He creates illusions of himself to confuse attackers while he coats his hidden dagger.",
         monsters: ["vanko", "zhentarim_guardian", "zhentarim_guardian", "zhentarim_guardian"]
     }
 ];

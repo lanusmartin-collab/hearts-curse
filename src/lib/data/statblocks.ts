@@ -161,37 +161,40 @@ export const STATBLOCKS: Record<string, Statblock> = {
     "vanko": {
         name: "Vanko the Silk",
         size: "Medium", type: "Humanoid (Human)", alignment: "Lawful Evil",
-        ac: 15, armorType: "Robes of the Archmagi", hp: 99, hitDice: "18d8 + 18", speed: "30 ft., fly 40 ft.",
+        ac: 17, armorType: "Glamoured Studded Leather", hp: 99, hitDice: "18d8 + 18", speed: "30 ft., fly 40 ft. (Winged Boots)",
         stats: { str: 10, dex: 16, con: 12, int: 20, wis: 14, cha: 18 },
         saves: "Int +10, Wis +7, Cha +9",
-        skills: "Deception +14, Insight +12, Persuasion +14, Arcana +10",
+        skills: "Deception +14, Insight +12, Persuasion +14, Arcana +10, Sleight of Hand +11, Stealth +11",
         immunities: "None",
-        resistances: "Magic damage (Robes)",
+        resistances: "None",
         languages: "Common, Elvish, Draconic, Undercommon, Infernal",
         cr: "13", xp: 10000,
         traits: [
-            { name: "Magic Resistance", desc: "Advantage on saves vs spells." },
             { name: "Cunning Action", desc: "Bonus action: Dash, Disengage, Hide." },
-            { name: "Spellcasting", desc: "14th level Wizard (Enchanter/Illusionist). Int DC 18. Slots: 1st-7th.\nAt Will: Friends, Mage Hand, Prestidigitation.\n1st: Shield, Mage Armor, Charm Person.\n2nd: Misty Step, Detect Thoughts, Hold Person.\n3rd: Counterspell, Fly, Tongues.\n4th: Dimension Door, Greater Invisibility.\n5th: Mislead, Wall of Force, Dominate Person.\n6th: Mass Suggestion, Globe of Invulnerability.\n7th: Forcecage, Teleport." },
-            { name: "Special Equipment", desc: "Vanko carries a Ring of Mind Shielding, Robes of the Archmagi (Black), and a Staff of Power." }
+            { name: "Sneak Attack (4d6)", desc: "Once per turn, deals extra 4d6 damage if advantage or ally adjacent." },
+            { name: "Spellcasting", desc: "14th level Wizard (Enchanter). Int DC 18. Slots: 1st-7th.\nAt Will: Friends, Message, Prestidigitation.\n1st: Charm Person, Disguise Self, Shield.\n2nd: Detect Thoughts, Hold Person, Misty Step, Suggestion.\n3rd: Counterspell, Major Image, Sending.\n4th: Arcane Eye, Dimension Door.\n5th: Dominate Person, Modify Memory, Seeming.\n6th: Mass Suggestion.\n7th: Power Word Pain." },
+            { name: "Special Equipment", desc: "Vanko wears *Glamoured Studded Leather* (usually looks like silk robes), *Winged Boots* (fly speed), and a *Ring of Mind Shielding* (invisible). He carries a *Staff of Charming* (looks like a cane) and a hidden *Dagger of Venom*." }
         ],
         actions: [
-            { name: "Staff of Power", desc: "Melee (+10 to hit): 1d6+5 bludgeoning + 1d6 force. Spell (+10 to hit): Uses charges." },
-            { name: "Diplomatic Immunity (Recharge 5-6)", desc: "Vanko creates a sanctuary field. For 1 minute, any creature attempting to attack him must make a DC 18 Wis save. On failure, they lose the attack." },
+            { name: "Multiattack", desc: "Two Dagger attacks." },
+            { name: "Dagger of Venom", desc: "+8 to hit, reach 5ft. Hit: 1d4+3 piercing + 4d6 poison (Sneak Attack applicable)." },
+            { name: "Staff of Charming", desc: "Melee: +6 to hit, 1d6 bludgeoning. Spells (10 charges): Charm Person (1), Command (1), Comprehend Languages (1). Recharges 1d8+2 at dawn. If you fail a save vs an enchantment spell while holding it, you can turn the spell back on the caster (1 charge)." },
+            { name: "Diplomatic Immunity (Recharge 5-6)", desc: "Vanko creates a sanctuary field. For 1 minute, any creature attempting to attack him must make a DC 18 Wis save. On failure, they lose the attack." }
         ],
         bonus_actions: [
-            { name: "Command Guardian", desc: "Vanko verbally commands one connected Shield Guardian to move up to its speed and make one attack." }
+            { name: "Command Guardian", desc: "Vanko verbally commands one connected Shield Guardian to move up to its speed and make one attack." },
+            { name: "Coat Dagger", desc: "Vanko uses a bonus action to coat his dagger in black poison (included in Dagger of Venom damage)." }
         ],
         reactions: [
             { name: "Redirect Attack", desc: "When targeted by an attack, Vanko can swap places with a Guardian within 5ft. The Guardian takes the hit." },
-            { name: "Arcane Deflection", desc: "+2 AC or +4 to Save against one attack." }
+            { name: "Uncanny Dodge", desc: "Halve damage from one attack he can see." }
         ],
         legendary: [
             { name: "Cast Cantrip", desc: "Casts a cantrip." },
             { name: "Command Guardian", desc: "Uses Command Guardian bonus action." },
             { name: "Tactical Displacement (2 Actions)", desc: "Vanko and one willing creature within 30ft teleport, swapping places." }
         ],
-        treasure: "Ring of Mind Shielding, Staff of Power, Bank Notes worth 50,000gp"
+        treasure: "Ring of Mind Shielding, Staff of Charming, Dagger of Venom, Bank Notes worth 50,000gp"
     },
     "zhentarim_guardian": {
         name: "Zhentarim Shield Guardian",
