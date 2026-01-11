@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ALL_MONSTERS } from "@/lib/data/monsters_2024";
 import DROW_MONSTERS from "@/lib/data/drow_monsters.json";
 import { Statblock } from "@/lib/data/statblocks";
@@ -31,6 +31,37 @@ export default function GeneratorsPage() {
     const [activeTool, setActiveTool] = useState<'npc' | 'monster' | 'loot' | 'artifact' | 'register'>('loot');
     const [isGenerating, setIsGenerating] = useState(false);
     const [registry, setRegistry] = useState<RegistryItem[]>([]);
+
+    // Persistence: Load Registry on Mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('foundry_registry');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    // Rehydrate dates properly
+                    const rehydrated = parsed.map((item: any) => ({
+                        ...item,
+                        timestamp: new Date(item.timestamp)
+                    }));
+                    setRegistry(rehydrated);
+                } catch (e) {
+                    console.error("Failed to load registry:", e);
+                }
+            }
+        }
+    }, []);
+
+    // Persistence: Save Registry on Change
+    useEffect(() => {
+        if (typeof window !== 'undefined' && registry.length > 0) {
+            localStorage.setItem('foundry_registry', JSON.stringify(registry));
+        } else if (registry.length === 0 && typeof window !== 'undefined') {
+            // Optional: Clear storage if empty, or keep it empty array. 
+            // Keeping it avoids 'null' issues but overwrites history if intentional delete.
+            localStorage.setItem('foundry_registry', JSON.stringify([]));
+        }
+    }, [registry]);
 
     // Helper: Map ID to Theme
     const getTheme = (mapId: string): GeneratorTheme => {
@@ -190,8 +221,8 @@ export default function GeneratorsPage() {
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-4">
                                                         <span className={`text-[10px] font-mono uppercase px-2 py-1 border ${item.type === 'loot' ? 'border-[#ffd700] text-[#ffd700]' :
-                                                                item.type === 'artifact' ? 'border-[#ff00ff] text-[#ff00ff]' :
-                                                                    'border-[#a32222] text-[#a32222]'
+                                                            item.type === 'artifact' ? 'border-[#ff00ff] text-[#ff00ff]' :
+                                                                'border-[#a32222] text-[#a32222]'
                                                             }`}>
                                                             {item.type}
                                                         </span>

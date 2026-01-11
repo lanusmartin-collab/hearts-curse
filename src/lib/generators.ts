@@ -234,6 +234,27 @@ export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
     };
 }
 
+const STANDARD_ITEM_DESCRIPTIONS: Record<string, string> = {
+    "Amulet of Health": "Your Constitution score is 19 while you wear this amulet.",
+    "Gauntlets of Ogre Power": "Your Strength score is 19 while you wear these gauntlets.",
+    "Headband of Intellect": "Your Intelligence score is 19 while you wear this headband.",
+    "Ring of Protection": "You gain a +1 bonus to AC and saving throws while wearing this ring.",
+    "Cloak of Protection": "You gain a +1 bonus to AC and saving throws while you wear this cloak.",
+    "Bracers of Defense": "While wearing these bracers, you gain a +2 bonus to AC if you are wearing no armor and using no shield.",
+    "Boots of Speed": "You can use a bonus action to click the boots' heels together. If you do, the boots double your walking speed.",
+    "Cloak of Elvenkind": "While you wear this cloak with its hood up, Wisdom (Perception) checks made to see you have disadvantage.",
+    "Boots of Elvenkind": "While you wear these boots, your steps make no sound.",
+    "Bag of Holding": "This bag has an interior space considerably larger than its outside dimensions. It can hold up to 500 pounds.",
+    "Goggles of Night": "While wearing these goggles, you have darkvision out to a range of 60 feet.",
+    "Winged Boots": "While you wear these boots, you have a flying speed equal to your walking speed.",
+    "Gloves of Missile Snaring": "When a ranged weapon attack hits you, you can use your reaction to reduce the damage by 1d10 + your Dex modifier.",
+    "Ring of Mind Shielding": "You are immune to magic that allows other creatures to read your thoughts, determine whether you are lying, know your alignment, or know your creature type.",
+    "Pearl of Power": "You can use an action to speak this pearl's command word and regain one expended spell slot of up to 3rd level.",
+    "Gem of Brightness": "This prism has 50 charges. You can use an action to speak one of three command words to shed light or blind creatures.",
+    "Ring of Evasion": "This ring has 3 charges. When you fail a Dexterity saving throw, you can use your reaction to succeed instead.",
+    "Ring of Spell Storing": "This ring stores spells cast into it, holding them until the attuned wearer uses them."
+};
+
 export function generateArtifact(theme: GeneratorTheme = "Surface"): ShopItem {
     // 1. Lore Priority: 100%
     const lorePrefix = LORE_PREFIXES[Math.floor(Math.random() * LORE_PREFIXES.length)];
@@ -241,22 +262,36 @@ export function generateArtifact(theme: GeneratorTheme = "Surface"): ShopItem {
     // Artifact Noun
     const noun = ["Orb", "Staff", "Blade", "Grimoire", "Crown", "Amulet", "Plate", "Skull", "Scepter"][Math.floor(Math.random() * 9)];
 
-    // Artifact Name construction
-    // "Larloch's Skull of the Void"
+    // Artifact Name - "Larloch's Skull of the Void"
     const magicEffectObj = MAGIC_EFFECTS[Math.floor(Math.random() * MAGIC_EFFECTS.length)];
     const name = `${lorePrefix} ${noun} ${magicEffectObj.suffix}`;
 
-    // Properties
-    const benProp = ARTIFACT_PROPERTIES_BENEFICIAL[Math.floor(Math.random() * ARTIFACT_PROPERTIES_BENEFICIAL.length)];
+    // Properties - EMPOWERED: Now gets 2 Beneficial properties
+    const benProp1 = ARTIFACT_PROPERTIES_BENEFICIAL[Math.floor(Math.random() * ARTIFACT_PROPERTIES_BENEFICIAL.length)];
+    let benProp2 = ARTIFACT_PROPERTIES_BENEFICIAL[Math.floor(Math.random() * ARTIFACT_PROPERTIES_BENEFICIAL.length)];
+    // Ensure distinct properties
+    while (benProp2 === benProp1) {
+        benProp2 = ARTIFACT_PROPERTIES_BENEFICIAL[Math.floor(Math.random() * ARTIFACT_PROPERTIES_BENEFICIAL.length)];
+    }
     const detProp = ARTIFACT_PROPERTIES_DETRIMENTAL[Math.floor(Math.random() * ARTIFACT_PROPERTIES_DETRIMENTAL.length)];
 
     const props = ["Artifact", "Attunement", "Indestructible", "Legendary", theme];
 
-    let effectText = `**Major Benefit:** ${benProp} \n**Side Effect:** ${detProp} \n\n${magicEffectObj.desc} (Duration: ${magicEffectObj.duration})`;
+    // Determine Base Bonus text based on item type
+    let baseBonusText = "**Base Property:** ";
+    if (noun === "Blade" || noun === "Staff" || noun === "Scepter") {
+        baseBonusText += `+3 Weapon (+3 to Attack and Damage Rolls).`;
+    } else if (noun === "Plate") {
+        baseBonusText += `+3 Armor (+3 to AC).`;
+    } else if (noun === "Orb" || noun === "Grimoire" || noun === "Skull" || noun === "Amulet" || noun === "Crown") {
+        baseBonusText += `+3 Focus (+3 to Spell Attack Rolls and Save DC).`;
+    }
+
+    let effectText = `${baseBonusText}\n\n**Major Benefits:**\n• ${benProp1}\n• ${benProp2}\n\n**Side Effect:** ${detProp} \n\n**Passive:** ${magicEffectObj.desc} (Duration: ${magicEffectObj.duration})`;
 
     // Sentience Chance (50%)
     const isSentient = Math.random() > 0.5;
-    let npcQuote = "This item thrums with quiet power.";
+    let npcQuote = "This item thrums with quiet, terrifying power.";
 
     if (isSentient) {
         props.push("Sentient");
@@ -272,7 +307,7 @@ export function generateArtifact(theme: GeneratorTheme = "Surface"): ShopItem {
 
     return {
         name: name,
-        type: "Artifact",
+        type: `Artifact (${noun})`,
         rarity: "Artifact",
         cost: "Priceless",
         effect: effectText,
@@ -360,6 +395,19 @@ export function generateLootItem(theme: GeneratorTheme = "Surface", isHighLevel:
         }
     }
     if (magicBonus > 0) name += ` +${magicBonus}`;
+
+    // [FIX] Standard Item Description Lookup
+    // Check if the base noun or full name matches a standard item description
+    const standardDesc = STANDARD_ITEM_DESCRIPTIONS[noun] || STANDARD_ITEM_DESCRIPTIONS[name];
+    if (standardDesc) {
+        effectText = standardDesc;
+        // If it logicly has a bonus but isn't +1/+2/+3, ensure it's clear? 
+        // Most standard items (like Ring of Protection) already describe their bonus in the text we added.
+        if (magicBonus > 0 && !effectText.includes(`+${magicBonus}`)) {
+            effectText += ` (Includes +${magicBonus} bonus).`;
+        }
+    }
+
     let cost = 50 * rarityObj.costMod; cost = Math.floor(cost * (0.8 + Math.random() * 0.4));
     if (noun === "Potion" || noun === "Scroll") cost = Math.floor(cost / 5);
     const props = [];
