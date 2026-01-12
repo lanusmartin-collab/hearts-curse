@@ -75,9 +75,16 @@ function GrimoireContent() {
 
             const attemptScroll = () => {
                 const node = itemsRef.current.get(activeSpell.name);
-                if (node) {
-                    // Use "auto" (instant) scroll for reliability on large lists
-                    node.scrollIntoView({ behavior: "auto", block: "center" });
+                const container = listRef.current;
+
+                if (node && container) {
+                    // Manual Calculation: Center the item in the container
+                    const topPos = node.offsetTop;
+                    const containerHeight = container.clientHeight;
+                    const nodeHeight = node.clientHeight;
+
+                    // math: topPos - (half container - half node)
+                    container.scrollTop = topPos - (containerHeight / 2) + (nodeHeight / 2);
                     return true;
                 }
                 return false;
