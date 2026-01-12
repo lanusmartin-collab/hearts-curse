@@ -33,6 +33,7 @@ function EncountersContent() {
 
     // Combat State
     const [combatants, setCombatants] = useState<Combatant[]>([]);
+    const [previewSlug, setPreviewSlug] = useState<string | null>(null); // New Preview State
     const [round, setRound] = useState(1);
     const [activeCombatantId, setActiveCombatantId] = useState<string | null>(null);
     const [addMode, setAddMode] = useState<'player' | 'monster'>('player');
@@ -99,6 +100,7 @@ function EncountersContent() {
         setIsScanning(true);
         setResult(null);
         setInspectedCombatantId(null); // Clear inspection on new scan
+        setPreviewSlug(null);
 
         // Simulation of "Scanning" delay
         setTimeout(() => {
@@ -117,6 +119,7 @@ function EncountersContent() {
         setIsScanning(true);
         setResult(null);
         setInspectedCombatantId(null); // Clear inspection
+        setPreviewSlug(null);
         setTimeout(() => {
             const d20 = Math.floor(Math.random() * 20) + 1;
             setLastRoll(d20);
@@ -165,7 +168,7 @@ function EncountersContent() {
 
         setCombatants(prev => sortCombatants([...prev, ...newCombatants]));
         setResult(null); // Clear result once engaged to make room? Or keep for reference?
-        // Actually, let's keep it but inspection will override.
+        setPreviewSlug(null); // Clear any preview
     };
 
     const addPartyMember = () => {
@@ -251,6 +254,7 @@ function EncountersContent() {
     };
 
     const handleInspect = (id: string) => {
+        setPreviewSlug(null);
         if (inspectedCombatantId === id) {
             setInspectedCombatantId(null);
         } else {
@@ -258,9 +262,9 @@ function EncountersContent() {
         }
     };
 
-    // Get inspected data
-    const inspectedData = combatants.find(c => c.id === inspectedCombatantId)?.statblock;
-    const inspectedName = combatants.find(c => c.id === inspectedCombatantId)?.name;
+    // Get inspected data (Combines Active Combatants AND Preview Slugs)
+    const inspectedData = combatants.find(c => c.id === inspectedCombatantId)?.statblock || (previewSlug ? MONSTERS_2024[previewSlug] : null);
+    const inspectedName = combatants.find(c => c.id === inspectedCombatantId)?.name || (previewSlug ? MONSTERS_2024[previewSlug]?.name : null);
 
     const ALL_TABLES_DATA = [
         { id: "town_day", title: "Sector 01: Oakhaven (Day)", table: TOWN_DAY_TABLE },
@@ -419,7 +423,7 @@ function EncountersContent() {
                                         <h2 className="text-3xl font-header text-[#d4af37] tracking-widest drop-shadow-lg">{inspectedName}</h2>
                                         <span className="text-xs bg-[#a32222] text-white px-2 py-0.5 rounded-sm">TARGET LOCK</span>
                                     </div>
-                                    <button onClick={() => setInspectedCombatantId(null)} className="text-[#666] hover:text-white">CLOSE SCAN</button>
+                                    <button onClick={() => { setInspectedCombatantId(null); setPreviewSlug(null); }} className="text-[#666] hover:text-white">CLOSE SCAN</button>
                                 </div>
                                 <StatblockCard data={inspectedData} />
                             </div>
@@ -434,10 +438,17 @@ function EncountersContent() {
                                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#050505] px-4 text-[10px] font-bold text-[#a32222] tracking-widest border border-[#333]">THREAT SIGNATURES</div>
                                         <div className="flex flex-col gap-3 mt-2">
                                             {linkedStatblocks.map(slug => (
-                                                <div key={slug} className="flex justify-between items-center text-sm text-[#ccc] border-b border-[#222] pb-2 last:border-0">
-                                                    <span>{MONSTERS_2024[slug]?.name || slug}</span>
+                                                <button
+                                                    key={slug}
+                                                    onClick={() => setPreviewSlug(slug)}
+                                                    className="flex justify-between items-center text-sm text-[#ccc] border-b border-[#222] pb-2 last:border-0 w-full hover:bg-[#1a0505] transition-colors p-2 text-left group-hover:border-[#333]"
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[#a32222] opacity-0 group-hover:opacity-100 transition-opacity">👁️</span>
+                                                        <span className="group-hover:text-[#d4af37] transition-colors">{MONSTERS_2024[slug]?.name || slug}</span>
+                                                    </div>
                                                     <span className="text-[#666] text-xs">CR {MONSTERS_2024[slug]?.cr}</span>
-                                                </div>
+                                                </button>
                                             ))}
                                         </div>
                                         <div className="mt-6 flex justify-center">
