@@ -153,7 +153,7 @@ export default function Home() {
       </div>
 
       <footer style={{ marginTop: "3rem", textAlign: "center", opacity: 0.8, fontFamily: "var(--font-mono)", fontSize: "0.75rem", borderTop: "1px solid var(--glass-border)", paddingTop: "2rem", color: "var(--adnd-blue)" }}>
-        HEART'S CURSE CAMPAIGN MANAGER // v1.2 (Retro Patch Applied)
+        HEART'S CURSE CAMPAIGN MANAGER // v1.3.1 (Grimoire Patch)
       </footer>
     </div>
   );
