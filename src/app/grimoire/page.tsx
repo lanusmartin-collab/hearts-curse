@@ -72,11 +72,13 @@ function GrimoireContent() {
             // Reset Reading Pane
             if (scrollRef.current) scrollRef.current.scrollTop = 0;
 
-            // Scroll List Item
-            const node = itemsRef.current.get(activeSpell.name);
-            if (node) {
-                node.scrollIntoView({ behavior: "smooth", block: "center" });
-            }
+            // Scroll List Item (with delay for render)
+            setTimeout(() => {
+                const node = itemsRef.current.get(activeSpell.name);
+                if (node) {
+                    node.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+            }, 100);
         }
     }, [activeSpell]);
 

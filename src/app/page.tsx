@@ -147,9 +147,7 @@ export default function Home() {
             <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)" }}>Generate print-ready assets for player handouts.</p>
           </DashboardWidget>
 
-          <DashboardWidget title="Print Lab" subtitle="Physical Handouts" icon={FileText} href="/deliverables">
-            <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)" }}>Generate print-ready assets for player handouts.</p>
-          </DashboardWidget>
+
         </div>
 
       </div>
