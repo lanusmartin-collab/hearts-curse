@@ -108,8 +108,8 @@ export default function GrimoirePage() {
                                     </div>
                                 </div>
 
-                                <div className="max-w-none leading-relaxed text-justify px-4 font-serif text-xl text-[#000000]" style={{ fontFamily: "'Merriweather', serif" }}>
-                                    <p className="whitespace-pre-wrap font-medium drop-shadow-sm first-letter:text-5xl first-letter:font-header first-letter:mr-3 first-letter:float-left first-letter:text-[#8a1c1c] leading-8">
+                                <div className="max-w-none leading-relaxed text-justify px-4 font-serif text-xl text-black" style={{ fontFamily: "'Merriweather', serif" }}>
+                                    <p className="whitespace-pre-wrap font-semibold tracking-wide first-letter:text-5xl first-letter:font-header first-letter:mr-3 first-letter:float-left first-letter:text-[#8a1c1c] leading-8">
                                         {activeSpell.description}
                                     </p>
                                 </div>
