@@ -46,8 +46,8 @@ export default function GrimoireModal() {
 
                 <div className="flex flex-1 overflow-hidden">
                     {/* Left Sidebar: List */}
-                    <div className="w-1/3 border-r border-[#333] flex flex-col bg-[#050505]">
-                        <div className="p-4 border-b border-[#333]">
+                    <div className="grimoire-sidebar w-1/3 flex flex-col">
+                        <div className="p-4 border-b border-[#333] bg-black/20">
                             <div className="relative">
                                 <Search className="absolute left-3 top-2.5 text-[#555]" size={16} />
                                 <input
@@ -61,14 +61,15 @@ export default function GrimoireModal() {
                             </div>
                         </div>
                         <div className="flex-1 overflow-y-auto custom-scrollbar">
-                            {filteredSpells.map(spell => (
+                            {filteredSpells.map((spell, idx) => (
                                 <div
                                     key={spell.name}
                                     onClick={() => setActiveSpell(spell)}
-                                    className={`p-3 border-b border-[#222] cursor-pointer hover:bg-[#111] transition-colors flex items-center justify-between ${activeSpell?.name === spell.name ? 'bg-[#1a0505] border-l-2 border-l-[#a32222]' : ''}`}
+                                    className={`grimoire-item animate-heartbeat ${activeSpell?.name === spell.name ? 'active' : ''}`}
+                                    style={{ animationDelay: `${idx * 0.1}s` }}
                                 >
                                     <span className={`font-header text-sm ${activeSpell?.name === spell.name ? 'text-[#c9bca0]' : 'text-[#888]'}`}>{spell.name}</span>
-                                    <span className="text-[10px] text-[#444] font-mono">{spell.level === 0 ? 'C' : `L${spell.level}`}</span>
+                                    <span className="text-[10px] text-[#444] font-mono ml-auto">{spell.level === 0 ? 'C' : `L${spell.level}`}</span>
                                 </div>
                             ))}
                         </div>

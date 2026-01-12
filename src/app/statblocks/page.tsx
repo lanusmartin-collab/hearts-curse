@@ -84,6 +84,7 @@ export default function StatblocksPage() {
 
     // HARD FIX: Filter out "Old Larloch" if it somehow persists with a different key
     allCreatures = allCreatures.filter(c => {
+        if (!c.type || c.type === "Unknown") return false; // Filter Unknowns
         if (c.name.includes("Larloch") && c.name.includes("Shadow King")) {
             if (!c.cr || parseInt(String(c.cr)) < 28) return false;
         }

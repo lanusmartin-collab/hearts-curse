@@ -84,7 +84,7 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
                     <div className="grid grid-cols-1 gap-1">
                         <button
                             onClick={() => onSelectTool('loot')}
-                            className={`grimoire-item ${activeTool === 'loot' ? 'active' : ''}`}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'loot' ? 'active' : ''}`}
                         >
                             <Shield className="w-4 h-4 text-[#666]" />
                             <span>TREASURE</span>
@@ -92,7 +92,8 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
 
                         <button
                             onClick={() => onSelectTool('npc')}
-                            className={`grimoire-item ${activeTool === 'npc' ? 'active' : ''}`}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'npc' ? 'active' : ''}`}
+                            style={{ animationDelay: '0.2s' }}
                         >
                             <User className="w-4 h-4 text-[#666]" />
                             <span>CHARACTER</span>
@@ -100,7 +101,8 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
 
                         <button
                             onClick={() => onSelectTool('monster')}
-                            className={`grimoire-item ${activeTool === 'monster' ? 'active' : ''}`}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'monster' ? 'active' : ''}`}
+                            style={{ animationDelay: '0.4s' }}
                         >
                             <Ghost className="w-4 h-4 text-[#666]" />
                             <span>ADVERSARY</span>
@@ -108,7 +110,8 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
 
                         <button
                             onClick={() => onSelectTool('artifact')}
-                            className={`grimoire-item ${activeTool === 'artifact' ? 'active' : ''}`}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'artifact' ? 'active' : ''}`}
+                            style={{ animationDelay: '0.6s' }}
                         >
                             <Scroll className="w-4 h-4 text-[#666]" />
                             <span>ARTIFACT</span>
@@ -118,7 +121,8 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
 
                         <button
                             onClick={() => onSelectTool('register')}
-                            className={`grimoire-item ${activeTool === 'register' ? 'active' : ''}`}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'register' ? 'active' : ''}`}
+                            style={{ animationDelay: '0.8s' }}
                         >
                             <ClipboardList className="w-4 h-4 text-[#666]" />
                             <span>REGISTER</span>
