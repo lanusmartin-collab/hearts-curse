@@ -103,8 +103,8 @@ export default function StatblockCard({ data }: { data: Statblock }) {
             padding: "2rem",
             paddingLeft: "2.5rem",
             position: "relative",
-            color: "var(--adnd-ink)",
-            background: "var(--adnd-bg)",
+            color: "#1a0f0f", // Hardcoded Dark Ink
+            background: "#fdf1dc", // Hardcoded Parchment
             boxShadow: "5px 5px 15px rgba(0,0,0,0.5)",
             border: "1px solid #c9bca0",
             fontFamily: "var(--adnd-font-body)",
@@ -129,8 +129,8 @@ export default function StatblockCard({ data }: { data: Statblock }) {
             {/* Header */}
             <h2 style={{
                 fontFamily: "var(--adnd-font-header)",
-                color: "var(--adnd-blue)",
-                borderBottom: "2px solid var(--adnd-blue)",
+                color: "#003366", // Hardcoded Dark Blue
+                borderBottom: "2px solid #003366",
                 marginBottom: "0.5rem",
                 clear: "none",
                 fontSize: "2rem",
