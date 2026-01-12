@@ -60,7 +60,7 @@ export default function Home() {
             gap: "0.5rem"
           }}
         >
-          <BookOpen style={{ width: "16px", height: "16px" }} /> Open Campaign Book
+          <BookOpen style={{ width: "16px", height: "16px" }} /> Open Campaign Module
         </button>
       </header>
 
@@ -139,6 +139,11 @@ export default function Home() {
 
           <DashboardWidget title="Print Lab" subtitle="Physical Handouts" icon={FileText} href="/deliverables">
             <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)" }}>Generate print-ready assets for player handouts.</p>
+          </DashboardWidget>
+
+          {/* Grimoire Widget */}
+          <DashboardWidget title="The Grimoire" subtitle="Spell Database" icon={BookOpen} href="/grimoire" style={{ borderColor: "#a32222" }}>
+            <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)" }}>Full library of incantations with advanced filtering.</p>
           </DashboardWidget>
         </div>
 

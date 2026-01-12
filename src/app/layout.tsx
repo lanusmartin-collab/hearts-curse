@@ -13,7 +13,6 @@ export const metadata: Metadata = {
 
 import { AudioProvider } from "@/components/providers/AudioProvider";
 import { SpellProvider } from "@/lib/game/spellContext";
-import GrimoireModal from "@/components/ui/GrimoireModal";
 import ShadowCaster from "@/components/ui/ShadowCaster";
 
 export default function RootLayout({
@@ -42,7 +41,9 @@ export default function RootLayout({
             <main>{children}</main>
             <ShadowCaster />
             <DiceRoller />
-            <GrimoireModal />
+            <ShadowCaster />
+            <DiceRoller />
+            {/* GrimoireModal removed - migrated to /grimoire */}
           </SpellProvider>
         </AudioProvider>
       </body>

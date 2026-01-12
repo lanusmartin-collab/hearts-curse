@@ -4,29 +4,69 @@ import { useEffect, useState, useRef } from 'react';
 import { ALL_SPELLS, filterSpells, Spell } from '@/lib/data/spells';
 import { Search, BookOpen, Scroll, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function GrimoirePage() {
+    const searchParams = useSearchParams();
+    const router = useRouter(); // For shallow routing if needed
+
+    // Filter States
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedLevel, setSelectedLevel] = useState<string>("All"); // All, Cantrip, 1-9
+    const [selectedClass, setSelectedClass] = useState<string>("All");
+    const [isConcentration, setIsConcentration] = useState(false);
+    const [isRitual, setIsRitual] = useState(false);
+
     const [activeSpell, setActiveSpell] = useState<Spell | null>(null);
 
-    // Auto-scroll active item into view
-    const itemsRef = useRef<Map<string, HTMLDivElement>>(new Map());
-    const scrollRef = useRef<HTMLDivElement>(null);
-
-    // Reset scroll when spell changes
+    // Initial Load from URL
     useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = 0;
+        const spellParam = searchParams.get("spell");
+        if (spellParam) {
+            const spell = ALL_SPELLS.find(s => s.name.toLowerCase() === spellParam.toLowerCase());
+            if (spell) {
+                setActiveSpell(spell);
+                // Optionally auto-set filters to match this spell?
+                // For now, let's keep filters independent but ensure the spell is loaded.
+            }
         }
-    }, [activeSpell]);
+    }, [searchParams]);
 
-    const filteredSpells = searchQuery ? filterSpells(searchQuery) : ALL_SPELLS.slice(0, 100);
+    // Filtering Logic
+    const filteredSpells = ALL_SPELLS.filter(spell => {
+        // Text Search
+        if (searchQuery && !spell.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+
+        // Level Filter
+        if (selectedLevel !== "All") {
+            const lvl = selectedLevel === "Cantrip" ? 0 : parseInt(selectedLevel);
+            if (spell.level !== lvl) return false;
+        }
+
+        // Class Filter
+        if (selectedClass !== "All") {
+            if (!spell.classes.includes(selectedClass)) return false;
+        }
+
+        // Toggles
+        if (isConcentration && !spell.duration.toLowerCase().includes("concentration")) return false;
+        if (isRitual && !spell.ritual) return false;
+
+        return true;
+    });
+
+    // Lists for Dropdowns
+    const LEVELS = ["All", "Cantrip", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    const CLASSES = ["All", "Bard", "Cleric", "Druid", "Paladin", "Ranger", "Sorcerer", "Warlock", "Wizard"];
+
+    // Auto-scroll logic (Reading Pane)
+    const scrollRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (scrollRef.current) scrollRef.current.scrollTop = 0;
+    }, [activeSpell]);
 
     return (
         <div className="h-screen flex flex-col bg-[#050505] text-[#ccc] font-sans overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, #222 1px, #222 2px)" }}></div>
-
             <Link href="/" className="no-print campaign-btn danger text-xs px-3 py-1 no-underline fixed top-4 right-4 z-[9999]">
                 SANCTUM
             </Link>
@@ -40,47 +80,93 @@ export default function GrimoirePage() {
             </div>
 
             <div className="flex flex-1 overflow-hidden">
-                {/* Left Sidebar: List (30%) */}
-                <div className="w-[350px] bg-[#0a0a0c] border-r border-[#a32222] flex flex-col z-20 shadow-[5px_0_20px_rgba(0,0,0,0.5)]">
-                    <div className="p-4 border-b border-[#333] bg-black/20">
+                {/* Left Sidebar: Controls & List (30%) */}
+                <div className="w-[400px] bg-[#0a0a0c] border-r border-[#a32222] flex flex-col z-20 shadow-[5px_0_20px_rgba(0,0,0,0.5)]">
+
+                    {/* FILTERS CONTAINER */}
+                    <div className="p-4 border-b border-[#333] bg-[#111] space-y-3">
+                        {/* Search */}
                         <div className="relative">
                             <Search className="absolute left-3 top-2.5 text-[#555]" size={16} />
                             <input
                                 type="text"
                                 placeholder="Search Incantations..."
-                                className="w-full bg-[#111] border border-[#333] rounded pl-10 pr-4 py-2 text-[#ccc] focus:border-[#a32222] focus:outline-none transition-colors"
+                                className="w-full bg-[#050505] border border-[#333] rounded pl-10 pr-4 py-2 text-[#ccc] focus:border-[#a32222] focus:outline-none text-sm"
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
-                                autoFocus
                             />
                         </div>
-                    </div>
-                    <div className="flex-1 overflow-y-auto custom-scrollbar">
-                        {filteredSpells.map((spell, idx) => (
-                            <div
-                                key={spell.name}
-                                onClick={() => setActiveSpell(spell)}
-                                className={`grimoire-item p-3 border-b border-[#222] cursor-pointer hover:bg-[#1a0505] transition-colors flex justify-between items-center group ${activeSpell?.name === spell.name ? 'bg-[#1a0505] border-l-4 border-l-[#a32222]' : ''}`}
+
+                        {/* Dropdowns */}
+                        <div className="flex gap-2">
+                            <select
+                                className="flex-1 bg-[#050505] border border-[#333] p-2 text-xs text-[#ccc] rounded focus:border-[#a32222]"
+                                value={selectedClass}
+                                onChange={e => setSelectedClass(e.target.value)}
                             >
-                                <span className={`font-header text-sm ${activeSpell?.name === spell.name ? 'text-[#c9bca0]' : 'text-[#888] group-hover:text-[#ccc]'}`}>{spell.name}</span>
-                                <span className="text-[10px] text-[#444] font-mono ml-auto bg-[#111] px-1 rounded border border-[#222]">{spell.level === 0 ? 'C' : `L${spell.level}`}</span>
+                                {CLASSES.map(c => <option key={c} value={c}>{c === "All" ? "All Classes" : c}</option>)}
+                            </select>
+
+                            <select
+                                className="w-24 bg-[#050505] border border-[#333] p-2 text-xs text-[#ccc] rounded focus:border-[#a32222]"
+                                value={selectedLevel}
+                                onChange={e => setSelectedLevel(e.target.value)}
+                            >
+                                {LEVELS.map(l => <option key={l} value={l}>{l === "All" ? "Level" : (l === "Cantrip" ? "Cantrip" : `Lvl ${l}`)}</option>)}
+                            </select>
+                        </div>
+
+                        {/* Toggles */}
+                        <div className="flex gap-4 text-xs select-none">
+                            <label className="flex items-center gap-2 cursor-pointer hover:text-white">
+                                <input type="checkbox" checked={isConcentration} onChange={e => setIsConcentration(e.target.checked)} className="accent-[#a32222]" />
+                                Concentration
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer hover:text-white">
+                                <input type="checkbox" checked={isRitual} onChange={e => setIsRitual(e.target.checked)} className="accent-[#a32222]" />
+                                Ritual
+                            </label>
+                        </div>
+                    </div>
+
+                    {/* SPELL LIST */}
+                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                        {filteredSpells.length === 0 ? (
+                            <div className="p-8 text-center text-[#444] text-sm italic">
+                                No incantations match your filter...
                             </div>
-                        ))}
+                        ) : (
+                            filteredSpells.map((spell) => (
+                                <div
+                                    key={spell.name}
+                                    onClick={() => setActiveSpell(spell)}
+                                    className={`grimoire-item p-3 border-b border-[#222] cursor-pointer hover:bg-[#1a0505] transition-colors flex justify-between items-center group ${activeSpell?.name === spell.name ? 'bg-[#1a0505] border-l-4 border-l-[#a32222]' : ''}`}
+                                >
+                                    <div className="flex flex-col">
+                                        <span className={`font-header text-sm ${activeSpell?.name === spell.name ? 'text-[#c9bca0]' : 'text-[#888] group-hover:text-[#ccc]'}`}>{spell.name}</span>
+                                        <span className="text-[10px] text-[#444]">{spell.school}</span>
+                                    </div>
+                                    <span className="text-[10px] text-[#444] font-mono ml-auto bg-[#111] px-1 rounded border border-[#222] min-w-[20px] text-center">
+                                        {spell.level === 0 ? 'C' : `${spell.level}`}
+                                    </span>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
 
-                {/* Right Panel: Reading Pane (70%) */}
+                {/* Right Panel: Reading Pane */}
                 <div className="flex-1 bg-[#151515] relative p-8 flex items-center justify-center overflow-hidden">
-                    {/* Decorative Borders for the "Book" feel */}
+                    {/* Decorative Borders */}
                     <div className="absolute top-4 left-4 right-4 bottom-4 border border-[#333] pointer-events-none opacity-50"></div>
                     <div className="absolute top-5 left-5 right-5 bottom-5 border border-[#222] pointer-events-none opacity-50"></div>
 
                     {activeSpell ? (
-                        <div className="w-full max-w-3xl h-[90%] bg-[#dccba8] relative shadow-[0_0_50px_rgba(0,0,0,0.8)] rounded-sm overflow-hidden border border-[#5c4033]">
+                        <div className="w-full max-w-3xl h-[90%] bg-[#fdf1dc] relative shadow-[0_0_50px_rgba(0,0,0,0.8)] rounded-sm overflow-hidden border border-[#5c4033]">
                             {/* Inner Scroll */}
                             <div ref={scrollRef} className="absolute inset-0 overflow-y-auto custom-scrollbar p-12 z-0">
                                 <div className="text-center mb-8">
-                                    <h1 className="text-5xl font-header font-bold text-[#2a0a0a] mb-2 drop-shadow-sm uppercase tracking-wide">{activeSpell.name}</h1>
+                                    <h1 className="text-5xl font-header font-bold text-[#1a0f0f] mb-2 drop-shadow-sm uppercase tracking-wide">{activeSpell.name}</h1>
                                     <div className="flex justify-center gap-6 text-base font-bold italic text-[#5c1212] font-serif tracking-wider">
                                         <span>{activeSpell.level === 0 ? "Cantrip" : `Level ${activeSpell.level}`}</span>
                                         <span>•</span>
@@ -108,7 +194,7 @@ export default function GrimoirePage() {
                                     </div>
                                 </div>
 
-                                <div className="max-w-none leading-relaxed text-justify px-4 font-serif text-xl text-black" style={{ fontFamily: "'Merriweather', serif" }}>
+                                <div className="max-w-none leading-relaxed text-justify px-4 font-serif text-xl text-[#000]" style={{ fontFamily: "'Merriweather', serif" }}>
                                     <p className="whitespace-pre-wrap font-semibold tracking-wide first-letter:text-5xl first-letter:font-header first-letter:mr-3 first-letter:float-left first-letter:text-[#8a1c1c] leading-8">
                                         {activeSpell.description}
                                     </p>

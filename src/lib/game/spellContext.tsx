@@ -11,22 +11,28 @@ interface SpellContextType {
 
 const SpellContext = createContext<SpellContextType | undefined>(undefined);
 
+import { useRouter } from 'next/navigation';
+
 export function SpellProvider({ children }: { children: ReactNode }) {
-    const [isOpen, setIsOpen] = useState(false);
     const [selectedSpellName, setSelectedSpellName] = useState<string | null>(null);
+    const router = useRouter();
 
     const openGrimoire = (spellName?: string) => {
-        if (spellName) setSelectedSpellName(spellName);
-        setIsOpen(true);
+        if (spellName) {
+            // Redirect to the dedicated page with the spell as a query param
+            router.push(`/grimoire?spell=${encodeURIComponent(spellName)}`);
+        } else {
+            router.push('/grimoire');
+        }
     };
 
     const closeGrimoire = () => {
-        setIsOpen(false);
+        // No-op in page mode, or could navigate back
         setSelectedSpellName(null);
     };
 
     return (
-        <SpellContext.Provider value={{ isOpen, selectedSpellName, openGrimoire, closeGrimoire }}>
+        <SpellContext.Provider value={{ isOpen: false, selectedSpellName, openGrimoire, closeGrimoire }}>
             {children}
         </SpellContext.Provider>
     );
