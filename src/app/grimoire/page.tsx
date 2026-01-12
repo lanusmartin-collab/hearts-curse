@@ -67,20 +67,36 @@ function GrimoireContent() {
     const scrollRef = useRef<HTMLDivElement>(null);
 
     // Scroll List Item into View
+    // Scroll List Item into View
     useEffect(() => {
         if (activeSpell) {
-            // Reset Reading Pane
+            // Reset Reading Pane (only needed when spell changes)
             if (scrollRef.current) scrollRef.current.scrollTop = 0;
 
-            // Scroll List Item (with delay for render)
-            setTimeout(() => {
+            const attemptScroll = () => {
                 const node = itemsRef.current.get(activeSpell.name);
                 if (node) {
                     node.scrollIntoView({ behavior: "smooth", block: "center" });
+                    return true;
                 }
-            }, 100);
+                return false;
+            };
+
+            // Attempt immediately
+            if (!attemptScroll()) {
+                // If failed, retry after short delays to allow for render/layout
+                const t1 = setTimeout(attemptScroll, 100);
+                const t2 = setTimeout(attemptScroll, 300);
+                const t3 = setTimeout(attemptScroll, 600); // Failsafe
+
+                return () => {
+                    clearTimeout(t1);
+                    clearTimeout(t2);
+                    clearTimeout(t3);
+                };
+            }
         }
-    }, [activeSpell]);
+    }, [activeSpell, filteredSpells]); // Re-run if list changes (e.g. on load)
 
     return (
         <div className="h-screen flex flex-col bg-[#050505] text-[#ccc] font-sans overflow-hidden">
