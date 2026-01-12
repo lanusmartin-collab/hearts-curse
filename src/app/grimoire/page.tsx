@@ -68,9 +68,13 @@ function GrimoireContent() {
 
     // Scroll List Item into View
     // Scroll List Item into View
+    // Scroll List Item into View
+    // Only on initial load (Deep Link) to avoid jumping when user clicks manually
+    const initialScrollDone = useRef(false);
+
     useEffect(() => {
-        if (activeSpell) {
-            // Reset Reading Pane (only needed when spell changes)
+        if (activeSpell && !initialScrollDone.current) {
+            // Reset Reading Pane usually handled by user interaction or new render
             if (scrollRef.current) scrollRef.current.scrollTop = 0;
 
             const attemptScroll = () => {
@@ -78,13 +82,14 @@ function GrimoireContent() {
                 const container = listRef.current;
 
                 if (node && container) {
-                    // Manual Calculation: Center the item in the container
                     const topPos = node.offsetTop;
                     const containerHeight = container.clientHeight;
                     const nodeHeight = node.clientHeight;
 
-                    // math: topPos - (half container - half node)
                     container.scrollTop = topPos - (containerHeight / 2) + (nodeHeight / 2);
+
+                    // Mark as done so we don't auto-scroll on manual clicks
+                    initialScrollDone.current = true;
                     return true;
                 }
                 return false;
@@ -92,11 +97,10 @@ function GrimoireContent() {
 
             // Attempt immediately
             if (!attemptScroll()) {
-                // Extended retries for large DOM rendering
                 const t1 = setTimeout(attemptScroll, 100);
                 const t2 = setTimeout(attemptScroll, 300);
                 const t3 = setTimeout(attemptScroll, 600);
-                const t4 = setTimeout(attemptScroll, 1000); // Heavy list failsafe
+                const t4 = setTimeout(attemptScroll, 1000);
 
                 return () => {
                     clearTimeout(t1);
@@ -105,8 +109,11 @@ function GrimoireContent() {
                     clearTimeout(t4);
                 };
             }
+        } else if (activeSpell) {
+            // Just reset the reading pane scroll on manual clicks
+            if (scrollRef.current) scrollRef.current.scrollTop = 0;
         }
-    }, [activeSpell, filteredSpells]); // Re-run if list changes (e.g. on load)
+    }, [activeSpell, filteredSpells]);
 
     return (
         <div className="h-screen flex flex-col bg-[#050505] text-[#ccc] font-sans overflow-hidden">
