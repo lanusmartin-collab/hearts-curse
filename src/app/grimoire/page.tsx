@@ -76,7 +76,8 @@ function GrimoireContent() {
             const attemptScroll = () => {
                 const node = itemsRef.current.get(activeSpell.name);
                 if (node) {
-                    node.scrollIntoView({ behavior: "smooth", block: "center" });
+                    // Use "auto" (instant) scroll for reliability on large lists
+                    node.scrollIntoView({ behavior: "auto", block: "center" });
                     return true;
                 }
                 return false;
@@ -84,15 +85,17 @@ function GrimoireContent() {
 
             // Attempt immediately
             if (!attemptScroll()) {
-                // If failed, retry after short delays to allow for render/layout
+                // Extended retries for large DOM rendering
                 const t1 = setTimeout(attemptScroll, 100);
                 const t2 = setTimeout(attemptScroll, 300);
-                const t3 = setTimeout(attemptScroll, 600); // Failsafe
+                const t3 = setTimeout(attemptScroll, 600);
+                const t4 = setTimeout(attemptScroll, 1000); // Heavy list failsafe
 
                 return () => {
                     clearTimeout(t1);
                     clearTimeout(t2);
                     clearTimeout(t3);
+                    clearTimeout(t4);
                 };
             }
         }
