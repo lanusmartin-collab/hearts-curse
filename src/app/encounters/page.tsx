@@ -30,6 +30,49 @@ function EncountersContent() {
     const [viewMode, setViewMode] = useState<'tracker' | 'tables'>('tracker');
     const [inspectedCombatantId, setInspectedCombatantId] = useState<string | null>(null);
 
+    // Combat State
+    const [combatants, setCombatants] = useState<Combatant[]>([]);
+    const [round, setRound] = useState(1);
+    const [activeCombatantId, setActiveCombatantId] = useState<string | null>(null);
+    const [addMode, setAddMode] = useState<'player' | 'monster'>('player');
+    const [selectedPlayerId, setSelectedPlayerId] = useState('');
+    const [manualMonster, setManualMonster] = useState({ name: '', hp: '', ac: '', initiative: '' });
+    const [availablePlayers, setAvailablePlayers] = useState<any[]>([]);
+
+    // Load Data
+    useEffect(() => {
+        // Load Players
+        const savedPlayers = localStorage.getItem('heart_curse_players');
+        if (savedPlayers) setAvailablePlayers(JSON.parse(savedPlayers));
+
+        // Load Combat State
+        const savedCombat = localStorage.getItem('heart_curse_combat');
+        if (savedCombat) {
+            const data = JSON.parse(savedCombat);
+            setCombatants(data.combatants || []);
+            setRound(data.round || 1);
+            setActiveCombatantId(data.activeCombatantId || null);
+        }
+    }, []);
+
+    // Save Combat State
+    useEffect(() => {
+        if (combatants.length > 0) {
+            localStorage.setItem('heart_curse_combat', JSON.stringify({
+                combatants,
+                round,
+                activeCombatantId
+            }));
+        } else {
+            // Only clear if explicitly ended? keeping it safe for refresh
+            localStorage.setItem('heart_curse_combat', JSON.stringify({
+                combatants,
+                round,
+                activeCombatantId
+            }));
+        }
+    }, [combatants, round, activeCombatantId]);
+
     // Initial Load from URL
     useEffect(() => {
         const rollParam = searchParams.get('roll');
@@ -148,7 +191,7 @@ function EncountersContent() {
 
     const addManualMonster = () => {
         if (!manualMonster.name) return;
-        const init = parseInt(manualMonster.init) || rollInitiative(10);
+        const init = parseInt(manualMonster.initiative) || rollInitiative(10);
 
         // Auto-increment name if exists
         let finalName = manualMonster.name;
@@ -234,376 +277,173 @@ function EncountersContent() {
         { id: "netheril", title: "Sector 03: Netheril Void", table: NETHERIL_RUINS_TABLE },
         { id: "library", title: "Sector 03: Library", table: LIBRARY_WHISPERS_TABLE },
         { id: "catacombs", title: "Sector 03: Catacombs of Despair", table: CATACOMBS_DESPAIR_TABLE },
-        { id: "heart", title: "Sector 04: Heart Chamber", table: HEART_CHAMBER_TABLE },
-        { id: "ossuary", title: "Sector 04: Ossuary", table: OSSUARY_TABLE },
     ];
 
     return (
-        <div style={{ minHeight: '100vh', background: '#050505', color: '#ccc', fontFamily: 'sans-serif', paddingBottom: '8rem', position: 'relative' }}>
+        <div className="h-screen flex flex-col bg-[#050505] text-[#ccc] font-sans overflow-hidden">
             {/* Background Effects */}
-            <div style={{ position: 'fixed', inset: 0, opacity: 0.1, backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, #222 1px, #222 2px)", pointerEvents: 'none' }}></div>
+            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, #222 1px, #222 2px)" }}></div>
 
-            <Link href="/" className="no-print retro-btn bg-red-900 text-white text-xs px-3 py-1 no-underline hover:bg-red-700 animate-heartbeat" style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }} >
-                BACK TO THE SANCTUM
+            <Link href="/" className="no-print campaign-btn danger text-xs px-3 py-1 no-underline fixed top-4 right-4 z-[9999]">
+                SANCTUM
             </Link>
 
-            <header className="terminal-header relative mb-12">
-                <div>
-                    <h1 className="terminal-title">THREAT ASSESSMENT</h1>
-                    <div className="mx-auto" style={{ height: '1px', width: '100px', background: '#a32222', marginTop: '1rem' }}></div>
-                    <p style={{ fontFamily: 'monospace', fontSize: '10px', color: '#666', letterSpacing: '0.3em', textTransform: 'uppercase', marginTop: '0.5rem' }}>Tactical Encounter Generation System // v3.2</p>
-                </div>
+            {/* TOP SECTION (60%) */}
+            <div className="flex-1 flex overflow-hidden min-h-0 relative">
 
-                {/* View Toggles */}
-                <div className="absolute right-0 bottom-0 flex gap-2">
-                    <button
-                        onClick={() => setViewMode('tracker')}
-                        className={`text-xs font-mono uppercase tracking-widest px-4 py-2 border ${viewMode === 'tracker' ? 'bg-[#a32222] text-black border-[#a32222]' : 'text-[#666] border-[#333] hover:text-white'}`}
-                    >
-                        Battle Tracker
-                    </button>
-                    <button
-                        onClick={() => setViewMode('tables')}
-                        className={`text-xs font-mono uppercase tracking-widest px-4 py-2 border ${viewMode === 'tables' ? 'bg-[#a32222] text-black border-[#a32222]' : 'text-[#666] border-[#333] hover:text-white'}`}
-                    >
-                        Table Viewer
-                    </button>
-                </div>
-            </header>
+                {/* LEFT SIDEBAR: CONTROLS */}
+                <div className="w-[280px] bg-[#080808] border-r border-[#222] flex flex-col overflow-y-auto custom-scrollbar z-10 shadow-[5px_0_20px_rgba(0,0,0,0.5)]">
+                    <div className="p-4 border-b border-[#333] mb-4">
+                        <h1 className="terminal-title text-2xl">HEART'S CURSE</h1>
+                        <div className="text-[9px] font-mono text-[#666] tracking-[0.2em] uppercase mt-1">Tactical uplink v3.2</div>
+                    </div>
 
-            {viewMode === 'tracker' ? (
-                <div className="terminal-grid" style={{ gridTemplateColumns: '300px minmax(400px, 1fr) 350px' }}>
-                    {/* LEFT COLUMN: CONTROLS */}
-                    <div className="flex-col gap-4">
+                    <div className="px-4 pb-8 space-y-6">
                         {/* SECTOR 1 */}
                         <div>
                             <h3 className="section-header">Sector 01: Surface</h3>
-                            <ControlButton label="Town (Day)" sub="Standard Patrol" onClick={() => rollTable(TOWN_DAY_TABLE)} />
-                            <ControlButton label="Town (Night)" sub="High Alert" onClick={() => rollTable(TOWN_NIGHT_TABLE)} />
-                            <ControlButton label="Outskirts" sub="Wilderness" onClick={() => rollTable(OUTSKIRTS_TABLE)} />
-                            <ControlButton label="Castle Siege" sub="War Zone" highlight onClick={() => rollTable(CASTLE_MOURNWATCH_TABLE)} />
+                            <div className="space-y-1">
+                                <ControlButton label="Town (Day)" sub="Standard Patrol" onClick={() => rollTable(TOWN_DAY_TABLE)} />
+                                <ControlButton label="Town (Night)" sub="High Alert" onClick={() => rollTable(TOWN_NIGHT_TABLE)} />
+                                <ControlButton label="Outskirts" sub="Wilderness" onClick={() => rollTable(OUTSKIRTS_TABLE)} />
+                                <ControlButton label="Castle Siege" sub="War Zone" highlight onClick={() => rollTable(CASTLE_MOURNWATCH_TABLE)} />
+                            </div>
                         </div>
 
                         {/* SECTOR 2 */}
                         <div>
                             <h3 className="section-header">Sector 02: Deep</h3>
-                            <ControlButton label="Mines (Lv 3-5)" sub="Subterranean" onClick={() => rollTable(OAKHAVEN_MINES_TABLE)} />
-                            <ControlButton label="Dwarven Ruins" sub="Tieg Duran" onClick={() => rollTable(DWARVEN_RUINS_TABLE)} />
-                            <ControlButton label="Deep Travel" sub="Underdark" onClick={() => rollTable(UNDERDARK_TRAVEL_TABLE)} />
-                            <ControlButton label="Mind Flayer Colony" sub="Psionic" highlight onClick={() => rollTable(MIND_FLAYER_COLONY_TABLE)} />
-                            <ControlButton label="Beholder Lair" sub="Anti-Magic" highlight onClick={() => rollTable(BEHOLDER_LAIR_TABLE)} />
-                            <ControlButton label="Drow City" sub="Arach-Tinilith" onClick={() => rollTable(ARACH_TINILITH_TABLE)} />
+                            <div className="space-y-1">
+                                <ControlButton label="Mines (Lv 3-5)" sub="Subterranean" onClick={() => rollTable(OAKHAVEN_MINES_TABLE)} />
+                                <ControlButton label="Deep Travel" sub="Underdark" onClick={() => rollTable(UNDERDARK_TRAVEL_TABLE)} />
+                                <ControlButton label="Mind Flayer Colony" sub="Psionic" highlight onClick={() => rollTable(MIND_FLAYER_COLONY_TABLE)} />
+                                <ControlButton label="Beholder Lair" sub="Anti-Magic" highlight onClick={() => rollTable(BEHOLDER_LAIR_TABLE)} />
+                                <ControlButton label="Drow City" sub="Arach-Tinilith" onClick={() => rollTable(ARACH_TINILITH_TABLE)} />
+                            </div>
                         </div>
 
                         {/* SECTOR 3 */}
                         <div>
-                            <h3 className="section-header" style={{ color: '#d4af37', borderColor: '#d4af37' }}>Sector 03: Restricted</h3>
-                            <ControlButton label="Silent Wards" sub="Hazard" highlight onClick={() => rollTable(SILENT_WARDS_TABLE)} />
-                            <ControlButton label="Netheril Void" sub="Arcane" highlight onClick={() => rollTable(NETHERIL_RUINS_TABLE)} />
-                            <ControlButton label="Library" sub="Forbidden" highlight onClick={() => rollTable(LIBRARY_WHISPERS_TABLE)} />
-                            <ControlButton label="Catacombs" sub="Despair" highlight onClick={() => rollTable(CATACOMBS_DESPAIR_TABLE)} />
+                            <h3 className="section-header text-[#d4af37] border-[#d4af37]">Sector 03: Restricted</h3>
+                            <div className="space-y-1">
+                                <ControlButton label="Silent Wards" sub="Hazard" highlight onClick={() => rollTable(SILENT_WARDS_TABLE)} />
+                                <ControlButton label="Netheril Void" sub="Arcane" highlight onClick={() => rollTable(NETHERIL_RUINS_TABLE)} />
+                                <ControlButton label="Library" sub="Forbidden" highlight onClick={() => rollTable(LIBRARY_WHISPERS_TABLE)} />
+                            </div>
                         </div>
 
-                        {/* SECTOR 4 */}
-                        <div>
-                            <h3 className="section-header" style={{ color: '#ff0000', borderColor: '#ff0000' }}>Sector 04: Nightmare</h3>
-                            <ControlButton label="Heart Chamber" sub="Boss Zone" highlight onClick={() => rollTable(HEART_CHAMBER_TABLE)} />
-                            <ControlButton label="Ossuary" sub="Undead" highlight onClick={() => rollTable(OSSUARY_TABLE)} />
-                        </div>
-
-                        <div style={{ paddingTop: '1rem', borderTop: '1px solid #222' }}>
+                        <div className="pt-4 border-t border-[#333]">
                             <button
                                 onClick={triggerShopAmbush}
-                                style={{
-                                    width: '100%',
-                                    background: '#1a0505',
-                                    border: '1px solid #a32222',
-                                    color: '#ff4444',
-                                    padding: '12px',
-                                    fontWeight: 'bold',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.1em'
-                                }}
-                                className="animate-pulse-slow"
+                                className="w-full bg-[#1a0505] border border-[#a32222] text-[#ff4444] p-3 font-bold uppercase tracking-widest text-xs hover:bg-[#a32222] hover:text-white transition-all shadow-[0_0_10px_rgba(163,34,34,0.3)]"
                             >
                                 ⚠️ Zhentarim Ambush
                             </button>
                         </div>
                     </div>
+                </div>
 
-                    {/* MIDDLE COLUMN: RESULT DISPLAY or STATBLOCK INSPECTOR */}
-                    <div className="terminal-display">
-                        <div className="corner-dec tl"></div>
-                        <div className="corner-dec tr"></div>
-                        <div className="corner-dec bl"></div>
-                        <div className="corner-dec br"></div>
+                {/* CENTER STAGE: VISUALS / STATS */}
+                <div className="flex-1 bg-[#050505] relative overflow-hidden flex flex-col">
+                    {/* View Toggle */}
+                    <div className="absolute top-4 right-20 z-20 flex gap-2">
+                        <button onClick={() => setViewMode('tracker')} className={`campaign-btn text-[10px] px-3 py-1 ${viewMode === 'tracker' ? 'primary' : ''}`}>Tactical</button>
+                        <button onClick={() => setViewMode('tables')} className={`campaign-btn text-[10px] px-3 py-1 ${viewMode === 'tables' ? 'primary' : ''}`}>Compendium</button>
+                    </div>
 
-                        {inspectedData ? (
-                            <div className="w-full h-full overflow-y-auto animate-slide-up pr-2 custom-scrollbar">
-                                <div className="flex justify-between items-center mb-4 border-b border-[#a32222] pb-2">
-                                    <h2 className="text-xl font-header text-[#d4af37] tracking-widest">{inspectedName}</h2>
-                                    <div className="text-[10px] font-mono text-[#a32222] uppercase tracking-[0.2em] border border-[#a32222] px-2 py-1">Tactical Analysis</div>
+                    <div className="flex-1 overflow-y-auto p-8 custom-scrollbar relative">
+                        {/* Decorative Corners */}
+                        <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-[#a32222]"></div>
+                        <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-[#a32222]"></div>
+                        <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-[#a32222]"></div>
+                        <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[#a32222]"></div>
+
+                        {viewMode === 'tables' ? (
+                            <div className="max-w-4xl mx-auto">
+                                <h2 className="text-2xl font-serif text-[#e0e0e0] mb-6">Encounter Tables</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {ALL_TABLES_DATA.map(t => (
+                                        <button
+                                            key={t.id}
+                                            onClick={() => { rollTable(t.table); setViewMode('tracker'); }}
+                                            className="p-4 bg-[#111] border border-[#333] hover:border-[#d4af37] text-left transition-all hover:bg-[#1a1a1a]"
+                                        >
+                                            <div className="font-header text-[#ccc] text-sm">{t.title}</div>
+                                            <div className="text-[10px] text-[#666] font-mono mt-1">{t.table.length} Entries</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : inspectedData ? (
+                            <div className="w-full max-w-5xl mx-auto animate-slide-up">
+                                <div className="flex justify-between items-center mb-6 border-b border-[#a32222] pb-2">
+                                    <div className="flex items-center gap-4">
+                                        <h2 className="text-3xl font-header text-[#d4af37] tracking-widest drop-shadow-lg">{inspectedName}</h2>
+                                        <span className="text-xs bg-[#a32222] text-white px-2 py-0.5 rounded-sm">TARGET LOCK</span>
+                                    </div>
+                                    <button onClick={() => setInspectedCombatantId(null)} className="text-[#666] hover:text-white">CLOSE SCAN</button>
                                 </div>
                                 <StatblockCard data={inspectedData} />
                             </div>
-                        ) : !result && !isScanning ? (
-                            <div style={{ textAlign: 'center', opacity: 0.5 }} className="animate-pulse-slow">
-                                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>☢</div>
-                                <p style={{ fontFamily: 'monospace', fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Awaiting Sector Selection...</p>
-                            </div>
-                        ) : isScanning ? (
-                            <div style={{ color: '#a32222', fontFamily: 'monospace', fontWeight: 'bold', letterSpacing: '0.2em' }}>
-                                [ SYSTEM SCANNING... ]
-                                <div style={{ height: '4px', width: '200px', background: '#333', marginTop: '1rem', overflow: 'hidden' }}>
-                                    <div className="animate-slide-scan" style={{ height: '100%', width: '50%', background: '#a32222' }}></div>
-                                </div>
-                            </div>
-                        ) : result && (
-                            <div className="animate-flicker" style={{ width: '100%', maxWidth: '600px', textAlign: 'center' }}>
-                                <div style={{ fontFamily: 'monospace', color: '#a32222', fontSize: '0.8rem', marginBottom: '1rem', letterSpacing: '0.2em', borderBottom: '1px solid #333', display: 'inline-block', paddingBottom: '0.5rem' }}>
-                                    Result Analysis // Roll: {lastRoll}
-                                </div>
-                                <h2 style={{ fontSize: '2.5rem', fontFamily: 'serif', color: '#e0e0e0', marginBottom: '1.5rem', textShadow: '0 4px 10px rgba(0,0,0,0.8)' }}>{result.name}</h2>
-                                <p style={{ color: '#888', fontStyle: 'italic', marginBottom: '2rem', lineHeight: '1.6' }}>
-                                    "{result.description}"
-                                </p>
+                        ) : result ? (
+                            <div className="w-full max-w-3xl mx-auto text-center mt-12 animate-flicker">
+                                <div className="inline-block border-b border-[#a32222] pb-1 mb-4 text-[#a32222] font-mono tracking-[0.2em] text-sm">ENCOUNTER DETECTED // ROLL: {lastRoll}</div>
+                                <h2 className="text-5xl font-header text-[#e0e0e0] mb-6 text-shadow-[0_4px_20px_rgba(0,0,0,1)]">{result.name}</h2>
+                                <p className="text-lg text-[#888] italic mb-8 leading-relaxed max-w-2xl mx-auto">"{result.description}"</p>
 
-                                {linkedStatblocks.length > 0 ? (
-                                    <div style={{ textAlign: 'left', background: '#111', border: '1px solid #222', padding: '1.5rem', position: 'relative', marginTop: '2rem' }}>
-                                        <div style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: '#0a0a0a', padding: '0 10px', color: '#a32222', fontSize: '0.7rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em', border: '1px solid #222' }}>
-                                            Hostiles Detected
+                                {linkedStatblocks.length > 0 && (
+                                    <div className="bg-[#111] border border-[#333] p-6 max-w-xl mx-auto relative group">
+                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#050505] px-4 text-[10px] font-bold text-[#a32222] tracking-widest border border-[#333]">THREAT SIGNATURES</div>
+                                        <div className="flex flex-col gap-3 mt-2">
+                                            {linkedStatblocks.map(slug => (
+                                                <div key={slug} className="flex justify-between items-center text-sm text-[#ccc] border-b border-[#222] pb-2 last:border-0">
+                                                    <span>{MONSTERS_2024[slug]?.name || slug}</span>
+                                                    <span className="text-[#666] text-xs">CR {MONSTERS_2024[slug]?.cr}</span>
+                                                </div>
+                                            ))}
                                         </div>
-
-                                        {/* ENGAGE BUTTON */}
-                                        <div className="mb-4 flex justify-center">
-                                            <button
-                                                onClick={engageHostiles}
-                                                className="flex items-center gap-2 bg-[#a32222] text-white font-mono uppercase text-xs tracking-widest px-4 py-2 hover:bg-red-700 transition-colors shadow-lg"
-                                            >
-                                                <Swords size={16} />
-                                                Update Uplink
-                                            </button>
+                                        <div className="mt-6 flex justify-center">
+                                            <button onClick={engageHostiles} className="campaign-btn primary w-full">INITIATE COMBAT SEQUENCE</button>
                                         </div>
-
-                                        <div className="flex-col gap-4" style={{ marginTop: '1rem' }}>
-                                            {linkedStatblocks.map(slug => {
-                                                const data = MONSTERS_2024[slug];
-                                                if (!data) return <div key={slug} style={{ color: 'red' }}>Error: {slug} not found</div>;
-                                                return <StatblockCard data={data} key={slug} />;
-                                            })}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div style={{ border: '1px dashed #333', padding: '1rem', color: '#444', fontFamily: 'monospace', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                                        No Hostile Signatures Detected
                                     </div>
                                 )}
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-center h-full opacity-20">
+                                <div className="text-center">
+                                    <div className="text-6xl mb-4 text-[#333]">📡</div>
+                                    <div className="text-xl font-mono tracking-[0.5em] text-[#444] uppercase">System Resting</div>
+                                </div>
                             </div>
                         )}
                     </div>
-
-                    {/* RIGHT COLUMN: COMBAT TRACKER */}
-                    <div className="flex flex-col bg-[#050505] border-l-4 border-double border-[#4a0404] h-full overflow-hidden relative shadow-[-10px_0_30px_rgba(0,0,0,0.8)] z-20">
-                        {/* Background Texture Overlay */}
-                        <div className="absolute inset-0 pointer-events-none z-10" style={{
-                            background: `linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent 20%),
-                            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(163, 34, 34, 0.1) 2px)`
-                        }}></div>
-
-                        <div className="p-6 bg-gradient-to-b from-[#1a0505] to-[#0a0a0c] border-b border-[#a32222] flex items-center justify-between relative z-20">
-                            <div>
-                                <h3 className="grimoire-title animate-heartbeat text-sm">INITIATIVE TRACKER</h3>
-                                <div className="text-[10px] text-[#888] font-mono mt-1 tracking-widest">ROUND {round}</div>
-                            </div>
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() => { if (confirm('End the current encounter? This will clear all combatants.')) { setCombatants([]); localStorage.removeItem('heart_curse_combat'); } }}
-                                    className="campaign-btn danger text-[10px] py-1 px-3"
-                                >
-                                    END BATTLE
-                                </button>
-                                <button onClick={rollNPCInitiative} className="p-2 text-[#666] hover:text-[#a32222] hover:bg-[#1a0505] rounded-sm transition-colors border border-transparent hover:border-[#333]" title="Re-roll NPC Initiative">
-                                    <RefreshCw size={16} />
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="flex-1 overflow-auto p-2 custom-scrollbar relative z-20">
-                            {combatants.length === 0 ? (
-                                <div className="text-center mt-10 opacity-30 text-xs font-mono uppercase tracking-widest text-red-900">
-                                    No Active Signals
-                                </div>
-                            ) : (
-                                combatants.map(c => (
-                                    <CombatantCard
-                                        key={c.id}
-                                        data={c}
-                                        isActive={activeCombatantId === c.id}
-                                        isInspected={inspectedCombatantId === c.id}
-                                        onUpdate={updateCombatant}
-                                        onRemove={removeCombatant}
-                                        onInspect={handleInspect}
-                                    />
-                                ))
-                            )}
-
-                            {/* ADD ENTITY PANEL */}
-                            <div className="mt-4 border-t border-[#333] pt-4 px-3 bg-[#080808]">
-                                <div className="flex mb-3 border-b border-[#222]">
-                                    <button
-                                        onClick={() => setAddMode('player')}
-                                        className={`flex-1 text-[10px] uppercase font-bold py-2 border-b-2 transition-colors ${addMode === 'player' ? 'border-[#a32222] text-[#e0e0e0] bg-gradient-to-t from-[#a32222]/10 to-transparent' : 'border-transparent text-[#555] hover:text-[#bbb]'}`}
-                                    >
-                                        Add Player
-                                    </button>
-                                    <button
-                                        onClick={() => setAddMode('monster')}
-                                        className={`flex-1 text-[10px] uppercase font-bold py-2 border-b-2 transition-colors ${addMode === 'monster' ? 'border-[#a32222] text-[#e0e0e0] bg-gradient-to-t from-[#a32222]/10 to-transparent' : 'border-transparent text-[#555] hover:text-[#bbb]'}`}
-                                    >
-                                        Add Monster
-                                    </button>
-                                </div>
-
-                                {addMode === 'player' ? (
-                                    <div className="flex flex-col gap-3">
-                                        <select
-                                            value={selectedPlayerId}
-                                            onChange={(e) => setSelectedPlayerId(e.target.value)}
-                                            className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] transition-colors"
-                                        >
-                                            <option value="">-- Select Hero --</option>
-                                            {availablePlayers.filter(p => !p.status.includes('Dead')).map(p => (
-                                                <option key={p.id} value={p.id}>{p.name}</option>
-                                            ))}
-                                        </select>
-                                        <button
-                                            onClick={addPartyMember}
-                                            disabled={!selectedPlayerId}
-                                            className="campaign-btn primary w-full py-3"
-                                        >
-                                            Join Battle
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col gap-3">
-                                        <input
-                                            type="text"
-                                            placeholder="Monster Name"
-                                            value={manualMonster.name}
-                                            onChange={e => setManualMonster({ ...manualMonster, name: e.target.value })}
-                                            className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] transition-colors placeholder:text-[#444]"
-                                        />
-                                        <div className="flex gap-3">
-                                            <input
-                                                type="number"
-                                                placeholder="Init"
-                                                value={manualMonster.init}
-                                                onChange={e => setManualMonster({ ...manualMonster, init: e.target.value })}
-                                                className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] w-1/2 transition-colors placeholder:text-[#444]"
-                                            />
-                                            <input
-                                                type="number"
-                                                placeholder="HP"
-                                                value={manualMonster.hp}
-                                                onChange={e => setManualMonster({ ...manualMonster, hp: e.target.value })}
-                                                className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] w-1/2 transition-colors placeholder:text-[#444]"
-                                            />
-                                        </div>
-                                        <button
-                                            onClick={addManualMonster}
-                                            disabled={!manualMonster.name}
-                                            className="campaign-btn primary w-full py-3"
-                                        >
-                                            Add to Battle
-                                        </button>
-                                    </div>
+                    <input
+                        type="number"
+                        placeholder="Init"
+                        value={manualMonster.initiative}
+                        onChange={e => setManualMonster({ ...manualMonster, initiative: e.target.value })}
+                        className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] w-16 transition-colors placeholder:text-[#444]"
+                    />
+                    <input
+                        type="number"
+                        placeholder="HP"
+                        value={manualMonster.hp}
+                        onChange={e => setManualMonster({ ...manualMonster, hp: e.target.value })}
+                        className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] w-1/2 transition-colors placeholder:text-[#444]"
+                    />
+                </div>
+                <button
+                    onClick={addManualMonster}
+                    disabled={!manualMonster.name}
+                    className="campaign-btn primary w-full py-3"
+                >
+                    Add to Battle
+                </button>
+            </div>
                                 )}
-                            </div>
-                        </div>
-
-                        <div className="p-4 border-t border-[#333] bg-[#050505] relative z-20 shadow-[0_-5px_20px_rgba(0,0,0,0.8)]">
-                            <button
-                                onClick={nextRound}
-                                className="campaign-btn w-full py-4 text-sm tracking-[0.2em] shadow-[0_0_20px_rgba(163,34,34,0.2)]"
-                            >
-                                NEXT ROUND <ChevronRight size={18} />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            ) : (
-                /* TABLE VIEWER MODE */
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        {/* Sidebar: Table List */}
-                        <div className="flex flex-col gap-2">
-                            <h3 className="text-[#a32222] font-mono text-xs uppercase tracking-widest mb-4 border-b border-[#333] pb-2">Available Datasets</h3>
-                            {ALL_TABLES_DATA.map(t => (
-                                <button
-                                    key={t.id}
-                                    onClick={() => setActiveTable(t.id)}
-                                    className={`text-left text-xs font-mono uppercase p-3 border transition-colors ${activeTable === t.id ? 'bg-[#111] border-[#a32222] text-[#fff]' : 'border-[#222] text-[#666] hover:border-[#666] hover:text-[#bbb]'}`}
-                                >
-                                    {t.title}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Main Viewing Area */}
-                        <div className="col-span-1 md:col-span-3 min-h-[500px] border border-[#333] bg-[#0a0a0a] p-8 relative">
-                            {/* Decorative Corners */}
-                            <div className="corner-dec tl"></div>
-                            <div className="corner-dec tr"></div>
-                            <div className="corner-dec bl"></div>
-                            <div className="corner-dec br"></div>
-
-                            {activeTable ? (
-                                <div>
-                                    <h2 className="text-2xl font-serif text-[#e0e0e0] mb-6">
-                                        {ALL_TABLES_DATA.find(t => t.id === activeTable)?.title}
-                                    </h2>
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full text-left text-sm font-mono border-collapse">
-                                            <thead>
-                                                <tr className="border-b border-[#333] text-[#666]">
-                                                    <th className="py-2 w-24">ROLL</th>
-                                                    <th className="py-2 w-64">ENCOUNTER</th>
-                                                    <th className="py-2">DESCRIPTION</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-[#222]">
-                                                {ALL_TABLES_DATA.find(t => t.id === activeTable)?.table.map((row, idx) => (
-                                                    <tr key={idx} className="hover:bg-[#111] transition-colors">
-                                                        <td className="py-4 text-[#a32222] font-bold">
-                                                            {row.roll[0] === row.roll[1] ? row.roll[0] : `${row.roll[0]}-${row.roll[1]}`}
-                                                        </td>
-                                                        <td className="py-4 font-bold text-[#ccc] pr-4 align-top">
-                                                            {row.name}
-                                                            {row.monsters && row.monsters.length > 0 && (
-                                                                <div className="text-[10px] text-[#555] mt-1 font-normal uppercase">
-                                                                    Threats: {row.monsters.join(', ')}
-                                                                </div>
-                                                            )}
-                                                        </td>
-                                                        <td className="py-4 text-[#888] italic align-top leading-relaxed">
-                                                            {row.description}
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="flex h-full items-center justify-center text-[#444] font-mono text-xs uppercase tracking-widest animate-pulse">
-                                    Select a dataset to view contents
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
+            </div >
+        </div >
     );
 }
 
