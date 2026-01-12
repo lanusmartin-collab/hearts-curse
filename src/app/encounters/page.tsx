@@ -341,6 +341,43 @@ function EncountersContent() {
                                 ⚠️ Zhentarim Ambush
                             </button>
                         </div>
+
+                        {/* MANUAL ENTRY */}
+                        <div className="pt-4 border-t border-[#333]">
+                            <h3 className="text-[#a32222] font-mono text-xs uppercase tracking-widest mb-2">Simulate Threat</h3>
+                            <div className="space-y-2">
+                                <input
+                                    type="text"
+                                    placeholder="Entity Name"
+                                    value={manualMonster.name}
+                                    onChange={e => setManualMonster({ ...manualMonster, name: e.target.value })}
+                                    className="w-full bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none focus:border-[#a32222] placeholder:text-[#444]"
+                                />
+                                <div className="flex gap-2">
+                                    <input
+                                        type="number"
+                                        placeholder="Init"
+                                        value={manualMonster.initiative}
+                                        onChange={e => setManualMonster({ ...manualMonster, initiative: e.target.value })}
+                                        className="w-1/2 bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none focus:border-[#a32222] placeholder:text-[#444]"
+                                    />
+                                    <input
+                                        type="number"
+                                        placeholder="HP"
+                                        value={manualMonster.hp}
+                                        onChange={e => setManualMonster({ ...manualMonster, hp: e.target.value })}
+                                        className="w-1/2 bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none focus:border-[#a32222] placeholder:text-[#444]"
+                                    />
+                                </div>
+                                <button
+                                    onClick={addManualMonster}
+                                    disabled={!manualMonster.name}
+                                    className="w-full campaign-btn primary py-2 text-xs"
+                                >
+                                    INJECT SIGNAL
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -418,33 +455,44 @@ function EncountersContent() {
                             </div>
                         )}
                     </div>
-                    <input
-                        type="number"
-                        placeholder="Init"
-                        value={manualMonster.initiative}
-                        onChange={e => setManualMonster({ ...manualMonster, initiative: e.target.value })}
-                        className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] w-16 transition-colors placeholder:text-[#444]"
-                    />
-                    <input
-                        type="number"
-                        placeholder="HP"
-                        value={manualMonster.hp}
-                        onChange={e => setManualMonster({ ...manualMonster, hp: e.target.value })}
-                        className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] w-1/2 transition-colors placeholder:text-[#444]"
-                    />
                 </div>
-                <button
-                    onClick={addManualMonster}
-                    disabled={!manualMonster.name}
-                    className="campaign-btn primary w-full py-3"
-                >
-                    Add to Battle
-                </button>
             </div>
-                                )}
+
+            {/* BOTTOM PANE: INITIATIVE DECK */}
+            <div className="h-[380px] bg-[#0c0c0e] border-t-4 border-double border-[#5c1212] relative z-30 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.7)] shrink-0">
+                <div className="flex items-center justify-between px-6 py-2 bg-[#111] border-b border-[#333]">
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs font-mono text-[#666] tracking-widest uppercase">ROUND {round}</span>
+                            <button onClick={() => setRound(1)} title="Reset" className="text-[#333] hover:text-[#a32222] transition-colors"><RefreshCw size={12} /></button>
+                        </div>
+                    </div>
+                    <div className="flex gap-2">
+                        <button onClick={nextRound} className="campaign-btn text-[10px] py-1 px-4 tracking-widest">NEXT ROUND <ChevronRight size={12} /></button>
+                    </div>
+                </div>
+
+                <div className="flex-1 overflow-x-auto overflow-y-hidden p-6 flex gap-4 items-center pl-10 pr-10 custom-scrollbar">
+                    {combatants.map(c => (
+                        <div key={c.id} className="w-[300px] shrink-0 h-full flex flex-col justify-center">
+                            <CombatantCard
+                                data={c}
+                                isActive={c.id === activeCombatantId}
+                                onUpdate={(id, updates) => setCombatants(prev => prev.map(x => x.id === id ? { ...x, ...updates } : x))}
+                                onRemove={id => setCombatants(prev => prev.filter(x => x.id !== id))}
+                                onInspect={handleInspect}
+                                isInspected={inspectedCombatantId === c.id}
+                            />
+                        </div>
+                    ))}
+                    {combatants.length === 0 && (
+                        <div className="w-full flex items-center justify-center text-[#333] font-mono text-sm tracking-widest italic opacity-50 h-full">
+                            NO ACTIVE HOSTILES // STANDBY
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
-            </div >
-        </div >
     );
 }
 
