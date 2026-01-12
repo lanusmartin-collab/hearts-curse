@@ -6,7 +6,9 @@ import { Search, BookOpen, Scroll, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function GrimoirePage() {
+import { Suspense } from 'react';
+
+function GrimoireContent() {
     const searchParams = useSearchParams();
     const router = useRouter(); // For shallow routing if needed
     const itemsRef = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -233,5 +235,13 @@ export default function GrimoirePage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function GrimoirePage() {
+    return (
+        <Suspense fallback={<div className="h-screen w-screen flex items-center justify-center bg-black text-[#a32222] font-header text-3xl animate-pulse">Summoning Grimoire...</div>}>
+            <GrimoireContent />
+        </Suspense>
     );
 }
