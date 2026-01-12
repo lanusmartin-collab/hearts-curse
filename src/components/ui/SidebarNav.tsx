@@ -14,7 +14,7 @@ import { useGrimoire } from "@/lib/game/spellContext";
 const NAV_ITEMS = [
     { href: "/", label: "Sanctum", icon: Home },
     { href: "/lore", label: "Archives", icon: BookOpen },
-    { href: "#grimoire", label: "The Grimoire", icon: Scroll },
+    { href: "/grimoire", label: "The Grimoire", icon: Scroll },
     { href: "/shops", label: "The Market", icon: ShoppingBag },
     { href: "/statblocks", label: "Monster Compendium", icon: Skull },
     { href: "/maps", label: "Cartography", icon: Map },
@@ -116,19 +116,12 @@ export default function SidebarNav() {
                 <nav style={{ flex: 1, overflowY: "auto", padding: "1.5rem 1rem" }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                         {NAV_ITEMS.map((item) => {
-                            const isGrimoire = item.href === "#grimoire";
-                            const isActive = pathname === item.href || (isGrimoire && false);
+                            const isActive = pathname === item.href;
                             return (
                                 <Link
                                     key={item.label}
-                                    href={isGrimoire ? "#" : item.href}
-                                    onClick={(e) => {
-                                        if (isGrimoire) {
-                                            e.preventDefault();
-                                            openGrimoire();
-                                        }
-                                        setIsOpen(false);
-                                    }}
+                                    href={item.href}
+                                    onClick={() => setIsOpen(false)}
                                     style={{
                                         display: "flex",
                                         alignItems: "center",
