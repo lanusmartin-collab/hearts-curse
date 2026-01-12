@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useGrimoire } from '@/lib/game/spellContext';
 import { ALL_SPELLS, getSpell, filterSpells, Spell } from '@/lib/data/spells';
 import { X, Search, BookOpen, Scroll } from 'lucide-react';
@@ -23,9 +23,19 @@ export default function GrimoireModal() {
         }
     }, [selectedSpellName]);
 
+    // Scroll Reset Ref
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    // Reset scroll when spell changes
+    useEffect(() => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = 0;
+        }
+    }, [activeSpell]);
+
     if (!isOpen) return null;
 
-    const filteredSpells = searchQuery ? filterSpells(searchQuery) : ALL_SPELLS.slice(0, 100); // Limit initial view
+    const filteredSpells = searchQuery ? filterSpells(searchQuery) : ALL_SPELLS.slice(0, 100);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in" onClick={closeGrimoire}>
@@ -76,43 +86,43 @@ export default function GrimoireModal() {
                     </div>
 
                     {/* Right Panel: Details (Old Scroll Aesthetic) */}
-                    <div className="flex-1 bg-[#1a0f0f] relative p-8 flex items-center justify-center">
+                    <div className="flex-1 bg-[#1a0f0f] relative p-4 flex items-center justify-center">
 
                         {activeSpell ? (
                             <div className="old-scroll w-full h-full relative">
                                 {/* Scrollable Content Overlay */}
-                                <div className="absolute inset-0 overflow-y-auto custom-scrollbar p-8 z-0">
-                                    <div className="text-center mb-6">
-                                        <h1 className="text-4xl font-handwriting text-[#4a0404] mb-2 drop-shadow-sm">{activeSpell.name}</h1>
-                                        <div className="flex justify-center gap-4 text-sm font-bold italic text-[#5c4033] font-header tracking-wider">
+                                <div ref={scrollRef} className="absolute inset-0 overflow-y-auto custom-scrollbar p-6 z-0">
+                                    <div className="text-center mb-4">
+                                        <h1 className="text-3xl font-header font-bold text-[#4a0404] mb-1 drop-shadow-sm uppercase tracking-wide">{activeSpell.name}</h1>
+                                        <div className="flex justify-center gap-4 text-xs font-bold italic text-[#5c4033] font-serif tracking-wider">
                                             <span>{activeSpell.level === 0 ? "Cantrip" : `Level ${activeSpell.level}`}</span>
                                             <span>•</span>
                                             <span>{activeSpell.school}</span>
                                         </div>
-                                        <div className="scroll-divider"></div>
+                                        <div className="scroll-divider my-4"></div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-y-2 gap-x-8 mb-6 text-sm px-4">
+                                    <div className="grid grid-cols-2 gap-y-1 gap-x-8 mb-4 text-xs px-2">
                                         <div className="flex justify-between border-b border-[#b8ac95] pb-1">
-                                            <strong className="text-[#4a0404] uppercase text-xs tracking-widest">Casting Time</strong>
+                                            <strong className="text-[#4a0404] uppercase tracking-widest text-[10px]">Casting Time</strong>
                                             <span className="font-header italic">{activeSpell.castingTime}</span>
                                         </div>
                                         <div className="flex justify-between border-b border-[#b8ac95] pb-1">
-                                            <strong className="text-[#4a0404] uppercase text-xs tracking-widest">Range</strong>
+                                            <strong className="text-[#4a0404] uppercase tracking-widest text-[10px]">Range</strong>
                                             <span className="font-header italic">{activeSpell.range}</span>
                                         </div>
                                         <div className="flex justify-between border-b border-[#b8ac95] pb-1">
-                                            <strong className="text-[#4a0404] uppercase text-xs tracking-widest">Components</strong>
-                                            <span className="font-header italic text-xs">{activeSpell.components} {activeSpell.material ? `(${activeSpell.material.slice(0, 15)}...)` : ''}</span>
+                                            <strong className="text-[#4a0404] uppercase tracking-widest text-[10px]">Components</strong>
+                                            <span className="font-header italic text-[10px]">{activeSpell.components} {activeSpell.material ? `(${activeSpell.material.slice(0, 15)}...)` : ''}</span>
                                         </div>
                                         <div className="flex justify-between border-b border-[#b8ac95] pb-1">
-                                            <strong className="text-[#4a0404] uppercase text-xs tracking-widest">Duration</strong>
+                                            <strong className="text-[#4a0404] uppercase tracking-widest text-[10px]">Duration</strong>
                                             <span className="font-header italic">{activeSpell.duration}</span>
                                         </div>
                                     </div>
 
-                                    <div className="prose prose-p:text-[#2c1a1a] prose-strong:text-[#4a0404] max-w-none leading-relaxed text-justify px-4 font-serif text-lg">
-                                        <p className="whitespace-pre-wrap first-letter:text-4xl first-letter:font-handwriting first-letter:mr-1 first-letter:float-left first-letter:text-[#8a1c1c]">
+                                    <div className="prose prose-p:text-[#1a1a1a] prose-strong:text-[#4a0404] max-w-none leading-relaxed text-justify px-2 font-serif text-base" style={{ fontFamily: "'Merriweather', serif" }}>
+                                        <p className="whitespace-pre-wrap first-letter:text-3xl first-letter:font-header first-letter:mr-1 first-letter:float-left first-letter:text-[#8a1c1c]">
                                             {activeSpell.description}
                                         </p>
                                     </div>
@@ -126,7 +136,7 @@ export default function GrimoireModal() {
                         ) : (
                             <div className="text-center opacity-30 text-[#444] animate-pulse-slow">
                                 <Scroll size={100} strokeWidth={1} className="mx-auto mb-4" />
-                                <h3 className="text-2xl font-handwriting text-[#666]">Select an incantation from the registry...</h3>
+                                <h3 className="text-2xl font-header text-[#666]">Select an incantation...</h3>
                             </div>
                         )}
                     </div>
