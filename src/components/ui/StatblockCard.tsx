@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { Statblock } from "@/lib/data/statblocks";
+import { SPELL_MAP } from "@/lib/data/spells";
+import { useGrimoire } from "@/lib/game/spellContext";
 import Image from "next/image";
 import clsx from "clsx";
 
 export default function StatblockCard({ data }: { data: Statblock }) {
     const [imgError, setImgError] = useState(false);
+    const { openGrimoire } = useGrimoire();
 
     const renderTrait = (trait: { name: string, desc: string }) => {
         const isSpellcasting = trait.name.toLowerCase().includes("spellcasting");
@@ -60,7 +63,33 @@ export default function StatblockCard({ data }: { data: Statblock }) {
                 <div style={{ marginLeft: "1rem" }}>
                     {groups.map((g, idx) => (
                         <div key={idx} style={{ marginBottom: "0.2rem", textIndent: "-1rem", paddingLeft: "1rem" }}>
-                            <strong style={{ color: "var(--scarlet-accent)" }}>{g.header}</strong> {g.content}
+                            <strong style={{ color: "var(--scarlet-accent)" }}>{g.header}</strong> {
+                                g.content.split(/,\s*/).map((spellName, i, arr) => {
+                                    const cleanName = spellName.replace(/[\*\(\)]/g, "").trim().toLowerCase();
+                                    const isSpell = SPELL_MAP.has(cleanName);
+
+                                    return (
+                                        <span key={i}>
+                                            {isSpell ? (
+                                                <span
+                                                    onClick={() => openGrimoire(SPELL_MAP.get(cleanName)?.name)}
+                                                    style={{
+                                                        cursor: "pointer",
+                                                        borderBottom: "1px dotted var(--adnd-blue)",
+                                                        color: "var(--adnd-blue)"
+                                                    }}
+                                                    title="View Spell"
+                                                >
+                                                    {spellName}
+                                                </span>
+                                            ) : (
+                                                spellName
+                                            )}
+                                            {i < arr.length - 1 ? ", " : ""}
+                                        </span>
+                                    );
+                                })
+                            }
                         </div>
                     ))}
                 </div>

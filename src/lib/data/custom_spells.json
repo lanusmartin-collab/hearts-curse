@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Iolum's Longevity",
+        "classes": "Wizard, Sorcerer, Warlock",
+        "level": 9,
+        "school": "Necromancy",
+        "ritual": false,
+        "castingTime": "Instantaneous",
+        "range": "Self (30-foot radius)",
+        "components": "V, S, M",
+        "material": "A phylactery or soul jar",
+        "duration": "Instantaneous",
+        "description": "This 10th-level magic (reduced to 9th in modern weaving) allows the caster to drain the life force of others to extend their own life. You regain 100 hit points. Each creature of your choice within 30 feet of you must make a Constitution saving throw (DC 22). On a failed save, a creature takes 50 necrotic damage. On a successful save, the creature takes half as much damage. This spell can also be used to extend the caster's lifespan by one year for every hit point drained.",
+        "source": "Netherese History",
+        "page": 0
+    }
+]

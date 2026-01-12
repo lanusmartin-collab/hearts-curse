@@ -5,9 +5,13 @@ import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE, SHOP_AMBUSH_TABLE, S
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
 import StatblockCard from "@/components/ui/StatblockCard";
 import Link from "next/link";
+import { Combatant, Condition } from "@/types/combat";
+import CombatantCard from "@/components/ui/CombatantCard";
+import { createCombatantFromStatblock, rollInitiative, sortCombatants } from "@/lib/game/combatUtils";
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
+import { Plus, RefreshCw, Trash2, Swords, ChevronRight } from "lucide-react";
 
 export default function EncountersPage() {
     return (
@@ -25,6 +29,11 @@ function EncountersContent() {
     const [isScanning, setIsScanning] = useState(false);
     const [viewMode, setViewMode] = useState<'tracker' | 'tables'>('tracker');
     const [activeTable, setActiveTable] = useState<string | null>(null);
+
+    // Combat State
+    const [combatants, setCombatants] = useState<Combatant[]>([]);
+    const [round, setRound] = useState(1);
+    const [activeCombatantId, setActiveCombatantId] = useState<string | null>(null);
 
     // Initial Load from URL
     useEffect(() => {
@@ -80,26 +89,108 @@ function EncountersContent() {
         }, 500);
     };
 
+    // --- COMBAT ACTIONS ---
+
+    const engageHostiles = () => {
+        if (!linkedStatblocks.length) return;
+
+        const newCombatants: Combatant[] = [];
+        const existingCounts: Record<string, number> = {};
+
+        // Calculate counts for naming (Goblin A, Goblin B)
+        linkedStatblocks.forEach(slug => {
+            existingCounts[slug] = (existingCounts[slug] || 0) + 1;
+        });
+
+        // Add them
+        let processedCounts: Record<string, number> = {};
+        linkedStatblocks.forEach(slug => {
+            const data = MONSTERS_2024[slug];
+            if (!data) return;
+
+            // Only need one per iteration, but createCombatantFromStatblock handles arrays if we passed a count
+            // Since we loop, we pass count=1 but handle naming manually via index or similar?
+            // Actually simpler: pass count=1 and handle suffix myself or let util handle it if I pass total count?
+            // Let's use the util simply.
+            const total = existingCounts[slug];
+            const current = (processedCounts[slug] || 0);
+            processedCounts[slug] = current + 1;
+
+            const c = createCombatantFromStatblock(data, 1)[0];
+            // Fix Name manually if multiple
+            if (total > 1) {
+                c.name = `${data.name} ${String.fromCharCode(65 + current)}`;
+                c.id = c.id + `-${current}`; // Ensure unique ID
+            }
+            newCombatants.push(c);
+        });
+
+        setCombatants(prev => sortCombatants([...prev, ...newCombatants]));
+    };
+
+    const addPlayer = () => {
+        const newPlayer: Combatant = {
+            id: `player-${Date.now()}`,
+            name: "New Player",
+            initiative: 0,
+            hp: 0,
+            maxHp: 0,
+            ac: 10,
+            conditions: [],
+            type: 'player'
+        };
+        setCombatants(prev => [...prev, newPlayer]);
+    };
+
+    const removeCombatant = (id: string) => {
+        setCombatants(prev => prev.filter(c => c.id !== id));
+    };
+
+    const updateCombatant = (id: string, updates: Partial<Combatant>) => {
+        setCombatants(prev => {
+            const updated = prev.map(c => c.id === id ? { ...c, ...updates } : c);
+            // If initiative changed, should we re-sort? usually yes manually or by trigger.
+            // For now, let's NOT auto-sort on every keystroke, only on "Sort" button or round start.
+            return updated;
+        });
+    };
+
+    const rollNPCInitiative = () => {
+        setCombatants(prev => {
+            const next = prev.map(c => {
+                if (c.type !== 'player') {
+                    // Re-roll
+                    const dex = c.statblock?.stats.dex || 10;
+                    return { ...c, initiative: rollInitiative(dex) };
+                }
+                return c;
+            });
+            return sortCombatants(next);
+        });
+    };
+
+    const nextRound = () => {
+        setRound(r => r + 1);
+        // Clear "reaction" or start of turn logic if we had it
+        // Check for conditions that expire? (Not implemented deep logic yet)
+    };
+
     const ALL_TABLES_DATA = [
         { id: "town_day", title: "Sector 01: Oakhaven (Day)", table: TOWN_DAY_TABLE },
         { id: "town_night", title: "Sector 01: Oakhaven (Night)", table: TOWN_NIGHT_TABLE },
         { id: "outskirts", title: "Sector 01: Outskirts", table: OUTSKIRTS_TABLE },
         { id: "ambush", title: "Sector 01: Shop Ambush", table: SHOP_AMBUSH_TABLE },
-
-        { id: "castle", title: "Sector 01.5: Castle Mournwatch", table: CASTLE_MOURNWATCH_TABLE }, // NEW
-
+        { id: "castle", title: "Sector 01.5: Castle Mournwatch", table: CASTLE_MOURNWATCH_TABLE },
         { id: "mines", title: "Sector 02: Mines", table: OAKHAVEN_MINES_TABLE },
-        { id: "dwarven", title: "Sector 02: Dwarven Ruins", table: DWARVEN_RUINS_TABLE }, // NEW
+        { id: "dwarven", title: "Sector 02: Dwarven Ruins", table: DWARVEN_RUINS_TABLE },
         { id: "underdark", title: "Sector 02: Deep Travel", table: UNDERDARK_TRAVEL_TABLE },
-        { id: "mindflayer", title: "Sector 02: Synaptic Deep", table: MIND_FLAYER_COLONY_TABLE }, // NEW
-        { id: "beholder", title: "Sector 02: Eye's Domain", table: BEHOLDER_LAIR_TABLE }, // NEW
+        { id: "mindflayer", title: "Sector 02: Synaptic Deep", table: MIND_FLAYER_COLONY_TABLE },
+        { id: "beholder", title: "Sector 02: Eye's Domain", table: BEHOLDER_LAIR_TABLE },
         { id: "drow", title: "Sector 02: Drow City", table: ARACH_TINILITH_TABLE },
-
         { id: "silent", title: "Sector 03: Silent Wards", table: SILENT_WARDS_TABLE },
         { id: "netheril", title: "Sector 03: Netheril Void", table: NETHERIL_RUINS_TABLE },
         { id: "library", title: "Sector 03: Library", table: LIBRARY_WHISPERS_TABLE },
-        { id: "catacombs", title: "Sector 03: Catacombs of Despair", table: CATACOMBS_DESPAIR_TABLE }, // NEW
-
+        { id: "catacombs", title: "Sector 03: Catacombs of Despair", table: CATACOMBS_DESPAIR_TABLE },
         { id: "heart", title: "Sector 04: Heart Chamber", table: HEART_CHAMBER_TABLE },
         { id: "ossuary", title: "Sector 04: Ossuary", table: OSSUARY_TABLE },
     ];
@@ -138,7 +229,7 @@ function EncountersContent() {
             </header>
 
             {viewMode === 'tracker' ? (
-                <div className="terminal-grid">
+                <div className="terminal-grid" style={{ gridTemplateColumns: '300px minmax(400px, 1fr) 350px' }}>
                     {/* LEFT COLUMN: CONTROLS */}
                     <div className="flex-col gap-4">
                         {/* SECTOR 1 */}
@@ -197,7 +288,7 @@ function EncountersContent() {
                         </div>
                     </div>
 
-                    {/* RIGHT COLUMN: DISPLAY */}
+                    {/* MIDDLE COLUMN: RESULT DISPLAY */}
                     <div className="terminal-display">
                         <div className="corner-dec tl"></div>
                         <div className="corner-dec tr"></div>
@@ -235,6 +326,18 @@ function EncountersContent() {
                                         <div style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: '#0a0a0a', padding: '0 10px', color: '#a32222', fontSize: '0.7rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em', border: '1px solid #222' }}>
                                             Hostiles Detected
                                         </div>
+
+                                        {/* ENGAGE BUTTON */}
+                                        <div className="mb-4 flex justify-center">
+                                            <button
+                                                onClick={engageHostiles}
+                                                className="flex items-center gap-2 bg-[#a32222] text-white font-mono uppercase text-xs tracking-widest px-4 py-2 hover:bg-red-700 transition-colors shadow-lg"
+                                            >
+                                                <Swords size={16} />
+                                                Update Uplink
+                                            </button>
+                                        </div>
+
                                         <div className="flex-col gap-4" style={{ marginTop: '1rem' }}>
                                             {linkedStatblocks.map(slug => {
                                                 const data = MONSTERS_2024[slug];
@@ -250,6 +353,63 @@ function EncountersContent() {
                                 )}
                             </div>
                         )}
+                    </div>
+
+                    {/* RIGHT COLUMN: COMBAT TRACKER */}
+                    <div className="flex flex-col bg-[#050505] border-l-4 border-double border-[#4a0404] h-full overflow-hidden relative shadow-[-10px_0_30px_rgba(0,0,0,0.8)] z-20">
+                        {/* Background Texture Overlay */}
+                        <div className="absolute inset-0 pointer-events-none z-10" style={{
+                            background: `linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent 20%),
+                            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(163, 34, 34, 0.1) 2px)`
+                        }}></div>
+
+                        <div className="p-6 bg-gradient-to-b from-[#1a0505] to-[#0a0a0c] border-b border-[#a32222] flex items-center justify-between relative z-20">
+                            <div>
+                                <h3 className="grimoire-title animate-heartbeat text-sm">TACTICAL UPLINK</h3>
+                                <div className="text-[10px] text-[#888] font-mono mt-1 tracking-widest">ROUND {round}</div>
+                            </div>
+                            <div className="flex gap-1">
+                                <button onClick={() => setCombatants([])} className="p-2 text-[#666] hover:text-red-500 transition-colors" title="Clear All">
+                                    <Trash2 size={14} />
+                                </button>
+                                <button onClick={rollNPCInitiative} className="p-2 text-[#666] hover:text-[#a32222] transition-colors" title="Roll NPC Initiative">
+                                    <RefreshCw size={14} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-auto p-2 custom-scrollbar relative z-20">
+                            {combatants.length === 0 ? (
+                                <div className="text-center mt-10 opacity-30 text-xs font-mono uppercase tracking-widest text-red-900">
+                                    No Active Signals
+                                </div>
+                            ) : (
+                                combatants.map(c => (
+                                    <CombatantCard
+                                        key={c.id}
+                                        data={c}
+                                        isActive={activeCombatantId === c.id}
+                                        onUpdate={updateCombatant}
+                                        onRemove={removeCombatant}
+                                    />
+                                ))
+                            )}
+                            <button
+                                onClick={addPlayer}
+                                className="w-full py-2 mt-2 border border-dashed border-[#333] text-[#444] hover:text-[#888] hover:border-[#555] font-mono text-xs uppercase flex items-center justify-center gap-2 transition-all"
+                            >
+                                <Plus size={12} /> Add Manual Entity
+                            </button>
+                        </div>
+
+                        <div className="p-4 border-t border-[#333] bg-[#0a0a0a] relative z-20">
+                            <button
+                                onClick={nextRound}
+                                className="w-full bg-[#111] border border-[#a32222] text-[#a32222] py-2 font-header text-sm tracking-widest hover:bg-[#a32222] hover:text-[#000] transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(163,34,34,0.2)] hover:shadow-[0_0_25px_rgba(163,34,34,0.5)]"
+                            >
+                                NEXT ROUND <ChevronRight size={14} />
+                            </button>
+                        </div>
                     </div>
                 </div>
             ) : (

@@ -5,14 +5,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
     Menu, X, BookOpen, ShoppingBag, Skull, Map,
-    Zap, Swords, Hammer, PenTool, FileText, Home
+    Zap, Swords, Hammer, PenTool, FileText, Home, Scroll
 } from "lucide-react";
 import clsx from "clsx";
 import CurseTracker from "./CurseTracker";
+import { useGrimoire } from "@/lib/game/spellContext";
 
 const NAV_ITEMS = [
     { href: "/", label: "Sanctum", icon: Home },
     { href: "/lore", label: "Archives", icon: BookOpen },
+    { href: "#grimoire", label: "The Grimoire", icon: Scroll },
     { href: "/shops", label: "The Market", icon: ShoppingBag },
     { href: "/statblocks", label: "Monster Compendium", icon: Skull },
     { href: "/maps", label: "Cartography", icon: Map },
@@ -26,6 +28,7 @@ const NAV_ITEMS = [
 export default function SidebarNav() {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
+    const { openGrimoire } = useGrimoire();
 
     return (
         <>
@@ -113,12 +116,19 @@ export default function SidebarNav() {
                 <nav style={{ flex: 1, overflowY: "auto", padding: "1.5rem 1rem" }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                         {NAV_ITEMS.map((item) => {
-                            const isActive = pathname === item.href;
+                            const isGrimoire = item.href === "#grimoire";
+                            const isActive = pathname === item.href || (isGrimoire && false);
                             return (
                                 <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    onClick={() => setIsOpen(false)}
+                                    key={item.label}
+                                    href={isGrimoire ? "#" : item.href}
+                                    onClick={(e) => {
+                                        if (isGrimoire) {
+                                            e.preventDefault();
+                                            openGrimoire();
+                                        }
+                                        setIsOpen(false);
+                                    }}
                                     style={{
                                         display: "flex",
                                         alignItems: "center",
