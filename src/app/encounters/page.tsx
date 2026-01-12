@@ -186,18 +186,27 @@ function EncountersContent() {
     const addManualMonster = () => {
         if (!manualMonster.name) return;
         const init = parseInt(manualMonster.init) || rollInitiative(10);
+
+        // Auto-increment name if exists
+        let finalName = manualMonster.name;
+        const existingBase = combatants.filter(c => c.name.startsWith(manualMonster.name));
+        if (existingBase.length > 0) {
+            finalName = `${manualMonster.name} ${existingBase.length + 1}`;
+        }
+
         const newCombatant: Combatant = {
-            id: `monster-${Date.now()}`,
-            name: manualMonster.name,
+            id: `monster-${Date.now()}-${Math.random()}`, // Ensure unique ID even on fast clicks
+            name: finalName,
             initiative: init,
             hp: parseInt(manualMonster.hp) || 10,
             maxHp: parseInt(manualMonster.hp) || 10,
-            ac: 10, // Default
+            ac: 10,
             conditions: [],
             type: 'monster'
         };
         setCombatants(prev => sortCombatants([...prev, newCombatant]));
-        setManualMonster({ name: '', init: '', hp: '' });
+        // Keep inputs for rapid entry, just clear init to encourage reroll? Or keep all for mass add.
+        // Keeping all allows rapid "Add 5 Goblins"
     };
 
     const removeCombatant = (id: string) => {
@@ -427,12 +436,14 @@ function EncountersContent() {
                                 <div className="text-[10px] text-[#888] font-mono mt-1 tracking-widest">ROUND {round}</div>
                             </div>
                             <div className="flex gap-1">
-                                <button onClick={() => { if (confirm('Clear all combatants?')) { setCombatants([]); localStorage.removeItem('heart_curse_combat'); } }} className="p-2 text-[#666] hover:text-red-500 transition-colors" title="Clear All">
-                                    <Trash2 size={14} />
-                                </button>
-                                <button onClick={rollNPCInitiative} className="p-2 text-[#666] hover:text-[#a32222] transition-colors" title="Roll NPC Initiative">
-                                    <RefreshCw size={14} />
-                                </button>
+                                <div className="flex gap-1">
+                                    <button onClick={() => { if (confirm('End the current encounter? This will clear all combatants.')) { setCombatants([]); localStorage.removeItem('heart_curse_combat'); } }} className="px-3 py-1 bg-[#1a0505] border border-[#a32222] text-[#a32222] hover:bg-red-900 hover:text-white text-[10px] font-bold uppercase tracking-wider transition-colors">
+                                        END BATTLE
+                                    </button>
+                                    <button onClick={rollNPCInitiative} className="p-2 text-[#666] hover:text-[#a32222] transition-colors" title="Re-roll NPC Initiative">
+                                        <RefreshCw size={14} />
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -520,7 +531,7 @@ function EncountersContent() {
                                             disabled={!manualMonster.name}
                                             className="w-full bg-[#1a0505] border border-[#a32222] text-[#a32222] hover:bg-[#a32222] hover:text-white text-xs uppercase font-bold py-2 transition-all disabled:opacity-50"
                                         >
-                                            Summon Foe
+                                            Add to Battle
                                         </button>
                                     </div>
                                 )}

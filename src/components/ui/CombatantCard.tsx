@@ -103,29 +103,29 @@ export default function CombatantCard({ data, onUpdate, onRemove, isActive }: Co
             {isExpanded && (
                 <div className="p-3 border-t border-[#222] bg-[#0c0c0c] animate-slide-down">
                     {/* Quick Conditions Toggle */}
-                    <div className="mb-3">
-                        <div className="text-[10px] text-[#555] font-mono uppercase mb-2">CONDITIONS</div>
-                        <div className="flex flex-wrap gap-1">
-                            {ALL_CONDITIONS.slice(0, 8).map(c => ( // Just showing common ones for space
+                    <div className="mb-4">
+                        <div className="text-[10px] text-[#555] font-mono uppercase mb-2">STATUS EFFECTS</div>
+                        <div className="flex flex-wrap gap-2">
+                            {ALL_CONDITIONS.slice(0, 10).map(c => (
                                 <button
                                     key={c}
                                     onClick={() => toggleCondition(c)}
-                                    className={`text-[9px] px-2 py-1 border rounded uppercase transition-colors ${data.conditions.includes(c) ? 'bg-[#333] border-[#a32222] text-[#fff]' : 'border-[#333] text-[#555] hover:border-[#555]'}`}
+                                    className={`text-[10px] px-3 py-1 border rounded-sm uppercase tracking-wide transition-all ${data.conditions.includes(c) ? 'bg-[#a32222] border-[#a32222] text-white shadow-[0_0_10px_rgba(163,34,34,0.4)]' : 'bg-[#000] border-[#333] text-[#666] hover:border-[#666] hover:text-[#bbb]'}`}
                                 >
                                     {c}
                                 </button>
                             ))}
-                            <button onClick={() => setShowConditions(!showConditions)} className="text-[10px] text-[#444] px-2 hover:text-[#a32222]">
-                                {showConditions ? 'LESS...' : 'MORE...'}
+                            <button onClick={() => setShowConditions(!showConditions)} className="text-[10px] text-[#444] px-2 hover:text-[#a32222] font-mono border border-transparent hover:border-[#333] rounded">
+                                {showConditions ? 'SHOW LESS' : 'SHOW ALL...'}
                             </button>
                         </div>
                         {showConditions && (
-                            <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t border-[#1a1a1a]">
-                                {ALL_CONDITIONS.slice(8).map(c => (
+                            <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-[#1a1a1a]">
+                                {ALL_CONDITIONS.slice(10).map(c => (
                                     <button
                                         key={c}
                                         onClick={() => toggleCondition(c)}
-                                        className={`text-[9px] px-2 py-1 border rounded uppercase transition-colors ${data.conditions.includes(c) ? 'bg-[#333] border-[#a32222] text-[#fff]' : 'border-[#333] text-[#555] hover:border-[#555]'}`}
+                                        className={`text-[10px] px-3 py-1 border rounded-sm uppercase tracking-wide transition-all ${data.conditions.includes(c) ? 'bg-[#a32222] border-[#a32222] text-white shadow-[0_0_10px_rgba(163,34,34,0.4)]' : 'bg-[#000] border-[#333] text-[#666] hover:border-[#666] hover:text-[#bbb]'}`}
                                     >
                                         {c}
                                     </button>
