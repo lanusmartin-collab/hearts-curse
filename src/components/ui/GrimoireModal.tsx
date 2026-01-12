@@ -137,8 +137,8 @@ export default function GrimoireModal() {
                                         </div>
                                     </div>
 
-                                    <div className="prose prose-p:text-[#050505] prose-strong:text-[#2a0a0a] max-w-none leading-relaxed text-justify px-2 font-serif text-lg" style={{ fontFamily: "'Merriweather', serif" }}>
-                                        <p className="whitespace-pre-wrap first-letter:text-4xl first-letter:font-header first-letter:mr-2 first-letter:float-left first-letter:text-[#8a1c1c] drop-shadow-sm">
+                                    <div className="max-w-none leading-relaxed text-justify px-2 font-serif text-lg" style={{ fontFamily: "'Merriweather', serif" }}>
+                                        <p className="whitespace-pre-wrap text-[#000000] font-medium drop-shadow-sm first-letter:text-4xl first-letter:font-header first-letter:mr-2 first-letter:float-left first-letter:text-[#8a1c1c]">
                                             {activeSpell.description}
                                         </p>
                                     </div>
