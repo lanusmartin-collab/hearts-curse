@@ -28,45 +28,7 @@ function EncountersContent() {
     const [lastRoll, setLastRoll] = useState(0);
     const [isScanning, setIsScanning] = useState(false);
     const [viewMode, setViewMode] = useState<'tracker' | 'tables'>('tracker');
-    const [activeTable, setActiveTable] = useState<string | null>(null);
-
-    // Combat State
-    const [combatants, setCombatants] = useState<Combatant[]>([]);
-    const [round, setRound] = useState(1);
-    const [activeCombatantId, setActiveCombatantId] = useState<string | null>(null);
-
-    // Persistence & Data Loading
-    const [availablePlayers, setAvailablePlayers] = useState<any[]>([]);
-    const [addMode, setAddMode] = useState<'player' | 'monster'>('player');
-    const [manualMonster, setManualMonster] = useState({ name: '', init: '', hp: '' });
-    const [selectedPlayerId, setSelectedPlayerId] = useState('');
-
-    useEffect(() => {
-        // Load Players
-        const savedPlayers = localStorage.getItem('heart_curse_players');
-        if (savedPlayers) {
-            try {
-                setAvailablePlayers(JSON.parse(savedPlayers));
-            } catch (e) { console.error(e); }
-        }
-
-        // Load Combat State
-        const savedCombat = localStorage.getItem('heart_curse_combat');
-        if (savedCombat) {
-            try {
-                const data = JSON.parse(savedCombat);
-                setCombatants(data.combatants || []);
-                setRound(data.round || 1);
-            } catch (e) { console.error(e); }
-        }
-    }, []);
-
-    // Save Combat State
-    useEffect(() => {
-        if (combatants.length > 0 || round > 1) {
-            localStorage.setItem('heart_curse_combat', JSON.stringify({ combatants, round }));
-        }
-    }, [combatants, round]);
+    const [inspectedCombatantId, setInspectedCombatantId] = useState<string | null>(null);
 
     // Initial Load from URL
     useEffect(() => {
@@ -92,6 +54,7 @@ function EncountersContent() {
     const rollTable = (table: Encounter[]) => {
         setIsScanning(true);
         setResult(null);
+        setInspectedCombatantId(null); // Clear inspection on new scan
 
         // Simulation of "Scanning" delay
         setTimeout(() => {
@@ -108,6 +71,8 @@ function EncountersContent() {
 
     const triggerShopAmbush = () => {
         setIsScanning(true);
+        setResult(null);
+        setInspectedCombatantId(null); // Clear inspection
         setTimeout(() => {
             const d20 = Math.floor(Math.random() * 20) + 1;
             setLastRoll(d20);
@@ -141,10 +106,6 @@ function EncountersContent() {
             const data = MONSTERS_2024[slug];
             if (!data) return;
 
-            // Only need one per iteration, but createCombatantFromStatblock handles arrays if we passed a count
-            // Since we loop, we pass count=1 but handle naming manually via index or similar?
-            // Actually simpler: pass count=1 and handle suffix myself or let util handle it if I pass total count?
-            // Let's use the util simply.
             const total = existingCounts[slug];
             const current = (processedCounts[slug] || 0);
             processedCounts[slug] = current + 1;
@@ -159,6 +120,8 @@ function EncountersContent() {
         });
 
         setCombatants(prev => sortCombatants([...prev, ...newCombatants]));
+        setResult(null); // Clear result once engaged to make room? Or keep for reference?
+        // Actually, let's keep it but inspection will override.
     };
 
     const addPartyMember = () => {
@@ -211,6 +174,7 @@ function EncountersContent() {
 
     const removeCombatant = (id: string) => {
         setCombatants(prev => prev.filter(c => c.id !== id));
+        if (inspectedCombatantId === id) setInspectedCombatantId(null);
     };
 
     const updateCombatant = (id: string, updates: Partial<Combatant>) => {
@@ -241,6 +205,18 @@ function EncountersContent() {
         // Clear "reaction" or start of turn logic if we had it
         // Check for conditions that expire? (Not implemented deep logic yet)
     };
+
+    const handleInspect = (id: string) => {
+        if (inspectedCombatantId === id) {
+            setInspectedCombatantId(null);
+        } else {
+            setInspectedCombatantId(id);
+        }
+    };
+
+    // Get inspected data
+    const inspectedData = combatants.find(c => c.id === inspectedCombatantId)?.statblock;
+    const inspectedName = combatants.find(c => c.id === inspectedCombatantId)?.name;
 
     const ALL_TABLES_DATA = [
         { id: "town_day", title: "Sector 01: Oakhaven (Day)", table: TOWN_DAY_TABLE },
@@ -355,30 +331,34 @@ function EncountersContent() {
                         </div>
                     </div>
 
-                    {/* MIDDLE COLUMN: RESULT DISPLAY */}
+                    {/* MIDDLE COLUMN: RESULT DISPLAY or STATBLOCK INSPECTOR */}
                     <div className="terminal-display">
                         <div className="corner-dec tl"></div>
                         <div className="corner-dec tr"></div>
                         <div className="corner-dec bl"></div>
                         <div className="corner-dec br"></div>
 
-                        {!result && !isScanning && (
+                        {inspectedData ? (
+                            <div className="w-full h-full overflow-y-auto animate-slide-up pr-2 custom-scrollbar">
+                                <div className="flex justify-between items-center mb-4 border-b border-[#a32222] pb-2">
+                                    <h2 className="text-xl font-header text-[#d4af37] tracking-widest">{inspectedName}</h2>
+                                    <div className="text-[10px] font-mono text-[#a32222] uppercase tracking-[0.2em] border border-[#a32222] px-2 py-1">Tactical Analysis</div>
+                                </div>
+                                <StatblockCard data={inspectedData} />
+                            </div>
+                        ) : !result && !isScanning ? (
                             <div style={{ textAlign: 'center', opacity: 0.5 }} className="animate-pulse-slow">
                                 <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>☢</div>
                                 <p style={{ fontFamily: 'monospace', fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Awaiting Sector Selection...</p>
                             </div>
-                        )}
-
-                        {isScanning && (
+                        ) : isScanning ? (
                             <div style={{ color: '#a32222', fontFamily: 'monospace', fontWeight: 'bold', letterSpacing: '0.2em' }}>
                                 [ SYSTEM SCANNING... ]
                                 <div style={{ height: '4px', width: '200px', background: '#333', marginTop: '1rem', overflow: 'hidden' }}>
                                     <div className="animate-slide-scan" style={{ height: '100%', width: '50%', background: '#a32222' }}></div>
                                 </div>
                             </div>
-                        )}
-
-                        {result && !isScanning && (
+                        ) : result && (
                             <div className="animate-flicker" style={{ width: '100%', maxWidth: '600px', textAlign: 'center' }}>
                                 <div style={{ fontFamily: 'monospace', color: '#a32222', fontSize: '0.8rem', marginBottom: '1rem', letterSpacing: '0.2em', borderBottom: '1px solid #333', display: 'inline-block', paddingBottom: '0.5rem' }}>
                                     Result Analysis // Roll: {lastRoll}
@@ -459,8 +439,10 @@ function EncountersContent() {
                                         key={c.id}
                                         data={c}
                                         isActive={activeCombatantId === c.id}
+                                        isInspected={inspectedCombatantId === c.id}
                                         onUpdate={updateCombatant}
                                         onRemove={removeCombatant}
+                                        onInspect={handleInspect}
                                     />
                                 ))
                             )}

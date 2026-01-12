@@ -7,10 +7,12 @@ interface CombatantCardProps {
     data: Combatant;
     onUpdate: (id: string, updates: Partial<Combatant>) => void;
     onRemove: (id: string) => void;
+    onInspect: (id: string) => void;
     isActive: boolean;
+    isInspected: boolean;
 }
 
-export default function CombatantCard({ data, onUpdate, onRemove, isActive }: CombatantCardProps) {
+export default function CombatantCard({ data, onUpdate, onRemove, onInspect, isActive, isInspected }: CombatantCardProps) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [showConditions, setShowConditions] = useState(false);
 
@@ -36,6 +38,7 @@ export default function CombatantCard({ data, onUpdate, onRemove, isActive }: Co
             ${isActive
                 ? 'bg-gradient-to-r from-[#1a0505] to-[#0a0a0c] border-[#a32222] shadow-[0_0_15px_rgba(163,34,34,0.2)] border-l-4'
                 : 'bg-[#0a0a0c] border border-[#333] border-l-2 border-l-[#333] hover:border-[#555]'}
+            ${isInspected ? 'border-r-4 border-r-[#d4af37]' : ''}
             ${isDead ? 'opacity-50 grayscale border-l-[#333]' : ''}
         `}>
             {/* Active Indicator Glow */}
@@ -74,6 +77,17 @@ export default function CombatantCard({ data, onUpdate, onRemove, isActive }: Co
 
                 {/* HP & AC */}
                 <div className="flex items-center gap-4 shrink-0">
+                    {/* Inspect Button - NEW */}
+                    {data.statblock && (
+                        <button
+                            onClick={() => onInspect(data.id)}
+                            className={`p-1.5 rounded transition-colors ${isInspected ? 'text-[#d4af37] bg-[#d4af37]/10' : 'text-[#666] hover:text-[#d4af37] hover:bg-[#222]'}`}
+                            title="Inspect Statblock"
+                        >
+                            <MoreVertical size={16} className="rotate-90" />
+                        </button>
+                    )}
+
                     {/* AC */}
                     <div className="flex flex-col items-center justify-center group cursor-help" title={`AC: ${data.ac}`}>
                         <Shield size={16} className={`mb-0.5 ${isActive ? 'text-[#a32222]' : 'text-[#555] group-hover:text-[#888]'}`} />
@@ -149,17 +163,6 @@ export default function CombatantCard({ data, onUpdate, onRemove, isActive }: Co
                             </div>
                         )}
                     </div>
-
-                    {/* Statblock View */}
-                    {data.statblock && (
-                        <div className="mt-2 text-xs">
-                            <div className="text-[10px] text-[#555] font-mono uppercase mb-1">STATBLOCK REFERENCE</div>
-                            {/* Minimized stat view or full? Let's keep it somewhat compact or full but scaled */}
-                            <div className="transform origin-top-left scale-90 opacity-90">
-                                <StatblockCard data={data.statblock} />
-                            </div>
-                        </div>
-                    )}
                 </div>
             )}
         </div>
