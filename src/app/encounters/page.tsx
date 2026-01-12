@@ -400,7 +400,7 @@ function EncountersContent() {
                                 disabled={!manualMonster.name}
                                 className="w-full campaign-btn primary py-2 text-xs"
                             >
-                                INJECT SIGNAL
+                                MANIFEST THREAT
                             </button>
                         </div>
                     </div>
