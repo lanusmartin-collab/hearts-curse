@@ -438,7 +438,7 @@ function EncountersContent() {
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => { if (confirm('End the current encounter? This will clear all combatants.')) { setCombatants([]); localStorage.removeItem('heart_curse_combat'); } }}
-                                    className="px-4 py-1.5 bg-[#1a0505] border border-[#a32222] text-[#ff4444] hover:bg-[#a32222] hover:text-white text-[10px] font-bold uppercase tracking-widest transition-all shadow-[0_0_10px_rgba(163,34,34,0.1)] hover:shadow-[0_0_20px_rgba(163,34,34,0.4)]"
+                                    className="campaign-btn danger text-[10px] py-1 px-3"
                                 >
                                     END BATTLE
                                 </button>
@@ -497,7 +497,7 @@ function EncountersContent() {
                                         <button
                                             onClick={addPartyMember}
                                             disabled={!selectedPlayerId}
-                                            className="retro-btn w-full bg-[#1a0505] border border-[#a32222] text-[#a32222] hover:bg-[#a32222] hover:text-white text-xs uppercase font-bold py-2.5 transition-all shadow-[0_0_10px_rgba(163,34,34,0.1)] hover:shadow-[0_0_15px_rgba(163,34,34,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="campaign-btn primary w-full py-3"
                                         >
                                             Join Battle
                                         </button>
@@ -530,7 +530,7 @@ function EncountersContent() {
                                         <button
                                             onClick={addManualMonster}
                                             disabled={!manualMonster.name}
-                                            className="retro-btn w-full bg-[#1a0505] border border-[#a32222] text-[#a32222] hover:bg-[#a32222] hover:text-white text-xs uppercase font-bold py-2.5 transition-all shadow-[0_0_10px_rgba(163,34,34,0.1)] hover:shadow-[0_0_15px_rgba(163,34,34,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="campaign-btn primary w-full py-3"
                                         >
                                             Add to Battle
                                         </button>
@@ -542,10 +542,9 @@ function EncountersContent() {
                         <div className="p-4 border-t border-[#333] bg-[#050505] relative z-20 shadow-[0_-5px_20px_rgba(0,0,0,0.8)]">
                             <button
                                 onClick={nextRound}
-                                className="w-full bg-[#1a0505] border border-[#a32222] text-[#e0e0e0] py-3 font-header text-sm tracking-[0.2em] hover:bg-[#a32222] hover:text-[#black] transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(163,34,34,0.15)] hover:shadow-[0_0_30px_rgba(163,34,34,0.6)] group"
+                                className="campaign-btn w-full py-4 text-sm tracking-[0.2em] shadow-[0_0_20px_rgba(163,34,34,0.2)]"
                             >
-                                <span className="group-hover:text-black">NEXT ROUND</span>
-                                <ChevronRight size={16} className="text-[#a32222] group-hover:text-black transition-colors" />
+                                NEXT ROUND <ChevronRight size={18} />
                             </button>
                         </div>
                     </div>
