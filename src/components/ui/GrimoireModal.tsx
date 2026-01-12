@@ -75,40 +75,55 @@ export default function GrimoireModal() {
                         </div>
                     </div>
 
-                    {/* Right Panel: Details */}
-                    <div className="flex-1 bg-[url('/parchment-texture.jpg')] bg-cover bg-no-repeat relative">
-                        {/* Overlay to darken parchment for readability if needed, or just use css var */}
-                        <div className="absolute inset-0 bg-[#e8dcc5] opacity-10 pointer-events-none"></div>
+                    {/* Right Panel: Details (Old Scroll Aesthetic) */}
+                    <div className="flex-1 bg-[#1a0f0f] relative p-8 flex items-center justify-center">
 
                         {activeSpell ? (
-                            <div className="h-full overflow-y-auto p-8 text-[#1a1a1a] font-serif custom-scrollbar bg-[#e8dcc5]">
-                                <div className="border-b-2 border-[#1a1a1a] pb-4 mb-6">
-                                    <h1 className="text-3xl font-bold uppercase tracking-wide text-[#4a0404] font-header mb-2">{activeSpell.name}</h1>
-                                    <div className="flex gap-4 text-sm font-bold italic text-[#333]">
-                                        <span>{activeSpell.level === 0 ? "Cantrip" : `Level ${activeSpell.level}`} {activeSpell.school}</span>
+                            <div className="old-scroll w-full h-full p-8 text-[#2c1a1a] font-serif custom-scrollbar overflow-y-auto">
+                                <div className="text-center mb-6">
+                                    <h1 className="text-4xl font-handwriting text-[#4a0404] mb-2 drop-shadow-sm">{activeSpell.name}</h1>
+                                    <div className="flex justify-center gap-4 text-sm font-bold italic text-[#5c4033] font-header tracking-wider">
+                                        <span>{activeSpell.level === 0 ? "Cantrip" : `Level ${activeSpell.level}`}</span>
+                                        <span>•</span>
+                                        <span>{activeSpell.school}</span>
+                                    </div>
+                                    <div className="scroll-divider"></div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-y-2 gap-x-8 mb-6 text-sm px-4">
+                                    <div className="flex justify-between border-b border-[#b8ac95] pb-1">
+                                        <strong className="text-[#4a0404] uppercase text-xs tracking-widest">Casting Time</strong>
+                                        <span className="font-header italic">{activeSpell.castingTime}</span>
+                                    </div>
+                                    <div className="flex justify-between border-b border-[#b8ac95] pb-1">
+                                        <strong className="text-[#4a0404] uppercase text-xs tracking-widest">Range</strong>
+                                        <span className="font-header italic">{activeSpell.range}</span>
+                                    </div>
+                                    <div className="flex justify-between border-b border-[#b8ac95] pb-1">
+                                        <strong className="text-[#4a0404] uppercase text-xs tracking-widest">Components</strong>
+                                        <span className="font-header italic text-xs">{activeSpell.components} {activeSpell.material && `(${activeSpell.material.slice(0, 15)}...)`}</span>
+                                    </div>
+                                    <div className="flex justify-between border-b border-[#b8ac95] pb-1">
+                                        <strong className="text-[#4a0404] uppercase text-xs tracking-widest">Duration</strong>
+                                        <span className="font-header italic">{activeSpell.duration}</span>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4 mb-6 text-sm bg-[#d8ccb5] p-4 rounded border border-[#b8ac95]">
-                                    <div><strong className="text-[#4a0404]">Casting Time:</strong> {activeSpell.castingTime}</div>
-                                    <div><strong className="text-[#4a0404]">Range:</strong> {activeSpell.range}</div>
-                                    <div><strong className="text-[#4a0404]">Components:</strong> {activeSpell.components} {activeSpell.material && `(${activeSpell.material})`}</div>
-                                    <div><strong className="text-[#4a0404]">Duration:</strong> {activeSpell.duration}</div>
+                                <div className="prose prose-p:text-[#2c1a1a] prose-strong:text-[#4a0404] max-w-none leading-relaxed text-justify px-4 font-serif text-lg">
+                                    <p className="whitespace-pre-wrap first-letter:text-4xl first-letter:font-handwriting first-letter:mr-1 first-letter:float-left first-letter:text-[#8a1c1c]">
+                                        {activeSpell.description}
+                                    </p>
                                 </div>
 
-                                <div className="prose prose-p:text-[#1a1a1a] prose-strong:text-[#4a0404] max-w-none leading-relaxed">
-                                    <p className="whitespace-pre-wrap">{activeSpell.description}</p>
-                                </div>
-
-                                <div className="mt-8 pt-4 border-t border-[#b8ac95] text-xs text-[#666] flex justify-between">
+                                <div className="mt-8 pt-4 border-t border-[#b8ac95] text-[10px] text-[#666] flex justify-between uppercase tracking-widest opacity-50 font-sans">
                                     <span>{activeSpell.classes}</span>
                                     <span>{activeSpell.source} pg. {activeSpell.page}</span>
                                 </div>
                             </div>
                         ) : (
-                            <div className="h-full flex flex-col items-center justify-center text-[#444] p-8 text-center opacity-50">
-                                <Scroll size={64} className="mb-4" />
-                                <h3 className="text-xl font-header">Select a spell to view its runes.</h3>
+                            <div className="text-center opacity-30 text-[#444] animate-pulse-slow">
+                                <Scroll size={100} strokeWidth={1} className="mx-auto mb-4" />
+                                <h3 className="text-2xl font-handwriting text-[#666]">Select an incantation from the registry...</h3>
                             </div>
                         )}
                     </div>
