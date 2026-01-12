@@ -9,6 +9,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 export default function GrimoirePage() {
     const searchParams = useSearchParams();
     const router = useRouter(); // For shallow routing if needed
+    const itemsRef = useRef<Map<string, HTMLDivElement>>(new Map());
+    const listRef = useRef<HTMLDivElement>(null);
 
     // Filter States
     const [searchQuery, setSearchQuery] = useState("");
@@ -59,10 +61,21 @@ export default function GrimoirePage() {
     const LEVELS = ["All", "Cantrip", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     const CLASSES = ["All", "Bard", "Cleric", "Druid", "Paladin", "Ranger", "Sorcerer", "Warlock", "Wizard"];
 
-    // Auto-scroll logic (Reading Pane)
+    // Auto-scroll logic (Reading Pane Reset & List Scroll)
     const scrollRef = useRef<HTMLDivElement>(null);
+
+    // Scroll List Item into View
     useEffect(() => {
-        if (scrollRef.current) scrollRef.current.scrollTop = 0;
+        if (activeSpell) {
+            // Reset Reading Pane
+            if (scrollRef.current) scrollRef.current.scrollTop = 0;
+
+            // Scroll List Item
+            const node = itemsRef.current.get(activeSpell.name);
+            if (node) {
+                node.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }
     }, [activeSpell]);
 
     return (
@@ -130,7 +143,8 @@ export default function GrimoirePage() {
                     </div>
 
                     {/* SPELL LIST */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+
+                    <div className="flex-1 overflow-y-auto custom-scrollbar" ref={listRef}>
                         {filteredSpells.length === 0 ? (
                             <div className="p-8 text-center text-[#444] text-sm italic">
                                 No incantations match your filter...
@@ -139,6 +153,10 @@ export default function GrimoirePage() {
                             filteredSpells.map((spell) => (
                                 <div
                                     key={spell.name}
+                                    ref={(node) => {
+                                        if (node) itemsRef.current.set(spell.name, node);
+                                        else itemsRef.current.delete(spell.name);
+                                    }}
                                     onClick={() => setActiveSpell(spell)}
                                     className={`grimoire-item p-3 border-b border-[#222] cursor-pointer hover:bg-[#1a0505] transition-colors flex justify-between items-center group ${activeSpell?.name === spell.name ? 'bg-[#1a0505] border-l-4 border-l-[#a32222]' : ''}`}
                                 >

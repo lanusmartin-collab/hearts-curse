@@ -102,6 +102,12 @@ export default function Home() {
 
         {/* MIDDLE COLUMN: Primary Navigation */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+
+          {/* Grimoire Widget (Promoted) */}
+          <DashboardWidget title="The Grimoire" subtitle="Spell Database" icon={BookOpen} href="/grimoire" style={{ borderColor: "#a32222", backgroundImage: "linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/aged-paper.png')" }}>
+            <p style={{ fontSize: "0.75rem", color: "#d7c0a0" }}>Full library of incantations. Now with advanced search & filtering.</p>
+          </DashboardWidget>
+
           {/* Market */}
           <DashboardWidget title="Black Market" subtitle="Shops & Items" icon={ShoppingBag} href="/shops" style={{ minHeight: "180px", backgroundImage: "linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/market-bg-pattern.png')", backgroundSize: "cover", backgroundBlendMode: "overlay" }}>
             <p style={{ position: "relative", zIndex: 10, fontSize: "0.875rem" }}>Manage inventory for Korgul, Fimble, and local vendors.</p>
@@ -141,9 +147,8 @@ export default function Home() {
             <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)" }}>Generate print-ready assets for player handouts.</p>
           </DashboardWidget>
 
-          {/* Grimoire Widget */}
-          <DashboardWidget title="The Grimoire" subtitle="Spell Database" icon={BookOpen} href="/grimoire" style={{ borderColor: "#a32222" }}>
-            <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)" }}>Full library of incantations with advanced filtering.</p>
+          <DashboardWidget title="Print Lab" subtitle="Physical Handouts" icon={FileText} href="/deliverables">
+            <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)" }}>Generate print-ready assets for player handouts.</p>
           </DashboardWidget>
         </div>
 
