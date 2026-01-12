@@ -32,69 +32,85 @@ export default function CombatantCard({ data, onUpdate, onRemove, isActive }: Co
 
     return (
         <div className={`
-            relative flex flex-col bg-[#111] border transition-all duration-300 mb-2
-            ${isActive ? 'border-[#a32222] shadow-[0_0_10px_rgba(163,34,34,0.3)]' : 'border-[#333] hover:border-[#555]'}
-            ${isDead ? 'opacity-60 grayscale' : ''}
+            relative flex flex-col transition-all duration-300 mb-2 overflow-hidden
+            ${isActive
+                ? 'bg-gradient-to-r from-[#1a0505] to-[#0a0a0c] border-[#a32222] shadow-[0_0_15px_rgba(163,34,34,0.2)] border-l-4'
+                : 'bg-[#0a0a0c] border border-[#333] border-l-2 border-l-[#333] hover:border-[#555]'}
+            ${isDead ? 'opacity-50 grayscale border-l-[#333]' : ''}
         `}>
+            {/* Active Indicator Glow */}
+            {isActive && <div className="absolute inset-0 bg-[#a32222]/5 animate-pulse pointer-events-none"></div>}
+
             {/* Main Bar */}
-            <div className="flex items-center p-2 gap-3">
+            <div className={`flex items-center p-3 gap-4 relative z-10 ${isDead ? 'line-through text-[#666]' : ''}`}>
                 {/* Initiative Box */}
-                <div className="flex flex-col items-center justify-center w-10 h-10 bg-[#0a0a0a] border border-[#333] rounded shrink-0">
+                <div className={`flex flex-col items-center justify-center w-12 h-12 border rounded-sm shrink-0 transition-colors ${isActive ? 'bg-[#2a0a0a] border-[#a32222]' : 'bg-[#111] border-[#333]'}`}>
                     <input
                         type="number"
                         value={data.initiative}
                         onChange={(e) => onUpdate(data.id, { initiative: parseInt(e.target.value) || 0 })}
-                        className="w-full h-full text-center bg-transparent text-[#e0e0e0] font-mono text-lg font-bold focus:outline-none focus:text-[#a32222]"
+                        className={`w-full h-full text-center bg-transparent font-mono text-xl font-bold focus:outline-none ${isActive ? 'text-[#ff4444]' : 'text-[#888]'}`}
                     />
                 </div>
 
                 {/* Name & Conditions */}
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
                     <div className="flex items-center gap-2">
-                        <span className={`font-bold truncate ${isActive ? 'text-[#a32222]' : 'text-[#e0e0e0]'}`}>
+                        <span className={`font-header tracking-wider text-base ${isActive ? 'text-[#fff] text-shadow-sm' : 'text-[#ccc]'}`}>
                             {data.name}
                         </span>
-                        {isDead && <Skull size={14} className="text-red-600" />}
-                        {data.conditions.map(c => (
-                            <span key={c} className="text-[9px] px-1 py-0.5 bg-[#333] text-[#ccc] rounded uppercase tracking-wider">
-                                {c.slice(0, 3)}
-                            </span>
-                        ))}
+                        {isDead && <Skull size={14} className="text-[#666]" />}
                     </div>
+                    {data.conditions.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                            {data.conditions.map(c => (
+                                <span key={c} className="text-[9px] px-1.5 py-0.5 bg-[#a32222]/20 border border-[#a32222]/50 text-[#ffaaaa] rounded-sm uppercase tracking-wider font-mono">
+                                    {c}
+                                </span>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* HP & AC */}
-                <div className="flex items-center gap-3 shrink-0">
+                <div className="flex items-center gap-4 shrink-0">
                     {/* AC */}
-                    <div className="flex flex-col items-center group cursor-help" title={`AC: ${data.ac}`}>
-                        <Shield size={14} className="text-[#666] group-hover:text-[#a32222]" />
-                        <span className="text-xs font-mono text-[#888]">{data.ac}</span>
+                    <div className="flex flex-col items-center justify-center group cursor-help" title={`AC: ${data.ac}`}>
+                        <Shield size={16} className={`mb-0.5 ${isActive ? 'text-[#a32222]' : 'text-[#555] group-hover:text-[#888]'}`} />
+                        <span className="text-[10px] font-mono text-[#666] font-bold">AC {data.ac}</span>
                     </div>
 
                     {/* HP Controls */}
-                    <div className="flex items-center gap-1 bg-[#0a0a0a] border border-[#333] rounded px-1">
-                        <button onClick={() => handleHpChange(-1)} className="text-[#666] hover:text-red-500 px-1 text-xs">-</button>
-                        <span className={`w-8 text-center text-sm font-mono ${isBloodied ? 'text-orange-500' : isDead ? 'text-red-700' : 'text-green-500'}`}>
-                            {data.hp}
-                        </span>
-                        <button onClick={() => handleHpChange(1)} className="text-[#666] hover:text-green-500 px-1 text-xs">+</button>
+                    <div className="flex flex-col items-end gap-1">
+                        <div className="flex items-center bg-[#050505] border border-[#333] rounded-sm overflow-hidden">
+                            <button onClick={() => handleHpChange(-1)} className="text-[#666] hover:text-red-500 hover:bg-[#1a0505] px-2 py-0.5 text-xs transition-colors">-</button>
+                            <span className={`w-10 text-center text-sm font-mono font-bold py-0.5 ${isBloodied ? 'text-orange-500' : isDead ? 'text-red-700' : 'text-green-500'}`}>
+                                {data.hp}
+                            </span>
+                            <button onClick={() => handleHpChange(1)} className="text-[#666] hover:text-green-500 hover:bg-[#051a05] px-2 py-0.5 text-xs transition-colors">+</button>
+                        </div>
+                        <span className="text-[9px] text-[#444] font-mono">MAX {data.maxHp}</span>
                     </div>
 
-                    {/* Expand/Menu */}
-                    <button onClick={() => setIsExpanded(!isExpanded)} className={`p-1 hover:bg-[#222] rounded ${isExpanded ? 'text-[#a32222]' : 'text-[#666]'}`}>
-                        <Activity size={16} />
-                    </button>
+                    {/* Divider */}
+                    <div className="w-px h-8 bg-[#222] mx-1"></div>
 
-                    <button onClick={() => onRemove(data.id)} className="p-1 hover:bg-[#222] text-[#444] hover:text-red-500 rounded">
-                        <X size={16} />
-                    </button>
+                    {/* Expand/Menu */}
+                    <div className="flex flex-col gap-1">
+                        <button onClick={() => setIsExpanded(!isExpanded)} className={`p-1.5 hover:bg-[#222] rounded transition-colors ${isExpanded ? 'text-[#a32222] bg-[#a32222]/10' : 'text-[#666]'}`}>
+                            <Activity size={14} />
+                        </button>
+                        <button onClick={() => onRemove(data.id)} className="p-1.5 hover:bg-[#2a0a0a] text-[#444] hover:text-red-500 rounded transition-colors">
+                            <X size={14} />
+                        </button>
+                    </div>
                 </div>
             </div>
 
             {/* HP Bar */}
-            <div className="h-1 w-full bg-[#111] relative">
+            <div className="h-1 w-full bg-[#000] relative mt-1">
                 <div
-                    className={`h-full transition-all duration-300 ${isDead ? 'bg-red-900' : isBloodied ? 'bg-orange-600' : 'bg-green-700'}`}
+                    className={`h-full transition-all duration-500 ${isDead ? 'bg-red-900/50' : isBloodied ? 'bg-orange-600 shadow-[0_0_5px_orange]' : 'bg-[#1e4a1e] shadow-[0_0_5px_green]'}`}
                     style={{ width: `${hpPercent}%` }}
                 />
             </div>

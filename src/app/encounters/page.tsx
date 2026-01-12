@@ -435,15 +435,16 @@ function EncountersContent() {
                                 <h3 className="grimoire-title animate-heartbeat text-sm">INITIATIVE TRACKER</h3>
                                 <div className="text-[10px] text-[#888] font-mono mt-1 tracking-widest">ROUND {round}</div>
                             </div>
-                            <div className="flex gap-1">
-                                <div className="flex gap-1">
-                                    <button onClick={() => { if (confirm('End the current encounter? This will clear all combatants.')) { setCombatants([]); localStorage.removeItem('heart_curse_combat'); } }} className="px-3 py-1 bg-[#1a0505] border border-[#a32222] text-[#a32222] hover:bg-red-900 hover:text-white text-[10px] font-bold uppercase tracking-wider transition-colors">
-                                        END BATTLE
-                                    </button>
-                                    <button onClick={rollNPCInitiative} className="p-2 text-[#666] hover:text-[#a32222] transition-colors" title="Re-roll NPC Initiative">
-                                        <RefreshCw size={14} />
-                                    </button>
-                                </div>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => { if (confirm('End the current encounter? This will clear all combatants.')) { setCombatants([]); localStorage.removeItem('heart_curse_combat'); } }}
+                                    className="px-4 py-1.5 bg-[#1a0505] border border-[#a32222] text-[#ff4444] hover:bg-[#a32222] hover:text-white text-[10px] font-bold uppercase tracking-widest transition-all shadow-[0_0_10px_rgba(163,34,34,0.1)] hover:shadow-[0_0_20px_rgba(163,34,34,0.4)]"
+                                >
+                                    END BATTLE
+                                </button>
+                                <button onClick={rollNPCInitiative} className="p-2 text-[#666] hover:text-[#a32222] hover:bg-[#1a0505] rounded-sm transition-colors border border-transparent hover:border-[#333]" title="Re-roll NPC Initiative">
+                                    <RefreshCw size={16} />
+                                </button>
                             </div>
                         </div>
 
@@ -465,28 +466,28 @@ function EncountersContent() {
                             )}
 
                             {/* ADD ENTITY PANEL */}
-                            <div className="mt-4 border-t border-[#333] pt-4 px-2">
-                                <div className="flex gap-1 mb-2">
+                            <div className="mt-4 border-t border-[#333] pt-4 px-3 bg-[#080808]">
+                                <div className="flex mb-3 border-b border-[#222]">
                                     <button
                                         onClick={() => setAddMode('player')}
-                                        className={`flex-1 text-[10px] uppercase font-bold py-1 border ${addMode === 'player' ? 'border-[#a32222] text-[#e0e0e0] bg-[#a32222]/10' : 'border-[#333] text-[#555]'}`}
+                                        className={`flex-1 text-[10px] uppercase font-bold py-2 border-b-2 transition-colors ${addMode === 'player' ? 'border-[#a32222] text-[#e0e0e0] bg-gradient-to-t from-[#a32222]/10 to-transparent' : 'border-transparent text-[#555] hover:text-[#bbb]'}`}
                                     >
                                         Add Player
                                     </button>
                                     <button
                                         onClick={() => setAddMode('monster')}
-                                        className={`flex-1 text-[10px] uppercase font-bold py-1 border ${addMode === 'monster' ? 'border-[#a32222] text-[#e0e0e0] bg-[#a32222]/10' : 'border-[#333] text-[#555]'}`}
+                                        className={`flex-1 text-[10px] uppercase font-bold py-2 border-b-2 transition-colors ${addMode === 'monster' ? 'border-[#a32222] text-[#e0e0e0] bg-gradient-to-t from-[#a32222]/10 to-transparent' : 'border-transparent text-[#555] hover:text-[#bbb]'}`}
                                     >
                                         Add Monster
                                     </button>
                                 </div>
 
                                 {addMode === 'player' ? (
-                                    <div className="flex flex-col gap-2">
+                                    <div className="flex flex-col gap-3">
                                         <select
                                             value={selectedPlayerId}
                                             onChange={(e) => setSelectedPlayerId(e.target.value)}
-                                            className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none"
+                                            className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] transition-colors"
                                         >
                                             <option value="">-- Select Hero --</option>
                                             {availablePlayers.filter(p => !p.status.includes('Dead')).map(p => (
@@ -496,40 +497,40 @@ function EncountersContent() {
                                         <button
                                             onClick={addPartyMember}
                                             disabled={!selectedPlayerId}
-                                            className="w-full bg-[#1a0505] border border-[#a32222] text-[#a32222] hover:bg-[#a32222] hover:text-white text-xs uppercase font-bold py-2 transition-all disabled:opacity-50"
+                                            className="retro-btn w-full bg-[#1a0505] border border-[#a32222] text-[#a32222] hover:bg-[#a32222] hover:text-white text-xs uppercase font-bold py-2.5 transition-all shadow-[0_0_10px_rgba(163,34,34,0.1)] hover:shadow-[0_0_15px_rgba(163,34,34,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             Join Battle
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="flex flex-col gap-2">
+                                    <div className="flex flex-col gap-3">
                                         <input
                                             type="text"
-                                            placeholder="Name"
+                                            placeholder="Monster Name"
                                             value={manualMonster.name}
                                             onChange={e => setManualMonster({ ...manualMonster, name: e.target.value })}
-                                            className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none focus:border-[#a32222]"
+                                            className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] transition-colors placeholder:text-[#444]"
                                         />
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-3">
                                             <input
                                                 type="number"
                                                 placeholder="Init"
                                                 value={manualMonster.init}
                                                 onChange={e => setManualMonster({ ...manualMonster, init: e.target.value })}
-                                                className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none focus:border-[#a32222] w-1/2"
+                                                className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] w-1/2 transition-colors placeholder:text-[#444]"
                                             />
                                             <input
                                                 type="number"
                                                 placeholder="HP"
                                                 value={manualMonster.hp}
                                                 onChange={e => setManualMonster({ ...manualMonster, hp: e.target.value })}
-                                                className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none focus:border-[#a32222] w-1/2"
+                                                className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2.5 outline-none focus:border-[#a32222] w-1/2 transition-colors placeholder:text-[#444]"
                                             />
                                         </div>
                                         <button
                                             onClick={addManualMonster}
                                             disabled={!manualMonster.name}
-                                            className="w-full bg-[#1a0505] border border-[#a32222] text-[#a32222] hover:bg-[#a32222] hover:text-white text-xs uppercase font-bold py-2 transition-all disabled:opacity-50"
+                                            className="retro-btn w-full bg-[#1a0505] border border-[#a32222] text-[#a32222] hover:bg-[#a32222] hover:text-white text-xs uppercase font-bold py-2.5 transition-all shadow-[0_0_10px_rgba(163,34,34,0.1)] hover:shadow-[0_0_15px_rgba(163,34,34,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             Add to Battle
                                         </button>
@@ -538,12 +539,13 @@ function EncountersContent() {
                             </div>
                         </div>
 
-                        <div className="p-4 border-t border-[#333] bg-[#0a0a0a] relative z-20">
+                        <div className="p-4 border-t border-[#333] bg-[#050505] relative z-20 shadow-[0_-5px_20px_rgba(0,0,0,0.8)]">
                             <button
                                 onClick={nextRound}
-                                className="w-full bg-[#111] border border-[#a32222] text-[#a32222] py-2 font-header text-sm tracking-widest hover:bg-[#a32222] hover:text-[#000] transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(163,34,34,0.2)] hover:shadow-[0_0_25px_rgba(163,34,34,0.5)]"
+                                className="w-full bg-[#1a0505] border border-[#a32222] text-[#e0e0e0] py-3 font-header text-sm tracking-[0.2em] hover:bg-[#a32222] hover:text-[#black] transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(163,34,34,0.15)] hover:shadow-[0_0_30px_rgba(163,34,34,0.6)] group"
                             >
-                                NEXT ROUND <ChevronRight size={14} />
+                                <span className="group-hover:text-black">NEXT ROUND</span>
+                                <ChevronRight size={16} className="text-[#a32222] group-hover:text-black transition-colors" />
                             </button>
                         </div>
                     </div>
