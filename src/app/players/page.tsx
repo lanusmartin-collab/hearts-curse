@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CommandBar from "@/components/ui/CommandBar";
 import { Skull, Ghost, Plus, Upload, Activity, Biohazard, EyeOff, MicOff, BatteryLow, Stars, FileText, X, Trash2, User, UserPlus, File, Eye, Maximize2, Minimize2, Heart } from "lucide-react";
 
@@ -35,23 +35,43 @@ const STATUS_CONFIG: Record<PlayerStatus, { icon: React.ElementType, color: stri
 };
 
 export default function PlayersPage() {
-    const [players, setPlayers] = useState<PlayerCharacter[]>([
-        {
-            id: "1",
-            name: "Valeros",
-            race: "Human",
-            class: "Fighter 5",
-            alignment: "Neutral Good",
-            stats: { str: 16, dex: 14, con: 15, int: 10, wis: 12, cha: 13 },
-            ac: 18,
-            hp: 44,
-            maxHp: 44,
-            speed: "30 ft",
-            status: ["Normal"],
-            notes: "Possessed by a ghost?",
-            files: []
+    const [players, setPlayers] = useState<PlayerCharacter[]>([]);
+
+    // INITIAL LOAD
+    useEffect(() => {
+        const saved = localStorage.getItem('heart_curse_players');
+        if (saved) {
+            try {
+                setPlayers(JSON.parse(saved));
+            } catch (e) {
+                console.error("Failed to load players", e);
+            }
+        } else {
+            // Default Data
+            setPlayers([{
+                id: "1",
+                name: "Valeros",
+                race: "Human",
+                class: "Fighter 5",
+                alignment: "Neutral Good",
+                stats: { str: 16, dex: 14, con: 15, int: 10, wis: 12, cha: 13 },
+                ac: 18,
+                hp: 44,
+                maxHp: 44,
+                speed: "30 ft",
+                status: ["Normal"],
+                notes: "Possessed by a ghost?",
+                files: []
+            }]);
         }
-    ]);
+    }, []);
+
+    // PERSISTENCE
+    useEffect(() => {
+        if (players.length > 0) {
+            localStorage.setItem('heart_curse_players', JSON.stringify(players));
+        }
+    }, [players]);
     const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
     const [newPlayerName, setNewPlayerName] = useState("");
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);

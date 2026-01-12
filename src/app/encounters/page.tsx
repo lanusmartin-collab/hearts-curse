@@ -35,6 +35,39 @@ function EncountersContent() {
     const [round, setRound] = useState(1);
     const [activeCombatantId, setActiveCombatantId] = useState<string | null>(null);
 
+    // Persistence & Data Loading
+    const [availablePlayers, setAvailablePlayers] = useState<any[]>([]);
+    const [addMode, setAddMode] = useState<'player' | 'monster'>('player');
+    const [manualMonster, setManualMonster] = useState({ name: '', init: '', hp: '' });
+    const [selectedPlayerId, setSelectedPlayerId] = useState('');
+
+    useEffect(() => {
+        // Load Players
+        const savedPlayers = localStorage.getItem('heart_curse_players');
+        if (savedPlayers) {
+            try {
+                setAvailablePlayers(JSON.parse(savedPlayers));
+            } catch (e) { console.error(e); }
+        }
+
+        // Load Combat State
+        const savedCombat = localStorage.getItem('heart_curse_combat');
+        if (savedCombat) {
+            try {
+                const data = JSON.parse(savedCombat);
+                setCombatants(data.combatants || []);
+                setRound(data.round || 1);
+            } catch (e) { console.error(e); }
+        }
+    }, []);
+
+    // Save Combat State
+    useEffect(() => {
+        if (combatants.length > 0 || round > 1) {
+            localStorage.setItem('heart_curse_combat', JSON.stringify({ combatants, round }));
+        }
+    }, [combatants, round]);
+
     // Initial Load from URL
     useEffect(() => {
         const rollParam = searchParams.get('roll');
@@ -128,18 +161,43 @@ function EncountersContent() {
         setCombatants(prev => sortCombatants([...prev, ...newCombatants]));
     };
 
-    const addPlayer = () => {
-        const newPlayer: Combatant = {
-            id: `player-${Date.now()}`,
-            name: "New Player",
-            initiative: 0,
-            hp: 0,
-            maxHp: 0,
-            ac: 10,
+    const addPartyMember = () => {
+        if (!selectedPlayerId) return;
+        const player = availablePlayers.find(p => p.id === selectedPlayerId);
+        if (!player) return;
+
+        // Check if already in combat
+        if (combatants.find(c => c.id === player.id)) return;
+
+        const newCombatant: Combatant = {
+            id: player.id,
+            name: player.name,
+            initiative: 0, // Should roll? User request: manual entry or roll. We'll default 0 and let them edit/roll.
+            hp: player.hp,
+            maxHp: player.maxHp,
+            ac: player.ac,
             conditions: [],
             type: 'player'
         };
-        setCombatants(prev => [...prev, newPlayer]);
+        setCombatants(prev => sortCombatants([...prev, newCombatant]));
+        setSelectedPlayerId('');
+    };
+
+    const addManualMonster = () => {
+        if (!manualMonster.name) return;
+        const init = parseInt(manualMonster.init) || rollInitiative(10);
+        const newCombatant: Combatant = {
+            id: `monster-${Date.now()}`,
+            name: manualMonster.name,
+            initiative: init,
+            hp: parseInt(manualMonster.hp) || 10,
+            maxHp: parseInt(manualMonster.hp) || 10,
+            ac: 10, // Default
+            conditions: [],
+            type: 'monster'
+        };
+        setCombatants(prev => sortCombatants([...prev, newCombatant]));
+        setManualMonster({ name: '', init: '', hp: '' });
     };
 
     const removeCombatant = (id: string) => {
@@ -204,15 +262,15 @@ function EncountersContent() {
                 BACK TO THE SANCTUM
             </Link>
 
-            <header className="terminal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', paddingRight: '2rem' }}>
+            <header className="terminal-header relative mb-12">
                 <div>
                     <h1 className="terminal-title">THREAT ASSESSMENT</h1>
-                    <div style={{ height: '1px', width: '100px', background: '#a32222', marginTop: '1rem' }}></div>
+                    <div className="mx-auto" style={{ height: '1px', width: '100px', background: '#a32222', marginTop: '1rem' }}></div>
                     <p style={{ fontFamily: 'monospace', fontSize: '10px', color: '#666', letterSpacing: '0.3em', textTransform: 'uppercase', marginTop: '0.5rem' }}>Tactical Encounter Generation System // v3.2</p>
                 </div>
 
                 {/* View Toggles */}
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <div className="absolute right-0 bottom-0 flex gap-2">
                     <button
                         onClick={() => setViewMode('tracker')}
                         className={`text-xs font-mono uppercase tracking-widest px-4 py-2 border ${viewMode === 'tracker' ? 'bg-[#a32222] text-black border-[#a32222]' : 'text-[#666] border-[#333] hover:text-white'}`}
@@ -365,11 +423,11 @@ function EncountersContent() {
 
                         <div className="p-6 bg-gradient-to-b from-[#1a0505] to-[#0a0a0c] border-b border-[#a32222] flex items-center justify-between relative z-20">
                             <div>
-                                <h3 className="grimoire-title animate-heartbeat text-sm">TACTICAL UPLINK</h3>
+                                <h3 className="grimoire-title animate-heartbeat text-sm">INITIATIVE TRACKER</h3>
                                 <div className="text-[10px] text-[#888] font-mono mt-1 tracking-widest">ROUND {round}</div>
                             </div>
                             <div className="flex gap-1">
-                                <button onClick={() => setCombatants([])} className="p-2 text-[#666] hover:text-red-500 transition-colors" title="Clear All">
+                                <button onClick={() => { if (confirm('Clear all combatants?')) { setCombatants([]); localStorage.removeItem('heart_curse_combat'); } }} className="p-2 text-[#666] hover:text-red-500 transition-colors" title="Clear All">
                                     <Trash2 size={14} />
                                 </button>
                                 <button onClick={rollNPCInitiative} className="p-2 text-[#666] hover:text-[#a32222] transition-colors" title="Roll NPC Initiative">
@@ -394,12 +452,79 @@ function EncountersContent() {
                                     />
                                 ))
                             )}
-                            <button
-                                onClick={addPlayer}
-                                className="w-full py-2 mt-2 border border-dashed border-[#333] text-[#444] hover:text-[#888] hover:border-[#555] font-mono text-xs uppercase flex items-center justify-center gap-2 transition-all"
-                            >
-                                <Plus size={12} /> Add Manual Entity
-                            </button>
+
+                            {/* ADD ENTITY PANEL */}
+                            <div className="mt-4 border-t border-[#333] pt-4 px-2">
+                                <div className="flex gap-1 mb-2">
+                                    <button
+                                        onClick={() => setAddMode('player')}
+                                        className={`flex-1 text-[10px] uppercase font-bold py-1 border ${addMode === 'player' ? 'border-[#a32222] text-[#e0e0e0] bg-[#a32222]/10' : 'border-[#333] text-[#555]'}`}
+                                    >
+                                        Add Player
+                                    </button>
+                                    <button
+                                        onClick={() => setAddMode('monster')}
+                                        className={`flex-1 text-[10px] uppercase font-bold py-1 border ${addMode === 'monster' ? 'border-[#a32222] text-[#e0e0e0] bg-[#a32222]/10' : 'border-[#333] text-[#555]'}`}
+                                    >
+                                        Add Monster
+                                    </button>
+                                </div>
+
+                                {addMode === 'player' ? (
+                                    <div className="flex flex-col gap-2">
+                                        <select
+                                            value={selectedPlayerId}
+                                            onChange={(e) => setSelectedPlayerId(e.target.value)}
+                                            className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none"
+                                        >
+                                            <option value="">-- Select Hero --</option>
+                                            {availablePlayers.filter(p => !p.status.includes('Dead')).map(p => (
+                                                <option key={p.id} value={p.id}>{p.name}</option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            onClick={addPartyMember}
+                                            disabled={!selectedPlayerId}
+                                            className="w-full bg-[#1a0505] border border-[#a32222] text-[#a32222] hover:bg-[#a32222] hover:text-white text-xs uppercase font-bold py-2 transition-all disabled:opacity-50"
+                                        >
+                                            Join Battle
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Name"
+                                            value={manualMonster.name}
+                                            onChange={e => setManualMonster({ ...manualMonster, name: e.target.value })}
+                                            className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none focus:border-[#a32222]"
+                                        />
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="number"
+                                                placeholder="Init"
+                                                value={manualMonster.init}
+                                                onChange={e => setManualMonster({ ...manualMonster, init: e.target.value })}
+                                                className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none focus:border-[#a32222] w-1/2"
+                                            />
+                                            <input
+                                                type="number"
+                                                placeholder="HP"
+                                                value={manualMonster.hp}
+                                                onChange={e => setManualMonster({ ...manualMonster, hp: e.target.value })}
+                                                className="bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none focus:border-[#a32222] w-1/2"
+                                            />
+                                        </div>
+                                        <button
+                                            onClick={addManualMonster}
+                                            disabled={!manualMonster.name}
+                                            className="w-full bg-[#1a0505] border border-[#a32222] text-[#a32222] hover:bg-[#a32222] hover:text-white text-xs uppercase font-bold py-2 transition-all disabled:opacity-50"
+                                        >
+                                            Summon Foe
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         <div className="p-4 border-t border-[#333] bg-[#0a0a0a] relative z-20">
