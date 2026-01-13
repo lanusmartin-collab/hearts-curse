@@ -55,7 +55,7 @@ export const OAKHAVEN_MINES_TABLE: Encounter[] = [
 
 export const UNDERDARK_TRAVEL_TABLE: Encounter[] = [
     { roll: [1, 2], name: "Faerzress Storm", description: "SCENE: Purple radiation illuminates the cavern. \nEFFECT: All spells have a 50% chance to surge. Teleportation always fails. Lasts 1d4 hours.", monsters: [] },
-    { roll: [3, 4], name: "Deep Gnome Caravan", description: "SCENE: A Svirfneblin expedition led by 'Blingdenstone Bob'. \nTRADE: They sell Spell Gems (store 1 spell) and Salted Spiders. Neutral.", monsters: ["deep-gnome"] },
+    { roll: [3, 4], name: "Deep Gnome Caravan", description: "SCENE: A Svirfneblin expedition led by 'Blingdenstone Bob'. \nTRADE: They sell Spell Gems (store 1 spell) and Salted Spiders. Neutral.", monsters: ["deep-gnome-svirfneblin"] },
     { roll: [5, 6], name: "Hook Horror Pack", description: "SCENE: Clicking sounds echo from the ceiling stalactites. \nCOMBAT: 3 Hook Horrors drop from above. They use Hook to grapple and drag PCs up.", monsters: ["hook-horror"] },
     { roll: [7, 8], name: "Myconid Pilgrim", description: "SCENE: A solitary Myconid Sovereign walks silently. \nINTERACTION: It offers 'The Meld'. Accepting grants telepathy for 24h but disadvantage on Init.", monsters: ["myconid-sovereign"] },
     { roll: [9, 10], name: "Mind Flayer Scout", description: "SCENE: You feel a headache before you see him. \nTHREAT: A Mind Flayer is surveying for new thralls. It attempts to *Dominate* the Barbarian/Fighter first.", monsters: ["mind-flayer"] },
@@ -64,7 +64,7 @@ export const UNDERDARK_TRAVEL_TABLE: Encounter[] = [
     { roll: [15, 16], name: "Purple Worm Tremors", description: "SCENE: The ground shakes violently. \nHAZARD: A Purple Worm bursts through the wall, creating a new tunnel. It swallows the path ahead.", monsters: ["purple-worm"] },
     { roll: [17, 18], name: "Kuo-Toa Shrine", description: "SCENE: A crude altar to 'BLIBDOOLPOOLP'. \nLOOT: Pearls worth 200gp. Taking them summons 2d6 Kuo-Toa Whips.", monsters: ["kuo-toa-whip"] },
     { roll: [19, 19], name: "Subterranean Lake", description: "SCENE: A black lake blocks the path. \nSECRET: An Aboleth sleeps here. Disturbing the water wakes it.", monsters: ["aboleth"] },
-    { roll: [20, 20], name: "The Wandering Emporium", description: "SCENE: A giant snail carries a hut on its back. \nNPC: A Svirfneblin Merchant selling *Potions of Supreme Healing* and bottled surface air.", monsters: ["deep-gnome"] }
+    { roll: [20, 20], name: "The Wandering Emporium", description: "SCENE: A giant snail carries a hut on its back. \nNPC: A Svirfneblin Merchant selling *Potions of Supreme Healing* and bottled surface air.", monsters: ["deep-gnome-svirfneblin"] }
 ];
 
 export const ARACH_TINILITH_TABLE: Encounter[] = [
@@ -76,7 +76,7 @@ export const ARACH_TINILITH_TABLE: Encounter[] = [
     { roll: [11, 12], name: "Drider Outcast", description: "SCENE: A Drider weeps in a side tunnel, cursed by Lolth. \nSOCIAL: He hates the Drow. He can guide the party to a secret entrance to the temple if healed.", monsters: ["drider"] },
     { roll: [13, 14], name: "Phase Spider Ambush", description: "SCENE: The walls ripple. \nAMBUSH: 4 Phase Spiders blink in. They attempt to teleport away with a captive.", monsters: ["phase-spider"] },
     { roll: [15, 16], name: "Matron's Echo", description: "SCENE: A magical projection of Matron Quenthel gives orders to invisible troops. \nINTEL: Reveals her plan to use the 'Soul Gem'.", monsters: [] },
-    { roll: [17, 18], name: "The Spider's Kiss", description: "SCENE: Small spiders rain from the ceiling. \nMECHANIC: 1d4 damage/round until shaken off (Action). Distraction causes Disadvantage on next attack.", monsters: ["swarm-of-spiders"] },
+    { roll: [17, 18], name: "The Spider's Kiss", description: "SCENE: Small spiders rain from the ceiling. \nMECHANIC: 1d4 damage/round until shaken off (Action). Distraction causes Disadvantage on next attack.", monsters: ["giant-spider"] },
     { roll: [19, 19], name: "Demonweb Rift", description: "SCENE: Space tears open. \nTHREAT: Gravity shifts towards the rift. DC 20 Str save or be pulled into the Abyss (Instant Death).", monsters: [] },
     { roll: [20, 20], name: "Avatar's Echo", description: "SCENE: A momentary rift to the Demonweb Pits opens. \nTHREAT: A Balor steps through for 1d4 rounds before being pulled back. Survive.", monsters: ["balor"] }
 ];
@@ -173,7 +173,7 @@ export const SHOP_AMBUSH_TABLE: Encounter[] = [
         roll: [1, 8],
         name: "The Debt of Memory",
         description: "SCENE: A courier delivers a heavy iron box instead of the goods. Inside is the Shopkeeper's severed hand and a note: 'The Black Network cannot be charmed.' \n\nAMBUSH: Ignacio (Zhentarim Lord) steps from invisibility with his personal bodyguard, 'The Wall' (Juggernaut), and a Counterspell Mage. \n\nIGNACIO'S PARANOIA: He believes the Modify Memory was a Psionic/Mind Flayer attack. 'Tell me where the Colony is, Drow-lovers.' \n\nSIDEBAR: The Mercenary PC receives a *Sending*: '7,000 Platinum to walk away. Khelben never needs to know.'",
-        monsters: ["ignacio", "varth", "mage"]
+        monsters: ["ignacio-zhentarim-lord", "varth", "mage"]
     },
     {
         roll: [9, 15],

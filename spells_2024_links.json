@@ -1,0 +1,1957 @@
+[
+  {
+    "name": "Acid Splash",
+    "url": "https://www.aidedd.org/spell/acid-splash",
+    "slug": "acid-splash"
+  },
+  {
+    "name": "Aid",
+    "url": "https://www.aidedd.org/spell/aid",
+    "slug": "aid"
+  },
+  {
+    "name": "Alarm",
+    "url": "https://www.aidedd.org/spell/alarm",
+    "slug": "alarm"
+  },
+  {
+    "name": "Alter Self",
+    "url": "https://www.aidedd.org/spell/alter-self",
+    "slug": "alter-self"
+  },
+  {
+    "name": "Animal Friendship",
+    "url": "https://www.aidedd.org/spell/animal-friendship",
+    "slug": "animal-friendship"
+  },
+  {
+    "name": "Animal Messenger",
+    "url": "https://www.aidedd.org/spell/animal-messenger",
+    "slug": "animal-messenger"
+  },
+  {
+    "name": "Animal Shapes",
+    "url": "https://www.aidedd.org/spell/animal-shapes",
+    "slug": "animal-shapes"
+  },
+  {
+    "name": "Animate Dead",
+    "url": "https://www.aidedd.org/spell/animate-dead",
+    "slug": "animate-dead"
+  },
+  {
+    "name": "Animate Objects",
+    "url": "https://www.aidedd.org/spell/animate-objects",
+    "slug": "animate-objects"
+  },
+  {
+    "name": "Antilife Shell",
+    "url": "https://www.aidedd.org/spell/antilife-shell",
+    "slug": "antilife-shell"
+  },
+  {
+    "name": "Antimagic Field",
+    "url": "https://www.aidedd.org/spell/antimagic-field",
+    "slug": "antimagic-field"
+  },
+  {
+    "name": "Antipathy/Sympathy",
+    "url": "https://www.aidedd.org/spell/antipathy-sympathy",
+    "slug": "antipathy-sympathy"
+  },
+  {
+    "name": "Arcane Eye",
+    "url": "https://www.aidedd.org/spell/arcane-eye",
+    "slug": "arcane-eye"
+  },
+  {
+    "name": "Arcane Gate",
+    "url": "https://www.aidedd.org/spell/arcane-gate",
+    "slug": "arcane-gate"
+  },
+  {
+    "name": "Arcane Lock",
+    "url": "https://www.aidedd.org/spell/arcane-lock",
+    "slug": "arcane-lock"
+  },
+  {
+    "name": "Arcane Vigor",
+    "url": "https://www.aidedd.org/spell/arcane-vigor",
+    "slug": "arcane-vigor"
+  },
+  {
+    "name": "Armor of Agathys",
+    "url": "https://www.aidedd.org/spell/armor-of-agathys",
+    "slug": "armor-of-agathys"
+  },
+  {
+    "name": "Arms of Hadar",
+    "url": "https://www.aidedd.org/spell/arms-of-hadar",
+    "slug": "arms-of-hadar"
+  },
+  {
+    "name": "Astral Projection",
+    "url": "https://www.aidedd.org/spell/astral-projection",
+    "slug": "astral-projection"
+  },
+  {
+    "name": "Augury",
+    "url": "https://www.aidedd.org/spell/augury",
+    "slug": "augury"
+  },
+  {
+    "name": "Aura of Life",
+    "url": "https://www.aidedd.org/spell/aura-of-life",
+    "slug": "aura-of-life"
+  },
+  {
+    "name": "Aura of Purity",
+    "url": "https://www.aidedd.org/spell/aura-of-purity",
+    "slug": "aura-of-purity"
+  },
+  {
+    "name": "Aura of Vitality",
+    "url": "https://www.aidedd.org/spell/aura-of-vitality",
+    "slug": "aura-of-vitality"
+  },
+  {
+    "name": "Awaken",
+    "url": "https://www.aidedd.org/spell/awaken",
+    "slug": "awaken"
+  },
+  {
+    "name": "Bane",
+    "url": "https://www.aidedd.org/spell/bane",
+    "slug": "bane"
+  },
+  {
+    "name": "Banishing Smite",
+    "url": "https://www.aidedd.org/spell/banishing-smite",
+    "slug": "banishing-smite"
+  },
+  {
+    "name": "Banishment",
+    "url": "https://www.aidedd.org/spell/banishment",
+    "slug": "banishment"
+  },
+  {
+    "name": "Barkskin",
+    "url": "https://www.aidedd.org/spell/barkskin",
+    "slug": "barkskin"
+  },
+  {
+    "name": "Beacon of Hope",
+    "url": "https://www.aidedd.org/spell/beacon-of-hope",
+    "slug": "beacon-of-hope"
+  },
+  {
+    "name": "Beast Sense",
+    "url": "https://www.aidedd.org/spell/beast-sense",
+    "slug": "beast-sense"
+  },
+  {
+    "name": "Befuddlement",
+    "url": "https://www.aidedd.org/spell/befuddlement",
+    "slug": "befuddlement"
+  },
+  {
+    "name": "Bestow Curse",
+    "url": "https://www.aidedd.org/spell/bestow-curse",
+    "slug": "bestow-curse"
+  },
+  {
+    "name": "Bigby's Hand",
+    "url": "https://www.aidedd.org/spell/bigby-s-hand",
+    "slug": "bigby-s-hand"
+  },
+  {
+    "name": "Blade Barrier",
+    "url": "https://www.aidedd.org/spell/blade-barrier",
+    "slug": "blade-barrier"
+  },
+  {
+    "name": "Blade Ward",
+    "url": "https://www.aidedd.org/spell/blade-ward",
+    "slug": "blade-ward"
+  },
+  {
+    "name": "Bless",
+    "url": "https://www.aidedd.org/spell/bless",
+    "slug": "bless"
+  },
+  {
+    "name": "Blight",
+    "url": "https://www.aidedd.org/spell/blight",
+    "slug": "blight"
+  },
+  {
+    "name": "Blinding Smite",
+    "url": "https://www.aidedd.org/spell/blinding-smite",
+    "slug": "blinding-smite"
+  },
+  {
+    "name": "Blindness/Deafness",
+    "url": "https://www.aidedd.org/spell/blindness-deafness",
+    "slug": "blindness-deafness"
+  },
+  {
+    "name": "Blink",
+    "url": "https://www.aidedd.org/spell/blink",
+    "slug": "blink"
+  },
+  {
+    "name": "Blur",
+    "url": "https://www.aidedd.org/spell/blur",
+    "slug": "blur"
+  },
+  {
+    "name": "Burning Hands",
+    "url": "https://www.aidedd.org/spell/burning-hands",
+    "slug": "burning-hands"
+  },
+  {
+    "name": "Call Lightning",
+    "url": "https://www.aidedd.org/spell/call-lightning",
+    "slug": "call-lightning"
+  },
+  {
+    "name": "Calm Emotions",
+    "url": "https://www.aidedd.org/spell/calm-emotions",
+    "slug": "calm-emotions"
+  },
+  {
+    "name": "Chain Lightning",
+    "url": "https://www.aidedd.org/spell/chain-lightning",
+    "slug": "chain-lightning"
+  },
+  {
+    "name": "Charm Monster",
+    "url": "https://www.aidedd.org/spell/charm-monster",
+    "slug": "charm-monster"
+  },
+  {
+    "name": "Charm Person",
+    "url": "https://www.aidedd.org/spell/charm-person",
+    "slug": "charm-person"
+  },
+  {
+    "name": "Chill Touch",
+    "url": "https://www.aidedd.org/spell/chill-touch",
+    "slug": "chill-touch"
+  },
+  {
+    "name": "Chromatic Orb",
+    "url": "https://www.aidedd.org/spell/chromatic-orb",
+    "slug": "chromatic-orb"
+  },
+  {
+    "name": "Circle of Death",
+    "url": "https://www.aidedd.org/spell/circle-of-death",
+    "slug": "circle-of-death"
+  },
+  {
+    "name": "Circle of Power",
+    "url": "https://www.aidedd.org/spell/circle-of-power",
+    "slug": "circle-of-power"
+  },
+  {
+    "name": "Clairvoyance",
+    "url": "https://www.aidedd.org/spell/clairvoyance",
+    "slug": "clairvoyance"
+  },
+  {
+    "name": "Clone",
+    "url": "https://www.aidedd.org/spell/clone",
+    "slug": "clone"
+  },
+  {
+    "name": "Cloud of Daggers",
+    "url": "https://www.aidedd.org/spell/cloud-of-daggers",
+    "slug": "cloud-of-daggers"
+  },
+  {
+    "name": "Cloudkill",
+    "url": "https://www.aidedd.org/spell/cloudkill",
+    "slug": "cloudkill"
+  },
+  {
+    "name": "Color Spray",
+    "url": "https://www.aidedd.org/spell/color-spray",
+    "slug": "color-spray"
+  },
+  {
+    "name": "Command",
+    "url": "https://www.aidedd.org/spell/command",
+    "slug": "command"
+  },
+  {
+    "name": "Commune",
+    "url": "https://www.aidedd.org/spell/commune",
+    "slug": "commune"
+  },
+  {
+    "name": "Commune with Nature",
+    "url": "https://www.aidedd.org/spell/commune-with-nature",
+    "slug": "commune-with-nature"
+  },
+  {
+    "name": "Compelled Duel",
+    "url": "https://www.aidedd.org/spell/compelled-duel",
+    "slug": "compelled-duel"
+  },
+  {
+    "name": "Comprehend Languages",
+    "url": "https://www.aidedd.org/spell/comprehend-languages",
+    "slug": "comprehend-languages"
+  },
+  {
+    "name": "Compulsion",
+    "url": "https://www.aidedd.org/spell/compulsion",
+    "slug": "compulsion"
+  },
+  {
+    "name": "Cone of Cold",
+    "url": "https://www.aidedd.org/spell/cone-of-cold",
+    "slug": "cone-of-cold"
+  },
+  {
+    "name": "Confusion",
+    "url": "https://www.aidedd.org/spell/confusion",
+    "slug": "confusion"
+  },
+  {
+    "name": "Conjure Animals",
+    "url": "https://www.aidedd.org/spell/conjure-animals",
+    "slug": "conjure-animals"
+  },
+  {
+    "name": "Conjure Barrage",
+    "url": "https://www.aidedd.org/spell/conjure-barrage",
+    "slug": "conjure-barrage"
+  },
+  {
+    "name": "Conjure Celestial",
+    "url": "https://www.aidedd.org/spell/conjure-celestial",
+    "slug": "conjure-celestial"
+  },
+  {
+    "name": "Conjure Elemental",
+    "url": "https://www.aidedd.org/spell/conjure-elemental",
+    "slug": "conjure-elemental"
+  },
+  {
+    "name": "Conjure Fey",
+    "url": "https://www.aidedd.org/spell/conjure-fey",
+    "slug": "conjure-fey"
+  },
+  {
+    "name": "Conjure Minor Elementals",
+    "url": "https://www.aidedd.org/spell/conjure-minor-elementals",
+    "slug": "conjure-minor-elementals"
+  },
+  {
+    "name": "Conjure Volley",
+    "url": "https://www.aidedd.org/spell/conjure-volley",
+    "slug": "conjure-volley"
+  },
+  {
+    "name": "Conjure Woodland Beings",
+    "url": "https://www.aidedd.org/spell/conjure-woodland-beings",
+    "slug": "conjure-woodland-beings"
+  },
+  {
+    "name": "Contact Other Plane",
+    "url": "https://www.aidedd.org/spell/contact-other-plane",
+    "slug": "contact-other-plane"
+  },
+  {
+    "name": "Contagion",
+    "url": "https://www.aidedd.org/spell/contagion",
+    "slug": "contagion"
+  },
+  {
+    "name": "Contingency",
+    "url": "https://www.aidedd.org/spell/contingency",
+    "slug": "contingency"
+  },
+  {
+    "name": "Continual Flame",
+    "url": "https://www.aidedd.org/spell/continual-flame",
+    "slug": "continual-flame"
+  },
+  {
+    "name": "Control Water",
+    "url": "https://www.aidedd.org/spell/control-water",
+    "slug": "control-water"
+  },
+  {
+    "name": "Control Weather",
+    "url": "https://www.aidedd.org/spell/control-weather",
+    "slug": "control-weather"
+  },
+  {
+    "name": "Cordon of Arrows",
+    "url": "https://www.aidedd.org/spell/cordon-of-arrows",
+    "slug": "cordon-of-arrows"
+  },
+  {
+    "name": "Counterspell",
+    "url": "https://www.aidedd.org/spell/counterspell",
+    "slug": "counterspell"
+  },
+  {
+    "name": "Create Food and Water",
+    "url": "https://www.aidedd.org/spell/create-food-and-water",
+    "slug": "create-food-and-water"
+  },
+  {
+    "name": "Create or Destroy Water",
+    "url": "https://www.aidedd.org/spell/create-or-destroy-water",
+    "slug": "create-or-destroy-water"
+  },
+  {
+    "name": "Create Undead",
+    "url": "https://www.aidedd.org/spell/create-undead",
+    "slug": "create-undead"
+  },
+  {
+    "name": "Creation",
+    "url": "https://www.aidedd.org/spell/creation",
+    "slug": "creation"
+  },
+  {
+    "name": "Crown of Madness",
+    "url": "https://www.aidedd.org/spell/crown-of-madness",
+    "slug": "crown-of-madness"
+  },
+  {
+    "name": "Crusader's Mantle",
+    "url": "https://www.aidedd.org/spell/crusader-s-mantle",
+    "slug": "crusader-s-mantle"
+  },
+  {
+    "name": "Cure Wounds",
+    "url": "https://www.aidedd.org/spell/cure-wounds",
+    "slug": "cure-wounds"
+  },
+  {
+    "name": "Dancing Lights",
+    "url": "https://www.aidedd.org/spell/dancing-lights",
+    "slug": "dancing-lights"
+  },
+  {
+    "name": "Darkness",
+    "url": "https://www.aidedd.org/spell/darkness",
+    "slug": "darkness"
+  },
+  {
+    "name": "Darkvision",
+    "url": "https://www.aidedd.org/spell/darkvision",
+    "slug": "darkvision"
+  },
+  {
+    "name": "Daylight",
+    "url": "https://www.aidedd.org/spell/daylight",
+    "slug": "daylight"
+  },
+  {
+    "name": "Death Ward",
+    "url": "https://www.aidedd.org/spell/death-ward",
+    "slug": "death-ward"
+  },
+  {
+    "name": "Delayed Blast Fireball",
+    "url": "https://www.aidedd.org/spell/delayed-blast-fireball",
+    "slug": "delayed-blast-fireball"
+  },
+  {
+    "name": "Demiplane",
+    "url": "https://www.aidedd.org/spell/demiplane",
+    "slug": "demiplane"
+  },
+  {
+    "name": "Destructive Wave",
+    "url": "https://www.aidedd.org/spell/destructive-wave",
+    "slug": "destructive-wave"
+  },
+  {
+    "name": "Detect Evil and Good",
+    "url": "https://www.aidedd.org/spell/detect-evil-and-good",
+    "slug": "detect-evil-and-good"
+  },
+  {
+    "name": "Detect Magic",
+    "url": "https://www.aidedd.org/spell/detect-magic",
+    "slug": "detect-magic"
+  },
+  {
+    "name": "Detect Poison and Disease",
+    "url": "https://www.aidedd.org/spell/detect-poison-and-disease",
+    "slug": "detect-poison-and-disease"
+  },
+  {
+    "name": "Detect Thoughts",
+    "url": "https://www.aidedd.org/spell/detect-thoughts",
+    "slug": "detect-thoughts"
+  },
+  {
+    "name": "Dimension Door",
+    "url": "https://www.aidedd.org/spell/dimension-door",
+    "slug": "dimension-door"
+  },
+  {
+    "name": "Disguise Self",
+    "url": "https://www.aidedd.org/spell/disguise-self",
+    "slug": "disguise-self"
+  },
+  {
+    "name": "Disintegrate",
+    "url": "https://www.aidedd.org/spell/disintegrate",
+    "slug": "disintegrate"
+  },
+  {
+    "name": "Dispel Evil and Good",
+    "url": "https://www.aidedd.org/spell/dispel-evil-and-good",
+    "slug": "dispel-evil-and-good"
+  },
+  {
+    "name": "Dispel Magic",
+    "url": "https://www.aidedd.org/spell/dispel-magic",
+    "slug": "dispel-magic"
+  },
+  {
+    "name": "Dissonant Whispers",
+    "url": "https://www.aidedd.org/spell/dissonant-whispers",
+    "slug": "dissonant-whispers"
+  },
+  {
+    "name": "Divination",
+    "url": "https://www.aidedd.org/spell/divination",
+    "slug": "divination"
+  },
+  {
+    "name": "Divine Favor",
+    "url": "https://www.aidedd.org/spell/divine-favor",
+    "slug": "divine-favor"
+  },
+  {
+    "name": "Divine Smite",
+    "url": "https://www.aidedd.org/spell/divine-smite",
+    "slug": "divine-smite"
+  },
+  {
+    "name": "Divine Word",
+    "url": "https://www.aidedd.org/spell/divine-word",
+    "slug": "divine-word"
+  },
+  {
+    "name": "Dominate Beast",
+    "url": "https://www.aidedd.org/spell/dominate-beast",
+    "slug": "dominate-beast"
+  },
+  {
+    "name": "Dominate Monster",
+    "url": "https://www.aidedd.org/spell/dominate-monster",
+    "slug": "dominate-monster"
+  },
+  {
+    "name": "Dominate Person",
+    "url": "https://www.aidedd.org/spell/dominate-person",
+    "slug": "dominate-person"
+  },
+  {
+    "name": "Dragon's Breath",
+    "url": "https://www.aidedd.org/spell/dragon-s-breath",
+    "slug": "dragon-s-breath"
+  },
+  {
+    "name": "Drawmij's Instant Summons",
+    "url": "https://www.aidedd.org/spell/drawmij-s-instant-summons",
+    "slug": "drawmij-s-instant-summons"
+  },
+  {
+    "name": "Dream",
+    "url": "https://www.aidedd.org/spell/dream",
+    "slug": "dream"
+  },
+  {
+    "name": "Druidcraft",
+    "url": "https://www.aidedd.org/spell/druidcraft",
+    "slug": "druidcraft"
+  },
+  {
+    "name": "Earthquake",
+    "url": "https://www.aidedd.org/spell/earthquake",
+    "slug": "earthquake"
+  },
+  {
+    "name": "Eldritch Blast",
+    "url": "https://www.aidedd.org/spell/eldritch-blast",
+    "slug": "eldritch-blast"
+  },
+  {
+    "name": "Elemental Weapon",
+    "url": "https://www.aidedd.org/spell/elemental-weapon",
+    "slug": "elemental-weapon"
+  },
+  {
+    "name": "Elementalism",
+    "url": "https://www.aidedd.org/spell/elementalism",
+    "slug": "elementalism"
+  },
+  {
+    "name": "Enhance Ability",
+    "url": "https://www.aidedd.org/spell/enhance-ability",
+    "slug": "enhance-ability"
+  },
+  {
+    "name": "Enlarge/Reduce",
+    "url": "https://www.aidedd.org/spell/enlarge-reduce",
+    "slug": "enlarge-reduce"
+  },
+  {
+    "name": "Ensnaring Strike",
+    "url": "https://www.aidedd.org/spell/ensnaring-strike",
+    "slug": "ensnaring-strike"
+  },
+  {
+    "name": "Entangle",
+    "url": "https://www.aidedd.org/spell/entangle",
+    "slug": "entangle"
+  },
+  {
+    "name": "Enthrall",
+    "url": "https://www.aidedd.org/spell/enthrall",
+    "slug": "enthrall"
+  },
+  {
+    "name": "Etherealness",
+    "url": "https://www.aidedd.org/spell/etherealness",
+    "slug": "etherealness"
+  },
+  {
+    "name": "Evard's Black Tentacles",
+    "url": "https://www.aidedd.org/spell/evard-s-black-tentacles",
+    "slug": "evard-s-black-tentacles"
+  },
+  {
+    "name": "Expeditious Retreat",
+    "url": "https://www.aidedd.org/spell/expeditious-retreat",
+    "slug": "expeditious-retreat"
+  },
+  {
+    "name": "Eyebite",
+    "url": "https://www.aidedd.org/spell/eyebite",
+    "slug": "eyebite"
+  },
+  {
+    "name": "Fabricate",
+    "url": "https://www.aidedd.org/spell/fabricate",
+    "slug": "fabricate"
+  },
+  {
+    "name": "Faerie Fire",
+    "url": "https://www.aidedd.org/spell/faerie-fire",
+    "slug": "faerie-fire"
+  },
+  {
+    "name": "False Life",
+    "url": "https://www.aidedd.org/spell/false-life",
+    "slug": "false-life"
+  },
+  {
+    "name": "Fear",
+    "url": "https://www.aidedd.org/spell/fear",
+    "slug": "fear"
+  },
+  {
+    "name": "Feather Fall",
+    "url": "https://www.aidedd.org/spell/feather-fall",
+    "slug": "feather-fall"
+  },
+  {
+    "name": "Feign Death",
+    "url": "https://www.aidedd.org/spell/feign-death",
+    "slug": "feign-death"
+  },
+  {
+    "name": "Find Familiar",
+    "url": "https://www.aidedd.org/spell/find-familiar",
+    "slug": "find-familiar"
+  },
+  {
+    "name": "Find Steed",
+    "url": "https://www.aidedd.org/spell/find-steed",
+    "slug": "find-steed"
+  },
+  {
+    "name": "Find the Path",
+    "url": "https://www.aidedd.org/spell/find-the-path",
+    "slug": "find-the-path"
+  },
+  {
+    "name": "Find Traps",
+    "url": "https://www.aidedd.org/spell/find-traps",
+    "slug": "find-traps"
+  },
+  {
+    "name": "Finger of Death",
+    "url": "https://www.aidedd.org/spell/finger-of-death",
+    "slug": "finger-of-death"
+  },
+  {
+    "name": "Fire Bolt",
+    "url": "https://www.aidedd.org/spell/fire-bolt",
+    "slug": "fire-bolt"
+  },
+  {
+    "name": "Fire Shield",
+    "url": "https://www.aidedd.org/spell/fire-shield",
+    "slug": "fire-shield"
+  },
+  {
+    "name": "Fire Storm",
+    "url": "https://www.aidedd.org/spell/fire-storm",
+    "slug": "fire-storm"
+  },
+  {
+    "name": "Fireball",
+    "url": "https://www.aidedd.org/spell/fireball",
+    "slug": "fireball"
+  },
+  {
+    "name": "Flame Blade",
+    "url": "https://www.aidedd.org/spell/flame-blade",
+    "slug": "flame-blade"
+  },
+  {
+    "name": "Flame Strike",
+    "url": "https://www.aidedd.org/spell/flame-strike",
+    "slug": "flame-strike"
+  },
+  {
+    "name": "Flaming Sphere",
+    "url": "https://www.aidedd.org/spell/flaming-sphere",
+    "slug": "flaming-sphere"
+  },
+  {
+    "name": "Flesh to Stone",
+    "url": "https://www.aidedd.org/spell/flesh-to-stone",
+    "slug": "flesh-to-stone"
+  },
+  {
+    "name": "Fly",
+    "url": "https://www.aidedd.org/spell/fly",
+    "slug": "fly"
+  },
+  {
+    "name": "Fog Cloud",
+    "url": "https://www.aidedd.org/spell/fog-cloud",
+    "slug": "fog-cloud"
+  },
+  {
+    "name": "Forbiddance",
+    "url": "https://www.aidedd.org/spell/forbiddance",
+    "slug": "forbiddance"
+  },
+  {
+    "name": "Forcecage",
+    "url": "https://www.aidedd.org/spell/forcecage",
+    "slug": "forcecage"
+  },
+  {
+    "name": "Foresight",
+    "url": "https://www.aidedd.org/spell/foresight",
+    "slug": "foresight"
+  },
+  {
+    "name": "Fount of Moonlight",
+    "url": "https://www.aidedd.org/spell/fount-of-moonlight",
+    "slug": "fount-of-moonlight"
+  },
+  {
+    "name": "Freedom of Movement",
+    "url": "https://www.aidedd.org/spell/freedom-of-movement",
+    "slug": "freedom-of-movement"
+  },
+  {
+    "name": "Friends",
+    "url": "https://www.aidedd.org/spell/friends",
+    "slug": "friends"
+  },
+  {
+    "name": "Gaseous Form",
+    "url": "https://www.aidedd.org/spell/gaseous-form",
+    "slug": "gaseous-form"
+  },
+  {
+    "name": "Gate",
+    "url": "https://www.aidedd.org/spell/gate",
+    "slug": "gate"
+  },
+  {
+    "name": "Geas",
+    "url": "https://www.aidedd.org/spell/geas",
+    "slug": "geas"
+  },
+  {
+    "name": "Gentle Repose",
+    "url": "https://www.aidedd.org/spell/gentle-repose",
+    "slug": "gentle-repose"
+  },
+  {
+    "name": "Giant Insect",
+    "url": "https://www.aidedd.org/spell/giant-insect",
+    "slug": "giant-insect"
+  },
+  {
+    "name": "Glibness",
+    "url": "https://www.aidedd.org/spell/glibness",
+    "slug": "glibness"
+  },
+  {
+    "name": "Globe of Invulnerability",
+    "url": "https://www.aidedd.org/spell/globe-of-invulnerability",
+    "slug": "globe-of-invulnerability"
+  },
+  {
+    "name": "Glyph of Warding",
+    "url": "https://www.aidedd.org/spell/glyph-of-warding",
+    "slug": "glyph-of-warding"
+  },
+  {
+    "name": "Goodberry",
+    "url": "https://www.aidedd.org/spell/goodberry",
+    "slug": "goodberry"
+  },
+  {
+    "name": "Grasping Vine",
+    "url": "https://www.aidedd.org/spell/grasping-vine",
+    "slug": "grasping-vine"
+  },
+  {
+    "name": "Grease",
+    "url": "https://www.aidedd.org/spell/grease",
+    "slug": "grease"
+  },
+  {
+    "name": "Greater Invisibility",
+    "url": "https://www.aidedd.org/spell/greater-invisibility",
+    "slug": "greater-invisibility"
+  },
+  {
+    "name": "Greater Restoration",
+    "url": "https://www.aidedd.org/spell/greater-restoration",
+    "slug": "greater-restoration"
+  },
+  {
+    "name": "Guardian of Faith",
+    "url": "https://www.aidedd.org/spell/guardian-of-faith",
+    "slug": "guardian-of-faith"
+  },
+  {
+    "name": "Guards and Wards",
+    "url": "https://www.aidedd.org/spell/guards-and-wards",
+    "slug": "guards-and-wards"
+  },
+  {
+    "name": "Guidance",
+    "url": "https://www.aidedd.org/spell/guidance",
+    "slug": "guidance"
+  },
+  {
+    "name": "Guiding Bolt",
+    "url": "https://www.aidedd.org/spell/guiding-bolt",
+    "slug": "guiding-bolt"
+  },
+  {
+    "name": "Gust of Wind",
+    "url": "https://www.aidedd.org/spell/gust-of-wind",
+    "slug": "gust-of-wind"
+  },
+  {
+    "name": "Hail of Thorns",
+    "url": "https://www.aidedd.org/spell/hail-of-thorns",
+    "slug": "hail-of-thorns"
+  },
+  {
+    "name": "Hallow",
+    "url": "https://www.aidedd.org/spell/hallow",
+    "slug": "hallow"
+  },
+  {
+    "name": "Hallucinatory Terrain",
+    "url": "https://www.aidedd.org/spell/hallucinatory-terrain",
+    "slug": "hallucinatory-terrain"
+  },
+  {
+    "name": "Harm",
+    "url": "https://www.aidedd.org/spell/harm",
+    "slug": "harm"
+  },
+  {
+    "name": "Haste",
+    "url": "https://www.aidedd.org/spell/haste",
+    "slug": "haste"
+  },
+  {
+    "name": "Heal",
+    "url": "https://www.aidedd.org/spell/heal",
+    "slug": "heal"
+  },
+  {
+    "name": "Healing Word",
+    "url": "https://www.aidedd.org/spell/healing-word",
+    "slug": "healing-word"
+  },
+  {
+    "name": "Heat Metal",
+    "url": "https://www.aidedd.org/spell/heat-metal",
+    "slug": "heat-metal"
+  },
+  {
+    "name": "Hellish Rebuke",
+    "url": "https://www.aidedd.org/spell/hellish-rebuke",
+    "slug": "hellish-rebuke"
+  },
+  {
+    "name": "Heroes' Feast",
+    "url": "https://www.aidedd.org/spell/heroes--feast",
+    "slug": "heroes--feast"
+  },
+  {
+    "name": "Heroism",
+    "url": "https://www.aidedd.org/spell/heroism",
+    "slug": "heroism"
+  },
+  {
+    "name": "Hex",
+    "url": "https://www.aidedd.org/spell/hex",
+    "slug": "hex"
+  },
+  {
+    "name": "Hold Monster",
+    "url": "https://www.aidedd.org/spell/hold-monster",
+    "slug": "hold-monster"
+  },
+  {
+    "name": "Hold Person",
+    "url": "https://www.aidedd.org/spell/hold-person",
+    "slug": "hold-person"
+  },
+  {
+    "name": "Holy Aura",
+    "url": "https://www.aidedd.org/spell/holy-aura",
+    "slug": "holy-aura"
+  },
+  {
+    "name": "Hunger of Hadar",
+    "url": "https://www.aidedd.org/spell/hunger-of-hadar",
+    "slug": "hunger-of-hadar"
+  },
+  {
+    "name": "Hunter's Mark",
+    "url": "https://www.aidedd.org/spell/hunter-s-mark",
+    "slug": "hunter-s-mark"
+  },
+  {
+    "name": "Hypnotic Pattern",
+    "url": "https://www.aidedd.org/spell/hypnotic-pattern",
+    "slug": "hypnotic-pattern"
+  },
+  {
+    "name": "Ice Knife",
+    "url": "https://www.aidedd.org/spell/ice-knife",
+    "slug": "ice-knife"
+  },
+  {
+    "name": "Ice Storm",
+    "url": "https://www.aidedd.org/spell/ice-storm",
+    "slug": "ice-storm"
+  },
+  {
+    "name": "Identify",
+    "url": "https://www.aidedd.org/spell/identify",
+    "slug": "identify"
+  },
+  {
+    "name": "Illusory Script",
+    "url": "https://www.aidedd.org/spell/illusory-script",
+    "slug": "illusory-script"
+  },
+  {
+    "name": "Imprisonment",
+    "url": "https://www.aidedd.org/spell/imprisonment",
+    "slug": "imprisonment"
+  },
+  {
+    "name": "Incendiary Cloud",
+    "url": "https://www.aidedd.org/spell/incendiary-cloud",
+    "slug": "incendiary-cloud"
+  },
+  {
+    "name": "Inflict Wounds",
+    "url": "https://www.aidedd.org/spell/inflict-wounds",
+    "slug": "inflict-wounds"
+  },
+  {
+    "name": "Insect Plague",
+    "url": "https://www.aidedd.org/spell/insect-plague",
+    "slug": "insect-plague"
+  },
+  {
+    "name": "Invisibility",
+    "url": "https://www.aidedd.org/spell/invisibility",
+    "slug": "invisibility"
+  },
+  {
+    "name": "Jallarzi's Storm of Radiance",
+    "url": "https://www.aidedd.org/spell/jallarzi-s-storm-of-radiance",
+    "slug": "jallarzi-s-storm-of-radiance"
+  },
+  {
+    "name": "Jump",
+    "url": "https://www.aidedd.org/spell/jump",
+    "slug": "jump"
+  },
+  {
+    "name": "Knock",
+    "url": "https://www.aidedd.org/spell/knock",
+    "slug": "knock"
+  },
+  {
+    "name": "Legend Lore",
+    "url": "https://www.aidedd.org/spell/legend-lore",
+    "slug": "legend-lore"
+  },
+  {
+    "name": "Leomund's Secret Chest",
+    "url": "https://www.aidedd.org/spell/leomund-s-secret-chest",
+    "slug": "leomund-s-secret-chest"
+  },
+  {
+    "name": "Leomund's Tiny Hut",
+    "url": "https://www.aidedd.org/spell/leomund-s-tiny-hut",
+    "slug": "leomund-s-tiny-hut"
+  },
+  {
+    "name": "Lesser Restoration",
+    "url": "https://www.aidedd.org/spell/lesser-restoration",
+    "slug": "lesser-restoration"
+  },
+  {
+    "name": "Levitate",
+    "url": "https://www.aidedd.org/spell/levitate",
+    "slug": "levitate"
+  },
+  {
+    "name": "Light",
+    "url": "https://www.aidedd.org/spell/light",
+    "slug": "light"
+  },
+  {
+    "name": "Lightning Arrow",
+    "url": "https://www.aidedd.org/spell/lightning-arrow",
+    "slug": "lightning-arrow"
+  },
+  {
+    "name": "Lightning Bolt",
+    "url": "https://www.aidedd.org/spell/lightning-bolt",
+    "slug": "lightning-bolt"
+  },
+  {
+    "name": "Locate Animals or Plants",
+    "url": "https://www.aidedd.org/spell/locate-animals-or-plants",
+    "slug": "locate-animals-or-plants"
+  },
+  {
+    "name": "Locate Creature",
+    "url": "https://www.aidedd.org/spell/locate-creature",
+    "slug": "locate-creature"
+  },
+  {
+    "name": "Locate Object",
+    "url": "https://www.aidedd.org/spell/locate-object",
+    "slug": "locate-object"
+  },
+  {
+    "name": "Longstrider",
+    "url": "https://www.aidedd.org/spell/longstrider",
+    "slug": "longstrider"
+  },
+  {
+    "name": "Mage Armor",
+    "url": "https://www.aidedd.org/spell/mage-armor",
+    "slug": "mage-armor"
+  },
+  {
+    "name": "Mage Hand",
+    "url": "https://www.aidedd.org/spell/mage-hand",
+    "slug": "mage-hand"
+  },
+  {
+    "name": "Magic Circle",
+    "url": "https://www.aidedd.org/spell/magic-circle",
+    "slug": "magic-circle"
+  },
+  {
+    "name": "Magic Jar",
+    "url": "https://www.aidedd.org/spell/magic-jar",
+    "slug": "magic-jar"
+  },
+  {
+    "name": "Magic Missile",
+    "url": "https://www.aidedd.org/spell/magic-missile",
+    "slug": "magic-missile"
+  },
+  {
+    "name": "Magic Mouth",
+    "url": "https://www.aidedd.org/spell/magic-mouth",
+    "slug": "magic-mouth"
+  },
+  {
+    "name": "Magic Weapon",
+    "url": "https://www.aidedd.org/spell/magic-weapon",
+    "slug": "magic-weapon"
+  },
+  {
+    "name": "Major Image",
+    "url": "https://www.aidedd.org/spell/major-image",
+    "slug": "major-image"
+  },
+  {
+    "name": "Mass Cure Wounds",
+    "url": "https://www.aidedd.org/spell/mass-cure-wounds",
+    "slug": "mass-cure-wounds"
+  },
+  {
+    "name": "Mass Heal",
+    "url": "https://www.aidedd.org/spell/mass-heal",
+    "slug": "mass-heal"
+  },
+  {
+    "name": "Mass Healing Word",
+    "url": "https://www.aidedd.org/spell/mass-healing-word",
+    "slug": "mass-healing-word"
+  },
+  {
+    "name": "Mass Suggestion",
+    "url": "https://www.aidedd.org/spell/mass-suggestion",
+    "slug": "mass-suggestion"
+  },
+  {
+    "name": "Maze",
+    "url": "https://www.aidedd.org/spell/maze",
+    "slug": "maze"
+  },
+  {
+    "name": "Meld into Stone",
+    "url": "https://www.aidedd.org/spell/meld-into-stone",
+    "slug": "meld-into-stone"
+  },
+  {
+    "name": "Melf's Acid Arrow",
+    "url": "https://www.aidedd.org/spell/melf-s-acid-arrow",
+    "slug": "melf-s-acid-arrow"
+  },
+  {
+    "name": "Mending",
+    "url": "https://www.aidedd.org/spell/mending",
+    "slug": "mending"
+  },
+  {
+    "name": "Message",
+    "url": "https://www.aidedd.org/spell/message",
+    "slug": "message"
+  },
+  {
+    "name": "Meteor Swarm",
+    "url": "https://www.aidedd.org/spell/meteor-swarm",
+    "slug": "meteor-swarm"
+  },
+  {
+    "name": "Mind Blank",
+    "url": "https://www.aidedd.org/spell/mind-blank",
+    "slug": "mind-blank"
+  },
+  {
+    "name": "Mind Sliver",
+    "url": "https://www.aidedd.org/spell/mind-sliver",
+    "slug": "mind-sliver"
+  },
+  {
+    "name": "Mind Spike",
+    "url": "https://www.aidedd.org/spell/mind-spike",
+    "slug": "mind-spike"
+  },
+  {
+    "name": "Minor Illusion",
+    "url": "https://www.aidedd.org/spell/minor-illusion",
+    "slug": "minor-illusion"
+  },
+  {
+    "name": "Mirage Arcane",
+    "url": "https://www.aidedd.org/spell/mirage-arcane",
+    "slug": "mirage-arcane"
+  },
+  {
+    "name": "Mirror Image",
+    "url": "https://www.aidedd.org/spell/mirror-image",
+    "slug": "mirror-image"
+  },
+  {
+    "name": "Mislead",
+    "url": "https://www.aidedd.org/spell/mislead",
+    "slug": "mislead"
+  },
+  {
+    "name": "Misty Step",
+    "url": "https://www.aidedd.org/spell/misty-step",
+    "slug": "misty-step"
+  },
+  {
+    "name": "Modify Memory",
+    "url": "https://www.aidedd.org/spell/modify-memory",
+    "slug": "modify-memory"
+  },
+  {
+    "name": "Moonbeam",
+    "url": "https://www.aidedd.org/spell/moonbeam",
+    "slug": "moonbeam"
+  },
+  {
+    "name": "Mordenkainen's Faithful Hound",
+    "url": "https://www.aidedd.org/spell/mordenkainen-s-faithful-hound",
+    "slug": "mordenkainen-s-faithful-hound"
+  },
+  {
+    "name": "Mordenkainen's Magnificent Mansion",
+    "url": "https://www.aidedd.org/spell/mordenkainen-s-magnificent-mansion",
+    "slug": "mordenkainen-s-magnificent-mansion"
+  },
+  {
+    "name": "Mordenkainen's Private Sanctum",
+    "url": "https://www.aidedd.org/spell/mordenkainen-s-private-sanctum",
+    "slug": "mordenkainen-s-private-sanctum"
+  },
+  {
+    "name": "Mordenkainen's Sword",
+    "url": "https://www.aidedd.org/spell/mordenkainen-s-sword",
+    "slug": "mordenkainen-s-sword"
+  },
+  {
+    "name": "Move Earth",
+    "url": "https://www.aidedd.org/spell/move-earth",
+    "slug": "move-earth"
+  },
+  {
+    "name": "Nondetection",
+    "url": "https://www.aidedd.org/spell/nondetection",
+    "slug": "nondetection"
+  },
+  {
+    "name": "Nystul's Magic Aura",
+    "url": "https://www.aidedd.org/spell/nystul-s-magic-aura",
+    "slug": "nystul-s-magic-aura"
+  },
+  {
+    "name": "Otiluke's Freezing Sphere",
+    "url": "https://www.aidedd.org/spell/otiluke-s-freezing-sphere",
+    "slug": "otiluke-s-freezing-sphere"
+  },
+  {
+    "name": "Otiluke's Resilient Sphere",
+    "url": "https://www.aidedd.org/spell/otiluke-s-resilient-sphere",
+    "slug": "otiluke-s-resilient-sphere"
+  },
+  {
+    "name": "Otto's Irresistible Dance",
+    "url": "https://www.aidedd.org/spell/otto-s-irresistible-dance",
+    "slug": "otto-s-irresistible-dance"
+  },
+  {
+    "name": "Pass without Trace",
+    "url": "https://www.aidedd.org/spell/pass-without-trace",
+    "slug": "pass-without-trace"
+  },
+  {
+    "name": "Passwall",
+    "url": "https://www.aidedd.org/spell/passwall",
+    "slug": "passwall"
+  },
+  {
+    "name": "Phantasmal Force",
+    "url": "https://www.aidedd.org/spell/phantasmal-force",
+    "slug": "phantasmal-force"
+  },
+  {
+    "name": "Phantasmal Killer",
+    "url": "https://www.aidedd.org/spell/phantasmal-killer",
+    "slug": "phantasmal-killer"
+  },
+  {
+    "name": "Phantom Steed",
+    "url": "https://www.aidedd.org/spell/phantom-steed",
+    "slug": "phantom-steed"
+  },
+  {
+    "name": "Planar Ally",
+    "url": "https://www.aidedd.org/spell/planar-ally",
+    "slug": "planar-ally"
+  },
+  {
+    "name": "Planar Binding",
+    "url": "https://www.aidedd.org/spell/planar-binding",
+    "slug": "planar-binding"
+  },
+  {
+    "name": "Plane Shift",
+    "url": "https://www.aidedd.org/spell/plane-shift",
+    "slug": "plane-shift"
+  },
+  {
+    "name": "Plant Growth",
+    "url": "https://www.aidedd.org/spell/plant-growth",
+    "slug": "plant-growth"
+  },
+  {
+    "name": "Poison Spray",
+    "url": "https://www.aidedd.org/spell/poison-spray",
+    "slug": "poison-spray"
+  },
+  {
+    "name": "Polymorph",
+    "url": "https://www.aidedd.org/spell/polymorph",
+    "slug": "polymorph"
+  },
+  {
+    "name": "Power Word Fortify",
+    "url": "https://www.aidedd.org/spell/power-word-fortify",
+    "slug": "power-word-fortify"
+  },
+  {
+    "name": "Power Word Heal",
+    "url": "https://www.aidedd.org/spell/power-word-heal",
+    "slug": "power-word-heal"
+  },
+  {
+    "name": "Power Word Kill",
+    "url": "https://www.aidedd.org/spell/power-word-kill",
+    "slug": "power-word-kill"
+  },
+  {
+    "name": "Power Word Stun",
+    "url": "https://www.aidedd.org/spell/power-word-stun",
+    "slug": "power-word-stun"
+  },
+  {
+    "name": "Prayer of Healing",
+    "url": "https://www.aidedd.org/spell/prayer-of-healing",
+    "slug": "prayer-of-healing"
+  },
+  {
+    "name": "Prestidigitation",
+    "url": "https://www.aidedd.org/spell/prestidigitation",
+    "slug": "prestidigitation"
+  },
+  {
+    "name": "Prismatic Spray",
+    "url": "https://www.aidedd.org/spell/prismatic-spray",
+    "slug": "prismatic-spray"
+  },
+  {
+    "name": "Prismatic Wall",
+    "url": "https://www.aidedd.org/spell/prismatic-wall",
+    "slug": "prismatic-wall"
+  },
+  {
+    "name": "Produce Flame",
+    "url": "https://www.aidedd.org/spell/produce-flame",
+    "slug": "produce-flame"
+  },
+  {
+    "name": "Programmed Illusion",
+    "url": "https://www.aidedd.org/spell/programmed-illusion",
+    "slug": "programmed-illusion"
+  },
+  {
+    "name": "Project Image",
+    "url": "https://www.aidedd.org/spell/project-image",
+    "slug": "project-image"
+  },
+  {
+    "name": "Protection from Energy",
+    "url": "https://www.aidedd.org/spell/protection-from-energy",
+    "slug": "protection-from-energy"
+  },
+  {
+    "name": "Protection from Evil and Good",
+    "url": "https://www.aidedd.org/spell/protection-from-evil-and-good",
+    "slug": "protection-from-evil-and-good"
+  },
+  {
+    "name": "Protection from Poison",
+    "url": "https://www.aidedd.org/spell/protection-from-poison",
+    "slug": "protection-from-poison"
+  },
+  {
+    "name": "Purify Food and Drink",
+    "url": "https://www.aidedd.org/spell/purify-food-and-drink",
+    "slug": "purify-food-and-drink"
+  },
+  {
+    "name": "Raise Dead",
+    "url": "https://www.aidedd.org/spell/raise-dead",
+    "slug": "raise-dead"
+  },
+  {
+    "name": "Rary's Telepathic Bond",
+    "url": "https://www.aidedd.org/spell/rary-s-telepathic-bond",
+    "slug": "rary-s-telepathic-bond"
+  },
+  {
+    "name": "Ray of Enfeeblement",
+    "url": "https://www.aidedd.org/spell/ray-of-enfeeblement",
+    "slug": "ray-of-enfeeblement"
+  },
+  {
+    "name": "Ray of Frost",
+    "url": "https://www.aidedd.org/spell/ray-of-frost",
+    "slug": "ray-of-frost"
+  },
+  {
+    "name": "Ray of Sickness",
+    "url": "https://www.aidedd.org/spell/ray-of-sickness",
+    "slug": "ray-of-sickness"
+  },
+  {
+    "name": "Regenerate",
+    "url": "https://www.aidedd.org/spell/regenerate",
+    "slug": "regenerate"
+  },
+  {
+    "name": "Reincarnate",
+    "url": "https://www.aidedd.org/spell/reincarnate",
+    "slug": "reincarnate"
+  },
+  {
+    "name": "Remove Curse",
+    "url": "https://www.aidedd.org/spell/remove-curse",
+    "slug": "remove-curse"
+  },
+  {
+    "name": "Resistance",
+    "url": "https://www.aidedd.org/spell/resistance",
+    "slug": "resistance"
+  },
+  {
+    "name": "Resurrection",
+    "url": "https://www.aidedd.org/spell/resurrection",
+    "slug": "resurrection"
+  },
+  {
+    "name": "Reverse Gravity",
+    "url": "https://www.aidedd.org/spell/reverse-gravity",
+    "slug": "reverse-gravity"
+  },
+  {
+    "name": "Revivify",
+    "url": "https://www.aidedd.org/spell/revivify",
+    "slug": "revivify"
+  },
+  {
+    "name": "Rope Trick",
+    "url": "https://www.aidedd.org/spell/rope-trick",
+    "slug": "rope-trick"
+  },
+  {
+    "name": "Sacred Flame",
+    "url": "https://www.aidedd.org/spell/sacred-flame",
+    "slug": "sacred-flame"
+  },
+  {
+    "name": "Sanctuary",
+    "url": "https://www.aidedd.org/spell/sanctuary",
+    "slug": "sanctuary"
+  },
+  {
+    "name": "Scorching Ray",
+    "url": "https://www.aidedd.org/spell/scorching-ray",
+    "slug": "scorching-ray"
+  },
+  {
+    "name": "Scrying",
+    "url": "https://www.aidedd.org/spell/scrying",
+    "slug": "scrying"
+  },
+  {
+    "name": "Searing Smite",
+    "url": "https://www.aidedd.org/spell/searing-smite",
+    "slug": "searing-smite"
+  },
+  {
+    "name": "See Invisibility",
+    "url": "https://www.aidedd.org/spell/see-invisibility",
+    "slug": "see-invisibility"
+  },
+  {
+    "name": "Seeming",
+    "url": "https://www.aidedd.org/spell/seeming",
+    "slug": "seeming"
+  },
+  {
+    "name": "Sending",
+    "url": "https://www.aidedd.org/spell/sending",
+    "slug": "sending"
+  },
+  {
+    "name": "Sequester",
+    "url": "https://www.aidedd.org/spell/sequester",
+    "slug": "sequester"
+  },
+  {
+    "name": "Shapechange",
+    "url": "https://www.aidedd.org/spell/shapechange",
+    "slug": "shapechange"
+  },
+  {
+    "name": "Shatter",
+    "url": "https://www.aidedd.org/spell/shatter",
+    "slug": "shatter"
+  },
+  {
+    "name": "Shield",
+    "url": "https://www.aidedd.org/spell/shield",
+    "slug": "shield"
+  },
+  {
+    "name": "Shield of Faith",
+    "url": "https://www.aidedd.org/spell/shield-of-faith",
+    "slug": "shield-of-faith"
+  },
+  {
+    "name": "Shillelagh",
+    "url": "https://www.aidedd.org/spell/shillelagh",
+    "slug": "shillelagh"
+  },
+  {
+    "name": "Shining Smite",
+    "url": "https://www.aidedd.org/spell/shining-smite",
+    "slug": "shining-smite"
+  },
+  {
+    "name": "Shocking Grasp",
+    "url": "https://www.aidedd.org/spell/shocking-grasp",
+    "slug": "shocking-grasp"
+  },
+  {
+    "name": "Silence",
+    "url": "https://www.aidedd.org/spell/silence",
+    "slug": "silence"
+  },
+  {
+    "name": "Silent Image",
+    "url": "https://www.aidedd.org/spell/silent-image",
+    "slug": "silent-image"
+  },
+  {
+    "name": "Simulacrum",
+    "url": "https://www.aidedd.org/spell/simulacrum",
+    "slug": "simulacrum"
+  },
+  {
+    "name": "Sleep",
+    "url": "https://www.aidedd.org/spell/sleep",
+    "slug": "sleep"
+  },
+  {
+    "name": "Sleet Storm",
+    "url": "https://www.aidedd.org/spell/sleet-storm",
+    "slug": "sleet-storm"
+  },
+  {
+    "name": "Slow",
+    "url": "https://www.aidedd.org/spell/slow",
+    "slug": "slow"
+  },
+  {
+    "name": "Sorcerous Burst",
+    "url": "https://www.aidedd.org/spell/sorcerous-burst",
+    "slug": "sorcerous-burst"
+  },
+  {
+    "name": "Spare the Dying",
+    "url": "https://www.aidedd.org/spell/spare-the-dying",
+    "slug": "spare-the-dying"
+  },
+  {
+    "name": "Speak with Animals",
+    "url": "https://www.aidedd.org/spell/speak-with-animals",
+    "slug": "speak-with-animals"
+  },
+  {
+    "name": "Speak with Dead",
+    "url": "https://www.aidedd.org/spell/speak-with-dead",
+    "slug": "speak-with-dead"
+  },
+  {
+    "name": "Speak with Plants",
+    "url": "https://www.aidedd.org/spell/speak-with-plants",
+    "slug": "speak-with-plants"
+  },
+  {
+    "name": "Spider Climb",
+    "url": "https://www.aidedd.org/spell/spider-climb",
+    "slug": "spider-climb"
+  },
+  {
+    "name": "Spike Growth",
+    "url": "https://www.aidedd.org/spell/spike-growth",
+    "slug": "spike-growth"
+  },
+  {
+    "name": "Spirit Guardians",
+    "url": "https://www.aidedd.org/spell/spirit-guardians",
+    "slug": "spirit-guardians"
+  },
+  {
+    "name": "Spiritual Weapon",
+    "url": "https://www.aidedd.org/spell/spiritual-weapon",
+    "slug": "spiritual-weapon"
+  },
+  {
+    "name": "Staggering Smite",
+    "url": "https://www.aidedd.org/spell/staggering-smite",
+    "slug": "staggering-smite"
+  },
+  {
+    "name": "Starry Wisp",
+    "url": "https://www.aidedd.org/spell/starry-wisp",
+    "slug": "starry-wisp"
+  },
+  {
+    "name": "Steel Wind Strike",
+    "url": "https://www.aidedd.org/spell/steel-wind-strike",
+    "slug": "steel-wind-strike"
+  },
+  {
+    "name": "Stinking Cloud",
+    "url": "https://www.aidedd.org/spell/stinking-cloud",
+    "slug": "stinking-cloud"
+  },
+  {
+    "name": "Stone Shape",
+    "url": "https://www.aidedd.org/spell/stone-shape",
+    "slug": "stone-shape"
+  },
+  {
+    "name": "Stoneskin",
+    "url": "https://www.aidedd.org/spell/stoneskin",
+    "slug": "stoneskin"
+  },
+  {
+    "name": "Storm of Vengeance",
+    "url": "https://www.aidedd.org/spell/storm-of-vengeance",
+    "slug": "storm-of-vengeance"
+  },
+  {
+    "name": "Suggestion",
+    "url": "https://www.aidedd.org/spell/suggestion",
+    "slug": "suggestion"
+  },
+  {
+    "name": "Summon Aberration",
+    "url": "https://www.aidedd.org/spell/summon-aberration",
+    "slug": "summon-aberration"
+  },
+  {
+    "name": "Summon Beast",
+    "url": "https://www.aidedd.org/spell/summon-beast",
+    "slug": "summon-beast"
+  },
+  {
+    "name": "Summon Celestial",
+    "url": "https://www.aidedd.org/spell/summon-celestial",
+    "slug": "summon-celestial"
+  },
+  {
+    "name": "Summon Construct",
+    "url": "https://www.aidedd.org/spell/summon-construct",
+    "slug": "summon-construct"
+  },
+  {
+    "name": "Summon Dragon",
+    "url": "https://www.aidedd.org/spell/summon-dragon",
+    "slug": "summon-dragon"
+  },
+  {
+    "name": "Summon Elemental",
+    "url": "https://www.aidedd.org/spell/summon-elemental",
+    "slug": "summon-elemental"
+  },
+  {
+    "name": "Summon Fey",
+    "url": "https://www.aidedd.org/spell/summon-fey",
+    "slug": "summon-fey"
+  },
+  {
+    "name": "Summon Fiend",
+    "url": "https://www.aidedd.org/spell/summon-fiend",
+    "slug": "summon-fiend"
+  },
+  {
+    "name": "Summon Undead",
+    "url": "https://www.aidedd.org/spell/summon-undead",
+    "slug": "summon-undead"
+  },
+  {
+    "name": "Sunbeam",
+    "url": "https://www.aidedd.org/spell/sunbeam",
+    "slug": "sunbeam"
+  },
+  {
+    "name": "Sunburst",
+    "url": "https://www.aidedd.org/spell/sunburst",
+    "slug": "sunburst"
+  },
+  {
+    "name": "Swift Quiver",
+    "url": "https://www.aidedd.org/spell/swift-quiver",
+    "slug": "swift-quiver"
+  },
+  {
+    "name": "Symbol",
+    "url": "https://www.aidedd.org/spell/symbol",
+    "slug": "symbol"
+  },
+  {
+    "name": "Synaptic Static",
+    "url": "https://www.aidedd.org/spell/synaptic-static",
+    "slug": "synaptic-static"
+  },
+  {
+    "name": "Tasha's Bubbling Cauldron",
+    "url": "https://www.aidedd.org/spell/tasha-s-bubbling-cauldron",
+    "slug": "tasha-s-bubbling-cauldron"
+  },
+  {
+    "name": "Tasha's Hideous Laughter",
+    "url": "https://www.aidedd.org/spell/tasha-s-hideous-laughter",
+    "slug": "tasha-s-hideous-laughter"
+  },
+  {
+    "name": "Telekinesis",
+    "url": "https://www.aidedd.org/spell/telekinesis",
+    "slug": "telekinesis"
+  },
+  {
+    "name": "Telepathy",
+    "url": "https://www.aidedd.org/spell/telepathy",
+    "slug": "telepathy"
+  },
+  {
+    "name": "Teleport",
+    "url": "https://www.aidedd.org/spell/teleport",
+    "slug": "teleport"
+  },
+  {
+    "name": "Teleportation Circle",
+    "url": "https://www.aidedd.org/spell/teleportation-circle",
+    "slug": "teleportation-circle"
+  },
+  {
+    "name": "Tenser's Floating Disk",
+    "url": "https://www.aidedd.org/spell/tenser-s-floating-disk",
+    "slug": "tenser-s-floating-disk"
+  },
+  {
+    "name": "Thaumaturgy",
+    "url": "https://www.aidedd.org/spell/thaumaturgy",
+    "slug": "thaumaturgy"
+  },
+  {
+    "name": "Thorn Whip",
+    "url": "https://www.aidedd.org/spell/thorn-whip",
+    "slug": "thorn-whip"
+  },
+  {
+    "name": "Thunderclap",
+    "url": "https://www.aidedd.org/spell/thunderclap",
+    "slug": "thunderclap"
+  },
+  {
+    "name": "Thunderous Smite",
+    "url": "https://www.aidedd.org/spell/thunderous-smite",
+    "slug": "thunderous-smite"
+  },
+  {
+    "name": "Thunderwave",
+    "url": "https://www.aidedd.org/spell/thunderwave",
+    "slug": "thunderwave"
+  },
+  {
+    "name": "Time Stop",
+    "url": "https://www.aidedd.org/spell/time-stop",
+    "slug": "time-stop"
+  },
+  {
+    "name": "Toll the Dead",
+    "url": "https://www.aidedd.org/spell/toll-the-dead",
+    "slug": "toll-the-dead"
+  },
+  {
+    "name": "Tongues",
+    "url": "https://www.aidedd.org/spell/tongues",
+    "slug": "tongues"
+  },
+  {
+    "name": "Transport via Plants",
+    "url": "https://www.aidedd.org/spell/transport-via-plants",
+    "slug": "transport-via-plants"
+  },
+  {
+    "name": "Tree Stride",
+    "url": "https://www.aidedd.org/spell/tree-stride",
+    "slug": "tree-stride"
+  },
+  {
+    "name": "True Polymorph",
+    "url": "https://www.aidedd.org/spell/true-polymorph",
+    "slug": "true-polymorph"
+  },
+  {
+    "name": "True Resurrection",
+    "url": "https://www.aidedd.org/spell/true-resurrection",
+    "slug": "true-resurrection"
+  },
+  {
+    "name": "True Seeing",
+    "url": "https://www.aidedd.org/spell/true-seeing",
+    "slug": "true-seeing"
+  },
+  {
+    "name": "True Strike",
+    "url": "https://www.aidedd.org/spell/true-strike",
+    "slug": "true-strike"
+  },
+  {
+    "name": "Tsunami",
+    "url": "https://www.aidedd.org/spell/tsunami",
+    "slug": "tsunami"
+  },
+  {
+    "name": "Unseen Servant",
+    "url": "https://www.aidedd.org/spell/unseen-servant",
+    "slug": "unseen-servant"
+  },
+  {
+    "name": "Vampiric Touch",
+    "url": "https://www.aidedd.org/spell/vampiric-touch",
+    "slug": "vampiric-touch"
+  },
+  {
+    "name": "Vicious Mockery",
+    "url": "https://www.aidedd.org/spell/vicious-mockery",
+    "slug": "vicious-mockery"
+  },
+  {
+    "name": "Vitriolic Sphere",
+    "url": "https://www.aidedd.org/spell/vitriolic-sphere",
+    "slug": "vitriolic-sphere"
+  },
+  {
+    "name": "Wall of Fire",
+    "url": "https://www.aidedd.org/spell/wall-of-fire",
+    "slug": "wall-of-fire"
+  },
+  {
+    "name": "Wall of Force",
+    "url": "https://www.aidedd.org/spell/wall-of-force",
+    "slug": "wall-of-force"
+  },
+  {
+    "name": "Wall of Ice",
+    "url": "https://www.aidedd.org/spell/wall-of-ice",
+    "slug": "wall-of-ice"
+  },
+  {
+    "name": "Wall of Stone",
+    "url": "https://www.aidedd.org/spell/wall-of-stone",
+    "slug": "wall-of-stone"
+  },
+  {
+    "name": "Wall of Thorns",
+    "url": "https://www.aidedd.org/spell/wall-of-thorns",
+    "slug": "wall-of-thorns"
+  },
+  {
+    "name": "Warding Bond",
+    "url": "https://www.aidedd.org/spell/warding-bond",
+    "slug": "warding-bond"
+  },
+  {
+    "name": "Water Breathing",
+    "url": "https://www.aidedd.org/spell/water-breathing",
+    "slug": "water-breathing"
+  },
+  {
+    "name": "Water Walk",
+    "url": "https://www.aidedd.org/spell/water-walk",
+    "slug": "water-walk"
+  },
+  {
+    "name": "Web",
+    "url": "https://www.aidedd.org/spell/web",
+    "slug": "web"
+  },
+  {
+    "name": "Weird",
+    "url": "https://www.aidedd.org/spell/weird",
+    "slug": "weird"
+  },
+  {
+    "name": "Wind Walk",
+    "url": "https://www.aidedd.org/spell/wind-walk",
+    "slug": "wind-walk"
+  },
+  {
+    "name": "Wind Wall",
+    "url": "https://www.aidedd.org/spell/wind-wall",
+    "slug": "wind-wall"
+  },
+  {
+    "name": "Wish",
+    "url": "https://www.aidedd.org/spell/wish",
+    "slug": "wish"
+  },
+  {
+    "name": "Witch Bolt",
+    "url": "https://www.aidedd.org/spell/witch-bolt",
+    "slug": "witch-bolt"
+  },
+  {
+    "name": "Word of Radiance",
+    "url": "https://www.aidedd.org/spell/word-of-radiance",
+    "slug": "word-of-radiance"
+  },
+  {
+    "name": "Word of Recall",
+    "url": "https://www.aidedd.org/spell/word-of-recall",
+    "slug": "word-of-recall"
+  },
+  {
+    "name": "Wrathful Smite",
+    "url": "https://www.aidedd.org/spell/wrathful-smite",
+    "slug": "wrathful-smite"
+  },
+  {
+    "name": "Yolande's Regal Presence",
+    "url": "https://www.aidedd.org/spell/yolande-s-regal-presence",
+    "slug": "yolande-s-regal-presence"
+  },
+  {
+    "name": "Zone of Truth",
+    "url": "https://www.aidedd.org/spell/zone-of-truth",
+    "slug": "zone-of-truth"
+  }
+]

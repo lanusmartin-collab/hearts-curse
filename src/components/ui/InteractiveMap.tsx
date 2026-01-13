@@ -13,6 +13,7 @@ export type MapNode = {
     status?: "active" | "completed" | "locked";
     description?: string;
     link?: string;
+    monsters?: string[];
 };
 
 type InteractiveMapProps = {

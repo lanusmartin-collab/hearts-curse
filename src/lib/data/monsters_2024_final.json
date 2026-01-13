@@ -9911,6 +9911,59 @@
     "source": "AideDD_Expansion"
   },
   {
+    "name": "Corpse Gatherer",
+    "slug": "corpse-gatherer",
+    "cr": 13,
+    "cr_display": "13",
+    "type": "Undead",
+    "size": "Huge",
+    "ac": 19,
+    "ac_display": "19",
+    "hp": 220,
+    "hp_display": "220",
+    "speed": "40 ft.",
+    "stats": {
+      "str": 26,
+      "dex": 10,
+      "con": 24,
+      "int": 6,
+      "wis": 10,
+      "cha": 6
+    },
+    "alignment": "Chaotic Evil",
+    "saves": "",
+    "skills": "",
+    "immunities": "",
+    "resistances": "",
+    "conditionImmunities": "",
+    "senses": "",
+    "languages": "",
+    "description": "",
+    "initiative": 0,
+    "traits": [
+      {
+        "name": "Corpse Armor",
+        "desc": "Has 50 temp HP at start of combat."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Slam",
+        "desc": "+12 to hit. Hit: 4d12+8 bludgeoning."
+      },
+      {
+        "name": "Swallow Soul",
+        "desc": "Grapple check. If successful, target takes 6d6 necrotic."
+      }
+    ],
+    "legendary": [],
+    "source_url": "",
+    "image_url": null,
+    "has_image": false,
+    "image_path": null,
+    "source": "Custom"
+  },
+  {
     "name": "Couatl",
     "slug": "couatl",
     "cr": 4,
@@ -19481,6 +19534,67 @@
     "source": "AideDD_Expansion"
   },
   {
+    "name": "General Varth",
+    "slug": "varth",
+    "cr": 17,
+    "cr_display": "17",
+    "type": "Undead (Death Knight)",
+    "size": "Medium",
+    "ac": 20,
+    "ac_display": "20",
+    "hp": 180,
+    "hp_display": "180",
+    "speed": "30 ft.",
+    "stats": {
+      "str": 20,
+      "dex": 11,
+      "con": 20,
+      "int": 12,
+      "wis": 16,
+      "cha": 18
+    },
+    "alignment": "Lawful Evil",
+    "saves": "Dex +6, Wis +9, Cha +10",
+    "skills": "",
+    "immunities": "Necrotic, Poison",
+    "resistances": "",
+    "conditionImmunities": "",
+    "senses": "",
+    "languages": "",
+    "description": "",
+    "initiative": 0,
+    "traits": [
+      {
+        "name": "Magic Resistance",
+        "desc": "Advantage on saves against spells."
+      },
+      {
+        "name": "Marshal Undead",
+        "desc": "Undead within 60 ft have advantage on saves vs Turn Undead."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "Three attacks with Longsword."
+      },
+      {
+        "name": "Longsword",
+        "desc": "+11 to hit, 1d8+5 slashing + 4d8 necrotic."
+      },
+      {
+        "name": "Hellfire Orb (1/Day)",
+        "desc": "10d6 fire + 10d6 necrotic damage in 20ft radius (DC 18 Dex half)."
+      }
+    ],
+    "legendary": [],
+    "source_url": "",
+    "image_url": null,
+    "has_image": false,
+    "image_path": null,
+    "source": "Custom"
+  },
+  {
     "name": "Geryon",
     "slug": "geryon",
     "cr": 22,
@@ -28078,6 +28192,76 @@
     "source": "AideDD_Expansion"
   },
   {
+    "name": "Larloch the Shadow King",
+    "slug": "larloch",
+    "cr": 30,
+    "cr_display": "30",
+    "type": "Undead (Lich)",
+    "size": "Medium",
+    "ac": 22,
+    "ac_display": "22",
+    "hp": 300,
+    "hp_display": "300",
+    "speed": "30 ft., fly 60 ft. (hover)",
+    "stats": {
+      "str": 10,
+      "dex": 16,
+      "con": 22,
+      "int": 30,
+      "wis": 24,
+      "cha": 20
+    },
+    "alignment": "Lawful Evil",
+    "saves": "Con +13, Int +17, Wis +14",
+    "skills": "Arcana +24, History +24, Insight +14, Perception +14",
+    "immunities": "Necrotic, Poison; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks",
+    "resistances": "",
+    "conditionImmunities": "Charmed, Exhaustion, Frightened, Paralyzed, Poisoned",
+    "senses": "",
+    "languages": "",
+    "description": "",
+    "initiative": 3,
+    "traits": [
+      {
+        "name": "Legendary Resistance (5/Day)",
+        "desc": "Succeeds on failed save."
+      },
+      {
+        "name": "Master of Magic",
+        "desc": "Larloch can concentrate on two spells at once. He has advantage on saves against spells."
+      },
+      {
+        "name": "Spellcasting",
+        "desc": "Larloch is a 20th-level spellcaster. Spell save DC 25, +17 to hit.\nCantrips: Mage Hand, Prestidigitation, Ray of Frost. 1st-9th: All Wizard spells prepared."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Paralyzing Touch",
+        "desc": "Melee Spell Attack: +17 to hit, reach 5 ft. Hit: 3d6 cold damage. DC 20 Con save or be paralyzed for 1 minute."
+      },
+      {
+        "name": "Finger of Death (At Will)",
+        "desc": "Casts Finger of Death. If target dies, it rises as a Zombie under his control."
+      }
+    ],
+    "legendary": [
+      {
+        "name": "Cast Spell",
+        "desc": "Casts a spell of 5th level or lower."
+      },
+      {
+        "name": "Frightful Gaze",
+        "desc": "One creature within 60 ft must succeed DC 20 Wis save or be Frightened."
+      }
+    ],
+    "source_url": "",
+    "image_url": null,
+    "has_image": false,
+    "image_path": null,
+    "source": "Custom"
+  },
+  {
     "name": "Lemure",
     "slug": "lemure",
     "cr": 0,
@@ -28454,6 +28638,54 @@
     "has_image": true,
     "image_path": "https://www.aidedd.org/dnd/images/liondrake.jpg",
     "source": "AideDD_Expansion"
+  },
+  {
+    "name": "Living Cloudkill",
+    "slug": "living-cloudkill",
+    "cr": 7,
+    "cr_display": "7",
+    "type": "Construct",
+    "size": "Large",
+    "ac": 15,
+    "ac_display": "15",
+    "hp": 110,
+    "hp_display": "110",
+    "speed": "20 ft., fly 20 ft. (hover)",
+    "stats": {
+      "str": 14,
+      "dex": 20,
+      "con": 14,
+      "int": 1,
+      "wis": 10,
+      "cha": 1
+    },
+    "alignment": "Unaligned",
+    "saves": "",
+    "skills": "",
+    "immunities": "Poison, Acid",
+    "resistances": "",
+    "conditionImmunities": "",
+    "senses": "",
+    "languages": "",
+    "description": "",
+    "initiative": 5,
+    "traits": [
+      {
+        "name": "Amorphous",
+        "desc": "Move through 1-inch space."
+      },
+      {
+        "name": "Poison Form",
+        "desc": "Creatures within 10 ft take 5d8 poison damage start of turn (Con save DC 15 half)."
+      }
+    ],
+    "actions": [],
+    "legendary": [],
+    "source_url": "",
+    "image_url": null,
+    "has_image": false,
+    "image_path": null,
+    "source": "Custom"
   },
   {
     "name": "Lizard",
@@ -29782,6 +30014,54 @@
     "has_image": true,
     "image_path": "https://www.aidedd.org/dnd/images/maw-of-yeenoghu.jpg",
     "source": "AideDD_Expansion"
+  },
+  {
+    "name": "Maximilian (The Auditor)",
+    "slug": "auditor",
+    "cr": 8,
+    "cr_display": "8",
+    "type": "Humanoid",
+    "size": "Medium",
+    "ac": 15,
+    "ac_display": "15",
+    "hp": 90,
+    "hp_display": "90",
+    "speed": "30 ft.",
+    "stats": {
+      "str": 10,
+      "dex": 14,
+      "con": 14,
+      "int": 18,
+      "wis": 16,
+      "cha": 12
+    },
+    "alignment": "Lawful Evil",
+    "saves": "",
+    "skills": "",
+    "immunities": "",
+    "resistances": "",
+    "conditionImmunities": "",
+    "senses": "",
+    "languages": "",
+    "description": "",
+    "initiative": 2,
+    "traits": [],
+    "actions": [
+      {
+        "name": "Audit",
+        "desc": "Target within 60 ft must make DC 16 Cha save or be Silenced for 1 minute."
+      },
+      {
+        "name": "Counterspell",
+        "desc": "Reaction to interrupt a spell."
+      }
+    ],
+    "legendary": [],
+    "source_url": "",
+    "image_url": null,
+    "has_image": false,
+    "image_path": null,
+    "source": "Red Ledger"
   },
   {
     "name": "Meazel",
@@ -41870,6 +42150,58 @@
     "source": "AideDD_Expansion"
   },
   {
+    "name": "The Cleaner (Monk)",
+    "slug": "cleaner",
+    "cr": 8,
+    "cr_display": "8",
+    "type": "Humanoid",
+    "size": "Medium",
+    "ac": 18,
+    "ac_display": "18",
+    "hp": 95,
+    "hp_display": "95",
+    "speed": "50 ft.",
+    "stats": {
+      "str": 14,
+      "dex": 20,
+      "con": 16,
+      "int": 10,
+      "wis": 16,
+      "cha": 10
+    },
+    "alignment": "Lawful Evil",
+    "saves": "",
+    "skills": "",
+    "immunities": "",
+    "resistances": "",
+    "conditionImmunities": "",
+    "senses": "",
+    "languages": "",
+    "description": "",
+    "initiative": 5,
+    "traits": [],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "Three unarmed strikes."
+      },
+      {
+        "name": "Unarmed Strike",
+        "desc": "+8 to hit, 1d8+5 bludgeoning. Target must succeed DC 15 Con save or be Stunned."
+      },
+      {
+        "name": "Decompose",
+        "desc": "Touch a corpse to disintegrate it (Action)."
+      }
+    ],
+    "legendary": [],
+    "source_url": "",
+    "image_url": null,
+    "has_image": false,
+    "image_path": null,
+    "source": "Red Ledger"
+  },
+  {
     "name": "The Crow",
     "slug": "crow",
     "cr": 11,
@@ -41994,6 +42326,55 @@
     "has_image": false,
     "image_path": null,
     "source": "Custom"
+  },
+  {
+    "name": "The Eraser (Sniper)",
+    "slug": "eraser",
+    "cr": 8,
+    "cr_display": "8",
+    "type": "Humanoid",
+    "size": "Medium",
+    "ac": 17,
+    "ac_display": "17",
+    "hp": 85,
+    "hp_display": "85",
+    "speed": "30 ft., climb 30 ft.",
+    "stats": {
+      "str": 11,
+      "dex": 20,
+      "con": 14,
+      "int": 12,
+      "wis": 16,
+      "cha": 10
+    },
+    "alignment": "Lawful Evil",
+    "saves": "",
+    "skills": "Stealth +11, Perception +9",
+    "immunities": "",
+    "resistances": "",
+    "conditionImmunities": "",
+    "senses": "",
+    "languages": "",
+    "description": "",
+    "initiative": 5,
+    "traits": [
+      {
+        "name": "Sniper",
+        "desc": "Attacking at long range doesn't impose disadvantage."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Longbow",
+        "desc": "+11 to hit, 150/600 ft. Hit: 1d8+5 piercing + 4d6 poison."
+      }
+    ],
+    "legendary": [],
+    "source_url": "",
+    "image_url": null,
+    "has_image": false,
+    "image_path": null,
+    "source": "Red Ledger"
   },
   {
     "name": "The Mad Cartographer",
@@ -48453,6 +48834,63 @@
     "source": "AideDD_Expansion"
   },
   {
+    "name": "Vanko the Silk",
+    "slug": "vanko",
+    "cr": 12,
+    "cr_display": "12",
+    "type": "Humanoid",
+    "size": "Medium",
+    "ac": 16,
+    "ac_display": "16",
+    "hp": 110,
+    "hp_display": "110",
+    "speed": "30 ft.",
+    "stats": {
+      "str": 10,
+      "dex": 16,
+      "con": 14,
+      "int": 18,
+      "wis": 14,
+      "cha": 20
+    },
+    "alignment": "Neutral Evil",
+    "saves": "",
+    "skills": "Deception +13, Persuasion +13, Sleight of Hand +11",
+    "immunities": "",
+    "resistances": "",
+    "conditionImmunities": "",
+    "senses": "",
+    "languages": "",
+    "description": "",
+    "initiative": 3,
+    "traits": [
+      {
+        "name": "Cunning Action",
+        "desc": "Bonus action Dash/Disengage/Hide."
+      },
+      {
+        "name": "Master of Illusions",
+        "desc": "Can cast Major Image and Mislead at will."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Gentleman's Cane (Sword Cane)",
+        "desc": "Melee Weapon Attack: +11 to hit. Hit: 1d6+8 piercing + 4d6 psychic."
+      },
+      {
+        "name": "Sanctuary (Recharge 4-6)",
+        "desc": "Casts Sanctuary on himself (DC 18)."
+      }
+    ],
+    "legendary": [],
+    "source_url": "",
+    "image_url": null,
+    "has_image": false,
+    "image_path": null,
+    "source": "Custom"
+  },
+  {
     "name": "Vargouille",
     "slug": "vargouille",
     "cr": 1,
@@ -53731,6 +54169,63 @@
       {
         "name": "Greatsword",
         "desc": "+9 to hit, 2d6+5 slashing."
+      }
+    ],
+    "legendary": [],
+    "source_url": "",
+    "image_url": null,
+    "has_image": false,
+    "image_path": null,
+    "source": "Custom"
+  },
+  {
+    "name": "Zhentarim Guardian",
+    "slug": "zhentarim_guardian",
+    "cr": 7,
+    "cr_display": "7",
+    "type": "Construct",
+    "size": "Large",
+    "ac": 17,
+    "ac_display": "17",
+    "hp": 142,
+    "hp_display": "142",
+    "speed": "30 ft.",
+    "stats": {
+      "str": 18,
+      "dex": 8,
+      "con": 18,
+      "int": 7,
+      "wis": 10,
+      "cha": 3
+    },
+    "alignment": "Unaligned",
+    "saves": "",
+    "skills": "",
+    "immunities": "Poison",
+    "resistances": "",
+    "conditionImmunities": "",
+    "senses": "",
+    "languages": "",
+    "description": "",
+    "initiative": -1,
+    "traits": [
+      {
+        "name": "Bound",
+        "desc": "Magically bound to an amulet handler."
+      },
+      {
+        "name": "Spell Storing",
+        "desc": "Stores one spell of 4th level or lower."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Multiattack",
+        "desc": "Two fist attacks."
+      },
+      {
+        "name": "Fist",
+        "desc": "+7 to hit. Hit: 2d6+4 bludgeoning."
       }
     ],
     "legendary": [],
