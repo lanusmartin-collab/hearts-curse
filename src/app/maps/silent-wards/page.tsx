@@ -95,7 +95,7 @@ export default function SilentWardsPage() {
                         width: "100%", height: "100%"
                     }}>
                         <InteractiveMap
-                            src="/silent_wards_map.png" // The generated image
+                            src="/silent_wards_map_v5.png" // The generated image
                             title="Mithral Maze"
                             nodes={SILENT_NODES} // Nodes technically shouldn't rotate visually if they are "places", but for the effect we let the whole map spin
                             onNodeClick={setSelectedNode}
