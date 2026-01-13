@@ -235,44 +235,54 @@ function GrimoireContent() {
                         <div className="w-full max-w-3xl h-[90%] bg-[#fdf1dc] relative shadow-[0_0_50px_rgba(0,0,0,0.8)] rounded-sm overflow-hidden border border-[#5c4033]">
                             {/* Inner Scroll */}
                             <div ref={scrollRef} className="absolute inset-0 overflow-y-auto custom-scrollbar p-12 z-0">
-                                <div className="text-center mb-8">
-                                    <h1 className="text-5xl font-header font-bold text-[#1a0f0f] mb-2 drop-shadow-sm uppercase tracking-wide">{activeSpell.name}</h1>
-                                    <div className="flex justify-center gap-6 text-base font-bold italic text-[#5c1212] font-serif tracking-wider">
-                                        <span>{activeSpell.level === 0 ? "Cantrip" : `Level ${activeSpell.level}`}</span>
-                                        <span>•</span>
-                                        <span>{activeSpell.school}</span>
+                                <div className="max-w-2xl mx-auto">
+                                    {/* Header 2024 Style */}
+                                    <div className="border-b-[3px] border-[#8a1c1c] pb-2 mb-4">
+                                        <h1 className="text-4xl font-header font-bold text-[#1a0f0f] uppercase tracking-wide leading-none">{activeSpell.name}</h1>
+                                        <div className="mt-1 font-sans font-bold text-sm text-[#333] italic">
+                                            {activeSpell.level === 0 ? "Cantrip" : `Level ${activeSpell.level}`}
+                                            <span className="mx-2 text-[#8a1c1c]">•</span>
+                                            {activeSpell.school}
+                                            {activeSpell.ritual && <span className="ml-2 uppercase text-[10px] bg-[#ddd] px-1 rounded border border-[#ccc]">Ritual</span>}
+                                            {activeSpell.duration.toLowerCase().includes("concentration") && <span className="ml-1 uppercase text-[10px] bg-[#ddd] px-1 rounded border border-[#ccc]">Conc.</span>}
+                                        </div>
                                     </div>
-                                    <div className="w-24 h-1 bg-[#5c1212] mx-auto my-6 opacity-80"></div>
-                                </div>
 
-                                <div className="grid grid-cols-2 gap-y-4 gap-x-12 mb-8 text-sm px-4">
-                                    <div className="flex justify-between border-b border-[#a39480] pb-1">
-                                        <strong className="text-[#4a0404] uppercase tracking-widest text-xs">Casting Time</strong>
-                                        <span className="font-header italic text-[#111] font-bold">{activeSpell.castingTime}</span>
+                                    {/* Properties Block (2024 Style: Clean Lines) */}
+                                    <div className="font-sans text-sm text-[#111] space-y-1 mb-6 border-b border-[#a39480] pb-4">
+                                        <div className="grid grid-cols-[110px_1fr]">
+                                            <span className="font-bold text-[#8a1c1c]">Casting Time:</span>
+                                            <span>{activeSpell.castingTime}</span>
+                                        </div>
+                                        <div className="grid grid-cols-[110px_1fr]">
+                                            <span className="font-bold text-[#8a1c1c]">Range:</span>
+                                            <span>{activeSpell.range} {activeSpell.range.includes("feet") ? "" : ""}</span>
+                                        </div>
+                                        <div className="grid grid-cols-[110px_1fr]">
+                                            <span className="font-bold text-[#8a1c1c]">Components:</span>
+                                            <span>{activeSpell.components} {activeSpell.material && <span className="text-[#555] italic">({activeSpell.material})</span>}</span>
+                                        </div>
+                                        <div className="grid grid-cols-[110px_1fr]">
+                                            <span className="font-bold text-[#8a1c1c]">Duration:</span>
+                                            <span>{activeSpell.duration}</span>
+                                        </div>
                                     </div>
-                                    <div className="flex justify-between border-b border-[#a39480] pb-1">
-                                        <strong className="text-[#4a0404] uppercase tracking-widest text-xs">Range</strong>
-                                        <span className="font-header italic text-[#111] font-bold">{activeSpell.range}</span>
-                                    </div>
-                                    <div className="flex justify-between border-b border-[#a39480] pb-1">
-                                        <strong className="text-[#4a0404] uppercase tracking-widest text-xs">Components</strong>
-                                        <span className="font-header italic text-[#111] text-xs font-bold">{activeSpell.components} {activeSpell.material ? `(...)` : ''}</span>
-                                    </div>
-                                    <div className="flex justify-between border-b border-[#a39480] pb-1">
-                                        <strong className="text-[#4a0404] uppercase tracking-widest text-xs">Duration</strong>
-                                        <span className="font-header italic text-[#111] font-bold">{activeSpell.duration}</span>
-                                    </div>
-                                </div>
 
-                                <div className="max-w-none leading-relaxed text-justify px-4 font-serif text-xl text-[#000]" style={{ fontFamily: "'Merriweather', serif" }}>
-                                    <p className="whitespace-pre-wrap font-semibold tracking-wide first-letter:text-5xl first-letter:font-header first-letter:mr-3 first-letter:float-left first-letter:text-[#8a1c1c] leading-8">
+                                    {/* Description Body */}
+                                    <div className="font-serif text-base text-[#1a1a1a] leading-relaxed whitespace-pre-wrap break-words" style={{ fontFamily: "'Merriweather', serif" }}>
+                                        {/* Handle Bold Headers in description if present in text, otherwise just render */}
                                         {activeSpell.description}
-                                    </p>
-                                </div>
+                                    </div>
 
-                                <div className="mt-16 pt-8 border-t border-[#a39480] text-xs text-[#444] flex justify-between uppercase tracking-widest opacity-70 font-sans font-bold">
-                                    <span>{Array.isArray(activeSpell.classes) ? activeSpell.classes.join(', ') : activeSpell.classes}</span>
-                                    <span>{activeSpell.source} pg. {activeSpell.page}</span>
+                                    {/* Footer */}
+                                    <div className="mt-8 pt-4 border-t border-[#a39480] text-[10px] text-[#666] flex justify-between uppercase font-sans font-bold opacity-70">
+                                        <span>
+                                            {Array.isArray(activeSpell.classes)
+                                                ? activeSpell.classes.join(', ')
+                                                : activeSpell.classes}
+                                        </span>
+                                        <span>{activeSpell.source} {activeSpell.page && `pg. ${activeSpell.page}`}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
