@@ -48,6 +48,17 @@ export const CROW_NEST_INVENTORY: ShopItem[] = [
     { name: "Scimitar of Speed", type: "Weapon", rarity: "Rare", cost: "2500 gp (Risk Fee applies)", npcQuote: "Fastest blade in the dark. You assume all liability.", properties: ["Finesse", "Light", "Attunement"], effect: "+2 bonus to attack and damage rolls. Bonus action to make one attack with it." }
 ];
 
+// [NEW] Special Order Stock for The Iron Knot (Zhentarim)
+export const ZHENTARIM_SPECIAL_STOCK: ShopItem[] = [
+    { name: "Drow Poison (3 doses)", type: "Poison", rarity: "Rare", cost: "500 gp", effect: "Correction: Sleep Poison. DC 13 CON or Unconscious for 1 hour. Wakes if damaged.", npcQuote: "Silence in a bottle. Very popular." },
+    { name: "Assassin's Blood (Ingested)", type: "Poison", rarity: "Rare", cost: "300 gp", effect: "DC 10 CON. On fail: 1d12 Poison dmg + Poisoned for 24h.", npcQuote: "For the dinner guest who talks too much." },
+    { name: "Chime of Opening", type: "Wondrous", rarity: "Rare", cost: "1,500 gp", effect: "10 Charges. Action: Open locked object within 60ft.", npcQuote: "No door is closed to us." },
+    { name: "Slippers of Spider Climbing", type: "Wondrous", rarity: "Uncommon", cost: "800 gp", stock: 1, effect: "Walk up walls/ceilings hands-free.", npcQuote: "We learned a few tricks from the drow." },
+    { name: "Nolzur's Marvelous Pigments", type: "Wondrous", rarity: "Very Rare", cost: "3,000 gp", effect: "Paint objects into reality.", npcQuote: "Create your own exit." },
+    { name: "Portable Hole", type: "Wondrous", rarity: "Rare", cost: "2,000 gp", effect: "6ft diameter hole into extra-dimensional space.", npcQuote: "The ultimate smuggling tool." },
+    { name: "Ring of Mind Shielding", type: "Ring", rarity: "Uncommon", cost: "1,200 gp", effect: "Immune to magic that reads thoughts/lies.", npcQuote: "Keep your secrets. Keep your head.", properties: ["Attunement"] }
+];
+
 export const CAMPAIGN_UNIQUE_ITEMS: ShopItem[] = [
     // Oakhaven & Mines
     { name: "Adamantine Ingot", type: "Material", rarity: "Uncommon", cost: "Loot", effect: "Can be used to craft/upgrade Armor to negate crits.", npcQuote: "Cold, heavy, and unbreakable. Like a dwarf's grudge." },
