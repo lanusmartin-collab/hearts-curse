@@ -271,7 +271,7 @@ function GrimoireContent() {
                                 </div>
 
                                 <div className="mt-16 pt-8 border-t border-[#a39480] text-xs text-[#444] flex justify-between uppercase tracking-widest opacity-70 font-sans font-bold">
-                                    <span>{activeSpell.classes}</span>
+                                    <span>{Array.isArray(activeSpell.classes) ? activeSpell.classes.join(', ') : activeSpell.classes}</span>
                                     <span>{activeSpell.source} pg. {activeSpell.page}</span>
                                 </div>
                             </div>

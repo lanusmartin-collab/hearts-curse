@@ -3,18 +3,21 @@ import customSpellsRaw from './custom_spells.json';
 
 export interface Spell {
     name: string;
-    classes: string;
-    level: string | number; // JSON has it as ? but usually string in some sources, let's verify
+    classes: string[];
+    level: string | number;
     school: string;
     ritual: boolean;
-    castingTime: string; // "action"
+    castingTime: string;
     range: string;
     components: string;
     material: string;
     duration: string;
+    concentration?: boolean;
     description: string;
     source: string;
-    page: number;
+    page: number | string;
+    url?: string;
+    slug?: string;
 }
 
 // Ensure type safety

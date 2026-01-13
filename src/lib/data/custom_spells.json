@@ -1,7 +1,11 @@
 [
     {
         "name": "Iolum's Longevity",
-        "classes": "Wizard, Sorcerer, Warlock",
+        "classes": [
+            "Wizard",
+            "Sorcerer",
+            "Warlock"
+        ],
         "level": 9,
         "school": "Necromancy",
         "ritual": false,
