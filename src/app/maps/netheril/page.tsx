@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import InteractiveMap, { MapNode } from "@/components/ui/InteractiveMap";
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
 import StatblockCard from "@/components/ui/StatblockCard";
@@ -45,18 +45,8 @@ export default function NetherilPage() {
         })
         .filter(Boolean);
 
-    // Verify data loaded
-    useEffect(() => {
-        console.log("NETHERIL PAGE MOUNTED");
-        console.log("DB Valid?", !!MONSTERS_2024);
-        console.log("DB Keys:", Object.keys(MONSTERS_2024).length);
-    }, []);
-
     return (
         <div className="retro-container relative">
-            <div className="bg-blue-600 text-white font-bold text-center p-1 animate-pulse">
-                ⚠ DIAGNOSTIC MODE ACTIVE: v4 FORCE REBUILD ⚠
-            </div>
             <div className="no-print mb-4">
                 <Link href="/maps">{"< BACK_TO_MAPS"}</Link>
             </div>
@@ -93,7 +83,7 @@ export default function NetherilPage() {
                             <p className="text-lg leading-relaxed mb-6 font-serif">{selectedNode.description}</p>
 
                             {/* Deteced Threats Section */}
-                            {nodeMonsters && nodeMonsters.length > 0 ? (
+                            {nodeMonsters && nodeMonsters.length > 0 && (
                                 <div className="mb-6">
                                     <h3 className="font-bold border-b border-red-800 text-red-900 mb-2 uppercase text-sm">Detected Threats</h3>
                                     <div className="flex flex-col gap-2">
@@ -115,17 +105,6 @@ export default function NetherilPage() {
                                             </button>
                                         ))}
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="p-2 bg-red-100 border border-red-500 text-red-900 text-xs">
-                                    <strong>DEBUG DIAGNOSTIC:</strong>
-                                    <ul className="list-disc pl-4 mt-1">
-                                        <li>Selected Node: {selectedNode.label}</li>
-                                        <li>Raw Slugs: {JSON.stringify(selectedNode.monsters)}</li>
-                                        <li>Monsters Found: {nodeMonsters?.length || 0}</li>
-                                        <li>Keys in DB: {Object.keys(MONSTERS_2024).length}</li>
-                                        <li>Sample Key: {Object.keys(MONSTERS_2024)[0]}</li>
-                                    </ul>
                                 </div>
                             )}
 
