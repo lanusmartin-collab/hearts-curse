@@ -63,7 +63,7 @@ export default function NetherilPage() {
                 {/* Visual Map Area */}
                 <div className="flex-1 relative bg-black border border-gray-700">
                     <InteractiveMap
-                        src="/netheril_map_placeholder.png"
+                        src="/netheril_map.png"
                         title="Netheril Enclave"
                         nodes={NETHERIL_NODES}
                         onNodeClick={setSelectedNode}
