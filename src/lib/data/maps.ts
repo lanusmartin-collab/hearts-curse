@@ -100,6 +100,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         category: "Main Quest",
         imagePath: "/silent_wards_map_v5.png",
         gridType: "square",
+        route: "/maps/silent-wards", // [NEW] Directs to the custom mechanic page
         mechanics: [
             "Shifting Layout: On Initiative 20, the dungeon reconfigures. Roll 1d4. 1: 90° Clockwise Rotation. 2: 90° Counter-Clockwise. 3: Walls shift 10ft inward (Dex Save DC 15 or 4d10 Bludgeoning). 4: Gravity reverses for 1 round.",
             "Absolute Silence: The entire floor is under a permanent 'Silence' spell. Replaced by a low mechanical thrum. Verbal spells are impossible unless the caster is inside a 'Tiny Hut' or similar shelter.",

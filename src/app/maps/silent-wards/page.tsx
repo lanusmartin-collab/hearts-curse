@@ -67,13 +67,21 @@ export default function SilentWardsPage() {
                     <strong>Environmental Effect: Shifting Labyrinth.</strong>
                     <div className="flex justify-between items-center mt-2">
                         <span>On Initiative 20, the walls rotate.</span>
-                        <button
-                            onClick={handleLockMechanism}
-                            disabled={isLocked}
-                            className={`px-3 py-1 text-xs border rounded transition-all ${isLocked ? "bg-green-900 text-green-100 border-green-700 cursor-not-allowed" : "bg-cyan-900 hover:bg-cyan-700 text-white border-cyan-400"}`}
-                        >
-                            {isLocked ? "MECHANISM LOCKED" : "ATTEMPT LOCK (DC 15)"}
-                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => alert("HOW TO RUN THIS MECANIC:\n\n1. VISUAL: The map rotates 90 degrees.\n2. TABLE: Ask players to physically rotate their character sheets/phones.\n3. GAME: North becomes East. 'Forward' is now 'Right'.\n4. LOCK: Players can use thieves' tools (DC 15) to jam the gears (use the 'Attempt Lock' button).")}
+                                className="px-3 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-white border border-gray-500 rounded"
+                            >
+                                ❓ DM RULES
+                            </button>
+                            <button
+                                onClick={handleLockMechanism}
+                                disabled={isLocked}
+                                className={`px-3 py-1 text-xs border rounded transition-all ${isLocked ? "bg-green-900 text-green-100 border-green-700 cursor-not-allowed" : "bg-cyan-900 hover:bg-cyan-700 text-white border-cyan-400"}`}
+                            >
+                                {isLocked ? "MECHANISM LOCKED" : "ATTEMPT LOCK (DC 15)"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </header>
