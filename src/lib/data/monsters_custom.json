@@ -1085,5 +1085,156 @@
             }
         ],
         "source": "Custom"
+    },
+    {
+        "slug": "steel-predator",
+        "name": "Steel Predator",
+        "size": "Large",
+        "type": "Construct",
+        "alignment": "Lawful Evil",
+        "ac": 20,
+        "hp": 207,
+        "speed": "40 ft., climb 40 ft.",
+        "stats": {
+            "str": 24,
+            "dex": 17,
+            "con": 22,
+            "int": 4,
+            "wis": 14,
+            "cha": 6
+        },
+        "saves": "Str +12, Con +11, Wis +7",
+        "skills": "Perception +7, Stealth +8, Survival +7",
+        "immunities": "Poison, Psychic; Bludgeoning, Piercing, Slashing from nonmagical attacks",
+        "conditionImmunities": "Charmed, Exhaustion, Frightened, Paralyzed, Petrified, Poisoned, Stunned",
+        "cr": "16",
+        "traits": [
+            {
+                "name": "Magic Resistance",
+                "desc": "Advantage on saves vs spells."
+            },
+            {
+                "name": "Locate Target",
+                "desc": "The predator knows the direction and distance to its target quarry as long as they are on the same plane of existence."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "Three attacks: one Bite and two Claw."
+            },
+            {
+                "name": "Bite",
+                "desc": "+12 to hit. Hit: 2d10+7 piercing + 4d10 lightning."
+            },
+            {
+                "name": "Claw",
+                "desc": "+12 to hit. Hit: 2d6+7 slashing."
+            },
+            {
+                "name": "Stunning Roar (Recharge 5-6)",
+                "desc": "60ft cone. DC 19 Con save or Stunned for 1 minute (save ends)."
+            }
+        ],
+        "source": "Custom"
+    },
+    {
+        "slug": "goristroi-the-lost",
+        "name": "Goristroi the Lost",
+        "size": "Huge",
+        "type": "Undead (Ghost Minotaur)",
+        "alignment": "Chaotic Evil",
+        "ac": 16,
+        "hp": 250,
+        "speed": "40 ft., fly 40 ft. (hover)",
+        "stats": {
+            "str": 24,
+            "dex": 12,
+            "con": 22,
+            "int": 8,
+            "wis": 16,
+            "cha": 10
+        },
+        "immunities": "Cold, Necrotic, Poison; Bludgeoning, Piercing, Slashing from nonmagical attacks",
+        "conditionImmunities": "Charmed, Exhaustion, Frightened, Grappled, Paralyzed, Petrified, Poisoned, Prone, Restrained",
+        "cr": "13",
+        "traits": [
+            {
+                "name": "Incorporeal Movement",
+                "desc": "Can move through other creatures and objects as if difficult terrain. Takes 1d10 force damage if it ends turn inside object."
+            },
+            {
+                "name": "Charge of the Void",
+                "desc": "If moving 10ft straight, +4d8 Necrotic on Gore attack and DC 18 Str save or pushed 20ft and Prone."
+            },
+            {
+                "name": "Ethereal Sight",
+                "desc": "Can see 60ft into Ethereal Plane."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "One Gore and two Greataxe attacks."
+            },
+            {
+                "name": "Spectral Greataxe",
+                "desc": "+12 to hit. Hit: 3d12+7 slashing + 2d8 force."
+            },
+            {
+                "name": "Gore",
+                "desc": "+12 to hit. Hit: 4d8+7 piercing."
+            },
+            {
+                "name": "Wail of the Maze (Recharge 5-6)",
+                "desc": "60ft radius. DC 17 Wis save. Failure: Frightened and target perceives walls closing in (Restrained logic) for 1 minute."
+            }
+        ],
+        "source": "Custom"
+    },
+    {
+        "slug": "invisible-stalker",
+        "name": "Invisible Stalker",
+        "size": "Medium",
+        "type": "Elemental",
+        "alignment": "Neutral",
+        "ac": 14,
+        "hp": 104,
+        "speed": "50 ft., fly 50 ft. (hover)",
+        "stats": {
+            "str": 16,
+            "dex": 19,
+            "con": 14,
+            "int": 10,
+            "wis": 15,
+            "cha": 11
+        },
+        "skills": "Perception +8, Stealth +10",
+        "damageResistances": "Bludgeoning, Piercing, Slashing from nonmagical attacks",
+        "immunities": "Poison",
+        "conditionImmunities": "Exhaustion, Grappled, Paralyzed, Petrified, Poisoned, Prone, Restrained, Unconscious",
+        "senses": "Darkvision 60 ft.",
+        "cr": "6",
+        "traits": [
+            {
+                "name": "Invisibility",
+                "desc": "The stalker is invisible."
+            },
+            {
+                "name": "Faultless Tracker",
+                "desc": "Knows direction/distance to quarry on same plane."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "Two Slam attacks."
+            },
+            {
+                "name": "Slam",
+                "desc": "+6 to hit. Hit: 2d6+3 bludgeoning."
+            }
+        ],
+        "source": "Custom"
     }
 ]
