@@ -62,12 +62,12 @@ export default function ShopsPage() {
         localStorage.setItem(`shop_${key}`, JSON.stringify(updated));
     };
 
-    // [NEW] Special Order Logic regarding Zhentarim Stock
+    // [NEW] Special Order Logic regarding Zhentarim Stock (Crow's Nest)
     const handleSpecialOrder = () => {
         const item = ZHENTARIM_SPECIAL_STOCK[Math.floor(Math.random() * ZHENTARIM_SPECIAL_STOCK.length)];
-        const updated = [...ironItems, item];
-        setIronItems(updated);
-        localStorage.setItem('shop_iron', JSON.stringify(updated));
+        const updated = [...crowItems, item];
+        setCrowItems(updated);
+        localStorage.setItem('shop_crow', JSON.stringify(updated));
         alert(`📦 DELIVERY RECEIVED\n\nItem: ${item.name}\nCost: ${item.cost}\n\n"The network provides."`);
     };
 
@@ -90,8 +90,8 @@ export default function ShopsPage() {
             <div className="retro-border">
                 {activeTab === 'khelben' && <ShopList title="Khelben's Gifts" items={khelbenItems} onReplace={handleReplace} onAdd={handleAddItem} />}
                 {activeTab === 'fimble' && <ShopList title="The Gilded Coffer" items={fimbleItems} onReplace={handleReplace} onAdd={handleAddItem} />}
-                {activeTab === 'iron' && <ShopList title="The Iron Knot" items={ironItems} onReplace={handleReplace} onAdd={handleAddItem} onAddSpecial={handleSpecialOrder} />}
-                {activeTab === 'crow' && <ShopList title="The Crow's Nest" items={crowItems} onReplace={handleReplace} onAdd={handleAddItem} />}
+                {activeTab === 'iron' && <ShopList title="The Iron Knot" items={ironItems} onReplace={handleReplace} onAdd={handleAddItem} />}
+                {activeTab === 'crow' && <ShopList title="The Crow's Nest" items={crowItems} onReplace={handleReplace} onAdd={handleAddItem} onAddSpecial={handleSpecialOrder} />}
             </div>
         </div>
     );
@@ -130,7 +130,7 @@ function ShopList({ title, items, onReplace, onAdd, onAddSpecial }: { title: str
         <div>
             <div className="flex justify-between items-end mb-4 border-b border-[#5d4037] pb-2">
                 <h2 className="m-0">{title}</h2>
-                {title.includes("Iron Knot") && (
+                {title.includes("Crow's Nest") && (
                     <button
                         onClick={handleSpecialOrder}
                         className="text-xs bg-red-900 text-white px-2 py-1 rounded hover:bg-red-700 transition animate-pulse"
