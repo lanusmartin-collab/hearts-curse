@@ -180,34 +180,46 @@ function GrimoireContent() {
                     </div>
 
                     {/* SPELL LIST */}
-
-                    <div className="flex-1 overflow-y-auto custom-scrollbar" ref={listRef}>
-                        {filteredSpells.length === 0 ? (
-                            <div className="p-8 text-center text-[#444] text-sm italic">
-                                No incantations match your filter...
-                            </div>
-                        ) : (
-                            filteredSpells.map((spell) => (
-                                <div
-                                    key={spell.name}
-                                    ref={(node) => {
-                                        if (node) itemsRef.current.set(spell.name, node);
-                                        else itemsRef.current.delete(spell.name);
-                                    }}
-                                    onClick={() => setActiveSpell(spell)}
-                                    className={`grimoire-item p-3 border-b border-[#222] cursor-pointer hover:bg-[#1a0505] transition-colors flex justify-between items-center group ${activeSpell?.name === spell.name ? 'bg-[#1a0505] border-l-4 border-l-[#a32222]' : ''}`}
-                                >
-                                    <div className="flex flex-col">
-                                        <span className={`font-header text-sm ${activeSpell?.name === spell.name ? 'text-[#c9bca0]' : 'text-[#888] group-hover:text-[#ccc]'}`}>{spell.name}</span>
-                                        <span className="text-[10px] text-[#444]">{spell.school}</span>
-                                    </div>
-                                    <span className="text-[10px] text-[#444] font-mono ml-auto bg-[#111] px-1 rounded border border-[#222] min-w-[20px] text-center">
-                                        {spell.level === 0 ? 'C' : `${spell.level}`}
-                                    </span>
+                    {/* Only show list if filters are active */}
+                    {(searchQuery === "" && selectedLevel === "All" && selectedClass === "All" && !isConcentration && !isRitual) ? (
+                        <div className="flex-1 flex flex-col items-center justify-center text-center p-8 opacity-40">
+                            <BookOpen size={48} className="mb-4 text-[#a32222]" />
+                            <p className="text-sm font-serif italic text-[#c9bca0]">
+                                The archives are vast.<br />
+                                <span className="text-xs text-[#888] not-italic mt-2 block font-sans">
+                                    Select a Class, Level, or Search to reveal incantations.
+                                </span>
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="flex-1 overflow-y-auto custom-scrollbar" ref={listRef}>
+                            {filteredSpells.length === 0 ? (
+                                <div className="p-8 text-center text-[#444] text-sm italic">
+                                    No incantations match your filter...
                                 </div>
-                            ))
-                        )}
-                    </div>
+                            ) : (
+                                filteredSpells.map((spell) => (
+                                    <div
+                                        key={spell.name}
+                                        ref={(node) => {
+                                            if (node) itemsRef.current.set(spell.name, node);
+                                            else itemsRef.current.delete(spell.name);
+                                        }}
+                                        onClick={() => setActiveSpell(spell)}
+                                        className={`grimoire-item p-3 border-b border-[#222] cursor-pointer hover:bg-[#1a0505] transition-colors flex justify-between items-center group ${activeSpell?.name === spell.name ? 'bg-[#1a0505] border-l-4 border-l-[#a32222]' : ''}`}
+                                    >
+                                        <div className="flex flex-col">
+                                            <span className={`font-header text-sm ${activeSpell?.name === spell.name ? 'text-[#c9bca0]' : 'text-[#888] group-hover:text-[#ccc]'}`}>{spell.name}</span>
+                                            <span className="text-[10px] text-[#444]">{spell.school}</span>
+                                        </div>
+                                        <span className="text-[10px] text-[#444] font-mono ml-auto bg-[#111] px-1 rounded border border-[#222] min-w-[20px] text-center">
+                                            {spell.level === 0 ? 'C' : `${spell.level}`}
+                                        </span>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    )}
                     <div className="p-2 text-center text-[10px] text-[#444] border-t border-[#222]">
                         v1.3.1 (Patch applied)
                     </div>
