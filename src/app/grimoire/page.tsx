@@ -221,7 +221,7 @@ function GrimoireContent() {
                         </div>
                     )}
                     <div className="p-2 text-center text-[10px] text-[#444] border-t border-[#222]">
-                        v1.3.1 (Patch applied)
+                        v1.4.0 (Filter-First)
                     </div>
                 </div>
 
