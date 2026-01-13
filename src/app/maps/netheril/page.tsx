@@ -54,8 +54,8 @@ export default function NetherilPage() {
 
     return (
         <div className="retro-container relative">
-            <div className="bg-red-600 text-white font-bold text-center p-1 animate-pulse">
-                ⚠ DIAGNOSTIC MODE ACTIVE: v3 ⚠
+            <div className="bg-blue-600 text-white font-bold text-center p-1 animate-pulse">
+                ⚠ DIAGNOSTIC MODE ACTIVE: v4 FORCE REBUILD ⚠
             </div>
             <div className="no-print mb-4">
                 <Link href="/maps">{"< BACK_TO_MAPS"}</Link>
