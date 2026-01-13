@@ -20,6 +20,7 @@ export type CampaignMap = {
     nodes?: MapNode[];
     category?: "Main Quest" | "Plot Twist";
     questGuide?: string;
+    route?: string; // [NEW] If set, clicking this map navigates to this route instead of setting state
 };
 
 const OAKHAVEN: CampaignMap = {
@@ -428,6 +429,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         id: "netheril",
         title: "⚡ The Netheril Ruins",
         category: "Plot Twist",
+        route: "/maps/netheril", // Dedicated page
         imagePath: "/netheril_map.png",
         gridType: "square",
         mechanics: [

@@ -41,7 +41,6 @@ export default function RootLayout({
             <main>{children}</main>
             <ShadowCaster />
             <DiceRoller />
-            <ShadowCaster />
             {/* GrimoireModal removed - migrated to /grimoire */}
           </SpellProvider>
         </AudioProvider>

@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import InteractiveMap from "@/components/ui/InteractiveMap";
 import DungeonModuleTemplate from "@/components/ui/DungeonModuleTemplate";
 import { CAMPAIGN_MAPS, CampaignMap } from "@/lib/data/maps";
 import { MechanicsDashboard } from "@/components/ui/MechanicsDashboard";
-import DiceRoller from "@/components/ui/DiceRoller";
 import RegionalMechanicsWidget from "@/components/ui/RegionalMechanicsWidget";
 import { getRegionalEffect, rollWildMagic } from "@/lib/game/curseLogic";
 import { useRouter } from "next/navigation";
@@ -65,6 +64,32 @@ export default function MapsPage() {
         }
     };
 
+    const handleMapSelect = (m: CampaignMap) => {
+        if (m.route) {
+            router.push(m.route);
+        } else {
+            setSelectedMapId(m.id);
+        }
+    };
+
+    // [NEW] Global Dice Listener for Wild Magic
+    useEffect(() => {
+        const handleDiceEvent = (e: Event) => {
+            const customEvent = e as CustomEvent;
+            const result = customEvent.detail;
+
+            const effect = getRegionalEffect(selectedMap.id);
+            // Wild Magic Trigger: d20 roll of 1 in 'castle' id
+            if (effect?.title.includes("Wild Magic") && result.dice.some((d: any) => d.sides === 20 && d.val === 1)) {
+                const surge = rollWildMagic();
+                alert(`🔮 WILD MAGIC SURGE! 🔮\n\nYou rolled a Natural 1 in a magic-saturated zone.\n\nEFFECT [${surge.roll}]: ${surge.result}`);
+            }
+        };
+
+        window.addEventListener('dice-roll-complete', handleDiceEvent);
+        return () => window.removeEventListener('dice-roll-complete', handleDiceEvent);
+    }, [selectedMap.id]);
+
     if (viewMode === "book") {
         return <DungeonModuleTemplate mapData={selectedMap} onClose={() => setViewMode("interactive")} />;
     }
@@ -113,7 +138,7 @@ export default function MapsPage() {
                             {CAMPAIGN_MAPS.filter(m => !m.category).map(m => (
                                 <div
                                     key={m.id}
-                                    onClick={() => setSelectedMapId(m.id)}
+                                    onClick={() => handleMapSelect(m)}
                                     className={`grimoire-item ${selectedMap.id === m.id ? 'active' : ''} animate-heartbeat`}
                                     style={{ animationDelay: `${Math.random() * 2}s` }} /* Randomize beat */
                                 >
@@ -128,7 +153,7 @@ export default function MapsPage() {
                             {CAMPAIGN_MAPS.filter(m => m.category === "Main Quest").map(m => (
                                 <div
                                     key={m.id}
-                                    onClick={() => setSelectedMapId(m.id)}
+                                    onClick={() => handleMapSelect(m)}
                                     className={`grimoire-item ${selectedMap.id === m.id ? 'active' : ''} animate-heartbeat`}
                                     style={{ animationDelay: `${Math.random() * 2}s` }}
                                 >
@@ -143,7 +168,7 @@ export default function MapsPage() {
                             {CAMPAIGN_MAPS.filter(m => m.category === "Plot Twist").map(m => (
                                 <div
                                     key={m.id}
-                                    onClick={() => setSelectedMapId(m.id)}
+                                    onClick={() => handleMapSelect(m)}
                                     className={`grimoire-item ${selectedMap.id === m.id ? 'active' : ''} animate-heartbeat`}
                                     style={{ animationDelay: `${Math.random() * 2}s` }}
                                 >
@@ -171,14 +196,6 @@ export default function MapsPage() {
                             />
                         </div>
 
-                        <DiceRoller onRollComplete={(result) => {
-                            const effect = getRegionalEffect(selectedMap.id);
-                            // Wild Magic Trigger: d20 roll of 1
-                            if (effect?.title.includes("Wild Magic") && result.dice.some(d => d.sides === 20 && d.val === 1)) {
-                                const surge = rollWildMagic();
-                                alert(`🔮 WILD MAGIC SURGE! 🔮\n\nYou rolled a Natural 1 in a magic-saturated zone.\n\nEFFECT [${surge.roll}]: ${surge.result}`);
-                            }
-                        }} />
                         <InteractiveMap
                             key={mapKey}
                             src={selectedMap.imagePath}

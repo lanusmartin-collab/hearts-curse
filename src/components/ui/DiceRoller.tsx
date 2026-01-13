@@ -321,6 +321,17 @@ export default function DiceRoller({ onRollComplete }: Props) {
             }, 600);
         }
 
+        // Dispatch Global Event for Decoupled Listeners
+        if (typeof window !== 'undefined') {
+            const event = new CustomEvent('dice-roll-complete', {
+                detail: {
+                    total: diceTotal + mod,
+                    dice: finalGroups.flatMap(g => g.results).map(r => ({ sides: r.sides, val: Number(r.val) }))
+                }
+            });
+            window.dispatchEvent(event);
+        }
+
         if (onRollComplete) {
             // Pass simplified results for triggers
             onRollComplete({
