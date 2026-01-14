@@ -135,6 +135,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         category: "Main Quest",
         imagePath: "/library_whispers_map.png",
         gridType: "square",
+        route: "/maps/library", // [NEW] Dedicated Silence Page
         mechanics: [
             "Silence Required: The library is semi-sentient and hates noise. Casting any spell with a Verbal (V) component triggers an immediate 'Counterspell' (+7 bonus) from the environment itself. Whispering allows normal conversation.",
             "Scholars of the Void: Passive Liches study at the tables. They ignore players unless spoken to loudly or interrupted. Any loud noise (Thunder dmg, shouting) causes them to ALL cast 'Power Word Kill' on the offender.",
