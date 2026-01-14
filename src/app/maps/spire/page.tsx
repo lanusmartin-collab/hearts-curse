@@ -87,7 +87,7 @@ export default function SpirePage() {
 
                     <div className="w-full h-full">
                         <InteractiveMap
-                            src="/spire_map_placeholder.png" // User needs to update this image later
+                            src="/spire_map.png" // Updated to real map image
                             title="The Vertical Shaft"
                             nodes={SPIRE_NODES}
                             onNodeClick={setSelectedNode}

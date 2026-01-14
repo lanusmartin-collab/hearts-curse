@@ -433,7 +433,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         title: "🌪️ The Spire of Screaming Gales",
         category: "Plot Twist",
         route: "/maps/spire",
-        imagePath: "/spire_map_placeholder.png",
+        imagePath: "/spire_map.png",
         gridType: "hex",
         mechanics: [
             "High Altitude: Creatures without fly speed must save vs Exhaustion per hour.",
