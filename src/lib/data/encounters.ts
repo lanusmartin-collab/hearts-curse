@@ -258,3 +258,17 @@ export const BEHOLDER_LAIR_TABLE: Encounter[] = [
     { roll: [19, 19], name: "Xylantropy's Laugh", description: "SCENE: Deep booming laughter. \nEFFECT: DC 16 Wis save or Frightened.", monsters: [] },
     { roll: [20, 20], name: "The Hoard", description: "SCENE: You find a stash Xylantropy forgot. \nLOOT: Level 15 Spell Scroll and 500gp.", monsters: [] }
 ];
+
+export const SPIRE_TABLE: Encounter[] = [
+    { roll: [1, 2], name: "Sudden Downdraft", description: "SCENE: The wind screams. \nMECHANIC: DC 16 Str save or be knocked Prone and slide 20ft down the spire (1d6 Bludgeoning).", monsters: [] },
+    { roll: [3, 4], name: "Aarakocra Scouts", description: "SCENE: 3 Bird-men dive from the clouds. \nCOMBAT: They use Hit-and-Run tactics with javelins. They try to grapple and drop foes.", monsters: ["aarakocra"] },
+    { roll: [5, 6], name: "Air Elemental", description: "SCENE: A cloud takes form. \nCOMBAT: It uses *Whirlwind* to fling players off the ledge.", monsters: ["air-elemental"] },
+    { roll: [7, 8], name: "Invisible Stalker", description: "SCENE: You feel a presence but see nothing. \nAMBUSH: It tracks the party member who killed the last elemental.", monsters: ["invisible-stalker"] },
+    { roll: [9, 10], name: "Thundercloud", description: "SCENE: Static charge builds up. \nHAZARD: Lightning strikes a metal armor wearer. 3d10 Lightning damage (Dex save half).", monsters: [] },
+    { roll: [11, 12], name: "Griffon Nest", description: "SCENE: A ledge with eggs. \nANIMAL: 2 Griffons defend their nest. They are hungry but protective.", monsters: ["griffon"] },
+    { roll: [13, 14], name: "Cloud Giant's Footprint", description: "SCENE: A massive footprint in the snow. \nLOOT: A frozen 'Giant's Toe' (Alchemy ingredient) and a dropped gold ring (Ring of Feather Fall).", monsters: [] },
+    { roll: [15, 16], name: "Sky-Pirate Wreck", description: "SCENE: A crashed Halruaan Skyship. \nLOOT: 1d4 Potions of Flying found in the wreckage.", monsters: [] },
+    { roll: [17, 18], name: "Mephit Swarm", description: "SCENE: 6 Ice Mephits are giggling. \nCOMBAT: They use *Fog Cloud* to blind climbers, then push them.", monsters: ["ice-mephit"] },
+    { roll: [19, 19], name: "Aerisi's Messenger", description: "SCENE: A projection of the Prophet. \nTHREAT: warning: 'Turn back, groundlings.' Summons a Dust Devil.", monsters: ["dust-devil"] },
+    { roll: [20, 20], name: "The Djinni's Boon", description: "SCENE: A Noble Djinni appears in a whirlwind. \nSOCIAL: He is amused by your struggle. Offers a 'Wind Ride' (Teleport to Apex) for a story.", monsters: ["djinni"] }
+];

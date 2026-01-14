@@ -12,7 +12,8 @@ import { useRouter } from "next/navigation";
 import {
     TOWN_DAY_TABLE, OAKHAVEN_MINES_TABLE, UNDERDARK_TRAVEL_TABLE,
     NETHERIL_RUINS_TABLE, SILENT_WARDS_TABLE, OUTSKIRTS_TABLE,
-    LIBRARY_WHISPERS_TABLE, ARACH_TINILITH_TABLE, HEART_CHAMBER_TABLE, OSSUARY_TABLE
+    LIBRARY_WHISPERS_TABLE, ARACH_TINILITH_TABLE, HEART_CHAMBER_TABLE, OSSUARY_TABLE,
+    SPIRE_TABLE, DWARVEN_RUINS_TABLE, MIND_FLAYER_COLONY_TABLE, BEHOLDER_LAIR_TABLE
 } from "@/lib/data/encounters";
 
 import QuestJournal from "@/components/ui/QuestJournal";
@@ -39,8 +40,12 @@ export default function MapsPage() {
             case 'arach': table = ARACH_TINILITH_TABLE; break;
             case 'heart': table = HEART_CHAMBER_TABLE; break;
             case 'ossuary': table = OSSUARY_TABLE; break;
+            case 'spire': table = SPIRE_TABLE; break;
             case 'silent_wards': table = SILENT_WARDS_TABLE; break;
             case 'outskirts': table = OUTSKIRTS_TABLE; break;
+            case 'dwarven_ruins': table = DWARVEN_RUINS_TABLE; break;
+            case 'mind_flayer': table = MIND_FLAYER_COLONY_TABLE; break;
+            case 'beholder': table = BEHOLDER_LAIR_TABLE; break;
             default: table = null;
         }
 
