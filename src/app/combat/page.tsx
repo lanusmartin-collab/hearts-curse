@@ -8,7 +8,7 @@ import { Plus, User, Search } from "lucide-react";
 
 export default function CombatPage() {
     const [tokens, setTokens] = useState<CombatToken[]>([
-        { id: "p1", label: "Thorin", x: 2, y: 2, color: "#3b82f6", size: 1, hp: 45, maxHp: 45, ac: 18, initiative: 15 },
+        { id: "p1", label: "Thorin", x: 2, y: 2, color: "#3b82f6", size: 1, hp: 45, maxHp: 45, ac: 18, initiative: 15, conditions: ["Poisoned"] },
         { id: "p2", label: "Elara", x: 3, y: 3, color: "#8b5cf6", size: 1, hp: 32, maxHp: 32, ac: 14, initiative: 12 },
     ]);
 

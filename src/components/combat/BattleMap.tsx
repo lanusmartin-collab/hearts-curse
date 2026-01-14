@@ -15,6 +15,7 @@ export type CombatToken = {
     maxHp: number;
     ac: number;
     initiative?: number;
+    conditions?: string[]; // e.g. "Poisoned", "Prone"
 };
 
 type BattleMapProps = {
