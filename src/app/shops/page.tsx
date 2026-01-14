@@ -5,18 +5,23 @@ import { KHELBEN_GIFTS, FIMBLE_INVENTORY, IRON_KNOT_SERVICES, CROW_NEST_INVENTOR
 import { generateLootItem, GeneratorTheme } from "@/lib/generators";
 import PrintButton from "@/components/ui/PrintButton";
 import CommandBar from "@/components/ui/CommandBar";
+import EconomyControlPanel from "@/components/ui/EconomyControlPanel";
 import clsx from 'clsx';
+import { Edit2, Plus, RefreshCw, Save, Trash2, X, AlertTriangle } from "lucide-react";
 
 export default function ShopsPage() {
     const [activeTab, setActiveTab] = useState<'khelben' | 'fimble' | 'iron' | 'crow'>('khelben');
 
-    // [NEW] Local state for inventories to allow modification
+    // Local state for inventories
     const [khelbenItems, setKhelbenItems] = useState<ShopItem[]>(KHELBEN_GIFTS);
     const [fimbleItems, setFimbleItems] = useState<ShopItem[]>(FIMBLE_INVENTORY);
     const [ironItems, setIronItems] = useState<ShopItem[]>(IRON_KNOT_SERVICES);
     const [crowItems, setCrowItems] = useState<ShopItem[]>(CROW_NEST_INVENTORY);
 
-    // [NEW] Load from LocalStorage on mount
+    // Global Economy State
+    const [economy, setEconomy] = useState({ inflation: 1.0, scarcityMode: false, notes: "" });
+
+    // Load from LocalStorage
     useEffect(() => {
         const load = (key: string, fallback: ShopItem[], setter: (i: ShopItem[]) => void) => {
             const saved = localStorage.getItem(`shop_${key}`);
@@ -50,136 +55,246 @@ export default function ShopsPage() {
         const newItems = [...items];
         newItems[index] = newItem;
         setter(newItems);
-        // Persist
         localStorage.setItem(`shop_${key}`, JSON.stringify(newItems));
     };
 
-    const handleAddItem = () => {
+    const handleAddItem = (customItem?: ShopItem) => {
         const { items, setter, theme, key } = getCurrentState();
-        const newItem = generateLootItem(theme, false); // Random rarity
+        const newItem = customItem || generateLootItem(theme, false);
         const updated = [...items, newItem];
         setter(updated);
         localStorage.setItem(`shop_${key}`, JSON.stringify(updated));
     };
 
-    // [NEW] Special Order Logic regarding Zhentarim Stock (Crow's Nest)
+    const handleEditItem = (index: number, updatedItem: ShopItem) => {
+        const { items, setter, key } = getCurrentState();
+        const newItems = [...items];
+        newItems[index] = updatedItem;
+        setter(newItems);
+        localStorage.setItem(`shop_${key}`, JSON.stringify(newItems));
+    };
+
+    const handleDeleteItem = (index: number) => {
+        if (!confirm("Remove this item from stock permanently?")) return;
+        const { items, setter, key } = getCurrentState();
+        const newItems = items.filter((_, i) => i !== index);
+        setter(newItems);
+        localStorage.setItem(`shop_${key}`, JSON.stringify(newItems));
+    };
+
+
     const handleSpecialOrder = () => {
         const item = ZHENTARIM_SPECIAL_STOCK[Math.floor(Math.random() * ZHENTARIM_SPECIAL_STOCK.length)];
-        const updated = [...crowItems, item];
-        setCrowItems(updated);
-        localStorage.setItem('shop_crow', JSON.stringify(updated));
+        handleAddItem(item);
         alert(`📦 DELIVERY RECEIVED\n\nItem: ${item.name}\nCost: ${item.cost}\n\n"The network provides."`);
     };
 
     return (
-        <div className="retro-container">
+        <div className="retro-container min-h-screen bg-[#0a0a0a] text-[#d4d4d4] p-8">
             <CommandBar />
 
-            <header style={{ marginTop: "2rem", marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h1>The Market <span style={{ fontSize: "0.5em", color: "var(--accent-color)" }}>v2.0</span></h1>
+            <header className="mb-8 flex justify-between items-center border-b border-[#333] pb-4">
+                <div>
+                    <h1 className="text-3xl font-header tracking-wider text-[var(--gold-accent)] mb-1">THE MARKET <span className="text-xs align-top opacity-50">v2.1</span></h1>
+                    <p className="text-xs font-mono text-[#666]">COMMERCE & TRADE LOGISTICS</p>
+                </div>
                 <PrintButton />
             </header>
 
-            <div className="no-print" style={{ display: "flex", gap: "1rem", marginBottom: "2rem", flexWrap: "wrap" }}>
-                <button onClick={() => setActiveTab('khelben')} className={clsx(activeTab === 'khelben' && "active")}>Khelben&apos;s Gifts</button>
-                <button onClick={() => setActiveTab('fimble')} className={clsx(activeTab === 'fimble' && "active")}>The Gilded Coffer</button>
-                <button onClick={() => setActiveTab('iron')} className={clsx(activeTab === 'iron' && "active")}>The Iron Knot</button>
-                <button onClick={() => setActiveTab('crow')} className={clsx(activeTab === 'crow' && "active")}>The Crow&apos;s Nest</button>
+            {/* Economy Control */}
+            <EconomyControlPanel onUpdate={setEconomy} />
+
+            <div className="no-print flex gap-2 mb-6 flex-wrap">
+                {[
+                    { id: 'khelben', label: "Khelben's Gifts" },
+                    { id: 'fimble', label: "The Gilded Coffer" },
+                    { id: 'iron', label: "The Iron Knot" },
+                    { id: 'crow', label: "The Crow's Nest" }
+                ].map(tab => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id as any)}
+                        className={`
+                            px-4 py-2 text-sm font-bold uppercase tracking-wider border transition-all
+                            ${activeTab === tab.id
+                                ? 'bg-[var(--gold-accent)] text-black border-[var(--gold-accent)] shadow-[0_0_10px_rgba(201,188,160,0.3)]'
+                                : 'bg-transparent text-[#666] border-[#333] hover:border-[#666] hover:text-[#aaa]'}
+                        `}
+                    >
+                        {tab.label}
+                    </button>
+                ))}
             </div>
 
-            <div className="retro-border">
-                {activeTab === 'khelben' && <ShopList title="Khelben's Gifts" items={khelbenItems} onReplace={handleReplace} onAdd={handleAddItem} />}
-                {activeTab === 'fimble' && <ShopList title="The Gilded Coffer" items={fimbleItems} onReplace={handleReplace} onAdd={handleAddItem} />}
-                {activeTab === 'iron' && <ShopList title="The Iron Knot" items={ironItems} onReplace={handleReplace} onAdd={handleAddItem} />}
-                {activeTab === 'crow' && <ShopList title="The Crow's Nest" items={crowItems} onReplace={handleReplace} onAdd={handleAddItem} onAddSpecial={handleSpecialOrder} />}
+            <div className="retro-border bg-[#0e0e0e] border border-[#333] p-1 shadow-2xl">
+                {activeTab === 'khelben' && <ShopList title="Khelben's Gifts" items={khelbenItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} />}
+                {activeTab === 'fimble' && <ShopList title="The Gilded Coffer" items={fimbleItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} />}
+                {activeTab === 'iron' && <ShopList title="The Iron Knot" items={ironItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} />}
+                {activeTab === 'crow' && <ShopList title="The Crow's Nest" items={crowItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} onAddSpecial={handleSpecialOrder} />}
             </div>
         </div>
     );
 }
 
-function ShopList({ title, items, onReplace, onAdd, onAddSpecial }: { title: string, items: ShopItem[], onReplace: (idx: number) => void, onAdd: () => void, onAddSpecial?: () => void }) {
+function ShopList({ title, items, economy, onReplace, onAdd, onEdit, onDelete, onAddSpecial }: {
+    title: string,
+    items: ShopItem[],
+    economy: { inflation: number },
+    onReplace: (idx: number) => void,
+    onAdd: (item?: ShopItem) => void,
+    onEdit: (idx: number, item: ShopItem) => void,
+    onDelete: (idx: number) => void,
+    onAddSpecial?: () => void
+}) {
 
-    // [NEW] Local state for "Sold" visualization before replacement
-    // Actually, user said: "mark if a item has been sold so that can be replaced"
-    // So we'll toggle a visual "sold" state, and if it IS sold, show the "Restock" button.
     const [soldIndices, setSoldIndices] = useState<number[]>([]);
+    const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const [editForm, setEditForm] = useState<ShopItem | null>(null);
 
     const toggleSold = (index: number) => {
-        if (soldIndices.includes(index)) {
-            setSoldIndices(soldIndices.filter(i => i !== index));
-        } else {
-            setSoldIndices([...soldIndices, index]);
-        }
+        setSoldIndices(prev => prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]);
     };
 
     const handleRestock = (index: number) => {
         onReplace(index);
-        setSoldIndices(soldIndices.filter(i => i !== index)); // Reset visual state
+        setSoldIndices(prev => prev.filter(i => i !== index));
     };
 
-    // [NEW] Special Order Handler
-    const handleSpecialOrder = () => {
-        if (!onAddSpecial) return;
-        const confirmBuy = confirm("SPECIAL ORDER REQUEST\n\nThis will tap into the Zhentarim's private reserves.\nAre you sure you want to request a special shipment?");
-        if (confirmBuy) {
-            onAddSpecial();
+    const startEdit = (index: number, item: ShopItem) => {
+        setEditingIndex(index);
+        setEditForm({ ...item });
+    };
+
+    const saveEdit = () => {
+        if (editingIndex !== null && editForm) {
+            onEdit(editingIndex, editForm);
+            setEditingIndex(null);
+            setEditForm(null);
         }
     };
 
+    const calculatePrice = (baseCost: string): string => {
+        // Parse "100 gp" -> 100
+        const numeric = parseInt(baseCost.replace(/[^0-9]/g, ''));
+        if (isNaN(numeric)) return baseCost; // Return original if non-numeric (e.g. "Quest")
+
+        const inflated = Math.ceil(numeric * economy.inflation);
+
+        // Format back
+        if (baseCost.includes("gp")) return `${inflated} gp`;
+        if (baseCost.includes("sp")) return `${inflated} sp`;
+        if (baseCost.includes("cp")) return `${inflated} cp`;
+        return `${inflated}`;
+    };
+
+    // New Item Form State
+    const [newItemMode, setNewItemMode] = useState(false);
+    const [newItemData, setNewItemData] = useState<ShopItem>({ name: "New Item", cost: "100 gp", rarity: "Common", effect: "Description here.", npcQuote: "" });
+
+    const submitNewItem = () => {
+        onAdd(newItemData);
+        setNewItemMode(false);
+        setNewItemData({ name: "New Item", cost: "100 gp", rarity: "Common", effect: "Description here.", npcQuote: "" });
+    };
+
     return (
-        <div>
-            <div className="flex justify-between items-end mb-4 border-b border-[#5d4037] pb-2">
-                <h2 className="m-0">{title}</h2>
-                {title.includes("Crow's Nest") && (
-                    <button
-                        onClick={handleSpecialOrder}
-                        className="text-xs bg-red-900 text-white px-2 py-1 rounded hover:bg-red-700 transition animate-pulse"
-                        title="Request illicit goods"
-                    >
-                        📦 SPECIAL ORDER
-                    </button>
-                )}
+        <div className="p-4">
+            <div className="flex justify-between items-end mb-6 border-b border-[#333] pb-4">
+                <h2 className="m-0 text-xl text-[#e0e0e0] tracking-wide">{title}</h2>
+                <div className="flex gap-2">
+                    {onAddSpecial && (
+                        <button
+                            onClick={() => {
+                                if (confirm("Request special shipment from Zhentarim?")) onAddSpecial();
+                            }}
+                            className="text-xs bg-red-900/50 hover:bg-red-900 text-red-200 border border-red-800 px-3 py-1 rounded transition flex items-center gap-2"
+                        >
+                            <AlertTriangle className="w-3 h-3" /> SPECIAL ORDER
+                        </button>
+                    )}
+                </div>
             </div>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+
+            <table className="w-full border-collapse">
                 <thead>
-                    <tr style={{ textAlign: "left", borderBottom: "2px solid #5d4037" }}>
-                        <th style={{ padding: "0.5rem" }}>Item</th>
-                        <th style={{ padding: "0.5rem" }}>Cost / Price</th>
-                        <th style={{ padding: "0.5rem" }}>Effect / Notes</th>
-                        <th className="no-print" style={{ padding: "0.5rem", width: "100px" }}>Actions</th>
+                    <tr className="text-left text-xs font-mono uppercase text-[#666] border-b border-[#333]">
+                        <th className="pb-3 pl-2 w-[35%]">Item Details</th>
+                        <th className="pb-3 w-[15%]">Price <span className="text-[var(--gold-accent)] opacity-50">(Adj)</span></th>
+                        <th className="pb-3 w-[35%]">Effect / Lore</th>
+                        <th className="pb-3 w-[15%] text-right pr-2">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="text-sm">
                     {items.map((item, i) => {
                         const isSold = soldIndices.includes(i);
+                        const isEditing = editingIndex === i;
+                        const adjustedPrice = calculatePrice(item.cost);
+                        const priceChanged = adjustedPrice !== item.cost;
+
+                        if (isEditing && editForm) {
+                            return (
+                                <tr key={i} className="bg-[#1a1a1a] border-b border-[#333]">
+                                    <td className="p-3 align-top">
+                                        <input className="w-full bg-[#111] border border-[#444] p-1 mb-1 text-white font-bold" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} />
+                                        <input className="w-full bg-[#111] border border-[#444] p-1 text-xs text-[#aaa]" value={editForm.rarity} onChange={e => setEditForm({ ...editForm, rarity: e.target.value })} placeholder="Rarity" />
+                                    </td>
+                                    <td className="p-3 align-top">
+                                        <input className="w-full bg-[#111] border border-[#444] p-1 text-[var(--gold-accent)]" value={editForm.cost} onChange={e => setEditForm({ ...editForm, cost: e.target.value })} />
+                                    </td>
+                                    <td className="p-3 align-top">
+                                        <textarea className="w-full bg-[#111] border border-[#444] p-1 mb-1 text-xs text-[#ddd] h-16 resize-none" value={editForm.effect} onChange={e => setEditForm({ ...editForm, effect: e.target.value })} />
+                                        <input className="w-full bg-[#111] border border-[#444] p-1 text-xs italic text-[#666]" value={editForm.npcQuote || ""} onChange={e => setEditForm({ ...editForm, npcQuote: e.target.value })} placeholder="NPC Quote" />
+                                    </td>
+                                    <td className="p-3 align-top text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <button onClick={saveEdit} className="p-1 hover:text-green-500"><Save className="w-4 h-4" /></button>
+                                            <button onClick={() => setEditingIndex(null)} className="p-1 hover:text-red-500"><X className="w-4 h-4" /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )
+                        }
+
                         return (
-                            <tr key={i} style={{ borderBottom: "1px solid rgba(93, 64, 55, 0.3)", opacity: isSold ? 0.5 : 1, textDecoration: isSold ? "line-through" : "none" }}>
-                                <td style={{ padding: "0.5rem", verticalAlign: "top" }}>
-                                    <strong>{item.name}</strong>
-                                    {item.rarity && <div style={{ fontSize: "0.8em", opacity: 0.7 }}>{item.rarity} {item.type}</div>}
-                                    {item.properties && <div style={{ fontSize: "0.8em", opacity: 0.7, fontStyle: "italic", marginTop: "0.2rem" }}>Properties: {item.properties.join(", ")}</div>}
+                            <tr key={i} className={`border-b border-[#222] hover:bg-[#111] transition-colors group ${isSold ? 'opacity-40 bg-[#0a0000]' : ''}`}>
+                                <td className="p-3 align-top">
+                                    <div className={`font-bold text-[#e0e0e0] ${isSold ? 'line-through' : ''}`}>{item.name}</div>
+                                    <div className="text-xs text-[#666] font-mono">{item.rarity} {item.type}</div>
                                 </td>
-                                <td style={{ padding: "0.5rem", verticalAlign: "top", color: "#8a1c1c" }}>{item.cost}</td>
-                                <td style={{ padding: "0.5rem", verticalAlign: "top" }}>
-                                    {item.effect && <div>{item.effect}</div>}
-                                    {item.npcQuote && <div style={{ fontStyle: "italic", marginTop: "0.2rem", opacity: 0.8 }}>&quot;{item.npcQuote}&quot;</div>}
-                                </td>
-                                <td className="no-print" style={{ padding: "0.5rem", verticalAlign: "top", textDecoration: "none" }}>
-                                    {isSold ? (
-                                        <button
-                                            onClick={() => handleRestock(i)}
-                                            style={{ fontSize: "0.7rem", padding: "0.3rem", background: "var(--accent-color)", color: "black", width: "100%" }}
-                                        >
-                                            RESTOCK
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={() => toggleSold(i)}
-                                            style={{ fontSize: "0.7rem", padding: "0.3rem", borderColor: "#555", color: "#555", width: "100%" }}
-                                        >
-                                            MARK SOLD
-                                        </button>
+                                <td className="p-3 align-top">
+                                    <div className="font-mono text-[var(--gold-accent)]">
+                                        {adjustedPrice}
+                                    </div>
+                                    {priceChanged && !isSold && (
+                                        <div className="text-[10px] text-[#555] line-through decoration-red-900/50 decoration-2">
+                                            Base: {item.cost}
+                                        </div>
                                     )}
+                                </td>
+                                <td className="p-3 align-top">
+                                    <div className="text-[#ccc] text-xs leading-relaxed mb-1">{item.effect}</div>
+                                    {item.npcQuote && <div className="text-[10px] italic text-[#555]">&quot;{item.npcQuote}&quot;</div>}
+                                </td>
+                                <td className="p-3 align-top text-right">
+                                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        {isSold ? (
+                                            <button onClick={() => handleRestock(i)} className="p-1.5 bg-[#222] hover:bg-[var(--gold-accent)] hover:text-black rounded" title="Restock">
+                                                <RefreshCw className="w-3 h-3" />
+                                            </button>
+                                        ) : (
+                                            <>
+                                                <button onClick={() => toggleSold(i)} className="p-1.5 hover:bg-[#222] rounded text-[#444] hover:text-[#888]" title="Mark Sold">
+                                                    <div className="w-3 h-3 border border-current rounded-full" />
+                                                </button>
+                                                <button onClick={() => startEdit(i, item)} className="p-1.5 hover:bg-[#222] rounded text-[#444] hover:text-[#888]" title="Edit">
+                                                    <Edit2 className="w-3 h-3" />
+                                                </button>
+                                                <button onClick={() => onDelete(i)} className="p-1.5 hover:bg-[#222] rounded text-[#444] hover:text-red-900" title="Delete">
+                                                    <Trash2 className="w-3 h-3" />
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
                                 </td>
                             </tr>
                         );
@@ -187,20 +302,44 @@ function ShopList({ title, items, onReplace, onAdd, onAddSpecial }: { title: str
                 </tbody>
             </table>
 
-            <div className="no-print" style={{ marginTop: "2rem", textAlign: "center" }}>
-                <button
-                    onClick={onAdd}
-                    className="retro-btn"
-                    style={{
-                        borderStyle: "dashed",
-                        opacity: 0.7,
-                        width: "100%",
-                        padding: "1rem"
-                    }}
-                >
-                    + ADD RANDOM STOCK
-                </button>
+            {/* Add Item Area */}
+            <div className="mt-8 border-t border-[#333] pt-4">
+                {!newItemMode ? (
+                    <div className="flex gap-4 justify-center">
+                        <button
+                            onClick={() => onAdd()}
+                            className="text-xs uppercase tracking-widest text-[#555] hover:text-[var(--gold-accent)] hover:border-[var(--gold-accent)] border border-[#333] px-6 py-3 rounded transition-all"
+                        >
+                            + Generate Random Loot
+                        </button>
+                        <button
+                            onClick={() => setNewItemMode(true)}
+                            className="text-xs uppercase tracking-widest text-[#555] hover:text-white hover:border-white border border-[#333] px-6 py-3 rounded transition-all"
+                        >
+                            + Custom Entry
+                        </button>
+                    </div>
+                ) : (
+                    <div className="bg-[#111] border border-[#333] p-4 rounded max-w-2xl mx-auto animate-fade-in">
+                        <h3 className="text-xs font-header mb-4 text-[#888]">NEW INVENTORY ENTRY</h3>
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                            <input className="bg-[#0a0a0a] border border-[#333] p-2 text-sm text-[var(--gold-accent)]" placeholder="Item Name" value={newItemData.name} onChange={e => setNewItemData({ ...newItemData, name: e.target.value })} autoFocus />
+                            <input className="bg-[#0a0a0a] border border-[#333] p-2 text-sm text-[#aaa]" placeholder="Cost (e.g. 500 gp)" value={newItemData.cost} onChange={e => setNewItemData({ ...newItemData, cost: e.target.value })} />
+                            <input className="bg-[#0a0a0a] border border-[#333] p-2 text-sm text-[#aaa]" placeholder="Rarity & Type" value={newItemData.rarity} onChange={e => setNewItemData({ ...newItemData, rarity: e.target.value })} />
+                            <input className="bg-[#0a0a0a] border border-[#333] p-2 text-sm text-[#aaa]" placeholder="NPC Quote (Optional)" value={newItemData.npcQuote} onChange={e => setNewItemData({ ...newItemData, npcQuote: e.target.value })} />
+                        </div>
+                        <textarea className="w-full bg-[#0a0a0a] border border-[#333] p-2 text-sm text-[#ddd] h-20 mb-4 resize-none" placeholder="Item Effect / Description" value={newItemData.effect} onChange={e => setNewItemData({ ...newItemData, effect: e.target.value })} />
+                        <div className="flex justify-end gap-3">
+                            <button onClick={() => setNewItemMode(false)} className="text-xs text-[#666] hover:text-white px-4 py-2">CANCEL</button>
+                            <button onClick={submitNewItem} className="bg-[var(--gold-accent)] text-black font-bold text-xs uppercase px-4 py-2 hover:bg-[#fff]">ADD TO STOCK</button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
 }
+
+// Helper for icons if needed later, currently using Lucide in Edit2/Trash2/etc.
+// Note: Imports for lucide-react added at top.
+
