@@ -105,33 +105,40 @@ export default function PlayersPage() {
     };
 
     const toggleStatus = (playerId: string, status: PlayerStatus) => {
+        console.log(`[ToggleStatus] ID: ${playerId}, Status: ${status}`);
         setPlayers(prevPlayers => prevPlayers.map(p => {
             if (p.id !== playerId) return p;
 
-            const currentStatuses = Array.isArray(p.status) ? p.status : ["Normal"];
+            // Ensure we have a valid array copy
+            const rawStatus = p.status;
+            let currentStatuses: string[] = Array.isArray(rawStatus) ? [...rawStatus] : ["Normal"];
+
+            // Normalize case if needed (though we expect Title Case)
+            // Safety: Filter out nulls/undefineds
+            currentStatuses = currentStatuses.filter(Boolean);
 
             // Handle Normal: Clear others
             if (status === "Normal") {
                 return { ...p, status: ["Normal"] };
             }
 
-            // Remove Normal if strictly adding a condition
-            let newStatuses = currentStatuses.filter(s => s !== "Normal");
+            // Remove Normal if we are setting a condition
+            currentStatuses = currentStatuses.filter(s => s !== "Normal");
 
-            if (newStatuses.includes(status)) {
+            if (currentStatuses.includes(status)) {
                 // Untoggle
-                newStatuses = newStatuses.filter(s => s !== status);
+                currentStatuses = currentStatuses.filter(s => s !== status);
             } else {
                 // Toggle On
-                newStatuses = [...newStatuses, status];
+                currentStatuses.push(status);
             }
 
             // If empty, revert to Normal
-            if (newStatuses.length === 0) {
-                newStatuses = ["Normal"];
+            if (currentStatuses.length === 0) {
+                currentStatuses = ["Normal"];
             }
 
-            return { ...p, status: newStatuses as PlayerStatus[] };
+            return { ...p, status: currentStatuses as PlayerStatus[] };
         }));
     };
 
@@ -414,6 +421,9 @@ export default function PlayersPage() {
                                                             </button>
                                                         );
                                                     })}
+                                                </div>
+                                                <div className="mt-2 text-[8px] font-mono text-gray-500 text-center opacity-50">
+                                                    DEBUG: {JSON.stringify(activePlayer.status)}
                                                 </div>
                                             </div>
 
