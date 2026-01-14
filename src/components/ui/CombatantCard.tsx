@@ -51,7 +51,7 @@ export default function CombatantCard({ data, onUpdate, onRemove, onInspect, isA
                             <div className="absolute inset-0 bg-[#a32222] blur-md animate-pulse rounded-full opacity-60"></div>
                             <Heart
                                 fill="#a32222"
-                                className="text-[#a32222] w-8 h-8 animate-[bounce_1s_infinite]"
+                                className="text-[#a32222] w-8 h-8 animate-heartbeat"
                                 strokeWidth={0}
                             />
                         </div>
