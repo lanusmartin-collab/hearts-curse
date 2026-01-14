@@ -7,7 +7,7 @@ import StatblockCard from "@/components/ui/StatblockCard";
 import StatblockGenerator from "@/components/ui/StatblockGenerator";
 import PrintButton from "@/components/ui/PrintButton";
 import Link from "next/link";
-import "./binder.css";
+// import "./binder.css"; // Moved to globals.css
 
 export default function StatblocksPage() {
     const [search, setSearch] = useState("");

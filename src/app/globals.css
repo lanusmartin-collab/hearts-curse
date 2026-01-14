@@ -1044,8 +1044,255 @@ select:focus {
   background: rgba(20, 0, 0, 0.8);
 }
 
+.animate-heartbeat {
+  animation: heartbeat 3s infinite ease-in-out;
+}
+
+.animate-heartbeat:hover {
+  animation-duration: 0.8s;
+  /* Panic mode on hover */
+}
+
+/* CURSE OVERLAY VISUALS */
+.curse-overlay-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 99999;
+  overflow: hidden;
+}
+
+/* Stage 1: Awakened - Subtle Vignette */
+.curse-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
+  animation: pulse-slow 5s infinite;
+}
+
+/* Stage 2: Rising - Blood Veins & Fog */
+.curse-veins {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  box-shadow: inset 0 0 100px rgba(80, 0, 0, 0.3);
+  mix-blend-mode: multiply;
+}
+
+.curse-veins::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 120%, rgba(138, 28, 28, 0.2), transparent 50%);
+  animation: pulse-slow 4s infinite alternate;
+}
+
+/* Stage 3: Critical - Glitch & Distortion */
+.curse-glitch-layer {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 150px rgba(138, 28, 28, 0.5);
+  backdrop-filter: blur(1px) contrast(1.1);
+  animation: glitch-flash 10s infinite;
+}
+
+.curse-glitch-layer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 0, 0, 0.3);
+  opacity: 0.5;
+  animation: scanline 3s linear infinite;
+}
+
+@keyframes glitch-flash {
+
+  0%,
+  95% {
+    filter: hue-rotate(0deg);
+    transform: translateX(0);
+  }
+
+  96% {
+    filter: hue-rotate(90deg) invert(0.1);
+    transform: translateX(2px);
+  }
+
+  97% {
+    filter: hue-rotate(-90deg);
+    transform: translateX(-2px);
+  }
+
+  98% {
+    filter: none;
+    transform: translateX(0);
+  }
+
+  99% {
+    filter: invert(0.2);
+  }
+
+  100% {
+    filter: none;
+  }
+}
+
+@keyframes scanline {
+  0% {
+    top: -10%;
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    top: 110%;
+    opacity: 0;
+  }
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+/* CAMPAIGN THEMED BUTTONS */
+.campaign-btn {
+  font-family: var(--font-header);
+  background: linear-gradient(to bottom, #2a0a0a, #1a0505);
+  border: 1px solid #a32222;
+  border-bottom: 4px solid #5c1212;
+  /* Thicker 3D edge */
+  color: #c9bca0;
+  /* Gold text */
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 0.8rem 1.5rem;
+  font-size: 0.8rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.1s;
+  /* Faster for click feel */
+  box-shadow: 0 4px 0px rgba(0, 0, 0, 0.5);
+  /* Hard shadow drop */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.campaign-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+
+.campaign-btn:hover {
+  background: linear-gradient(to bottom, #3d0f0f, #2a0a0a);
+  border-color: #ff4444;
+  color: #fff;
+  /* White on hover */
+  box-shadow:
+    0 0 15px rgba(163, 34, 34, 0.4),
+    0 0 5px rgba(255, 68, 68, 0.2);
+  transform: translateY(-1px);
+}
+
+.campaign-btn:hover::before {
+  transform: translateX(100%);
+}
+
+.campaign-btn:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+.campaign-btn.primary {
+  background: linear-gradient(to bottom, #a32222, #5c1212);
+  border-color: #ff4444;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.campaign-btn.primary:hover {
+  background: linear-gradient(to bottom, #c42929, #7a1818);
+  box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+}
+
+.campaign-btn.danger {
+  border-color: #a32222;
+  color: #ff4444;
+  background: rgba(20, 0, 0, 0.8);
+}
+
 .campaign-btn.danger:hover {
   background: #a32222;
   color: #fff;
   box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+}
+
+/* RESPONISVE BINDER LAYOUT */
+.adnd-binder-grid {
+  display: grid;
+  grid-template-columns: 200px 300px 1fr;
+  height: calc(100vh - 100px);
+  overflow: hidden;
+  background: var(--adnd-parchment-dark);
+  border: 4px solid #3e2723;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 900px) {
+  .adnd-binder-grid {
+    display: flex;
+    flex-direction: column;
+    height: auto !important;
+    min-height: calc(100vh - 100px);
+    overflow: visible !important;
+  }
+
+  /* Make Tabs horizontal and scrollable */
+  .adnd-binder-sidebar {
+    flex-direction: row !important;
+    overflow-x: auto;
+    border-right: none !important;
+    border-bottom: 2px solid #1a0f0f;
+    white-space: nowrap;
+    padding-bottom: 0.5rem;
+    min-height: 60px;
+    flex-shrink: 0;
+  }
+
+  /* Make List collapsible or scrollable area smaller */
+  .adnd-binder-list {
+    max-height: 250px;
+    border-right: none !important;
+    border-bottom: 1px solid #c9bca0;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+
+  /* Ensure preview pane is visible and scrollable */
+  .adnd-binder-preview {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 500px;
+    /* Ensure content area is big enough */
+    padding-bottom: 100px;
+  }
 }
