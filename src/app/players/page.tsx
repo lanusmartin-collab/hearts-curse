@@ -105,7 +105,6 @@ export default function PlayersPage() {
     };
 
     const toggleStatus = (playerId: string, status: PlayerStatus) => {
-        console.log(`[ToggleStatus] ID: ${playerId}, Status: ${status}`);
         setPlayers(prevPlayers => prevPlayers.map(p => {
             if (p.id !== playerId) return p;
 
@@ -421,9 +420,6 @@ export default function PlayersPage() {
                                                             </button>
                                                         );
                                                     })}
-                                                </div>
-                                                <div className="mt-2 text-[8px] font-mono text-gray-500 text-center opacity-50">
-                                                    DEBUG: {JSON.stringify(activePlayer.status)}
                                                 </div>
                                             </div>
 
