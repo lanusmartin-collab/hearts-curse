@@ -1,8 +1,33 @@
-
 import { Combatant, ALL_CONDITIONS } from "@/types/combat";
 import { useState } from "react";
-import { Shield, Heart, Skull, Activity, MoreVertical, X, EyeOff, Zap } from "lucide-react";
-import StatblockCard from "@/components/ui/StatblockCard";
+import {
+    Shield, Skull, Activity, MoreVertical, X, Zap,
+    EyeOff, EarOff, MicOff, Ghost, Anchor,
+    HeartHandshake, AlertTriangle, AlertOctagon,
+    Bed, BrainCircuit, Droplets, Flame, Loader2
+} from "lucide-react";
+
+// Map conditions to Lucide icons
+const CONDITION_ICONS: Record<string, React.ReactNode> = {
+    "blinded": <EyeOff size={10} />,
+    "charmed": <HeartHandshake size={10} />,
+    "deafened": <EarOff size={10} />,
+    "frightened": <AlertTriangle size={10} />,
+    "grappled": <Anchor size={10} />,
+    "incapacitated": <Activity size={10} />,
+    "invisible": <Ghost size={10} />,
+    "paralyzed": <Zap size={10} className="rotate-90" />,
+    "petrified": <Loader2 size={10} />,
+    "poisoned": <Droplets size={10} />,
+    "prone": <Bed size={10} />,
+    "restrained": <Anchor size={10} />,
+    "stunned": <BrainCircuit size={10} />,
+    "unconscious": <Skull size={10} />,
+    "exhaustion": <AlertOctagon size={10} />,
+};
+
+// Fallback icon
+const DEFAULT_CONDITION_ICON = <AlertTriangle size={10} />;
 
 interface CombatantCardProps {
     data: Combatant;
@@ -15,8 +40,8 @@ interface CombatantCardProps {
 
 export default function CombatantCard({ data, onUpdate, onRemove, onInspect, isActive, isInspected }: CombatantCardProps) {
     const [isExpanded, setIsExpanded] = useState(false);
-    const [showConditions, setShowConditions] = useState(false);
 
+    // Derived State
     const hpPercent = Math.min(100, Math.max(0, (data.hp / data.maxHp) * 100));
     const isDead = data.hp <= 0;
     const isBloodied = !isDead && hpPercent <= 50;
@@ -42,22 +67,8 @@ export default function CombatantCard({ data, onUpdate, onRemove, onInspect, isA
             ${isInspected ? 'border-r-4 border-r-[#d4af37]' : ''}
             ${isDead ? 'opacity-50 grayscale border-l-[#333]' : ''}
         `}>
-            {/* Active Indicator Glow & Beating Heart */}
-            {isActive && (
-                <>
-                    <div className="absolute inset-0 bg-[#a32222]/5 animate-pulse pointer-events-none"></div>
-                    <div className="absolute -left-5 top-1/2 -translate-y-1/2 z-20 pointer-events-none">
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-[#a32222] blur-md animate-pulse rounded-full opacity-60"></div>
-                            <Heart
-                                fill="#a32222"
-                                className="text-[#a32222] w-8 h-8 animate-heartbeat"
-                                strokeWidth={0}
-                            />
-                        </div>
-                    </div>
-                </>
-            )}
+            {/* Active Indicator Glow */}
+            {isActive && <div className="absolute inset-0 bg-[#a32222]/5 animate-pulse pointer-events-none"></div>}
 
             {/* Main Bar */}
             <div className={`flex items-center p-3 gap-3 relative z-10 ${isDead ? 'line-through text-[#666]' : ''}`}>
@@ -73,24 +84,31 @@ export default function CombatantCard({ data, onUpdate, onRemove, onInspect, isA
                         onChange={(e) => onUpdate(data.id, { initiative: parseInt(e.target.value) || 0 })}
                         className={`w-full text-center bg-transparent font-mono text-lg font-bold focus:outline-none ${isActive ? 'text-[#ffd700]' : 'text-[#888]'}`}
                     />
-                    {/* Tiny Icon underneath if space allows, or overlay */}
                 </div>
 
                 {/* Name & Conditions */}
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
                     <div className="flex items-center gap-2">
-                        <span className={`font-header tracking-wider text-sm truncate ${isActive ? 'text-[#fff] text-shadow-sm font-bold' : 'text-[#ccc]'}`}>
+                        {/* Name with Heartbeat if Active */}
+                        <span className={`
+                            font-header tracking-wider text-sm truncate select-none block
+                            ${isActive ? 'text-[#fff] text-shadow-sm font-bold animate-heartbeat origin-left' : 'text-[#ccc]'}
+                        `}>
                             {data.name}
                         </span>
                         {isDead && <Skull size={14} className="text-[#666]" />}
                     </div>
 
-                    {/* Compact Conditions Line */}
+                    {/* Compact Conditions Icons in Main View */}
                     <div className="flex flex-wrap gap-1 mt-1 min-h-[16px]">
                         {data.conditions.length > 0 ? (
                             data.conditions.map(c => (
-                                <span key={c} className="flex items-center gap-0.5 text-[8px] px-1 py-0.5 bg-[#220a0a] border border-[#5c1212] text-[#ff6b6b] rounded-sm uppercase tracking-wider font-mono">
-                                    <Skull size={8} /> {c}
+                                <span
+                                    key={c}
+                                    title={c}
+                                    className="flex items-center justify-center w-5 h-5 bg-[#220a0a] border border-[#5c1212] text-[#ff6b6b] rounded-sm hover:scale-110 transition-transform cursor-help"
+                                >
+                                    {CONDITION_ICONS[c.toLowerCase()] || <span className="text-[8px]">{c.slice(0, 2)}</span>}
                                 </span>
                             ))
                         ) : isActive && !isDead ? (
@@ -141,7 +159,7 @@ export default function CombatantCard({ data, onUpdate, onRemove, onInspect, isA
 
                     {/* Expand/Delete */}
                     <div className="flex flex-col gap-1">
-                        <button onClick={() => setIsExpanded(!isExpanded)} className={`p-1 hover:bg-[#222] rounded transition-colors ${isExpanded ? 'text-[#a32222] bg-[#a32222]/10' : 'text-[#666]'}`}>
+                        <button onClick={() => setIsExpanded(!isExpanded)} className={`p-1 hover:bg-[#222] rounded transition-colors ${isExpanded ? 'text-[#a32222] bg-[#a32222]/10' : 'text-[#666]'}`} title="Manage Conditions">
                             <Activity size={12} />
                         </button>
                         <button onClick={() => onRemove(data.id)} className="p-1 hover:bg-[#2a0a0a] text-[#444] hover:text-red-500 rounded transition-colors">
@@ -154,15 +172,21 @@ export default function CombatantCard({ data, onUpdate, onRemove, onInspect, isA
             {/* Expanded Details - Status Effects Manager */}
             {isExpanded && (
                 <div className="p-3 border-t border-[#222] bg-[#0c0c0c] animate-slide-down shadow-inner">
-                    <div className="text-[9px] text-[#555] font-mono uppercase mb-2">Active Conditions</div>
+                    <div className="text-[9px] text-[#555] font-mono uppercase mb-2">Toggle Conditions</div>
                     <div className="flex flex-wrap gap-1.5">
                         {ALL_CONDITIONS.map(c => (
                             <button
                                 key={c}
                                 onClick={() => toggleCondition(c)}
-                                className={`text-[9px] px-2 py-1 border rounded-sm uppercase tracking-wide transition-all ${data.conditions.includes(c) ? 'bg-[#5c1212] border-[#a32222] text-white shadow-[0_0_5px_rgba(163,34,34,0.4)]' : 'bg-[#111] border-[#333] text-[#666] hover:border-[#555] hover:text-[#999]'}`}
+                                title={c}
+                                className={`
+                                    flex items-center justify-center w-8 h-8 rounded-sm transition-all
+                                    ${data.conditions.includes(c)
+                                        ? 'bg-[#5c1212] border border-[#a32222] text-white shadow-[0_0_5px_rgba(163,34,34,0.4)] scale-110'
+                                        : 'bg-[#111] border border-[#333] text-[#444] hover:border-[#555] hover:text-[#888]'}
+                                `}
                             >
-                                {c}
+                                {CONDITION_ICONS[c.toLowerCase()] || <span className="text-[8px]">{c.slice(0, 2)}</span>}
                             </button>
                         ))}
                     </div>
