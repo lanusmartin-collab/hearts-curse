@@ -429,6 +429,37 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         `
     },
     {
+        id: "spire",
+        title: "🌪️ The Spire of Screaming Gales",
+        category: "Plot Twist",
+        route: "/maps/spire",
+        imagePath: "/spire_map_placeholder.png",
+        gridType: "hex",
+        mechanics: [
+            "High Altitude: Creatures without fly speed must save vs Exhaustion per hour.",
+            "Wind Tunnel: Ranged attacks have Disadvantage. Flying speed is doubled tailwind, halved headwind.",
+            "Table Rule: The Shout. Players must shout to be heard over the wind. Whispering is impossible."
+        ],
+        questGuide: `**OBJECTIVE:** Summit the Spire.
+**CONTEXT:** Aerisi Kalinoth is conducting a ritual at the peak to summon Yan-C-Bin.
+**SOLUTION:** The Three Gales.
+1.  **The Base:** Navigate the whiteout clouds using Survival checks.
+2.  **The Ascent:** Defeat the Aarakocra guards on the hanging platforms.
+3.  **The Eye:** The boss fight takes place in worst-case weather conditions.`,
+        nodes: [
+            { id: "1", x: 50, y: 90, label: "Base of the Spire", type: "info", description: "The wind howls like a dying god. Visibility is 30ft due to clouds." },
+            { id: "2", x: 30, y: 70, label: "The Gale-Gate", type: "encounter", description: "Encounter: 2 Air Elementals + 4 Aarakocra Skirmishers. Lair Action: Gust (DC 15 Str save or pushed 20ft)." },
+            { id: "3", x: 70, y: 50, label: "The Whispering Terrace", type: "quest", description: "Puzzle: Align the wind chimes to the Song of Aerdrie Faenya to reveal the stairs." },
+            { id: "4", x: 50, y: 30, label: "Eye of the Storm", type: "boss", description: "BOSS: Aerisi (Air Prophet) mounted on an Invisible Stalker. Loot: 'Fan of Gales'." },
+            { id: "5", x: 50, y: 15, label: "The Apex", type: "loot", description: "Treasure: Scroll of Control Weather & Elemental Gem (Blue)." }
+        ],
+        description: `
+**Location:** The Highest Peak
+**Narrative:**
+"The Spire pierces the clouds, a needle of rock screaming in the wind. This is the domain of elemental air, where gravity is a suggestion and the fall is eternal."
+        `
+    },
+    {
         id: "netheril",
         title: "⚡ The Netheril Ruins",
         category: "Plot Twist",

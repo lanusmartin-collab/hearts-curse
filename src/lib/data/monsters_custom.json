@@ -1,5 +1,164 @@
 [
     {
+        "slug": "air-elemental",
+        "name": "Air Elemental",
+        "size": "Large",
+        "type": "Elemental",
+        "alignment": "Neutral",
+        "ac": 15,
+        "hp": 90,
+        "speed": "0 ft., fly 90 ft. (hover)",
+        "stats": {
+            "str": 14,
+            "dex": 20,
+            "con": 14,
+            "int": 6,
+            "wis": 10,
+            "cha": 6
+        },
+        "resistances": "Lightning, Thunder; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks",
+        "immunities": "Poison",
+        "conditionImmunities": "Exhaustion, Grappled, Paralyzed, Petrified, Poisoned, Prone, Restrained, Unconscious",
+        "cr": "5",
+        "traits": [
+            {
+                "name": "Air Form",
+                "desc": "The elemental can enter a hostile creature's space and stop there. It can move through a space as narrow as 1 inch wide without squeezing."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "The elemental makes two slam attacks."
+            },
+            {
+                "name": "Slam",
+                "desc": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) bludgeoning damage."
+            },
+            {
+                "name": "Whirlwind (Recharge 4-6)",
+                "desc": "Each creature in the elemental's space must make a DC 13 Strength saving throw. On a failure, a target takes 15 (3d8 + 2) bludgeoning damage and is flung up 20 feet away from the elemental in a random direction and knocked prone. If a thrown target strikes an object, such as a wall or floor, the target takes 3 (1d6) bludgeoning damage for every 10 feet it was thrown. If the target is thrown at another creature, that creature must succeed on a DC 13 Dexterity saving throw or take the same damage and be knocked prone. If the saving throw is successful, the target takes half the bludgeoning damage and isn't flung away or knocked prone."
+            }
+        ],
+        "source": "Custom"
+    },
+    {
+        "slug": "invisible-stalker",
+        "name": "Invisible Stalker",
+        "size": "Medium",
+        "type": "Elemental",
+        "alignment": "Neutral",
+        "ac": 14,
+        "hp": 104,
+        "speed": "50 ft., fly 50 ft. (hover)",
+        "stats": {
+            "str": 16,
+            "dex": 19,
+            "con": 14,
+            "int": 10,
+            "wis": 15,
+            "cha": 11
+        },
+        "resistances": "Bludgeoning, Piercing, and Slashing from Nonmagical Attacks",
+        "immunities": "Poison",
+        "conditionImmunities": "Exhaustion, Grappled, Paralyzed, Petrified, Poisoned, Prone, Restrained, Unconscious",
+        "cr": "6",
+        "traits": [
+            {
+                "name": "Invisibility",
+                "desc": "The stalker is invisible."
+            },
+            {
+                "name": "Faultless Tracker",
+                "desc": "The stalker is given a quarry by its summoner. The stalker knows the direction and distance to its quarry as long as the two of them are on the same plane of existence. The stalker also knows the location of its summoner."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "The stalker makes two slam attacks."
+            },
+            {
+                "name": "Slam",
+                "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) bludgeoning damage."
+            }
+        ],
+        "source": "Custom"
+    },
+    {
+        "slug": "aarakocra",
+        "name": "Aarakocra",
+        "size": "Medium",
+        "type": "Humanoid (Aarakocra)",
+        "alignment": "Neutral Good",
+        "ac": 12,
+        "hp": 13,
+        "speed": "20 ft., fly 50 ft.",
+        "stats": {
+            "str": 10,
+            "dex": 14,
+            "con": 10,
+            "int": 11,
+            "wis": 12,
+            "cha": 11
+        },
+        "cr": "1/4",
+        "traits": [
+            {
+                "name": "Dive Attack",
+                "desc": "If the aarakocra is flying and dives at least 30 feet straight toward a target and then hits it with a melee weapon attack, the attack deals an extra 3 (1d6) damage to the target."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Talon",
+                "desc": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage."
+            },
+            {
+                "name": "Javelin",
+                "desc": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+            }
+        ],
+        "source": "Custom"
+    },
+    {
+        "slug": "aerisi-kalinoth",
+        "name": "Aerisi Kalinoth",
+        "size": "Medium",
+        "type": "Humanoid (Elf)",
+        "alignment": "Lawful Evil",
+        "ac": 13,
+        "hp": 66,
+        "speed": "30 ft., fly 60 ft. (wings)",
+        "stats": {
+            "str": 8,
+            "dex": 16,
+            "con": 14,
+            "int": 12,
+            "wis": 10,
+            "cha": 17
+        },
+        "skills": "Arcana +3, Deception +5, Perception +2",
+        "cr": "7",
+        "traits": [
+            {
+                "name": "Howling Defeat",
+                "desc": "When Aerisi drops to 0 hit points, her body disappears in a howling whirlwind that disperses after 1 minute. Anything she is wearing or carrying is left behind."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Windvane (Spear)",
+                "desc": "Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 6 (1d6 + 3) piercing damage, or 7 (1d8 + 3) piercing damage if used with two hands to make a melee attack, plus 3 (1d6) lightning damage."
+            },
+            {
+                "name": "Spellcasting",
+                "desc": "Aerisi is a 9th-level spellcaster. Her spellcasting ability is Charisma (spell save DC 13, +5 to hit with spell attacks). She has the following sorcerer spells prepared:\nCantrips (at will): gust, mage hand, ray of frost, shocking grasp\n1st level (4 slots): feather fall, mage armor, thunderwave\n2nd level (3 slots): gust of wind, invisibility\n3rd level (3 slots): fly, lightning bolt\n4th level (3 slots): ice storm, storm sphere\n5th level (1 slot): cloudkill"
+            }
+        ],
+        "source": "Custom"
+    },
+    {
         "slug": "lich",
         "name": "Lich",
         "size": "Medium",
