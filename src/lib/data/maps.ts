@@ -265,6 +265,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         category: "Plot Twist",
         imagePath: "/oakhaven_mine_v9.png",
         gridType: "hex",
+        route: "/maps/mines", // [NEW] Dedicated Hex-Crawl Page
         mechanics: [
             "The Great Chasm: A single massive void cuts through all 3 layers. The Drow Silk Lift connects them.",
             "Tremor Sense (Global): Moving >15ft/turn in 'Unstable' zones triggers DC 13 Dex save vs Rockfall (2d6 Bludgeoning).",
