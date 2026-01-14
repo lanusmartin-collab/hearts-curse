@@ -48,8 +48,8 @@ export default function LibraryPage() {
 
                 {/* Silence Monitor */}
                 <div className={`mt-4 p-4 border transition-colors duration-500 rounded flex justify-between items-center ${noiseLevel === "LOUD" ? "bg-red-900/50 border-red-500 animate-pulse" :
-                        noiseLevel === "SILENT" ? "bg-blue-900/30 border-blue-500" :
-                            "bg-indigo-900/50 border-indigo-500"
+                    noiseLevel === "SILENT" ? "bg-blue-900/30 border-blue-500" :
+                        "bg-indigo-900/50 border-indigo-500"
                     }`}>
                     <div>
                         <strong className={noiseLevel === "LOUD" ? "text-red-400" : "text-indigo-200"}>
@@ -66,9 +66,16 @@ export default function LibraryPage() {
                     </div>
 
                     <button
+                        onClick={() => alert("MECHANICS GUIDE:\n\n1. SILENCE REQUIRED: Casting any spell with a Verbal (V) component triggers an immediate 'Counterspell' (+7).\n2. SCHOLARS OF THE VOID: Liches ignore players unless spoken to loudly. Loud noises trigger 'Power Word Kill'.\n3. ESCHERIAN STAIRCASES: The map is a loop. Ascending leads to descending from the ceiling.\n4. MANDATORY WHISPER (Table Rule): Players must whisper. Normal volume = 1d12 Psychic damage.")}
+                        className="mx-2 px-3 py-1 text-xs bg-indigo-700 hover:bg-indigo-600 text-indigo-100 border border-indigo-500 rounded"
+                    >
+                        ❓ DM RULES
+                    </button>
+
+                    <button
                         onClick={toggleNoise}
                         className={`retro-btn flex items-center gap-2 ${noiseLevel === "LOUD" ? "bg-red-600 hover:bg-red-700" :
-                                "bg-indigo-600 hover:bg-indigo-700"
+                            "bg-indigo-600 hover:bg-indigo-700"
                             }`}
                     >
                         {noiseLevel === "LOUD" ? <><Volume2 size={16} /> SHUSH!</> :
@@ -76,7 +83,7 @@ export default function LibraryPage() {
                                 <><Mic size={16} /> SPEAK UP</>}
                     </button>
                 </div>
-            </header>
+            </header >
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
                 {/* Map Area */}
@@ -146,28 +153,30 @@ export default function LibraryPage() {
             </div>
 
             {/* Statblock Overlay Modal */}
-            {viewingStatblock && (
-                <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-8 animate-fade-in">
-                    <div className="relative w-full max-w-2xl max-h-full overflow-y-auto bg-stone-900 rounded shadow-2xl border-4 border-double border-indigo-500">
-                        <button
-                            onClick={() => setViewingStatblock(null)}
-                            className="absolute top-2 right-2 z-10 p-1 bg-indigo-900 text-white rounded-full hover:bg-indigo-700 transition"
-                        >
-                            <X size={20} />
-                        </button>
+            {
+                viewingStatblock && (
+                    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-8 animate-fade-in">
+                        <div className="relative w-full max-w-2xl max-h-full overflow-y-auto bg-stone-900 rounded shadow-2xl border-4 border-double border-indigo-500">
+                            <button
+                                onClick={() => setViewingStatblock(null)}
+                                className="absolute top-2 right-2 z-10 p-1 bg-indigo-900 text-white rounded-full hover:bg-indigo-700 transition"
+                            >
+                                <X size={20} />
+                            </button>
 
-                        {/* Render the Statblock */}
-                        {(() => {
-                            const monster = viewingStatblock ? MONSTERS_2024[viewingStatblock] : null;
-                            return monster ? (
-                                <StatblockCard data={monster} />
-                            ) : (
-                                <div className="p-8 text-center text-red-600">Error loading statblock.</div>
-                            );
-                        })()}
+                            {/* Render the Statblock */}
+                            {(() => {
+                                const monster = viewingStatblock ? MONSTERS_2024[viewingStatblock] : null;
+                                return monster ? (
+                                    <StatblockCard data={monster} />
+                                ) : (
+                                    <div className="p-8 text-center text-red-600">Error loading statblock.</div>
+                                );
+                            })()}
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }

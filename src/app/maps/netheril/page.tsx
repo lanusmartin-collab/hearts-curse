@@ -54,8 +54,14 @@ export default function NetherilPage() {
             <header className="mb-8 border-b border-accent-dim pb-4">
                 <h1 className="text-4xl text-white text-shadow-neon">The Netheril Ruins</h1>
                 <p className="font-mono text-accent mt-2">OPTIONAL QUEST: LEVEL 14+</p>
-                <div className="mt-4 p-4 bg-gray-900 border border-gray-700 text-sm">
-                    Dungeon Overview: The ruins of a crashed Netheril Enclave. The Balor "Ignis-Void" has been bound here by Larloch to guard the Prism.
+                <div className="mt-4 p-4 bg-gray-900 border border-gray-700 text-sm flex justify-between items-center">
+                    <span>Dungeon Overview: The ruins of a crashed Netheril Enclave. The Balor "Ignis-Void" has been bound here by Larloch to guard the Prism.</span>
+                    <button
+                        onClick={() => alert("MECHANICS GUIDE:\n\n1. VOID GRAVITY: Jump distance is tripled.\n2. NECROTIC HUMMING: 1d4 necrotic damage/turn to living creatures.\n3. ARCANE DECAY (Table Rule): If a player forgets a rule or asks 'what do I roll?', the spell fails.")}
+                        className="ml-4 px-3 py-1 text-xs bg-purple-700 hover:bg-purple-600 text-purple-100 border border-purple-500 rounded"
+                    >
+                        ❓ DM RULES
+                    </button>
                 </div>
             </header>
 

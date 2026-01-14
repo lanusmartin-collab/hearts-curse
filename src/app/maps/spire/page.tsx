@@ -64,13 +64,20 @@ export default function SpirePage() {
                     </div>
 
                     <button
+                        onClick={() => alert("MECHANICS GUIDE:\n\n1. HIGH ALTITUDE: Creatures without fly speed must save vs Exhaustion per hour.\n2. WIND TUNNEL: Ranged attacks have Disadvantage. Fly speed doubled tailwind, halved headwind.\n3. THE SHOUT (Table Rule): Players must shout to be heard. Whispering is impossible.")}
+                        className="mx-2 px-3 py-1 text-xs bg-cyan-700 hover:bg-cyan-600 text-cyan-100 border border-cyan-500 rounded"
+                    >
+                        ❓ DM RULES
+                    </button>
+
+                    <button
                         onClick={triggerGust}
                         className="retro-btn bg-cyan-700 hover:bg-cyan-600 border-cyan-400 text-white flex gap-2 items-center"
                     >
                         <CloudLightning size={16} /> TRIGGER GUST
                     </button>
                 </div>
-            </header>
+            </header >
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
                 {/* Map Area */}
@@ -145,28 +152,30 @@ export default function SpirePage() {
             </div>
 
             {/* Statblock Overlay Modal */}
-            {viewingStatblock && (
-                <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-8 animate-fade-in">
-                    <div className="relative w-full max-w-2xl max-h-full overflow-y-auto bg-stone-900 rounded shadow-2xl border-4 border-double border-cyan-600">
-                        <button
-                            onClick={() => setViewingStatblock(null)}
-                            className="absolute top-2 right-2 z-10 p-1 bg-cyan-900 text-white rounded-full hover:bg-cyan-700 transition"
-                        >
-                            <X size={20} />
-                        </button>
+            {
+                viewingStatblock && (
+                    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-8 animate-fade-in">
+                        <div className="relative w-full max-w-2xl max-h-full overflow-y-auto bg-stone-900 rounded shadow-2xl border-4 border-double border-cyan-600">
+                            <button
+                                onClick={() => setViewingStatblock(null)}
+                                className="absolute top-2 right-2 z-10 p-1 bg-cyan-900 text-white rounded-full hover:bg-cyan-700 transition"
+                            >
+                                <X size={20} />
+                            </button>
 
-                        {/* Render the Statblock */}
-                        {(() => {
-                            const monster = viewingStatblock ? MONSTERS_2024[viewingStatblock] : null;
-                            return monster ? (
-                                <StatblockCard data={monster} />
-                            ) : (
-                                <div className="p-8 text-center text-red-600">Error loading statblock.</div>
-                            );
-                        })()}
+                            {/* Render the Statblock */}
+                            {(() => {
+                                const monster = viewingStatblock ? MONSTERS_2024[viewingStatblock] : null;
+                                return monster ? (
+                                    <StatblockCard data={monster} />
+                                ) : (
+                                    <div className="p-8 text-center text-red-600">Error loading statblock.</div>
+                                );
+                            })()}
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }

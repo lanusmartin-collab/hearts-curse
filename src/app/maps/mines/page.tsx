@@ -68,13 +68,20 @@ export default function MinesPage() {
                     </div>
 
                     <button
+                        onClick={() => alert("MECHANICS GUIDE:\n\n1. THE GREAT CHASM: A single massive void cuts through all 3 layers. The Drow Silk Lift connects them.\n2. TREMOR SENSE: Moving >15ft/turn in 'Unstable' zones triggers DC 13 Dex save vs Rockfall (2d6 Bludgeoning).\n3. LAYERED HAZARD: Level 2 has Exploding Pyrite (Fire Vuln). Level 3 has Anti-Magic Zones.\n4. CLAUSTROPHOBIA (Table Rule): Players must keep their hands on the table. Removing them triggers a 'cave-in' Dex save.")}
+                        className="mx-2 px-3 py-1 text-xs bg-amber-700 hover:bg-amber-600 text-amber-100 border border-amber-500 rounded"
+                    >
+                        ❓ DM RULES
+                    </button>
+
+                    <button
                         onClick={() => setLanternOn(!lanternOn)}
                         className={`retro-btn flex items-center gap-2 ${lanternOn ? "bg-amber-600 animate-pulse" : "bg-gray-800"}`}
                     >
                         {lanternOn ? <><Flame size={16} /> EXTINGUISH LANTERN</> : <><EyeOff size={16} /> IGNITE LANTERN</>}
                     </button>
                 </div>
-            </header>
+            </header >
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
                 {/* Map Area */}
@@ -151,28 +158,30 @@ export default function MinesPage() {
             </div>
 
             {/* Statblock Overlay Modal */}
-            {viewingStatblock && (
-                <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-8 animate-fade-in">
-                    <div className="relative w-full max-w-2xl max-h-full overflow-y-auto bg-stone-900 rounded shadow-2xl border-4 border-double border-amber-900">
-                        <button
-                            onClick={() => setViewingStatblock(null)}
-                            className="absolute top-2 right-2 z-10 p-1 bg-amber-900 text-white rounded-full hover:bg-amber-700 transition"
-                        >
-                            <X size={20} />
-                        </button>
+            {
+                viewingStatblock && (
+                    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-8 animate-fade-in">
+                        <div className="relative w-full max-w-2xl max-h-full overflow-y-auto bg-stone-900 rounded shadow-2xl border-4 border-double border-amber-900">
+                            <button
+                                onClick={() => setViewingStatblock(null)}
+                                className="absolute top-2 right-2 z-10 p-1 bg-amber-900 text-white rounded-full hover:bg-amber-700 transition"
+                            >
+                                <X size={20} />
+                            </button>
 
-                        {/* Render the Statblock */}
-                        {(() => {
-                            const monster = viewingStatblock ? MONSTERS_2024[viewingStatblock] : null;
-                            return monster ? (
-                                <StatblockCard data={monster} />
-                            ) : (
-                                <div className="p-8 text-center text-red-600">Error loading statblock.</div>
-                            );
-                        })()}
+                            {/* Render the Statblock */}
+                            {(() => {
+                                const monster = viewingStatblock ? MONSTERS_2024[viewingStatblock] : null;
+                                return monster ? (
+                                    <StatblockCard data={monster} />
+                                ) : (
+                                    <div className="p-8 text-center text-red-600">Error loading statblock.</div>
+                                );
+                            })()}
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }
