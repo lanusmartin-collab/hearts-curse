@@ -108,24 +108,30 @@ export default function PlayersPage() {
         setPlayers(players.map(p => {
             if (p.id !== playerId) return p;
 
-            // Handle Normal toggle
+            const currentStatuses = Array.isArray(p.status) ? p.status : ["Normal"];
+
+            // Handle Normal toggle: Clear everything else
             if (status === "Normal") {
                 return { ...p, status: ["Normal"] };
             }
 
-            // Remove Normal if adding something else
-            let newStatuses: PlayerStatus[] = p.status.filter(s => s !== "Normal");
+            // Remove 'Normal' if present, as we are adding a specific condition
+            let newStatuses = currentStatuses.filter(s => s !== "Normal");
 
             if (newStatuses.includes(status)) {
+                // Untoggle logic
                 newStatuses = newStatuses.filter(s => s !== status);
             } else {
+                // Toggle logic
                 newStatuses.push(status);
             }
 
-            // Default back to Normal if empty
-            if (newStatuses.length === 0) newStatuses = ["Normal"] as PlayerStatus[];
+            // If nothing left, revert to Normal
+            if (newStatuses.length === 0) {
+                newStatuses = ["Normal"];
+            }
 
-            return { ...p, status: newStatuses };
+            return { ...p, status: newStatuses as PlayerStatus[] };
         }));
     };
 
@@ -212,7 +218,7 @@ export default function PlayersPage() {
                                 `}
                             >
                                 <div className="flex flex-col items-start z-10 pl-2">
-                                    <span className={`font-header tracking-wider text-sm ${p.status.includes('Dead') ? 'line-through text-gray-500 opacity-50' : (selectedPlayerId === p.id ? 'text-[#ffcccc] text-shadow-glow animate-heartbeat' : 'text-[#888] group-hover:text-[#ccc] animate-heartbeat')}`}>
+                                    <span className={`font-header tracking-wider text-sm ${(p.status || []).includes('Dead') ? 'line-through text-gray-500 opacity-50' : (selectedPlayerId === p.id ? 'text-[#ffcccc] text-shadow-glow animate-heartbeat' : 'text-[#888] group-hover:text-[#ccc] animate-heartbeat')}`}>
                                         {p.name}
                                     </span>
                                     <span className="text-[9px] font-mono text-[#444] uppercase tracking-widest">{p.class}</span>
@@ -382,7 +388,7 @@ export default function PlayersPage() {
                                                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
                                                     {(Object.keys(STATUS_CONFIG) as PlayerStatus[]).map(status => {
                                                         const config = STATUS_CONFIG[status];
-                                                        const isActive = activePlayer.status.includes(status);
+                                                        const isActive = (activePlayer.status || []).includes(status);
 
                                                         return (
                                                             <button
