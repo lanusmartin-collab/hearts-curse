@@ -105,28 +105,28 @@ export default function PlayersPage() {
     };
 
     const toggleStatus = (playerId: string, status: PlayerStatus) => {
-        setPlayers(players.map(p => {
+        setPlayers(prevPlayers => prevPlayers.map(p => {
             if (p.id !== playerId) return p;
 
             const currentStatuses = Array.isArray(p.status) ? p.status : ["Normal"];
 
-            // Handle Normal toggle: Clear everything else
+            // Handle Normal: Clear others
             if (status === "Normal") {
                 return { ...p, status: ["Normal"] };
             }
 
-            // Remove 'Normal' if present, as we are adding a specific condition
+            // Remove Normal if strictly adding a condition
             let newStatuses = currentStatuses.filter(s => s !== "Normal");
 
             if (newStatuses.includes(status)) {
-                // Untoggle logic
+                // Untoggle
                 newStatuses = newStatuses.filter(s => s !== status);
             } else {
-                // Toggle logic
-                newStatuses.push(status);
+                // Toggle On
+                newStatuses = [...newStatuses, status];
             }
 
-            // If nothing left, revert to Normal
+            // If empty, revert to Normal
             if (newStatuses.length === 0) {
                 newStatuses = ["Normal"];
             }
@@ -136,7 +136,7 @@ export default function PlayersPage() {
     };
 
     const updateNotes = (playerId: string, notes: string) => {
-        setPlayers(players.map(p => (p.id === playerId ? { ...p, notes } : p)));
+        setPlayers(prev => prev.map(p => (p.id === playerId ? { ...p, notes } : p)));
     };
 
     const handleFileUpload = (playerId: string, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -273,13 +273,13 @@ export default function PlayersPage() {
                                                         <input
                                                             className="bg-transparent border-none text-3xl font-header text-[#7a1c1c] tracking-[0.05em] focus:text-[#a32222] outline-none w-full font-serif font-bold placeholder-[#7a1c1c]/50"
                                                             value={activePlayer.name}
-                                                            onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, name: e.target.value } : p))}
+                                                            onChange={(e) => setPlayers(prev => prev.map(p => p.id === activePlayer.id ? { ...p, name: e.target.value } : p))}
                                                             placeholder="NAME"
                                                         />
                                                         <button
                                                             onClick={() => {
                                                                 if (confirm("Remove this soul permanently?")) {
-                                                                    setPlayers(players.filter(p => p.id !== activePlayer.id));
+                                                                    setPlayers(prev => prev.filter(p => p.id !== activePlayer.id));
                                                                     setSelectedPlayerId(null);
                                                                 }
                                                             }}
@@ -294,21 +294,21 @@ export default function PlayersPage() {
                                                         <input
                                                             className="bg-transparent border-b border-transparent hover:border-[#a32222]/30 focus:border-[#a32222] outline-none w-20 placeholder-[#888]"
                                                             value={activePlayer.race || ""}
-                                                            onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, race: e.target.value } : p))}
+                                                            onChange={(e) => setPlayers(prev => prev.map(p => p.id === activePlayer.id ? { ...p, race: e.target.value } : p))}
                                                             placeholder="Race"
                                                         />
                                                         <span>•</span>
                                                         <input
                                                             className="bg-transparent border-b border-transparent hover:border-[#a32222]/30 focus:border-[#a32222] outline-none w-24 placeholder-[#888]"
                                                             value={activePlayer.class || ""}
-                                                            onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, class: e.target.value } : p))}
+                                                            onChange={(e) => setPlayers(prev => prev.map(p => p.id === activePlayer.id ? { ...p, class: e.target.value } : p))}
                                                             placeholder="Class"
                                                         />
                                                         <span>•</span>
                                                         <input
                                                             className="bg-transparent border-b border-transparent hover:border-[#a32222]/30 focus:border-[#a32222] outline-none w-24 placeholder-[#888]"
                                                             value={activePlayer.alignment || ""}
-                                                            onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, alignment: e.target.value } : p))}
+                                                            onChange={(e) => setPlayers(prev => prev.map(p => p.id === activePlayer.id ? { ...p, alignment: e.target.value } : p))}
                                                             placeholder="Alignment"
                                                         />
                                                     </div>
@@ -322,7 +322,7 @@ export default function PlayersPage() {
                                                                     className="w-8 text-center bg-transparent outline-none font-bold text-lg text-[#1a1a1a]"
                                                                     value={activePlayer.ac || 10}
                                                                     type="number"
-                                                                    onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, ac: parseInt(e.target.value) || 10 } : p))}
+                                                                    onChange={(e) => setPlayers(prev => prev.map(p => p.id === activePlayer.id ? { ...p, ac: parseInt(e.target.value) || 10 } : p))}
                                                                 />
                                                             </div>
                                                         </div>
@@ -334,14 +334,14 @@ export default function PlayersPage() {
                                                                     className="w-8 text-right bg-transparent outline-none font-bold text-[#1a1a1a]"
                                                                     value={activePlayer.hp || 0}
                                                                     type="number"
-                                                                    onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, hp: parseInt(e.target.value) || 0 } : p))}
+                                                                    onChange={(e) => setPlayers(prev => prev.map(p => p.id === activePlayer.id ? { ...p, hp: parseInt(e.target.value) || 0 } : p))}
                                                                 />
                                                                 <span className="text-[#666]">/</span>
                                                                 <input
                                                                     className="w-8 text-left bg-transparent outline-none font-bold text-[#666]"
                                                                     value={activePlayer.maxHp || 0}
                                                                     type="number"
-                                                                    onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, maxHp: parseInt(e.target.value) || 0 } : p))}
+                                                                    onChange={(e) => setPlayers(prev => prev.map(p => p.id === activePlayer.id ? { ...p, maxHp: parseInt(e.target.value) || 0 } : p))}
                                                                 />
                                                             </div>
                                                         </div>
@@ -350,7 +350,7 @@ export default function PlayersPage() {
                                                             <input
                                                                 className="w-12 text-center border-b border-[#a32222]/20 outline-none font-bold text-[#1a1a1a] bg-transparent"
                                                                 value={activePlayer.speed || "30 ft"}
-                                                                onChange={(e) => setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, speed: e.target.value } : p))}
+                                                                onChange={(e) => setPlayers(prev => prev.map(p => p.id === activePlayer.id ? { ...p, speed: e.target.value } : p))}
                                                             />
                                                         </div>
                                                     </div>
@@ -372,7 +372,7 @@ export default function PlayersPage() {
                                                                     type="number"
                                                                     onChange={(e) => {
                                                                         const val = parseInt(e.target.value) || 10;
-                                                                        setPlayers(players.map(p => p.id === activePlayer.id ? { ...p, stats: { ...p.stats, [stat]: val } } : p));
+                                                                        setPlayers(prev => prev.map(p => p.id === activePlayer.id ? { ...p, stats: { ...p.stats, [stat]: val } } : p));
                                                                     }}
                                                                 />
                                                             </div>
