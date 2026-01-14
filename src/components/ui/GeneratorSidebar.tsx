@@ -1,13 +1,13 @@
 "use client";
 
-import { Map as MapIcon, Box, Skull, User, Sword, Shield, Scroll, Ghost, ClipboardList } from "lucide-react";
+import { Map as MapIcon, Box, Skull, User, Sword, Shield, Scroll, Ghost, ClipboardList, Coins } from "lucide-react";
 import { CAMPAIGN_MAPS } from "@/lib/data/maps";
 
 type GeneratorSidebarProps = {
     selectedMapId: string;
     onSelectMap: (id: string) => void;
-    activeTool: 'npc' | 'monster' | 'loot' | 'artifact' | 'register';
-    onSelectTool: (tool: 'npc' | 'monster' | 'loot' | 'artifact' | 'register') => void;
+    activeTool: 'npc' | 'monster' | 'loot' | 'artifact' | 'hoard' | 'register';
+    onSelectTool: (tool: 'npc' | 'monster' | 'loot' | 'artifact' | 'hoard' | 'register') => void;
 };
 
 export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeTool, onSelectTool }: GeneratorSidebarProps) {
@@ -88,6 +88,15 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
                         >
                             <Shield className="w-4 h-4 text-[#666]" />
                             <span>TREASURE</span>
+                        </button>
+
+                        <button
+                            onClick={() => onSelectTool('hoard')}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'hoard' ? 'active' : ''}`}
+                            style={{ animationDelay: '0.1s' }}
+                        >
+                            <Coins className="w-4 h-4 text-[#666]" />
+                            <span>TREASURE HOARD</span>
                         </button>
 
                         <button

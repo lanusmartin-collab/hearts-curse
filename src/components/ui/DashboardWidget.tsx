@@ -23,24 +23,58 @@ export default function DashboardWidget({
     children,
     className,
     style,
-    onClick
-}: DashboardWidgetProps) {
+    onClick,
+    variant = 'obsidian' // New Default: Dark Theme
+}: DashboardWidgetProps & { variant?: 'parchment' | 'obsidian' | 'glass' }) {
+
+    // Theme Colors based on variant
+    const isDark = variant === 'obsidian' || variant === 'glass';
+    const bgColor = variant === 'parchment' ? 'var(--adnd-bg)' : (variant === 'obsidian' ? '#111' : 'rgba(10,10,12,0.6)');
+    const borderColor = variant === 'parchment' ? '#8b7e66' : '#333';
+    const titleColor = variant === 'parchment' ? 'var(--adnd-blue)' : 'var(--scarlet-accent)';
+    const textColor = variant === 'parchment' ? 'var(--adnd-ink)' : 'var(--fg-color)';
+    const dimColor = variant === 'parchment' ? '#333' : 'var(--fg-dim)';
+
     const content = (
         <>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem", borderBottom: "2px solid var(--adnd-blue)", paddingBottom: "0.5rem" }}>
+            <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "1rem",
+                borderBottom: `2px solid ${variant === 'parchment' ? 'var(--adnd-blue)' : 'rgba(163,34,34,0.3)'}`,
+                paddingBottom: "0.5rem"
+            }}>
                 <div>
-                    <h3 style={{ fontSize: "1.25rem", fontFamily: "var(--adnd-font-header)", color: "var(--adnd-blue)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>
+                    <h3 style={{
+                        fontSize: "1.25rem",
+                        fontFamily: isDark ? "var(--font-header)" : "var(--adnd-font-header)",
+                        color: titleColor,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                        margin: 0,
+                        textShadow: isDark ? "0 0 10px rgba(163,34,34,0.3)" : "none"
+                    }}>
                         {title}
                     </h3>
                     {subtitle && (
-                        <p style={{ fontSize: "0.8rem", color: "#333", fontFamily: "var(--adnd-font-body)", fontStyle: "italic", opacity: 0.9, margin: 0 }}>
+                        <p style={{
+                            fontSize: "0.8rem",
+                            color: dimColor,
+                            fontFamily: isDark ? "var(--font-mono)" : "var(--adnd-font-body)",
+                            fontStyle: isDark ? "normal" : "italic",
+                            opacity: 0.8,
+                            margin: 0,
+                            textTransform: isDark ? "uppercase" : "none",
+                            letterSpacing: isDark ? "0.1em" : "0"
+                        }}>
                             {subtitle}
                         </p>
                     )}
                 </div>
-                {Icon && <Icon style={{ width: "24px", height: "24px", color: "var(--adnd-ink)", opacity: 0.7 }} />}
+                {Icon && <Icon style={{ width: "24px", height: "24px", color: isDark ? "var(--fg-dim)" : "var(--adnd-ink)", opacity: 0.7 }} />}
             </div>
-            <div style={{ color: "var(--adnd-ink)", fontFamily: "var(--adnd-font-body)" }}>
+            <div style={{ color: textColor, fontFamily: isDark ? "var(--font-body)" : "var(--adnd-font-body)" }}>
                 {children}
             </div>
         </>
@@ -50,10 +84,11 @@ export default function DashboardWidget({
         position: "relative",
         overflow: "hidden",
         padding: "1.5rem",
-        transition: "all 0.3s",
-        background: "var(--adnd-bg)", // Parchment
-        border: "1px solid #8b7e66",   // Darker parchment border
-        boxShadow: "5px 5px 10px rgba(0,0,0,0.3)", // Solid shadow, no glow
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        background: bgColor,
+        border: `1px solid ${borderColor}`,
+        boxShadow: isDark ? "0 4px 20px rgba(0,0,0,0.5)" : "5px 5px 10px rgba(0,0,0,0.3)",
+        backdropFilter: variant === 'glass' ? "blur(12px)" : "none",
         display: "block",
         cursor: (href || onClick) ? "pointer" : "default",
         ...style
@@ -61,15 +96,22 @@ export default function DashboardWidget({
 
     if (href) {
         return (
-            <Link href={href} className={clsx("card", className)} style={containerStyle}>
+            <Link href={href} className={clsx("group", className)} style={containerStyle}>
                 {content}
+                {/* Hover Glow Effect for Dark Variants */}
+                {isDark && (
+                    <div className="absolute inset-0 border-2 border-transparent group-hover:border-[var(--scarlet-accent)] transition-all duration-300 pointer-events-none opacity-50" />
+                )}
             </Link>
         );
     }
 
     return (
-        <div className={clsx("card", className)} style={containerStyle} onClick={onClick}>
+        <div className={clsx("group", className)} style={containerStyle} onClick={onClick}>
             {content}
+            {isDark && onClick && (
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-[var(--scarlet-accent)] transition-all duration-300 pointer-events-none opacity-50" />
+            )}
         </div>
     );
 }

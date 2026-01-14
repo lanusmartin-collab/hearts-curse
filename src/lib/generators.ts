@@ -1,10 +1,12 @@
-
 import { Statblock } from "./data/statblocks";
 import { ShopItem } from "./data/items";
+import * as LT from "./data/loot-tables";
 
 // --- DATA TABLES ---
 
 export type GeneratorTheme = "Surface" | "Underdark" | "Undead" | "Arcane" | "Construct";
+export type HoardTier = "0-4" | "5-10" | "11-16" | "17+";
+
 
 const RACES = [
     { name: "Human", traits: [{ name: "Versatile", desc: "Gains one skill proficiency." }], themes: ["Surface", "Undead", "Arcane"] },
@@ -322,6 +324,24 @@ export function generateLootItem(theme: GeneratorTheme = "Surface", isHighLevel:
         return generateArtifact(theme);
     }
 
+    // [NEW] Integration with Loot Tables for standard generation to get robust names
+    // 30% chance to just pick from a table if no specific rarity forced
+    if (!forceRarity && Math.random() < 0.3) {
+        const tables = [LT.MAGIC_ITEMS_A, LT.MAGIC_ITEMS_B, LT.MAGIC_ITEMS_F]; // Common/Uncommon stuff
+        const table = tables[Math.floor(Math.random() * tables.length)];
+        const item = table[Math.floor(Math.random() * table.length)];
+
+        return {
+            name: item.name,
+            type: item.type,
+            rarity: item.rarity,
+            cost: `${item.rarity === "Common" ? 100 : item.rarity === "Uncommon" ? 500 : 5000} gp`,
+            effect: `${item.name}. ${item.rarity} ${item.type}.`,
+            properties: [item.rarity, "Magic", theme],
+            npcQuote: "A classic piece."
+        };
+    }
+
     const roll = Math.floor(Math.random() * 100);
     // ...
     // RE-INSERTING PREVIOUS generateLootItem CODE...
@@ -421,4 +441,99 @@ export function generateLootItem(theme: GeneratorTheme = "Surface", isHighLevel:
     const quotes = THEMED_QUOTES[theme] || THEMED_QUOTES["Surface"];
     const selectedQuote = quotes[Math.floor(Math.random() * quotes.length)];
     return { name: name, type: noun, rarity: rarityObj.name, cost: `${cost} gp`, effect: effectText, properties: props, npcQuote: selectedQuote };
+}
+
+export function generateTreasureHoard(cr: number): ShopItem[] {
+    const hoard: ShopItem[] = [];
+
+    // 1. COINS
+    let gp = 0;
+    let pp = 0;
+    let ep = 0;
+
+    if (cr <= 4) {
+        gp = Math.floor(Math.random() * 6 + 1) * 100; // 1d6 x 100
+        if (Math.random() > 0.7) pp = Math.floor(Math.random() * 3) * 10;
+        // Small chance of magic item
+    } else if (cr <= 10) {
+        gp = Math.floor(Math.random() * 6 + 2) * 1000;
+        pp = Math.floor(Math.random() * 6 + 1) * 100;
+        ep = Math.floor(Math.random() * 3) * 1000;
+    } else if (cr <= 16) {
+        gp = Math.floor(Math.random() * 4 + 1) * 10000;
+        pp = Math.floor(Math.random() * 6 + 3) * 1000;
+    } else {
+        gp = Math.floor(Math.random() * 12 + 6) * 100000; // Ridiculous wealth
+        pp = Math.floor(Math.random() * 8 + 6) * 10000;
+    }
+
+    if (gp > 0) hoard.push({ name: `${gp.toLocaleString()} Gold Pieces`, cost: `${gp} gp`, type: "Coinage", effect: "Currency.", rarity: "Common" });
+    if (pp > 0) hoard.push({ name: `${pp.toLocaleString()} Platinum Pieces`, cost: `${pp} pp`, type: "Coinage", effect: "Currency (1pp = 10gp).", rarity: "Uncommon" });
+    if (ep > 0) hoard.push({ name: `${ep.toLocaleString()} Electrum Pieces`, cost: `${ep} ep`, type: "Coinage", effect: "Currency (1ep = 0.5gp).", rarity: "Common" });
+
+    // 2. GEMSTONES & ART
+    const addValuables = (list: string[], val: number, count: number, type: "Gem" | "Art") => {
+        for (let i = 0; i < count; i++) {
+            const name = list[Math.floor(Math.random() * list.length)];
+            hoard.push({
+                name: `${name}`,
+                cost: `${val} gp`,
+                type: type === "Gem" ? "Gemstone" : "Art Object",
+                effect: type === "Gem" ? "A valuable gemstone." : "A valuable art object.",
+                rarity: val >= 1000 ? "Rare" : (val >= 100 ? "Uncommon" : "Common"),
+                npcQuote: type === "Art" ? "Exquisite craftsmanship." : "It catches the light beautifully."
+            });
+        }
+    };
+
+    if (cr <= 4) {
+        if (Math.random() > 0.3) addValuables(LT.GEMS_10_GP, 10, Math.floor(Math.random() * 6) + 1, "Gem");
+        if (Math.random() > 0.7) addValuables(LT.ART_25_GP, 25, Math.floor(Math.random() * 4) + 1, "Art");
+    } else if (cr <= 10) {
+        if (Math.random() > 0.3) addValuables(LT.GEMS_50_GP, 50, Math.floor(Math.random() * 6) + 1, "Gem");
+        if (Math.random() > 0.6) addValuables(LT.ART_250_GP, 250, Math.floor(Math.random() * 4) + 1, "Art");
+    } else if (cr <= 16) {
+        addValuables(LT.GEMS_500_GP, 500, Math.floor(Math.random() * 6) + 1, "Gem");
+        addValuables(LT.ART_750_GP, 750, Math.floor(Math.random() * 4) + 1, "Art");
+    } else {
+        addValuables(LT.GEMS_1000_GP, 1000, Math.floor(Math.random() * 6) + 1, "Gem");
+        addValuables(LT.ART_2500_GP, 2500, Math.floor(Math.random() * 4) + 1, "Art");
+        if (Math.random() > 0.5) addValuables(LT.GEMS_5000_GP, 5000, Math.floor(Math.random() * 4) + 1, "Gem");
+    }
+
+    // 3. MAGIC ITEMS
+    const rollTable = (table: LT.LootTableEntry[], count: number) => {
+        for (let i = 0; i < count; i++) {
+            const item = table[Math.floor(Math.random() * table.length)];
+            hoard.push({
+                name: item.name,
+                type: item.type,
+                rarity: item.rarity,
+                cost: `${item.rarity === "Common" ? 100 : item.rarity === "Uncommon" ? 500 : item.rarity === "Rare" ? 5000 : 50000} gp`,
+                effect: `Magic Item (${item.rarity}). See DMG.`,
+                properties: [item.rarity, "Magic"]
+            });
+        }
+    };
+
+    if (cr <= 4) {
+        if (Math.random() > 0.5) rollTable(LT.MAGIC_ITEMS_A, Math.floor(Math.random() * 4) + 1);
+        if (Math.random() > 0.8) rollTable(LT.MAGIC_ITEMS_B, 1);
+        if (Math.random() > 0.9) rollTable(LT.MAGIC_ITEMS_F, 1);
+    } else if (cr <= 10) {
+        rollTable(LT.MAGIC_ITEMS_A, Math.floor(Math.random() * 3) + 1);
+        rollTable(LT.MAGIC_ITEMS_B, Math.floor(Math.random() * 2));
+        rollTable(LT.MAGIC_ITEMS_F, Math.floor(Math.random() * 2));
+        if (Math.random() > 0.7) rollTable(LT.MAGIC_ITEMS_G, 1);
+    } else if (cr <= 16) {
+        rollTable(LT.MAGIC_ITEMS_C, Math.floor(Math.random() * 3) + 1);
+        rollTable(LT.MAGIC_ITEMS_D, Math.floor(Math.random() * 2));
+        rollTable(LT.MAGIC_ITEMS_H, Math.floor(Math.random() * 2) + 1);
+    } else {
+        rollTable(LT.MAGIC_ITEMS_E, Math.floor(Math.random() * 3) + 1);
+        rollTable(LT.MAGIC_ITEMS_H, Math.floor(Math.random() * 2) + 1);
+        rollTable(LT.MAGIC_ITEMS_I, Math.floor(Math.random() * 1) + 1);
+    }
+
+    return hoard;
 }
