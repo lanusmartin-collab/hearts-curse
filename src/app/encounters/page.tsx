@@ -247,10 +247,29 @@ function EncountersContent() {
         });
     };
 
+    const nextTurn = () => {
+        if (combatants.length === 0) return;
+
+        // Ensure we are sorted first if not already? safely assume sorted state or strictly re-sort
+        // const sorted = sortCombatants(combatants); // Maybe expensive to sort every click?
+        // Let's rely on state being sorted.
+
+        const currentIndex = combatants.findIndex(c => c.id === activeCombatantId);
+        if (currentIndex === -1 || currentIndex === combatants.length - 1) {
+            // End of round or first start
+            nextRound(); // This increments round
+            setActiveCombatantId(combatants[0].id); // Loop to start
+        } else {
+            setActiveCombatantId(combatants[currentIndex + 1].id);
+        }
+    };
+
     const nextRound = () => {
         setRound(r => r + 1);
-        // Clear "reaction" or start of turn logic if we had it
-        // Check for conditions that expire? (Not implemented deep logic yet)
+        // Ensure we start at top if called manually, typically loop handles this
+        if (combatants.length > 0) {
+            setActiveCombatantId(combatants[0].id);
+        }
     };
 
     const handleInspect = (id: string) => {
@@ -500,7 +519,8 @@ function EncountersContent() {
                         </div>
                     </div>
                     <div className="flex gap-2">
-                        <button onClick={nextRound} className="campaign-btn text-[10px] py-1 px-3 tracking-widest">NEXT ROUND <ChevronRight size={10} /></button>
+                        <button onClick={nextTurn} className="campaign-btn primary text-[10px] py-1 px-3 tracking-widest">NEXT TURN <ChevronRight size={10} /></button>
+                        <button onClick={nextRound} className="campaign-btn text-[10px] py-1 px-3 tracking-widest text-[#666] border-[#333]">ROUND+</button>
                     </div>
                 </div>
 
