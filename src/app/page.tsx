@@ -89,11 +89,22 @@ export default function Home() {
               icon={BookOpen}
               href="/grimoire"
               style={{
-                borderColor: "#a32222",
-                backgroundImage: "linear-gradient(to bottom, rgba(16,16,20,0.9), rgba(16,16,20,0.8)), url('https://www.transparenttextures.com/patterns/aged-paper.png')"
+                borderColor: "#8a1c1c", // Deep red border
+                borderWidth: "2px",
+                backgroundImage: "linear-gradient(135deg, rgba(20,5,5,0.95), rgba(40,10,10,0.85)), url('https://www.transparenttextures.com/patterns/aged-paper.png')",
+                boxShadow: "0 0 25px rgba(138, 28, 28, 0.4), inset 0 0 20px rgba(0,0,0,0.8)"
               }}
             >
-              <p className="text-sm text-[var(--gold-accent)] opacity-90">Full library of incantations. Now with advanced search & filtering.</p>
+              <div className="absolute top-0 right-0 p-2 opacity-50 pointer-events-none">
+                <div className="w-16 h-16 border-t-2 border-r-2 border-[var(--gold-accent)] rounded-tr-3xl"></div>
+              </div>
+              <p className="text-sm text-[#eecfa1] font-serif italic opacity-90 relative z-10">
+                "Words of power, etched in blood and shadow."
+              </p>
+              <div className="mt-2 flex gap-2">
+                <span className="text-[10px] uppercase tracking-widest border border-[#8a1c1c] text-[#8a1c1c] px-2 py-1 rounded bg-black/50">Arcane</span>
+                <span className="text-[10px] uppercase tracking-widest border border-[#8a1c1c] text-[#8a1c1c] px-2 py-1 rounded bg-black/50">Divine</span>
+              </div>
             </DashboardWidget>
 
             {/* Market */}
@@ -103,16 +114,20 @@ export default function Home() {
               icon={ShoppingBag}
               href="/shops"
               style={{
-                backgroundImage: "linear-gradient(to bottom, rgba(16,16,20,0.95), rgba(16,16,20,0.8)), url('/market-bg-pattern.png')",
-                backgroundSize: "cover"
+                backgroundImage: "linear-gradient(to bottom, rgba(10,10,12,0.8), rgba(10,10,12,0.6)), url('/market-bg-pattern.png')",
+                backgroundSize: "cover",
+                borderColor: "#c9bca0"
               }}
             >
-              <p className="text-sm text-[var(--fg-dim)]">Manage inventory for Korgul, Fimble, and locally sourced goods.</p>
+              <p className="text-sm text-[var(--fg-dim)] mb-2">Manage inventory for Korgul, Fimble, and locally sourced goods.</p>
+              <div className="flex items-center gap-2 text-[var(--gold-accent)] text-xs uppercase tracking-widest">
+                <span className="animate-pulse">● Open Business</span>
+              </div>
             </DashboardWidget>
           </div>
 
           {/* Cartography */}
-          <DashboardWidget title="Cartography" subtitle="Tactical Maps" icon={Map} href="/maps">
+          <DashboardWidget title="Cartography" subtitle="Tactical Maps" icon={Map} href="/maps" variant="glass" style={{ backdropFilter: "blur(4px)" }}>
             <div className="flex flex-col gap-3 relative z-10">
               <div className="flex justify-between text-xs border-b border-[var(--glass-border)] pb-2">
                 <span className="text-[var(--fg-color)]">SILENT WARDS</span>
@@ -126,6 +141,10 @@ export default function Home() {
                 <span>HEART CHAMBER</span>
                 <span>UNKNOWN</span>
               </div>
+            </div>
+            {/* Visual fluff: Radar sweep */}
+            <div className="absolute inset-0 z-0 opacity-10 pointer-events-none overflow-hidden rounded">
+              <div className="absolute top-1/2 left-1/2 w-[200%] h-[2px] bg-[var(--mystic-accent)] animate-spin-slow origin-left"></div>
             </div>
           </DashboardWidget>
 
