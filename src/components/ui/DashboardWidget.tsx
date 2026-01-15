@@ -96,7 +96,7 @@ export default function DashboardWidget({
 
     if (href) {
         return (
-            <Link href={href} className={clsx("group", className)} style={containerStyle}>
+            <Link href={href} className={clsx("group animate-heartbeat", className)} style={containerStyle}>
                 {content}
                 {/* Hover Glow Effect for Dark Variants */}
                 {isDark && (
@@ -107,7 +107,7 @@ export default function DashboardWidget({
     }
 
     return (
-        <div className={clsx("group", className)} style={containerStyle} onClick={onClick}>
+        <div className={clsx("group animate-heartbeat", className)} style={containerStyle} onClick={onClick}>
             {content}
             {isDark && onClick && (
                 <div className="absolute inset-0 border-2 border-transparent group-hover:border-[var(--scarlet-accent)] transition-all duration-300 pointer-events-none opacity-50" />

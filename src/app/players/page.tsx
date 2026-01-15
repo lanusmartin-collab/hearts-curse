@@ -216,24 +216,28 @@ export default function PlayersPage() {
                                 key={p.id}
                                 onClick={() => { setSelectedPlayerId(p.id); setSelectedFile(null); setFileFullScreen(false); }}
                                 className={`
-                                    w-full relative group overflow-hidden transition-all duration-300 p-3 h-14 flex items-center justify-between !border-0 !outline-none !shadow-none
-                                    hover:bg-[#111] hover:pl-5
-                                    ${selectedPlayerId === p.id
-                                        ? 'bg-[#1a0505] pl-5'
-                                        : 'bg-transparent'}
+                                    w-full relative group overflow-hidden transition-all duration-300 p-2 border-b border-[#8b7e66] last:border-0 hover:bg-[#a32222]/10
+                                    ${selectedPlayerId === p.id ? 'bg-[#a32222]/20' : 'bg-transparent'}
                                 `}
                             >
-                                <div className="flex flex-col items-start z-10 pl-2">
-                                    <span className={`font-header tracking-wider text-sm ${(p.status || []).includes('Dead') ? 'line-through text-gray-500 opacity-50' : (selectedPlayerId === p.id ? 'text-[#ffcccc] text-shadow-glow animate-heartbeat' : 'text-[#888] group-hover:text-[#ccc] animate-heartbeat')}`}>
+                                <div className="flex items-center justify-between text-xs w-full relative z-10">
+                                    <span className={`uppercase tracking-widest font-header ${(p.status || []).includes('Dead') ? 'line-through text-gray-500 opacity-50' :
+                                            (selectedPlayerId === p.id ? 'text-[#a32222] font-bold' : 'text-[#888] group-hover:text-[#a32222]')
+                                        }`}>
                                         {p.name}
                                     </span>
-                                    <span className="text-[9px] font-mono text-[#444] uppercase tracking-widest">{p.class}</span>
+                                    <span className={`font-mono text-[9px] ${selectedPlayerId === p.id ? 'text-[#a32222]' : 'text-[#4a0404]'}`}>
+                                        {p.class.split(' ')[0]}
+                                    </span>
                                 </div>
-                                <div className={`p-2 rounded-full border border-transparent ${selectedPlayerId === p.id ? 'bg-[#a32222]/20' : 'bg-transparent'}`}>
-                                    <Heart className={`w-4 h-4 transition-all ${selectedPlayerId === p.id ? 'fill-[#a32222] text-[#a32222] animate-heartbeat' : 'text-[#333] group-hover:text-[#555]'}`} />
+                                <div className="flex justify-between items-center w-full mt-1 opacity-60">
+                                    <div className="flex items-center gap-2 text-[9px] text-[#666]">
+                                        <Heart size={8} className="text-[#8a1c1c]" /> {p.hp}/{p.maxHp}
+                                    </div>
+                                    <div className="text-[8px] uppercase tracking-wider text-[#666]">
+                                        STATUS: {(p.status && p.status.length > 0 && p.status[0] !== 'Normal') ? p.status[0] : 'ACTIVE'}
+                                    </div>
                                 </div>
-
-                                {selectedPlayerId === p.id && <div className="absolute inset-0 bg-gradient-to-r from-[#a32222]/10 to-transparent pointer-events-none"></div>}
                             </button>
                         ))}
                     </div>
