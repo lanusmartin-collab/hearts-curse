@@ -177,9 +177,9 @@ export default function PlayersPage() {
 
             <div className="flex flex-1 overflow-hidden relative">
                 {/* 1. Sidebar - Soul Register */}
-                <div className={`grimoire-sidebar w-[320px] flex flex-col shrink-0 overflow-hidden z-20 border-r border-[#222] bg-[#0c0c0c] transition-all duration-300 ${fileFullScreen ? '-ml-[320px]' : ''}`}>
-                    <div className="grimoire-header p-6 border-b border-[#222]">
-                        <h3 className="grimoire-title text-base text-[#a32222] font-header tracking-[0.25em] mb-6 text-center border-b border-[#a32222]/20 pb-2">
+                <div className={`grimoire-sidebar w-[320px] flex flex-col shrink-0 overflow-hidden z-20 border-r border-[#8b7e66] bg-[var(--parchment-bg)] transition-all duration-300 ${fileFullScreen ? '-ml-[320px]' : ''}`}>
+                    <div className="grimoire-header p-6 border-b border-[#8b7e66]">
+                        <h3 className="grimoire-title text-base text-[var(--scarlet-accent)] font-header tracking-[0.25em] mb-6 text-center border-b border-[#a32222]/20 pb-2">
                             SOUL REGISTRY
                         </h3>
 
@@ -187,30 +187,30 @@ export default function PlayersPage() {
                         {!isAddMenuOpen ? (
                             <button
                                 onClick={() => setIsAddMenuOpen(true)}
-                                className="w-full text-[10px] uppercase tracking-[0.2em] px-4 py-3 border border-[#333] hover:border-[#a32222] text-[#666] hover:text-[#e0e0e0] flex items-center justify-center gap-2 transition-all group active:scale-95"
+                                className="w-full text-[10px] uppercase tracking-[0.2em] px-4 py-3 border border-[#8b7e66] hover:border-[#a32222] text-[#4a0404] hover:text-[#a32222] flex items-center justify-center gap-2 transition-all group active:scale-95 bg-[#e6dac3]/50"
                             >
                                 <Plus className="w-3 h-3 group-hover:text-[#a32222]" /> Register New Soul
                             </button>
                         ) : (
-                            <div className="p-3 bg-[#000] border border-[#a32222]/50 animate-slide-up">
+                            <div className="p-3 bg-[#e6dac3] border border-[#a32222]/50 animate-slide-up shadow-inner">
                                 <input
                                     type="text"
                                     value={newPlayerName}
                                     onChange={(e) => setNewPlayerName(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && addPlayer()}
                                     placeholder="Soul Name..."
-                                    className="w-full bg-[#111] border border-[#333] p-2 text-xs text-[#e0e0e0] mb-2 focus:border-[#a32222] outline-none font-mono"
+                                    className="w-full bg-[#fdfbf7] border border-[#d1c4a8] p-2 text-xs text-[#1a1a1a] mb-2 focus:border-[#a32222] outline-none font-mono placeholder-[#888]"
                                     autoFocus
                                 />
                                 <div className="flex gap-2">
                                     <button onClick={addPlayer} className="flex-1 bg-[#a32222] hover:bg-[#c42828] text-white text-[10px] uppercase py-1 tracking-widest font-bold transition-colors">Confirm</button>
-                                    <button onClick={() => setIsAddMenuOpen(false)} className="px-3 bg-[#222] hover:bg-[#333] text-[#888] text-[10px]">X</button>
+                                    <button onClick={() => setIsAddMenuOpen(false)} className="px-3 bg-[#d1c4a8] hover:bg-[#c9bca0] text-[#4a0404] text-[10px] border border-[#b0a286]">X</button>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="overflow-y-auto flex-1 custom-scrollbar bg-[#080808] p-4 space-y-3">
+                    <div className="overflow-y-auto flex-1 custom-scrollbar bg-[var(--parchment-bg)] p-4 space-y-3">
                         {players.map(p => (
                             <button
                                 key={p.id}
@@ -224,7 +224,7 @@ export default function PlayersPage() {
                             >
                                 <div className="flex items-center justify-between text-xs w-full relative z-10 border-b border-[#a32222]/20 pb-1 mb-1">
                                     <span className={`uppercase tracking-widest font-header text-sm ${(p.status || []).includes('Dead') ? 'line-through text-gray-500 opacity-50' :
-                                            (selectedPlayerId === p.id ? 'text-[#8a1c1c] font-bold' : 'text-[#8a1c1c]')
+                                        (selectedPlayerId === p.id ? 'text-[#8a1c1c] font-bold' : 'text-[#8a1c1c]')
                                         }`}>
                                         {p.name}
                                     </span>

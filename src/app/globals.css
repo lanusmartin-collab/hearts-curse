@@ -748,10 +748,17 @@ select:focus {
 
 /* GRIMOIRE SIDEBAR STYLES */
 .grimoire-sidebar {
+  /* Default to Obsidian, but overridable */
   background: var(--obsidian-base);
   border-right: 4px double #4a0404;
   position: relative;
   box-shadow: 10px 0 30px rgba(0, 0, 0, 0.8);
+}
+
+/* Force Parchment Override via specific class or if used with parchment-bg utility */
+.grimoire-sidebar.bg-\[var\(--parchment-bg\)\] {
+  background: var(--parchment-bg) !important;
+  border-right: 1px solid #8b7e66 !important;
 }
 
 .grimoire-sidebar::before {
@@ -763,14 +770,14 @@ select:focus {
   right: 0;
   pointer-events: none;
   background:
-    linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent 20%),
-    repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(163, 34, 34, 0.1) 2px);
+    linear-gradient(to right, rgba(0, 0, 0, 0.05), transparent 20%),
+    repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(163, 34, 34, 0.05) 2px);
   z-index: 1;
 }
 
 .grimoire-header {
   padding: 1.5rem;
-  background: linear-gradient(to bottom, #1a0505, #0a0a0c);
+  /* background managed by utility classes */
   border-bottom: 1px solid #a32222;
   text-align: center;
   position: relative;
@@ -778,7 +785,7 @@ select:focus {
 
 .grimoire-title {
   font-family: var(--font-header);
-  color: var(--gold-accent);
+  /* color managed by utility */
   font-size: 1.2rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
