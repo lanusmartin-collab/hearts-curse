@@ -42,10 +42,10 @@ export default function InitiativeTracker({
                     return (
                         <div
                             key={token.id}
-                            className={`relative p-3 rounded rounded-tr-xl rounded-bl-xl border transition-all duration-500 ease-in-out group z-10
+                            className={`relative p-3 rounded-[2px] border transition-all duration-500 ease-in-out group z-10 mb-2 shadow-[2px_2px_5px_rgba(0,0,0,0.2)]
                                 ${isActive
                                     ? "bg-[#e8dcc5] border-[#8a1c1c] shadow-[0_4px_12px_rgba(138,28,28,0.2)] transform scale-102"
-                                    : "bg-[#f4e8d1] border-[#d1c4a8] hover:border-[#8b7e66] opacity-90 hover:opacity-100"}`}
+                                    : "bg-[var(--parchment-bg)] border-[#8b7e66] hover:border-[#a32222] opacity-90 hover:opacity-100"}`}
                         >
                             {/* Beating Heart Indicator for Active Turn */}
                             {isActive && (
@@ -54,7 +54,7 @@ export default function InitiativeTracker({
                                         <div className="absolute inset-0 bg-[#8a1c1c] blur-sm animate-pulse rounded-full opacity-50"></div>
                                         <Heart
                                             fill="#8a1c1c"
-                                            className="text-[#8a1c1c] w-6 h-6 animate-[bounce_1s_infinite]"
+                                            className="text-[#8a1c1c] w-6 h-6 title-heartbeat"
                                             strokeWidth={0}
                                         />
                                     </div>

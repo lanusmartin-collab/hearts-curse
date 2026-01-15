@@ -216,13 +216,15 @@ export default function PlayersPage() {
                                 key={p.id}
                                 onClick={() => { setSelectedPlayerId(p.id); setSelectedFile(null); setFileFullScreen(false); }}
                                 className={`
-                                    w-full relative group overflow-hidden transition-all duration-300 p-2 border-b border-[#8b7e66] last:border-0 hover:bg-[#a32222]/10
-                                    ${selectedPlayerId === p.id ? 'bg-[#a32222]/20' : 'bg-transparent'}
+                                    w-full relative group overflow-hidden transition-all duration-300 p-3 mb-2 rounded-[2px] border shadow-[2px_2px_5px_rgba(0,0,0,0.2)] hover:-translate-y-0.5
+                                    ${selectedPlayerId === p.id
+                                        ? 'bg-[#e8dcc5] border-[#8a1c1c] shadow-[0_4px_12px_rgba(138,28,28,0.2)]'
+                                        : 'bg-[var(--parchment-bg)] border-[#8b7e66] hover:border-[#a32222]'}
                                 `}
                             >
-                                <div className="flex items-center justify-between text-xs w-full relative z-10">
-                                    <span className={`uppercase tracking-widest font-header ${(p.status || []).includes('Dead') ? 'line-through text-gray-500 opacity-50' :
-                                            (selectedPlayerId === p.id ? 'text-[#a32222] font-bold' : 'text-[#888] group-hover:text-[#a32222]')
+                                <div className="flex items-center justify-between text-xs w-full relative z-10 border-b border-[#a32222]/20 pb-1 mb-1">
+                                    <span className={`uppercase tracking-widest font-header text-sm ${(p.status || []).includes('Dead') ? 'line-through text-gray-500 opacity-50' :
+                                            (selectedPlayerId === p.id ? 'text-[#8a1c1c] font-bold' : 'text-[#8a1c1c]')
                                         }`}>
                                         {p.name}
                                     </span>
@@ -230,12 +232,12 @@ export default function PlayersPage() {
                                         {p.class.split(' ')[0]}
                                     </span>
                                 </div>
-                                <div className="flex justify-between items-center w-full mt-1 opacity-60">
-                                    <div className="flex items-center gap-2 text-[9px] text-[#666]">
-                                        <Heart size={8} className="text-[#8a1c1c]" /> {p.hp}/{p.maxHp}
+                                <div className="flex justify-between items-center w-full mt-1 opacity-80">
+                                    <div className="flex items-center gap-2 text-[10px] text-[#4a0404] font-bold">
+                                        <Heart size={10} className="text-[#8a1c1c]" fill="#8a1c1c" /> {p.hp}/{p.maxHp}
                                     </div>
-                                    <div className="text-[8px] uppercase tracking-wider text-[#666]">
-                                        STATUS: {(p.status && p.status.length > 0 && p.status[0] !== 'Normal') ? p.status[0] : 'ACTIVE'}
+                                    <div className="text-[8px] uppercase tracking-wider text-[#8a1c1c]">
+                                        {(p.status && p.status.length > 0 && p.status[0] !== 'Normal') ? p.status[0] : 'ACTIVE'}
                                     </div>
                                 </div>
                             </button>

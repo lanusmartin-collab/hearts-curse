@@ -42,7 +42,7 @@ export default function DashboardWidget({
                 alignItems: "center",
                 justifyContent: "space-between",
                 marginBottom: "1rem",
-                borderBottom: `2px solid ${(variant === 'parchment' || variant === 'safe-haven') ? 'var(--adnd-blue)' : 'rgba(163,34,34,0.3)'}`,
+                borderBottom: `2px solid ${(variant === 'parchment') ? 'var(--adnd-blue)' : ((variant === 'safe-haven') ? 'var(--scarlet-accent)' : 'rgba(163,34,34,0.3)')}`,
                 paddingBottom: "0.5rem"
             }}>
                 <div>
