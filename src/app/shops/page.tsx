@@ -10,7 +10,7 @@ import clsx from 'clsx';
 import { Edit2, Plus, RefreshCw, Save, Trash2, X, AlertTriangle } from "lucide-react";
 
 export default function ShopsPage() {
-    const [activeTab, setActiveTab] = useState<'khelben' | 'fimble' | 'iron' | 'crow'>('khelben');
+    const [activeTab, setActiveTab] = useState<'khelben' | 'fimble' | 'iron' | 'crow' | 'forge'>('khelben');
 
     // Local state for inventories
     const [khelbenItems, setKhelbenItems] = useState<ShopItem[]>(KHELBEN_GIFTS);
@@ -44,6 +44,7 @@ export default function ShopsPage() {
             case 'fimble': return { items: fimbleItems, setter: setFimbleItems, theme: "Arcane" as GeneratorTheme, key: 'fimble' };
             case 'iron': return { items: ironItems, setter: setIronItems, theme: "Construct" as GeneratorTheme, key: 'iron' };
             case 'crow': return { items: crowItems, setter: setCrowItems, theme: "Surface" as GeneratorTheme, key: 'crow' };
+            default: return { items: [], setter: () => { }, theme: "Surface" as GeneratorTheme, key: 'none' };
         }
     };
 
@@ -109,7 +110,8 @@ export default function ShopsPage() {
                     { id: 'khelben', label: "Khelben's Gifts" },
                     { id: 'fimble', label: "The Gilded Coffer" },
                     { id: 'iron', label: "The Iron Knot" },
-                    { id: 'crow', label: "The Crow's Nest" }
+                    { id: 'crow', label: "The Crow's Nest" },
+                    { id: 'forge', label: "⚒️ THE ARTIFICER'S FORGE" }
                 ].map(tab => (
                     <button
                         key={tab.id}
@@ -127,23 +129,186 @@ export default function ShopsPage() {
             </div>
 
             <div className="retro-border bg-[#0e0e0e] border border-[#333] p-1 shadow-2xl">
-                {activeTab === 'khelben' && <ShopList title="Khelben's Gifts" items={khelbenItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} />}
-                {activeTab === 'fimble' && <ShopList title="The Gilded Coffer" items={fimbleItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} />}
-                {activeTab === 'iron' && <ShopList title="The Iron Knot" items={ironItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} />}
-                {activeTab === 'crow' && <ShopList title="The Crow's Nest" items={crowItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} onAddSpecial={handleSpecialOrder} />}
+                {activeTab === 'khelben' && <ShopList title="Khelben's Gifts" items={khelbenItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} onBatchDelete={(indices) => {
+                    const newItems = khelbenItems.filter((_, i) => !indices.includes(i));
+                    setKhelbenItems(newItems);
+                    localStorage.setItem('shop_khelben', JSON.stringify(newItems));
+                }} />}
+                {activeTab === 'fimble' && <ShopList title="The Gilded Coffer" items={fimbleItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} onBatchDelete={(indices) => {
+                    const newItems = fimbleItems.filter((_, i) => !indices.includes(i));
+                    setFimbleItems(newItems);
+                    localStorage.setItem('shop_fimble', JSON.stringify(newItems));
+                }} />}
+                {activeTab === 'iron' && <ShopList title="The Iron Knot" items={ironItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} onBatchDelete={(indices) => {
+                    const newItems = ironItems.filter((_, i) => !indices.includes(i));
+                    setIronItems(newItems);
+                    localStorage.setItem('shop_iron', JSON.stringify(newItems));
+                }} />}
+                {activeTab === 'crow' && <ShopList title="The Crow's Nest" items={crowItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} onBatchDelete={(indices) => {
+                    const newItems = crowItems.filter((_, i) => !indices.includes(i));
+                    setCrowItems(newItems);
+                    localStorage.setItem('shop_crow', JSON.stringify(newItems));
+                }} onAddSpecial={handleSpecialOrder} />}
+                {activeTab === 'forge' && <CraftingPanel economy={economy} />}
             </div>
         </div>
     );
 }
 
-function ShopList({ title, items, economy, onReplace, onAdd, onEdit, onDelete, onAddSpecial }: {
+// --- CRAFTING SYSTEM ---
+type WorkOrder = {
+    id: string;
+    item: string;
+    cost: number;
+    daysRemaining: number;
+    status: 'pending' | 'ready';
+    notes: string;
+};
+
+function CraftingPanel({ economy }: { economy: { inflation: number, scarcityMode: boolean, notes: string } }) {
+    const [orders, setOrders] = useState<WorkOrder[]>([]);
+    const [newOrder, setNewOrder] = useState({ item: "", cost: 500, days: 3, notes: "" });
+
+    useEffect(() => {
+        const saved = localStorage.getItem('shop_forge_orders');
+        if (saved) setOrders(JSON.parse(saved));
+    }, []);
+
+    const updateOrders = (newOrders: WorkOrder[]) => {
+        setOrders(newOrders);
+        localStorage.setItem('shop_forge_orders', JSON.stringify(newOrders));
+    };
+
+    const addOrder = () => {
+        if (!newOrder.item) return;
+        const order: WorkOrder = {
+            id: Date.now().toString(),
+            item: newOrder.item,
+            cost: Math.ceil(newOrder.cost * economy.inflation),
+            daysRemaining: newOrder.days,
+            status: 'pending',
+            notes: newOrder.notes
+        };
+        updateOrders([...orders, order]);
+        setNewOrder({ item: "", cost: 500, days: 3, notes: "" });
+    };
+
+    const advanceDay = () => {
+        const updated = orders.map(o => {
+            if (o.status === 'ready') return o;
+            const newDays = o.daysRemaining - 1;
+            return {
+                ...o,
+                daysRemaining: Math.max(0, newDays),
+                status: newDays <= 0 ? 'ready' : 'pending'
+            };
+        });
+        updateOrders(updated as WorkOrder[]);
+    };
+
+    const deleteOrder = (id: string) => {
+        if (!confirm("Cancel this work order?")) return;
+        updateOrders(orders.filter(o => o.id !== id));
+    };
+
+    return (
+        <div className="p-6 bg-[url('/img/texture_metal.png')] bg-repeat">
+            <div className="flex justify-between items-center mb-8">
+                <div>
+                    <h2 className="text-2xl font-header text-[var(--gold-accent)]">THE ARTIFICER&apos;S FORGE</h2>
+                    <p className="text-sm text-[#888] font-mono">CUSTOM COMMISSIONS & REPAIRS</p>
+                </div>
+                <button
+                    onClick={advanceDay}
+                    className="flex items-center gap-2 bg-[#222] hover:bg-blue-900 border border-[#444] px-4 py-2 rounded text-blue-200 transition"
+                >
+                    <RefreshCw className="w-4 h-4" /> ADVANCE DAY
+                </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Active Orders List */}
+                <div className="lg:col-span-2 space-y-4">
+                    {orders.length === 0 && <div className="text-center p-8 border border-dashed border-[#444] text-[#666]">No active work orders.</div>}
+                    {orders.map(order => (
+                        <div key={order.id} className={`relative p-4 border rounded flex justify-between items-center group transition-all ${order.status === 'ready' ? 'bg-green-900/10 border-green-800' : 'bg-[#111] border-[#333]'}`}>
+                            <div>
+                                <h3 className={`font-bold text-lg ${order.status === 'ready' ? 'text-green-400' : 'text-[#ddd]'}`}>{order.item}</h3>
+                                <div className="text-xs font-mono text-[#888]">
+                                    Cost: <span className="text-[var(--gold-accent)]">{order.cost} gp</span> • Paid in Full
+                                </div>
+                                {order.notes && <div className="text-sm text-[#aaa] mt-1 italic">&quot;{order.notes}&quot;</div>}
+                            </div>
+
+                            <div className="flex items-center gap-6">
+                                <div className="text-right">
+                                    <div className="text-xs uppercase tracking-widest text-[#666]">STATUS</div>
+                                    <div className={`font-bold text-xl ${order.status === 'ready' ? 'text-green-400 animate-pulse' : 'text-blue-400'}`}>
+                                        {order.status === 'ready' ? "READY" : `${order.daysRemaining} DAYS`}
+                                    </div>
+                                </div>
+                                <button onClick={() => deleteOrder(order.id)} className="p-2 text-[#444] hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* New Order Form */}
+                <div className="bg-[#0a0a0a] border border-[#333] p-6 h-fit rounded shadow-xl">
+                    <h3 className="font-header text-[#e0e0e0] mb-4 border-b border-[#333] pb-2">NEW COMMISSION</h3>
+
+                    <div className="space-y-4">
+                        <div>
+                            <label className="text-xs font-mono text-[#666] uppercase block mb-1">Item Name</label>
+                            <input className="w-full bg-[#111] border border-[#444] p-2 text-white outline-none focus:border-[var(--gold-accent)]"
+                                value={newOrder.item} onChange={e => setNewOrder({ ...newOrder, item: e.target.value })} placeholder="e.g. +1 Plate Armor" />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-xs font-mono text-[#666] uppercase block mb-1">Base Cost (gp)</label>
+                                <input type="number" className="w-full bg-[#111] border border-[#444] p-2 text-[var(--gold-accent)] outline-none"
+                                    value={newOrder.cost} onChange={e => setNewOrder({ ...newOrder, cost: parseInt(e.target.value) || 0 })} />
+                            </div>
+                            <div>
+                                <label className="text-xs font-mono text-[#666] uppercase block mb-1">Lead Time (Days)</label>
+                                <input type="number" className="w-full bg-[#111] border border-[#444] p-2 text-blue-300 outline-none"
+                                    value={newOrder.days} onChange={e => setNewOrder({ ...newOrder, days: parseInt(e.target.value) || 1 })} />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="text-xs font-mono text-[#666] uppercase block mb-1">Notes / Requirements</label>
+                            <textarea className="w-full bg-[#111] border border-[#444] p-2 text-[#ccc] h-20 resize-none text-sm outline-none"
+                                value={newOrder.notes} onChange={e => setNewOrder({ ...newOrder, notes: e.target.value })} placeholder="Requires Hydra blood..." />
+                        </div>
+
+                        <div className="pt-2 text-xs text-[#555] font-mono">
+                            Total Estimate: <span className="text-[var(--gold-accent)]">{Math.ceil(newOrder.cost * economy.inflation)} gp</span>
+                            {economy.inflation > 1 && <span className="text-red-900 ml-2">(Inf. {economy.inflation}x)</span>}
+                        </div>
+
+                        <button onClick={addOrder} className="w-full bg-[var(--gold-accent)] hover:bg-[#fff] text-black font-bold py-3 uppercase tracking-widest text-sm transition">
+                            Submit Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function ShopList({ title, items, economy, onReplace, onAdd, onEdit, onDelete, onBatchDelete, onAddSpecial }: {
     title: string,
     items: ShopItem[],
-    economy: { inflation: number },
+    economy: { inflation: number, scarcityMode: boolean },
     onReplace: (idx: number) => void,
     onAdd: (item?: ShopItem) => void,
     onEdit: (idx: number, item: ShopItem) => void,
     onDelete: (idx: number) => void,
+    onBatchDelete: (indices: number[]) => void,
     onAddSpecial?: () => void
 }) {
 
@@ -173,18 +338,26 @@ function ShopList({ title, items, economy, onReplace, onAdd, onEdit, onDelete, o
         }
     };
 
+    // Scarcity Logic: 50% Markup
     const calculatePrice = (baseCost: string): string => {
-        // Parse "100 gp" -> 100
         const numeric = parseInt(baseCost.replace(/[^0-9]/g, ''));
-        if (isNaN(numeric)) return baseCost; // Return original if non-numeric (e.g. "Quest")
+        if (isNaN(numeric)) return baseCost;
 
-        const inflated = Math.ceil(numeric * economy.inflation);
+        let multiplier = economy.inflation;
+        if (economy.scarcityMode) multiplier *= 1.5;
 
-        // Format back
+        const inflated = Math.ceil(numeric * multiplier);
+
         if (baseCost.includes("gp")) return `${inflated} gp`;
         if (baseCost.includes("sp")) return `${inflated} sp`;
         if (baseCost.includes("cp")) return `${inflated} cp`;
         return `${inflated}`;
+    };
+
+    const handleClearSold = () => {
+        if (!confirm("Clear all sold items from the list?")) return;
+        onBatchDelete(soldIndices);
+        setSoldIndices([]);
     };
 
     // New Item Form State
@@ -202,12 +375,20 @@ function ShopList({ title, items, economy, onReplace, onAdd, onEdit, onDelete, o
             <div className="flex justify-between items-end mb-6 border-b border-[#333] pb-4">
                 <h2 className="m-0 text-xl text-[#e0e0e0] tracking-wide">{title}</h2>
                 <div className="flex gap-2">
-                    {onAddSpecial && (
+                    {soldIndices.length > 0 && (
+                        <button
+                            onClick={handleClearSold}
+                            className="text-xs bg-red-900/20 hover:bg-red-900 text-red-200 border border-red-800 px-3 py-1 rounded transition flex items-center gap-2"
+                        >
+                            <Trash2 className="w-3 h-3" /> CLEAR SOLD ({soldIndices.length})
+                        </button>
+                    )}
+                    {onAddSpecial && !economy.scarcityMode && (
                         <button
                             onClick={() => {
                                 if (confirm("Request special shipment from Zhentarim?")) onAddSpecial();
                             }}
-                            className="text-xs bg-red-900/50 hover:bg-red-900 text-red-200 border border-red-800 px-3 py-1 rounded transition flex items-center gap-2"
+                            className="text-xs bg-purple-900/50 hover:bg-purple-900 text-purple-200 border border-purple-800 px-3 py-1 rounded transition flex items-center gap-2"
                         >
                             <AlertTriangle className="w-3 h-3" /> SPECIAL ORDER
                         </button>
