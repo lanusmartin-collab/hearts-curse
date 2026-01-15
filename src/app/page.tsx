@@ -26,7 +26,7 @@ export default function Home() {
       <header className="campaign-header mb-8 flex flex-col md:flex-row justify-between items-end border-b border-[var(--glass-border)] pb-6">
         <div>
           <div className="flex items-center gap-4 mb-2">
-            <div className="relative w-16 h-16">
+            <div className="relative w-16 h-16" style={{ position: "relative", width: "4rem", height: "4rem" }}>
               <div className="animate-pulse-slow absolute inset-0 border border-[var(--scarlet-accent)] rounded-full opacity-50 blur-md"></div>
               <Image
                 src="/hearts_curse_hero_v15.png"
@@ -36,7 +36,7 @@ export default function Home() {
               />
             </div>
             <div className="flex flex-col">
-              <h1 className="campaign-title-glitch text-5xl m-0 leading-none" data-text="HEART'S CURSE">
+              <h1 className="campaign-title-glitch text-6xl m-0 leading-none" data-text="HEART'S CURSE">
                 HEART&apos;S CURSE
               </h1>
               <p className="campaign-subtitle text-xs tracking-[0.4em] text-[var(--gold-accent)] opacity-80 mt-1">
@@ -91,7 +91,8 @@ export default function Home() {
               style={{
                 borderColor: "#8a1c1c", // Deep red border
                 borderWidth: "2px",
-                backgroundImage: "linear-gradient(135deg, rgba(20,5,5,0.95), rgba(40,10,10,0.85)), url('https://www.transparenttextures.com/patterns/aged-paper.png')",
+                // Reduced opacity to 0.7 to let texture show through
+                background: "linear-gradient(135deg, rgba(20,5,5,0.7), rgba(40,10,10,0.6)), url('https://www.transparenttextures.com/patterns/aged-paper.png')",
                 boxShadow: "0 0 25px rgba(138, 28, 28, 0.4), inset 0 0 20px rgba(0,0,0,0.8)"
               }}
             >
@@ -114,8 +115,8 @@ export default function Home() {
               icon={ShoppingBag}
               href="/shops"
               style={{
-                backgroundImage: "linear-gradient(to bottom, rgba(10,10,12,0.8), rgba(10,10,12,0.6)), url('/market-bg-pattern.png')",
-                backgroundSize: "cover",
+                // Replaced missing image with CSS pattern
+                backgroundImage: "radial-gradient(circle at center, rgba(30,30,35,0.8) 0%, rgba(10,10,12,0.95) 100%), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 10px)",
                 borderColor: "#c9bca0"
               }}
             >

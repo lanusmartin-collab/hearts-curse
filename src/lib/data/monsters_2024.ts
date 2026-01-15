@@ -3,6 +3,7 @@ import { Statblock, STATBLOCKS } from "./statblocks";
 import RAW_DATA from "./monsters_2024_final.json";
 import DROW_DATA from "./drow_monsters.json";
 import CUSTOM_DATA from "./monsters_custom.json";
+import MIGRATED_DATA from "./monsters_migrated.json";
 
 const typedData: Record<string, Statblock> = {};
 
@@ -47,6 +48,13 @@ function mapToStatblock(m: any): Statblock {
 // 3. Load Custom Data (Overrides Drow/Main)
 (CUSTOM_DATA as any[]).forEach((m: any) => {
   // Only add if it has a valid slug
+  if (m.slug) {
+    typedData[m.slug] = mapToStatblock(m);
+  }
+});
+
+// 4. Load Migrated Data (Merges with existing)
+(MIGRATED_DATA as any[]).forEach((m: any) => {
   if (m.slug) {
     typedData[m.slug] = mapToStatblock(m);
   }
