@@ -440,6 +440,10 @@ select:focus {
   animation: heartbeat 1s infinite;
 }
 
+.group:hover .title-heartbeat {
+  animation: heartbeat 1s infinite;
+}
+
 /* DICE ROLLER STYLES (Tools Dock) */
 .dice-trigger {
   position: fixed;
