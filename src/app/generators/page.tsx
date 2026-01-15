@@ -115,13 +115,30 @@ export default function GeneratorsPage() {
 
         setTimeout(() => {
             if (activeTool === 'npc') {
-                // ... existing
+                const npc = generateNPC(currentTheme);
+                setResult(npc);
+                setLootItem(null);
+                setHoardResult(null);
+                addToRegistry('npc', npc);
             } else if (activeTool === 'monster') {
-                // ... existing
+                // Mix of Drow & Manual 2024
+                const monster = ALL_MONSTERS[Math.floor(Math.random() * ALL_MONSTERS.length)];
+                setResult(monster);
+                setLootItem(null);
+                setHoardResult(null);
+                addToRegistry('monster', monster);
             } else if (activeTool === 'loot') {
-                // ... existing
+                const item = generateLootItem(currentTheme, isHighLevel);
+                setLootItem(item);
+                setResult(null);
+                setHoardResult(null);
+                addToRegistry('loot', item);
             } else if (activeTool === 'artifact') {
-                // ... existing
+                const item = generateArtifact(currentTheme);
+                setLootItem(item);
+                setResult(null);
+                setHoardResult(null);
+                addToRegistry('artifact', item);
             } else if (activeTool === 'hoard') {
                 const items = generateTreasureHoard(hoardCR);
                 setHoardResult(items);

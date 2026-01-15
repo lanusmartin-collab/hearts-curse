@@ -23,7 +23,7 @@ export default function Home() {
       <header className="campaign-header" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid var(--glass-border)", paddingBottom: "1.5rem" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.5rem" }}>
-            <div className="relative w-16 h-16" style={{ position: "relative", width: "4rem", height: "4rem" }}>
+            <div className="relative w-48 h-48" style={{ position: "relative", width: "12rem", height: "12rem" }}>
               <div className="animate-pulse-slow absolute inset-0 border border-[var(--scarlet-accent)] rounded-full opacity-50 blur-md"></div>
               <Image
                 src="/hearts_curse_hero_v15.png"
