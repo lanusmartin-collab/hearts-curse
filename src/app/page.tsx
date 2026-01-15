@@ -58,31 +58,31 @@ export default function Home() {
         {/* LEFT COLUMN: Status & Quick Stats */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           {/* Curse Widget - Now clickable to mechanics */}
-          <DashboardWidget title="Threat System" subtitle="Regional Effect" style={{ borderColor: "rgba(138, 28, 28, 0.3)" }} href="/mechanics">
+          <DashboardWidget title="Threat System" subtitle="Regional Effect" variant="safe-haven" href="/mechanics">
             <CurseTracker simpleView={true} />
-            <div style={{ marginTop: "1rem", fontSize: "0.75rem", color: "var(--fg-dim)", fontStyle: "italic", borderTop: "1px solid var(--glass-border)", paddingTop: "0.5rem" }}>
+            <div style={{ marginTop: "1rem", fontSize: "0.75rem", color: "#4a0404", fontStyle: "italic", borderTop: "1px solid #8b7e66", paddingTop: "0.5rem" }}>
               "The shadows lengthen with every passing day..."
             </div>
           </DashboardWidget>
 
           {/* Quick Nav: Archives */}
-          <DashboardWidget title="The Archives" subtitle="Lore & History" icon={BookOpen} href="/lore">
+          <DashboardWidget title="The Archives" subtitle="Lore & History" icon={BookOpen} href="/lore" variant="safe-haven">
             <div style={{ fontSize: "0.875rem", opacity: 0.8, marginBottom: "0.5rem" }}>Access decrypted Netherese texts and campaign timeline.</div>
-            <div style={{ height: "4px", width: "100%", background: "var(--glass-border)", borderRadius: "2px", overflow: "hidden" }}>
-              <div style={{ height: "100%", background: "var(--mystic-accent)", width: "75%" }} />
+            <div style={{ height: "4px", width: "100%", background: "#8b7e66", borderRadius: "2px", overflow: "hidden" }}>
+              <div style={{ height: "100%", background: "var(--scarlet-accent)", width: "75%" }} />
             </div>
-            <div style={{ fontSize: "0.6rem", textAlign: "right", marginTop: "0.25rem", fontFamily: "var(--font-mono)", color: "var(--mystic-accent)" }}>DATABANK: 75% DECRYPTED</div>
+            <div style={{ fontSize: "0.6rem", textAlign: "right", marginTop: "0.25rem", fontFamily: "var(--font-mono)", color: "var(--scarlet-accent)" }}>DATABANK: 75% DECRYPTED</div>
           </DashboardWidget>
 
           {/* Quick Nav: Bestiary -> Monster Compendium */}
-          <DashboardWidget title="Monster Compendium" subtitle="Bestiary" icon={Skull} href="/statblocks">
+          <DashboardWidget title="Monster Compendium" subtitle="Bestiary" icon={Skull} href="/statblocks" variant="safe-haven">
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              <div style={{ background: "var(--ink-color)", padding: "0.5rem", borderRadius: "0.25rem", border: "1px solid var(--glass-border)" }}>
+              <div style={{ background: "rgba(138, 28, 28, 0.1)", padding: "0.5rem", borderRadius: "0.25rem", border: "1px solid #8b7e66" }}>
                 <Skull style={{ width: "32px", height: "32px", color: "var(--scarlet-accent)" }} />
               </div>
               <div>
-                <div style={{ fontWeight: "bold", color: "var(--fg-color)" }}>100+ ENTRIES</div>
-                <div style={{ color: "var(--fg-dim)", fontSize: "0.75rem" }}>Recently Added: Acererak</div>
+                <div style={{ fontWeight: "bold", color: "#4a0404" }}>100+ ENTRIES</div>
+                <div style={{ color: "#8a1c1c", fontSize: "0.75rem" }}>Recently Added: Acererak</div>
               </div>
             </div>
           </DashboardWidget>
@@ -92,26 +92,27 @@ export default function Home() {
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
 
           {/* Grimoire Widget (Promoted) */}
-          <DashboardWidget title="The Grimoire" subtitle="Spell Database" icon={BookOpen} href="/grimoire" style={{ borderColor: "#a32222", backgroundImage: "linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/aged-paper.png')" }}>
-            <p style={{ fontSize: "0.75rem", color: "#d7c0a0" }}>Full library of incantations. Now with advanced search & filtering.</p>
+          <DashboardWidget title="The Grimoire" subtitle="Spell Database" icon={BookOpen} href="/grimoire" variant="safe-haven" style={{ backgroundImage: "linear-gradient(rgba(244, 232, 209, 0.9), rgba(244, 232, 209, 0.9)), url('https://www.transparenttextures.com/patterns/aged-paper.png')" }}>
+            <p style={{ fontSize: "0.75rem", color: "#4a0404" }}>Full library of incantations. Now with advanced search & filtering.</p>
           </DashboardWidget>
 
-          <DashboardWidget title="Black Market" subtitle="Shops & Items" icon={ShoppingBag} href="/shops" style={{ minHeight: "180px", backgroundImage: "radial-gradient(circle at center, rgba(30,30,35,0.8) 0%, rgba(10,10,12,0.95) 100%), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 10px)", backgroundSize: "cover", backgroundBlendMode: "overlay" }}>
-            <p style={{ position: "relative", zIndex: 10, fontSize: "0.875rem" }}>Manage inventory for Korgul, Fimble, and local vendors.</p>
+          <DashboardWidget title="Black Market" subtitle="Shops & Items" icon={ShoppingBag} href="/shops" variant="safe-haven" style={{ minHeight: "180px", backgroundImage: "radial-gradient(circle at center, rgba(30,30,35,0.8) 0%, rgba(10,10,12,0.95) 100%), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 10px)", backgroundSize: "cover", backgroundBlendMode: "overlay" }}>
+            {/* Retaining dark bg for black market contrast, or should it change? keeping for now but ensure text pops */}
+            <p style={{ position: "relative", zIndex: 10, fontSize: "0.875rem", color: "var(--gold-accent)" }}>Manage inventory for Korgul, Fimble, and local vendors.</p>
           </DashboardWidget>
 
           {/* Cartography */}
-          <DashboardWidget title="Cartography" subtitle="Tactical Maps" icon={Map} href="/maps" style={{ minHeight: "180px" }}>
+          <DashboardWidget title="Cartography" subtitle="Tactical Maps" icon={Map} href="/maps" variant="safe-haven" style={{ minHeight: "180px" }}>
             <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid var(--glass-border)", paddingBottom: "0.25rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid #8b7e66", paddingBottom: "0.25rem" }}>
                 <span>SILENT WARDS</span>
-                <span style={{ color: "var(--gold-accent)" }}>ACTIVE</span>
+                <span style={{ color: "var(--scarlet-accent)", fontWeight: "bold" }}>ACTIVE</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid var(--glass-border)", paddingBottom: "0.25rem", opacity: 0.6 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid #8b7e66", paddingBottom: "0.25rem", opacity: 0.8 }}>
                 <span>BEHOLDER LAIR</span>
                 <span>MAPPED</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", opacity: 0.4 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", opacity: 0.6 }}>
                 <span>HEART CHAMBER</span>
                 <span>UNKNOWN</span>
               </div>
@@ -122,16 +123,16 @@ export default function Home() {
         {/* RIGHT COLUMN: Tools & Utils */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-            <DashboardWidget title="Tools" subtitle="Foundry" icon={Hammer} href="/generators" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            <DashboardWidget title="Editor" subtitle="Notes" icon={PenTool} href="/editor" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Tools" subtitle="Foundry" icon={Hammer} href="/generators" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Editor" subtitle="Notes" icon={PenTool} href="/editor" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
             {/* [NEW] Players Link in Tools Grid */}
-            <DashboardWidget title="Party" subtitle="Players" icon={FileText} href="/players" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Party" subtitle="Players" icon={FileText} href="/players" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
           </div>
 
-          <DashboardWidget title="Print Lab" subtitle="Physical Handouts" icon={FileText} href="/deliverables">
-            <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)" }}>Generate print-ready assets for player handouts.</p>
+          <DashboardWidget title="Print Lab" subtitle="Physical Handouts" icon={FileText} href="/deliverables" variant="safe-haven">
+            <p style={{ fontSize: "0.75rem", color: "#8a1c1c" }}>Generate print-ready assets for player handouts.</p>
           </DashboardWidget>
 
           <footer style={{ marginTop: "auto", textAlign: "center", opacity: 0.4, fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--fg-dim)" }}>

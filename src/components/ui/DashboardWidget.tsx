@@ -25,15 +25,15 @@ export default function DashboardWidget({
     style,
     onClick,
     variant = 'obsidian' // New Default: Dark Theme
-}: DashboardWidgetProps & { variant?: 'parchment' | 'obsidian' | 'glass' }) {
+}: DashboardWidgetProps & { variant?: 'parchment' | 'obsidian' | 'glass' | 'safe-haven' }) {
 
     // Theme Colors based on variant
     const isDark = variant === 'obsidian' || variant === 'glass';
-    const bgColor = variant === 'parchment' ? 'var(--adnd-bg)' : (variant === 'obsidian' ? '#111' : 'rgba(10,10,12,0.6)');
-    const borderColor = variant === 'parchment' ? '#8b7e66' : '#333';
-    const titleColor = variant === 'parchment' ? 'var(--adnd-blue)' : 'var(--scarlet-accent)';
-    const textColor = variant === 'parchment' ? 'var(--adnd-ink)' : 'var(--fg-color)';
-    const dimColor = variant === 'parchment' ? '#333' : 'var(--fg-dim)';
+    const bgColor = variant === 'parchment' ? 'var(--adnd-bg)' : (variant === 'safe-haven' ? 'var(--parchment-bg)' : (variant === 'obsidian' ? '#111' : 'rgba(10,10,12,0.6)'));
+    const borderColor = (variant === 'parchment' || variant === 'safe-haven') ? '#8b7e66' : '#333';
+    const titleColor = variant === 'parchment' ? 'var(--adnd-blue)' : (variant === 'safe-haven' ? 'var(--scarlet-accent)' : 'var(--scarlet-accent)');
+    const textColor = variant === 'parchment' ? 'var(--adnd-ink)' : (variant === 'safe-haven' ? '#4a0404' : 'var(--fg-color)');
+    const dimColor = variant === 'parchment' ? '#333' : (variant === 'safe-haven' ? '#8a1c1c' : 'var(--fg-dim)');
 
     const content = (
         <>
@@ -42,7 +42,7 @@ export default function DashboardWidget({
                 alignItems: "center",
                 justifyContent: "space-between",
                 marginBottom: "1rem",
-                borderBottom: `2px solid ${variant === 'parchment' ? 'var(--adnd-blue)' : 'rgba(163,34,34,0.3)'}`,
+                borderBottom: `2px solid ${(variant === 'parchment' || variant === 'safe-haven') ? 'var(--adnd-blue)' : 'rgba(163,34,34,0.3)'}`,
                 paddingBottom: "0.5rem"
             }}>
                 <div>
