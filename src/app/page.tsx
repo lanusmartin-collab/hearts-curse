@@ -8,9 +8,6 @@ import {
 import DashboardWidget from "@/components/ui/DashboardWidget";
 import CurseTracker from "@/components/ui/CurseTracker";
 import CampaignModuleTemplate from "@/components/ui/CampaignModuleTemplate";
-import PartyStatusWidget from "@/components/ui/PartyStatusWidget";
-import NotepadWidget from "@/components/ui/NotepadWidget";
-import QuestTrackerWidget from "@/components/ui/QuestTrackerWidget";
 
 export default function Home() {
   const [viewMode, setViewMode] = useState<"home" | "book">("home");
@@ -20,12 +17,12 @@ export default function Home() {
   }
 
   return (
-    <div className="retro-container min-h-screen flex flex-col p-8">
+    <div className="retro-container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
 
       {/* HEADER SECTION */}
-      <header className="campaign-header mb-8 flex flex-col md:flex-row justify-between items-end border-b border-[var(--glass-border)] pb-6">
+      <header className="campaign-header" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid var(--glass-border)", paddingBottom: "1.5rem" }}>
         <div>
-          <div className="flex items-center gap-4 mb-2">
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.5rem" }}>
             <div className="relative w-16 h-16" style={{ position: "relative", width: "4rem", height: "4rem" }}>
               <div className="animate-pulse-slow absolute inset-0 border border-[var(--scarlet-accent)] rounded-full opacity-50 blur-md"></div>
               <Image
@@ -36,11 +33,11 @@ export default function Home() {
               />
             </div>
             <div className="flex flex-col">
-              <h1 className="campaign-title-glitch text-6xl m-0 leading-none" data-text="HEART'S CURSE">
+              <h1 className="campaign-title-glitch text-5xl m-0 leading-none" data-text="HEART'S CURSE">
                 HEART&apos;S CURSE
               </h1>
               <p className="campaign-subtitle text-xs tracking-[0.4em] text-[var(--gold-accent)] opacity-80 mt-1">
-                <span className="animate-flicker text-[var(--scarlet-accent)]">● LIVE</span> // DM COMMAND CENTER
+                <span className="animate-flicker text-[var(--scarlet-accent)]">● ONLINE</span> // DM COMMAND CENTER
               </p>
             </div>
           </div>
@@ -49,139 +46,99 @@ export default function Home() {
         {/* Quick Action: Open PDF Book */}
         <button
           onClick={() => setViewMode("book")}
-          className="group relative px-6 py-2 bg-black/40 border border-[var(--gold-accent)] text-[var(--gold-accent)] font-serif uppercase text-xs tracking-widest hover:bg-[var(--gold-accent)] hover:text-black transition-all"
+          className="group relative px-6 py-2 bg-[var(--obsidian-base)] border border-[rgba(201,188,160,0.5)] text-[var(--gold-accent)] font-serif uppercase text-xs tracking-widest hover:bg-[var(--gold-accent)] hover:text-black transition-all flex items-center gap-2"
         >
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4" />
-            <span>Campaign Module</span>
-          </div>
+          <BookOpen className="w-4 h-4" /> <span>Open Campaign Module</span>
         </button>
       </header>
 
-      {/* DASHBOARD GRID - 3 Columns */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 flex-1">
+      {/* DASHBOARD GRID */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem", flex: 1 }}>
 
-        {/* LEFT COLUMN: Vitals (3 Cols) */}
-        <div className="xl:col-span-3 flex flex-col gap-6">
-          <PartyStatusWidget />
-
-          {/* Curse Widget */}
-          <DashboardWidget title="Threat System" subtitle="Regional Effect" href="/mechanics" style={{ borderColor: "rgba(138, 28, 28, 0.5)" }}>
+        {/* LEFT COLUMN: Status & Quick Stats */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          {/* Curse Widget - Now clickable to mechanics */}
+          <DashboardWidget title="Threat System" subtitle="Regional Effect" style={{ borderColor: "rgba(138, 28, 28, 0.3)" }} href="/mechanics">
             <CurseTracker simpleView={true} />
-            <div className="mt-4 text-xs text-[var(--fg-dim)] italic border-t border-[var(--glass-border)] pt-2">
+            <div style={{ marginTop: "1rem", fontSize: "0.75rem", color: "var(--fg-dim)", fontStyle: "italic", borderTop: "1px solid var(--glass-border)", paddingTop: "0.5rem" }}>
               "The shadows lengthen with every passing day..."
+            </div>
+          </DashboardWidget>
+
+          {/* Quick Nav: Archives */}
+          <DashboardWidget title="The Archives" subtitle="Lore & History" icon={BookOpen} href="/lore">
+            <div style={{ fontSize: "0.875rem", opacity: 0.8, marginBottom: "0.5rem" }}>Access decrypted Netherese texts and campaign timeline.</div>
+            <div style={{ height: "4px", width: "100%", background: "var(--glass-border)", borderRadius: "2px", overflow: "hidden" }}>
+              <div style={{ height: "100%", background: "var(--mystic-accent)", width: "75%" }} />
+            </div>
+            <div style={{ fontSize: "0.6rem", textAlign: "right", marginTop: "0.25rem", fontFamily: "var(--font-mono)", color: "var(--mystic-accent)" }}>DATABANK: 75% DECRYPTED</div>
+          </DashboardWidget>
+
+          {/* Quick Nav: Bestiary -> Monster Compendium */}
+          <DashboardWidget title="Monster Compendium" subtitle="Bestiary" icon={Skull} href="/statblocks">
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <div style={{ background: "var(--ink-color)", padding: "0.5rem", borderRadius: "0.25rem", border: "1px solid var(--glass-border)" }}>
+                <Skull style={{ width: "32px", height: "32px", color: "var(--scarlet-accent)" }} />
+              </div>
+              <div>
+                <div style={{ fontWeight: "bold", color: "var(--fg-color)" }}>100+ ENTRIES</div>
+                <div style={{ color: "var(--fg-dim)", fontSize: "0.75rem" }}>Recently Added: Acererak</div>
+              </div>
             </div>
           </DashboardWidget>
         </div>
 
-        {/* MIDDLE COLUMN: Operations (6 Cols) */}
-        <div className="xl:col-span-6 flex flex-col gap-6">
+        {/* MIDDLE COLUMN: Primary Navigation */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
 
-          {/* Quest / Objectives */}
-          <QuestTrackerWidget />
+          {/* Grimoire Widget (Promoted) */}
+          <DashboardWidget title="The Grimoire" subtitle="Spell Database" icon={BookOpen} href="/grimoire" style={{ borderColor: "#a32222", backgroundImage: "linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/aged-paper.png')" }}>
+            <p style={{ fontSize: "0.75rem", color: "#d7c0a0" }}>Full library of incantations. Now with advanced search & filtering.</p>
+          </DashboardWidget>
 
-          {/* Main Nav Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Grimoire Widget (Promoted) */}
-            <DashboardWidget
-              title="The Grimoire"
-              subtitle="Spell Database"
-              icon={BookOpen}
-              href="/grimoire"
-              style={{
-                borderColor: "#8a1c1c", // Deep red border
-                borderWidth: "2px",
-                // Reduced opacity to 0.7 to let texture show through
-                background: "linear-gradient(135deg, rgba(20,5,5,0.7), rgba(40,10,10,0.6)), url('https://www.transparenttextures.com/patterns/aged-paper.png')",
-                boxShadow: "0 0 25px rgba(138, 28, 28, 0.4), inset 0 0 20px rgba(0,0,0,0.8)"
-              }}
-            >
-              <div className="absolute top-0 right-0 p-2 opacity-50 pointer-events-none">
-                <div className="w-16 h-16 border-t-2 border-r-2 border-[var(--gold-accent)] rounded-tr-3xl"></div>
-              </div>
-              <p className="text-sm text-[#eecfa1] font-serif italic opacity-90 relative z-10">
-                "Words of power, etched in blood and shadow."
-              </p>
-              <div className="mt-2 flex gap-2">
-                <span className="text-[10px] uppercase tracking-widest border border-[#8a1c1c] text-[#8a1c1c] px-2 py-1 rounded bg-black/50">Arcane</span>
-                <span className="text-[10px] uppercase tracking-widest border border-[#8a1c1c] text-[#8a1c1c] px-2 py-1 rounded bg-black/50">Divine</span>
-              </div>
-            </DashboardWidget>
-
-            {/* Market */}
-            <DashboardWidget
-              title="Black Market"
-              subtitle="Shops & Items"
-              icon={ShoppingBag}
-              href="/shops"
-              style={{
-                // Replaced missing image with CSS pattern
-                backgroundImage: "radial-gradient(circle at center, rgba(30,30,35,0.8) 0%, rgba(10,10,12,0.95) 100%), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 10px)",
-                borderColor: "#c9bca0"
-              }}
-            >
-              <p className="text-sm text-[var(--fg-dim)] mb-2">Manage inventory for Korgul, Fimble, and locally sourced goods.</p>
-              <div className="flex items-center gap-2 text-[var(--gold-accent)] text-xs uppercase tracking-widest">
-                <span className="animate-pulse">● Open Business</span>
-              </div>
-            </DashboardWidget>
-          </div>
+          <DashboardWidget title="Black Market" subtitle="Shops & Items" icon={ShoppingBag} href="/shops" style={{ minHeight: "180px", backgroundImage: "radial-gradient(circle at center, rgba(30,30,35,0.8) 0%, rgba(10,10,12,0.95) 100%), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 10px)", backgroundSize: "cover", backgroundBlendMode: "overlay" }}>
+            <p style={{ position: "relative", zIndex: 10, fontSize: "0.875rem" }}>Manage inventory for Korgul, Fimble, and local vendors.</p>
+          </DashboardWidget>
 
           {/* Cartography */}
-          <DashboardWidget title="Cartography" subtitle="Tactical Maps" icon={Map} href="/maps" variant="glass" style={{ backdropFilter: "blur(4px)" }}>
-            <div className="flex flex-col gap-3 relative z-10">
-              <div className="flex justify-between text-xs border-b border-[var(--glass-border)] pb-2">
-                <span className="text-[var(--fg-color)]">SILENT WARDS</span>
-                <span className="text-[var(--gold-accent)] animate-pulse">ACTIVE</span>
+          <DashboardWidget title="Cartography" subtitle="Tactical Maps" icon={Map} href="/maps" style={{ minHeight: "180px" }}>
+            <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid var(--glass-border)", paddingBottom: "0.25rem" }}>
+                <span>SILENT WARDS</span>
+                <span style={{ color: "var(--gold-accent)" }}>ACTIVE</span>
               </div>
-              <div className="flex justify-between text-xs border-b border-[var(--glass-border)] pb-2 opacity-70">
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid var(--glass-border)", paddingBottom: "0.25rem", opacity: 0.6 }}>
                 <span>BEHOLDER LAIR</span>
                 <span>MAPPED</span>
               </div>
-              <div className="flex justify-between text-xs opacity-40">
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", opacity: 0.4 }}>
                 <span>HEART CHAMBER</span>
                 <span>UNKNOWN</span>
               </div>
             </div>
-            {/* Visual fluff: Radar sweep */}
-            <div className="absolute inset-0 z-0 opacity-10 pointer-events-none overflow-hidden rounded">
-              <div className="absolute top-1/2 left-1/2 w-[200%] h-[2px] bg-[var(--mystic-accent)] animate-spin-slow origin-left"></div>
-            </div>
-          </DashboardWidget>
-
-          {/* Quick Stats: Monster Compendium */}
-          <DashboardWidget title="Monster Compendium" subtitle="Bestiary" icon={Skull} href="/statblocks">
-            <div className="flex items-center gap-4">
-              <div className="bg-[#1a0505] p-3 rounded border border-[var(--scarlet-accent)]">
-                <Skull className="w-6 h-6 text-[var(--scarlet-accent)]" />
-              </div>
-              <div>
-                <div className="font-bold text-[var(--fg-color)] text-lg">100+ ENTRIES</div>
-                <div className="text-[var(--fg-dim)] text-xs">Recently Added: Acererak</div>
-              </div>
-            </div>
           </DashboardWidget>
         </div>
 
-        {/* RIGHT COLUMN: Tools (3 Cols) */}
-        <div className="xl:col-span-3 flex flex-col gap-6">
-          <NotepadWidget />
-
-          <div className="grid grid-cols-2 gap-4">
-            <DashboardWidget title="Tools" subtitle="Foundry" icon={Hammer} href="/generators" className="aspect-square flex flex-col justify-center text-center" />
-            <DashboardWidget title="Archive" subtitle="Lore" icon={FileText} href="/lore" className="aspect-square flex flex-col justify-center text-center" />
-            <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" className="aspect-square flex flex-col justify-center text-center" />
-            <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" className="aspect-square flex flex-col justify-center text-center" />
+        {/* RIGHT COLUMN: Tools & Utils */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <DashboardWidget title="Tools" subtitle="Foundry" icon={Hammer} href="/generators" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Editor" subtitle="Notes" icon={PenTool} href="/editor" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            {/* [NEW] Players Link in Tools Grid */}
+            <DashboardWidget title="Party" subtitle="Players" icon={FileText} href="/players" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
           </div>
 
           <DashboardWidget title="Print Lab" subtitle="Physical Handouts" icon={FileText} href="/deliverables">
-            <p className="text-xs text-[var(--fg-dim)]">Generate print-ready assets.</p>
+            <p style={{ fontSize: "0.75rem", color: "var(--fg-dim)" }}>Generate print-ready assets for player handouts.</p>
           </DashboardWidget>
 
-          <footer className="mt-auto text-center opacity-40 font-mono text-[10px] pt-4 text-[var(--fg-dim)]">
-            v1.4.0 // HEART'S CURSE
+          <footer style={{ marginTop: "auto", textAlign: "center", opacity: 0.4, fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--fg-dim)" }}>
+            HEART'S CURSE // SESSION 23
           </footer>
         </div>
+
       </div>
     </div>
   );
