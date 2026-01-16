@@ -365,13 +365,13 @@ export default function GeneratorsPage() {
                 />
 
                 {/* 2. Main Content */}
-                <div className="flex-1 flex flex-col bg-[#050505] relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('/noise.png')]"></div>
+                <div className="flex-1 flex flex-col bg-[radial-gradient(circle_at_center,_#111_0%,_#050505_100%)] relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-[0.07] pointer-events-none bg-[url('/noise.png')]"></div>
 
                     {/* Header Fixed Area */}
-                    <div className="flex justify-between items-end border-b-2 border-[#a32222]/30 p-8 pb-4 shrink-0 bg-[#050505] z-10">
+                    <div className="flex justify-between items-end border-b border-[#333] p-8 pb-4 shrink-0 bg-transparent z-10 backdrop-blur-sm">
                         <div>
-                            <h2 className="text-[#a32222] font-header text-xl tracking-[0.2em]">THE FOUNDRY</h2>
+                            <h2 className="text-[#a32222] font-header text-xl tracking-[0.2em] drop-shadow-[0_0_10px_rgba(163,34,34,0.6)]">THE FOUNDRY</h2>
                         </div>
 
                         {activeTool === 'hoard' && (
@@ -393,14 +393,15 @@ export default function GeneratorsPage() {
                                 onClick={handleGenerate}
                                 disabled={isGenerating}
                                 className={`
-                                    px-8 py-3 bg-[#a32222] text-[#e0e0e0] font-header tracking-widest uppercase text-sm
-                                    border border-[#ff4444] shadow-[0_0_15px_rgba(163,34,34,0.4)]
-                                    hover:bg-[#c42828] hover:shadow-[0_0_25px_rgba(163,34,34,0.6)] hover:scale-105
-                                    active:scale-95 transition-all
-                                    disabled:opacity-50 disabled:cursor-not-allowed
+                                    px-8 py-3 bg-gradient-to-b from-[#b32222] to-[#801111] text-[#e0e0e0] font-header tracking-widest uppercase text-sm
+                                    border border-[#ff4444] shadow-[0_0_20px_rgba(163,34,34,0.5)]
+                                    hover:shadow-[0_0_35px_rgba(163,34,34,0.8)] hover:scale-105 hover:border-[#ff6666]
+                                    active:scale-95 transition-all relative overflow-hidden group
+                                    disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none
                                 `}
                             >
-                                {isGenerating ? 'PROCESSING...' : 'GENERATE'}
+                                <span className="relative z-10 drop-shadow-md">{isGenerating ? 'FORGING...' : 'INITIATE FORGE'}</span>
+                                <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.1)_50%,transparent_75%)] -translate-x-full group-hover:animate-shine" />
                             </button>
                         )}
                     </div>

@@ -20,7 +20,7 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
     };
 
     return (
-        <div className="grimoire-sidebar w-auto min-w-[200px] max-w-[300px] flex flex-col shrink-0 overflow-hidden z-20 bg-[#0c0c0c] h-full shadow-2xl">
+        <div className="grimoire-sidebar w-auto min-w-[200px] max-w-[300px] flex flex-col shrink-0 overflow-hidden z-20 bg-[#080808] h-full shadow-[5px_0_30px_rgba(0,0,0,0.8)] border-r border-[#222]">
             {/* Header */}
             <div className="grimoire-header p-6 border-b border-[#222]">
                 <h3 className="grimoire-title text-base text-[#a32222] font-header tracking-[0.25em] mb-2 text-center">
@@ -84,45 +84,45 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
                     <div className="grid grid-cols-1 gap-1">
                         <button
                             onClick={() => onSelectTool('loot')}
-                            className={`grimoire-item animate-heartbeat ${activeTool === 'loot' ? 'active' : ''}`}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'loot' ? 'active !bg-[#1a0505] !border-l-2 !border-[#a32222] !text-[#ddd]' : ''}`}
                         >
-                            <Shield className="w-4 h-4 text-[#666]" />
+                            <Shield className={`w-4 h-4 ${activeTool === 'loot' ? 'text-[#a32222]' : 'text-[#444]'}`} />
                             <span>TREASURE</span>
                         </button>
 
                         <button
                             onClick={() => onSelectTool('hoard')}
-                            className={`grimoire-item animate-heartbeat ${activeTool === 'hoard' ? 'active' : ''}`}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'hoard' ? 'active !bg-[#1a0505] !border-l-2 !border-[#a32222] !text-[#ddd]' : ''}`}
                             style={{ animationDelay: '0.1s' }}
                         >
-                            <Coins className="w-4 h-4 text-[#666]" />
+                            <Coins className={`w-4 h-4 ${activeTool === 'hoard' ? 'text-[#ffd700]' : 'text-[#444]'}`} />
                             <span>TREASURE HOARD</span>
                         </button>
 
                         <button
                             onClick={() => onSelectTool('npc')}
-                            className={`grimoire-item animate-heartbeat ${activeTool === 'npc' ? 'active' : ''}`}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'npc' ? 'active !bg-[#1a0505] !border-l-2 !border-[#a32222] !text-[#ddd]' : ''}`}
                             style={{ animationDelay: '0.2s' }}
                         >
-                            <User className="w-4 h-4 text-[#666]" />
+                            <User className={`w-4 h-4 ${activeTool === 'npc' ? 'text-[#a32222]' : 'text-[#444]'}`} />
                             <span>CHARACTER</span>
                         </button>
 
                         <button
                             onClick={() => onSelectTool('monster')}
-                            className={`grimoire-item animate-heartbeat ${activeTool === 'monster' ? 'active' : ''}`}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'monster' ? 'active !bg-[#1a0505] !border-l-2 !border-[#a32222] !text-[#ddd]' : ''}`}
                             style={{ animationDelay: '0.4s' }}
                         >
-                            <Ghost className="w-4 h-4 text-[#666]" />
+                            <Ghost className={`w-4 h-4 ${activeTool === 'monster' ? 'text-[#a32222]' : 'text-[#444]'}`} />
                             <span>ADVERSARY</span>
                         </button>
 
                         <button
                             onClick={() => onSelectTool('artifact')}
-                            className={`grimoire-item animate-heartbeat ${activeTool === 'artifact' ? 'active' : ''}`}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'artifact' ? 'active !bg-[#1a0505] !border-l-2 !border-[#a32222] !text-[#ddd]' : ''}`}
                             style={{ animationDelay: '0.6s' }}
                         >
-                            <Scroll className="w-4 h-4 text-[#666]" />
+                            <Scroll className={`w-4 h-4 ${activeTool === 'artifact' ? 'text-[#a32222]' : 'text-[#444]'}`} />
                             <span>ARTIFACT</span>
                         </button>
 
@@ -130,10 +130,10 @@ export default function GeneratorSidebar({ selectedMapId, onSelectMap, activeToo
 
                         <button
                             onClick={() => onSelectTool('register')}
-                            className={`grimoire-item animate-heartbeat ${activeTool === 'register' ? 'active' : ''}`}
+                            className={`grimoire-item animate-heartbeat ${activeTool === 'register' ? 'active !bg-[#1a0505] !border-l-2 !border-[#a32222] !text-[#ddd]' : ''}`}
                             style={{ animationDelay: '0.8s' }}
                         >
-                            <ClipboardList className="w-4 h-4 text-[#666]" />
+                            <ClipboardList className={`w-4 h-4 ${activeTool === 'register' ? 'text-[#a32222]' : 'text-[#444]'}`} />
                             <span>REGISTER</span>
                         </button>
                     </div>
