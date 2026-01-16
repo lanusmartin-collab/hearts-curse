@@ -105,7 +105,7 @@ function LicenseActivator() {
     const handleActivate = async () => {
         if (!key) return;
         setStatus("loading");
-        const success = await activateLicense(key);
+        const success = await activateLicense(key.trim());
         setStatus(success ? "success" : "error");
         if (success) {
             alert("License Activated! Welcome back.");
