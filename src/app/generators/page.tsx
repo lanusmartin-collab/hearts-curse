@@ -16,7 +16,7 @@ import CommandBar from "@/components/ui/CommandBar";
 import GeneratorSidebar from "@/components/ui/GeneratorSidebar";
 import PremiumGate from "@/components/auth/PremiumGate";
 
-import { Trash2, Coins, Gem } from "lucide-react";
+import { Trash2, Coins, Gem, Save } from "lucide-react";
 
 type RegistryItem = {
     id: number;
@@ -237,6 +237,14 @@ export default function GeneratorsPage() {
                     </div>
                     <div className="min-w-[600px] mx-auto">
                         <StatblockCard data={result} />
+                        <div className="mt-4 flex justify-center gap-4 no-print">
+                            <button
+                                onClick={() => saveToCompendium(result)}
+                                className="bg-[var(--gold-accent)] text-black px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-2"
+                            >
+                                <Save className="w-4 h-4" /> Save to Compendium
+                            </button>
+                        </div>
                     </div>
                 </div>
             );
@@ -286,6 +294,27 @@ export default function GeneratorsPage() {
                         <PrintButton />
                     </div>
                     <LootCard item={lootItem} />
+                    <div className="mt-6 border-t border-[#333] pt-4 flex flex-col items-center gap-3 no-print bg-[#111] p-4 rounded">
+                        <label className="text-[10px] uppercase tracking-widest text-[#666] font-mono">Export to Market</label>
+                        <div className="flex gap-2 w-full">
+                            <select
+                                value={targetShop}
+                                onChange={(e) => setTargetShop(e.target.value as any)}
+                                className="bg-[#0a0a0a] border border-[#333] text-[#ccc] text-xs p-2 flex-1 outline-none focus:border-[var(--gold-accent)]"
+                            >
+                                <option value="crow">The Crow's Nest (Black Market)</option>
+                                <option value="khelben">Khelben's Gifts (Arcane)</option>
+                                <option value="fimble">The Gilded Coffer (General)</option>
+                                <option value="iron">The Iron Knot (Services)</option>
+                            </select>
+                            <button
+                                onClick={() => saveToMarket(lootItem)}
+                                className="bg-[#222] border border-[#444] text-[#ddd] px-4 py-2 text-xs hover:bg-[var(--gold-accent)] hover:text-black hover:border-[var(--gold-accent)] transition-all font-bold uppercase"
+                            >
+                                Send
+                            </button>
+                        </div>
+                    </div>
                 </div>
             );
         }
