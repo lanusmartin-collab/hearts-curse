@@ -15,6 +15,8 @@ import { AudioProvider } from "@/components/providers/AudioProvider";
 import { SpellProvider } from "@/lib/game/spellContext";
 import ShadowCaster from "@/components/ui/ShadowCaster";
 
+import { UserProvider } from "@/lib/auth/userContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,17 +35,19 @@ export default function RootLayout({
         {/* NOTE: If we wanted strict 'Stranger Things' we'd try to find a Benguiat substitute, but Merriweather 900 is a decent 'Classic Serif' fallback freely available */}
       </head>
       <body>
-        <AudioProvider>
-          <SpellProvider>
-            <CurseOverlay />
-            <div className="noise-overlay"></div>
-            <SidebarNav />
-            <main>{children}</main>
-            <ShadowCaster />
-            <DiceRoller />
-            {/* GrimoireModal removed - migrated to /grimoire */}
-          </SpellProvider>
-        </AudioProvider>
+        <UserProvider>
+          <AudioProvider>
+            <SpellProvider>
+              <CurseOverlay />
+              <div className="noise-overlay"></div>
+              <SidebarNav />
+              <main>{children}</main>
+              <ShadowCaster />
+              <DiceRoller />
+              {/* GrimoireModal removed - migrated to /grimoire */}
+            </SpellProvider>
+          </AudioProvider>
+        </UserProvider>
       </body>
     </html>
   );
