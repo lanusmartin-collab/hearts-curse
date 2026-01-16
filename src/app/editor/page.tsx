@@ -289,6 +289,7 @@ export default function EditorPage() {
                             )}
                         </div>
                     </main>
+                </div>
             </PremiumGate>
         </div>
     );
