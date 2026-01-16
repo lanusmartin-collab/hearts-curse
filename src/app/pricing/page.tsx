@@ -58,7 +58,7 @@ export default function PricingPage() {
                         {/* Pro Tier */}
                         <PricingCard
                             title="DUNGEON MASTER"
-                            price="$19.99"
+                            price="ARS $29,685.15"
                             description="One-time payment. Lifetime access to the Campaign Architect. Yours to keep forever."
                             variant="pro"
                             isPopular={true}
