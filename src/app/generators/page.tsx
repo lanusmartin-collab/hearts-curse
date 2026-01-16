@@ -16,7 +16,7 @@ import CommandBar from "@/components/ui/CommandBar";
 import GeneratorSidebar from "@/components/ui/GeneratorSidebar";
 import PremiumGate from "@/components/auth/PremiumGate";
 
-import { Trash2, Coins, Gem, Save } from "lucide-react";
+import { Trash2, Coins, Gem, Save, Menu } from "lucide-react";
 
 type RegistryItem = {
     id: number;
@@ -36,6 +36,7 @@ export default function GeneratorsPage() {
     const [registry, setRegistry] = useState<RegistryItem[]>([]);
     const [hoardCR, setHoardCR] = useState<number>(5);
     const [targetShop, setTargetShop] = useState<'khelben' | 'fimble' | 'iron' | 'crow'>('crow');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile Sidebar State
 
     const saveToMarket = (item: ShopItem) => {
         const key = `shop_${targetShop}`;
@@ -361,7 +362,10 @@ export default function GeneratorsPage() {
                             setLootItem(null);
                         }
                         setActiveTool(t);
+                        setIsSidebarOpen(false); // Close on selection (mobile)
                     }}
+                    isOpen={isSidebarOpen}
+                    onClose={() => setIsSidebarOpen(false)}
                 />
 
                 {/* 2. Main Content */}
@@ -369,9 +373,18 @@ export default function GeneratorsPage() {
                     <div className="absolute inset-0 opacity-[0.07] pointer-events-none bg-[url('/noise.png')]"></div>
 
                     {/* Header Fixed Area */}
-                    <div className="flex justify-between items-end border-b border-[#333] p-8 pb-4 shrink-0 bg-transparent z-10 backdrop-blur-sm">
-                        <div>
-                            <h2 className="text-[#a32222] font-header text-xl tracking-[0.2em] drop-shadow-[0_0_10px_rgba(163,34,34,0.6)]">THE FOUNDRY</h2>
+                    <div className="flex justify-between items-end border-b border-[#333] p-4 md:p-8 md:pb-4 shrink-0 bg-transparent z-10 backdrop-blur-sm">
+                        <div className="flex items-center gap-4">
+                            {/* Mobile Menu Toggle */}
+                            <button
+                                onClick={() => setIsSidebarOpen(true)}
+                                className="md:hidden text-[#a32222] hover:text-white transition-colors"
+                            >
+                                <Menu className="w-6 h-6" />
+                            </button>
+                            <h2 className="text-[#a32222] font-header text-lg md:text-xl tracking-[0.2em] drop-shadow-[0_0_10px_rgba(163,34,34,0.6)]">
+                                THE FOUNDRY
+                            </h2>
                         </div>
 
                         {activeTool === 'hoard' && (
