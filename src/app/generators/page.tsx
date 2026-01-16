@@ -250,13 +250,13 @@ export default function GeneratorsPage() {
         if (result) {
             return (
                 <div className="w-full animate-fade-in">
-                    <div className="flex justify-between items-center mb-4 pb-2 border-b border-[#333] w-full">
+                    <div className="flex justify-between items-center mb-4 pb-2 border-b border-[#333] w-full flex-col md:flex-row gap-2">
                         <div className="font-mono text-[10px] text-[#666]"></div>
-                        <div className="no-print"><PrintButton /></div>
+                        <div className="no-print w-full md:w-auto"><PrintButton /></div>
                     </div>
-                    <div className="min-w-[600px] mx-auto">
+                    <div className="w-full md:min-w-[600px] mx-auto overflow-x-hidden">
                         <StatblockCard data={result} />
-                        <div className="mt-4 flex justify-center gap-4 no-print">
+                        <div className="mt-4 flex flex-col md:flex-row justify-center gap-4 no-print">
                             <button
                                 onClick={() => saveToCompendium(result)}
                                 className="bg-[var(--gold-accent)] text-black px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-2"
@@ -278,7 +278,7 @@ export default function GeneratorsPage() {
                     <h3 className="text-[#a32222] font-header text-2xl text-center mb-6 tracking-widest border-b border-[#333] pb-4">
                         TREASURE HOARD (CR {hoardCR})
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
                         {hoardResult.map((item, idx) => (
                             <div key={idx} className="bg-[#111] border border-[#333] p-4 flex flex-col gap-2 relative group hover:border-[#a32222] transition-colors">
                                 <div className="flex justify-between items-start">
@@ -420,8 +420,8 @@ export default function GeneratorsPage() {
                     </div>
 
                     {/* Result Display - Relaxed & Scrollable */}
-                    <div className="flex-1 overflow-auto custom-scrollbar p-8 flex items-start justify-center">
-                        <div className="w-full max-w-5xl min-h-[500px] border border-[#222] bg-[#0a0a0a] p-8 relative shadow-inner flex flex-col items-center">
+                    <div className="flex-1 overflow-auto custom-scrollbar p-2 md:p-8 flex items-start justify-center">
+                        <div className="w-full max-w-5xl min-h-[500px] border border-[#222] bg-[#0a0a0a] p-4 md:p-8 relative shadow-inner flex flex-col items-center animate-fade-in">
 
                             {/* Premium Gate Check */}
                             {(activeTool === 'hoard' || activeTool === 'monster') ? (
