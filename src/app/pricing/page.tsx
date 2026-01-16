@@ -57,8 +57,8 @@ export default function PricingPage() {
                         {/* Pro Tier */}
                         <PricingCard
                             title="DUNGEON MASTER"
-                            price="$9.99"
-                            description="The ultimate toolkit for World Builders."
+                            price="$4.99"
+                            description="Unlock the full power of the Campaign Architect. Forge worlds, command monsters, and master the arcane."
                             variant="pro"
                             isPopular={true}
                             buttonText={user?.isPro ? "Already Active" : "Upgrade Now"}
