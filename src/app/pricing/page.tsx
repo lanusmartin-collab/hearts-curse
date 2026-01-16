@@ -65,7 +65,7 @@ export default function PricingPage() {
                             buttonText={user?.isPro ? "Already Active" : "Upgrade Now"}
                             onAction={() => {
                                 if (!user?.isPro) {
-                                    window.open("https://heartscurse.lemonsqueezy.com/checkout/buy/c2398bd9-815c-4ad1-82c9-68d1427bd85f", "_blank");
+                                    window.open("https://heartscurse.lemonsqueezy.com/checkout/buy/77235259-5cbb-4553-a9e8-33cab92be665", "_blank");
                                 }
                             }}
                             features={[
