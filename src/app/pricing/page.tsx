@@ -62,7 +62,11 @@ export default function PricingPage() {
                             variant="pro"
                             isPopular={true}
                             buttonText={user?.isPro ? "Already Active" : "Upgrade Now"}
-                            onAction={upgradeToPro}
+                            onAction={() => {
+                                if (!user?.isPro) {
+                                    window.open("https://heartscurse.lemonsqueezy.com/checkout/buy/c2398bd9-815c-4ad1-82c9-68d1427bd85f", "_blank");
+                                }
+                            }}
                             features={[
                                 { text: "Access to Public Lore", included: true },
                                 { text: "View Maps (Read Only)", included: true },
