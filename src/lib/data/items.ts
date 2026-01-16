@@ -10,6 +10,7 @@ export type ShopItem = {
     source?: string; // Added to match usage
     attunement?: boolean; // Added to match usage
     description?: string; // Added to match usage
+    lore?: string; // [NEW] Added for ItemEditor
 };
 
 export const KHELBEN_GIFTS: ShopItem[] = [

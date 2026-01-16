@@ -376,6 +376,17 @@ function ShopList({ title, items, economy, onReplace, onAdd, onEdit, onDelete, o
         setNewItemData({ name: "New Item", cost: "100 gp", rarity: "Common", effect: "Description here.", npcQuote: "" });
     };
 
+    // [NEW] Custom Item Import Logic inside ShopList
+    const [showImportModal, setShowImportModal] = useState(false);
+    const [customItems, setCustomItems] = useState<ShopItem[]>([]);
+
+    useEffect(() => {
+        const saved = localStorage.getItem('custom_items');
+        if (saved) {
+            try { setCustomItems(JSON.parse(saved)); } catch (e) { console.error(e); }
+        }
+    }, []);
+
     return (
         <div className="p-4">
             <div className="flex justify-between items-end mb-6 border-b border-[#333] pb-4">
@@ -499,6 +510,16 @@ function ShopList({ title, items, economy, onReplace, onAdd, onEdit, onDelete, o
                         >
                             + Generate Random Loot
                         </button>
+
+                        <PremiumGate feature="Item Forge">
+                            <button
+                                onClick={() => setShowImportModal(true)}
+                                className="text-xs uppercase tracking-widest text-[#555] hover:text-[#d4af37] hover:border-[#d4af37] border border-[#333] px-6 py-3 rounded transition-all flex items-center gap-2"
+                            >
+                                <Save size={14} /> Import Custom
+                            </button>
+                        </PremiumGate>
+
                         <button
                             onClick={() => setNewItemMode(true)}
                             className="text-xs uppercase tracking-widest text-[#555] hover:text-white hover:border-white border border-[#333] px-6 py-3 rounded transition-all"
@@ -523,10 +544,32 @@ function ShopList({ title, items, economy, onReplace, onAdd, onEdit, onDelete, o
                     </div>
                 )}
             </div>
+
+            {/* IMPORT MODAL */}
+            {showImportModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in" onClick={() => setShowImportModal(false)}>
+                    <div className="bg-[#111] border border-[#333] w-full max-w-lg p-6 shadow-2xl relative" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => setShowImportModal(false)} className="absolute top-4 right-4 text-[#666] hover:text-white"><X size={20} /></button>
+                        <h3 className="text-xl font-header text-[#d4af37] mb-4">Import Custom Item</h3>
+                        <div className="max-h-[60vh] overflow-y-auto custom-scrollbar space-y-2">
+                            {customItems.length === 0 && <div className="text-[#666] text-sm italic text-center py-8">No custom items found in the Forge.</div>}
+                            {customItems.map((item, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => { onAdd(item); setShowImportModal(false); }}
+                                    className="w-full text-left p-3 border border-[#222] hover:border-[#d4af37] bg-[#0a0a0a] hover:bg-[#1f1a0c] transition group"
+                                >
+                                    <div className="font-header text-[#e0e0e0] group-hover:text-[#d4af37]">{item.name}</div>
+                                    <div className="text-[10px] text-[#666] uppercase tracking-wider mt-1">{item.rarity} • {item.type}</div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
 // Helper for icons if needed later, currently using Lucide in Edit2/Trash2/etc.
 // Note: Imports for lucide-react added at top.
-

@@ -2,18 +2,41 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useGrimoire } from '@/lib/game/spellContext';
-import { ALL_SPELLS, getSpell, filterSpells, Spell } from '@/lib/data/spells';
+import { ALL_SPELLS as SPELL_DATA, getSpell, filterSpells, Spell } from '@/lib/data/spells'; // Renamed ALL_SPELLS to SPELL_DATA
 import { X, Search, BookOpen, Scroll } from 'lucide-react';
 
 export default function GrimoireModal() {
     const { isOpen, closeGrimoire, selectedSpellName } = useGrimoire();
     const [searchQuery, setSearchQuery] = useState("");
-    const [activeSpell, setActiveSpell] = useState<Spell | null>(null);
+    const [activeSpell, setActiveSpell] = useState<Spell | null>(null); // Kept as activeSpell for consistency
+
+    // [NEW] Merge static spells with custom spells
+    const [allSpells, setAllSpells] = useState<Spell[]>(SPELL_DATA);
+
+    useEffect(() => {
+        if (isOpen) {
+            const saved = localStorage.getItem('custom_spells');
+            if (saved) {
+                try {
+                    const customSpells: Spell[] = JSON.parse(saved);
+                    // Filter duplicates to avoid issues with existing SPELL_DATA
+                    const newCustom = customSpells.filter(c => !SPELL_DATA.find(s => s.name === c.name));
+                    setAllSpells([...SPELL_DATA, ...newCustom]);
+                } catch (e) {
+                    console.error("Failed to load custom spells", e);
+                }
+            } else {
+                // If no custom spells, ensure we reset to just SPELL_DATA
+                setAllSpells(SPELL_DATA);
+            }
+        }
+    }, [isOpen]);
 
     // Sync with global selection
     useEffect(() => {
         if (selectedSpellName) {
-            const spell = getSpell(selectedSpellName);
+            // Search in allSpells (including custom ones)
+            const spell = allSpells.find(s => s.name === selectedSpellName);
             if (spell) {
                 setActiveSpell(spell);
             } else {
@@ -47,7 +70,7 @@ export default function GrimoireModal() {
 
     if (!isOpen) return null;
 
-    const filteredSpells = searchQuery ? filterSpells(searchQuery) : ALL_SPELLS.slice(0, 100);
+    const filteredSpells = searchQuery ? filterSpells(searchQuery) : SPELL_DATA.slice(0, 100);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in" onClick={closeGrimoire}>
@@ -83,7 +106,7 @@ export default function GrimoireModal() {
                             </div>
                         </div>
                         <div className="flex-1 overflow-y-auto custom-scrollbar">
-                            {filteredSpells.map((spell, idx) => (
+                            {filteredSpells.map((spell: Spell, idx: number) => (
                                 <div
                                     key={spell.name}
                                     ref={el => {
@@ -95,7 +118,7 @@ export default function GrimoireModal() {
                                     style={{ animationDelay: `${idx * 0.1}s` }}
                                 >
                                     <span className={`font-header text-sm ${activeSpell?.name === spell.name ? 'text-[#c9bca0]' : 'text-[#888]'}`}>{spell.name}</span>
-                                    <span className="text-[10px] text-[#444] font-mono ml-auto">{spell.level === 0 ? 'C' : `L${spell.level}`}</span>
+                                    <span className="text-[10px] text-[#444] font-mono ml-auto">{spell.level === "0" || spell.level === "Cantrip" ? 'C' : `L${spell.level}`}</span>
                                 </div>
                             ))}
                         </div>
@@ -111,7 +134,7 @@ export default function GrimoireModal() {
                                     <div className="text-center mb-6">
                                         <h1 className="text-4xl font-header font-bold text-[#2a0a0a] mb-2 drop-shadow-sm uppercase tracking-wide">{activeSpell.name}</h1>
                                         <div className="flex justify-center gap-4 text-sm font-bold italic text-[#5c1212] font-serif tracking-wider">
-                                            <span>{activeSpell.level === 0 ? "Cantrip" : `Level ${activeSpell.level}`}</span>
+                                            <span>{activeSpell.level === "0" || activeSpell.level === "Cantrip" ? "Cantrip" : `Level ${activeSpell.level}`}</span>
                                             <span>•</span>
                                             <span>{activeSpell.school}</span>
                                         </div>

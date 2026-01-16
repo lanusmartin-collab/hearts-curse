@@ -6,22 +6,27 @@ import { v4 as uuidv4 } from "uuid";
 import CommandBar from "@/components/ui/CommandBar";
 import PrintButton from "@/components/ui/PrintButton";
 import StatblockGenerator from "@/components/ui/StatblockGenerator";
+import SpellEditor from "@/components/ui/SpellEditor";
+import ItemEditor from "@/components/ui/ItemEditor";
 import StatblockCard from "@/components/ui/StatblockCard";
+import { LootCard } from "@/components/ui/LootCard";
 import { Statblock } from "@/lib/data/statblocks";
-import { FileText, Hammer, Save, Trash2, BookOpen, Scroll } from "lucide-react";
+import { Spell } from "@/lib/data/spells";
+import { ShopItem } from "@/lib/data/items";
+import { FileText, Hammer, Save, Trash2, BookOpen, Scroll, Wand2 } from "lucide-react";
 import PremiumGate from "@/components/auth/PremiumGate";
 
 type ContentItem = {
     id: string;
-    type: "Chapter" | "NPC" | "Location" | "Statblock";
+    type: "Chapter" | "NPC" | "Location" | "Statblock" | "Spell" | "Item";
     title: string;
-    body: string; // For Statblocks, this will store the JSON stringified data
+    body: string; // For Statblocks/Spells/Items, this will store the JSON stringified data
     date: string;
 };
 
 export default function EditorPage() {
     const [items, setItems] = useState<ContentItem[]>([]);
-    const [mode, setMode] = useState<"write" | "forge" | "view">("write"); // write=editor, forge=statblock, view=reading
+    const [mode, setMode] = useState<"write" | "forge" | "spell" | "item" | "view">("write"); // Expanded modes
 
     // Editor State
     const [activeItem, setActiveItem] = useState<ContentItem | null>(null);
@@ -76,6 +81,20 @@ export default function EditorPage() {
         saveContent("Statblock", sb.name, JSON.stringify(sb));
     };
 
+    const handleSpellSave = (spell: Spell) => {
+        saveContent("Spell", spell.name, JSON.stringify(spell));
+        // Also persist to global custom_spells registry
+        const savedSpells = JSON.parse(localStorage.getItem('custom_spells') || '[]');
+        localStorage.setItem('custom_spells', JSON.stringify([...savedSpells, spell]));
+    };
+
+    const handleItemSave = (item: ShopItem) => {
+        saveContent("Item", item.name, JSON.stringify(item));
+        // Also persist to global custom_items registry
+        const savedItems = JSON.parse(localStorage.getItem('custom_items') || '[]');
+        localStorage.setItem('custom_items', JSON.stringify([...savedItems, item]));
+    };
+
     const openItem = (item: ContentItem) => {
         setActiveItem(item);
         setMode("view");
@@ -102,147 +121,175 @@ export default function EditorPage() {
             <PremiumGate feature="Campaign Architect Suite">
                 <div className="flex-1 flex overflow-hidden">
                     {/* Sidebar - File Browser */}
-                    <div className="w-80 bg-[#0e0e0e] border-r border-[#333] flex flex-col no-print shrink-0">
-                        <div className="p-4 border-b border-[#333] flex gap-2">
+                    <aside className="w-[280px] bg-[#111] border-r border-[#333] flex flex-col shrink-0">
+                        <div className="p-4 border-b border-[#333] space-y-2">
                             <button
-                                onClick={() => setMode("write")}
-                                className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider border rounded transition-all ${mode === "write" ? "bg-[var(--gold-accent)] text-black border-[var(--gold-accent)]" : "bg-[#111] border-[#333] text-[#666] hover:border-[#666]"}`}
+                                onClick={() => { setActiveItem(null); setMode("write"); }}
+                                className={`w-full text-left px-3 py-2 text-xs font-mono uppercase tracking-widest flex items-center gap-2 border border-transparent hover:border-[#333] transition ${mode === "write" ? "bg-[#222] text-[#e0e0e0]" : "text-[#666]"}`}
                             >
-                                <FileText className="w-4 h-4 mx-auto mb-1" /> NOTEBOOK
+                                <FileText size={14} /> New Chapter
                             </button>
-                            <button
-                                onClick={() => setMode("forge")}
-                                className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider border rounded transition-all ${mode === "forge" ? "bg-[var(--gold-accent)] text-black border-[var(--gold-accent)]" : "bg-[#111] border-[#333] text-[#666] hover:border-[#666]"}`}
-                            >
-                                <Hammer className="w-4 h-4 mx-auto mb-1" /> FORGE
-                            </button>
+                            <PremiumGate feature="Statblock Forge">
+                                <button
+                                    onClick={() => { setActiveItem(null); setMode("forge"); }}
+                                    className={`w-full text-left px-3 py-2 text-xs font-mono uppercase tracking-widest flex items-center gap-2 border border-transparent hover:border-[#333] transition ${mode === "forge" ? "bg-[#1a0505] text-[#a32222]" : "text-[#888]"}`}
+                                >
+                                    <Hammer size={14} /> Monster Forge
+                                </button>
+                            </PremiumGate>
+                            <PremiumGate feature="Spell Inscription">
+                                <button
+                                    onClick={() => { setActiveItem(null); setMode("spell"); }}
+                                    className={`w-full text-left px-3 py-2 text-xs font-mono uppercase tracking-widest flex items-center gap-2 border border-transparent hover:border-[#333] transition ${mode === "spell" ? "bg-[#0c0c1f] text-[#8888ff]" : "text-[#888]"}`}
+                                >
+                                    <Wand2 size={14} /> Spell Inscription
+                                </button>
+                            </PremiumGate>
+                            <PremiumGate feature="Item Forge">
+                                <button
+                                    onClick={() => { setActiveItem(null); setMode("item"); }}
+                                    className={`w-full text-left px-3 py-2 text-xs font-mono uppercase tracking-widest flex items-center gap-2 border border-transparent hover:border-[#333] transition ${mode === "item" ? "bg-[#1f1a0c] text-[#d4af37]" : "text-[#888]"}`}
+                                >
+                                    <Scroll size={14} /> Item Forge
+                                </button>
+                            </PremiumGate>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-2 space-y-2">
-                            <h3 className="px-2 py-1 text-[10px] font-mono uppercase text-[#444] tracking-widest">Saved Archives</h3>
-                            {items.length === 0 && <div className="p-4 text-center text-xs text-[#444] italic">No files found.</div>}
+                        <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
+                            <h3 className="px-3 py-2 text-[10px] uppercase font-mono text-[#444] tracking-widest">Archive</h3>
+                            {items.length === 0 && <div className="px-3 text-xs text-[#333] italic">No archived content...</div>}
                             {items.map(item => (
-                                <div
-                                    key={item.id}
-                                    onClick={() => openItem(item)}
-                                    className={`
-                                    p-3 border rounded cursor-pointer group transition-all relative
-                                    ${activeItem?.id === item.id
-                                            ? "bg-[var(--gold-accent)]/10 border-[var(--gold-accent)] text-[var(--gold-accent)]"
-                                            : "bg-[#111] border-[#222] text-[#888] hover:border-[#444] hover:text-[#bbb]"}
-                                `}
-                                >
-                                    <div className="flex justify-between items-start">
-                                        <div className="font-bold text-sm truncate pr-6">{item.title}</div>
-                                        <button onClick={(e) => deleteContent(item.id, e)} className="absolute right-2 top-2 p-1 text-[#444] hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
-                                            <Trash2 className="w-3 h-3" />
-                                        </button>
+                                <div key={item.id} className="group flex items-center justify-between px-3 py-2 hover:bg-[#1a1a1a] cursor-pointer" onClick={() => openItem(item)}>
+                                    <div className="flex items-center gap-2 overflow-hidden">
+                                        {item.type === "Statblock" ? <Hammer size={12} className="text-[#a32222]" /> :
+                                            item.type === "Spell" ? <Wand2 size={12} className="text-[#8888ff]" /> :
+                                                item.type === "Item" ? <Scroll size={12} className="text-[#d4af37]" /> :
+                                                    <FileText size={12} className="text-[#666]" />}
+                                        <span className="text-xs truncate text-[#ccc]">{item.title}</span>
                                     </div>
-                                    <div className="flex justify-between items-center mt-2">
-                                        <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 bg-black/30 rounded border border-white/10">{item.type}</span>
-                                        <span className="text-[10px] text-white/20">{item.date.split(',')[0]}</span>
-                                    </div>
+                                    <button
+                                        onClick={(e) => deleteContent(item.id, e)}
+                                        className="opacity-0 group-hover:opacity-100 text-[#444] hover:text-[#a32222] transition"
+                                    >
+                                        <Trash2 size={12} />
+                                    </button>
                                 </div>
                             ))}
                         </div>
+                    </aside>
 
-                        <div className="p-2 border-t border-[#333] text-[10px] text-[#444] text-center font-mono">
-                            LOCAL STORAGE: {JSON.stringify(items).length} BYTES
-                        </div>
-                    </div>
-
-                    {/* Main Content Area */}
-                    <div className="flex-1 overflow-y-auto bg-[#0a0a0a] p-8 printable-content relative bg-[url('/img/grid_pattern.png')]">
-
-                        {/* WRITE MODE */}
-                        {mode === "write" && (
-                            <div className="max-w-3xl mx-auto animate-fade-in">
-                                <h2 className="text-xl font-header text-[#666] mb-6 flex items-center gap-2"><Scroll className="w-5 h-5" /> NEW ENTRY</h2>
-                                <div className="bg-[#111] border border-[#333] p-6 rounded shadow-xl">
-                                    <div className="flex gap-4 mb-4">
+                    {/* MAIN CONTENT AREA */}
+                    <main className="flex-1 flex flex-col bg-[#0a0a0a] overflow-hidden">
+                        {/* Editor/Viewer */}
+                        <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+                            {/* WRITE MODE */}
+                            {mode === "write" && (
+                                <div className="animate-fade-in max-w-[800px] mx-auto">
+                                    <h2 className="text-2xl font-header tracking-widest text-[var(--gold-accent)] mb-6">New Chapter / Entry</h2>
+                                    <div className="mb-4">
+                                        <label htmlFor="editorType" className="block text-xs font-mono uppercase text-[#666] mb-1">Content Type</label>
                                         <select
+                                            id="editorType"
                                             value={editorType}
-                                            onChange={(e) => setEditorType(e.target.value as any)}
-                                            className="bg-[#0a0a0a] border border-[#333] p-2 text-sm text-[var(--gold-accent)] focus:border-[var(--gold-accent)] outline-none"
+                                            onChange={(e) => setEditorType(e.target.value as ContentItem["type"])}
+                                            className="w-full p-2 bg-[#1a1a1a] border border-[#333] text-[#d4d4d4] text-sm font-mono focus:outline-none focus:border-[var(--gold-accent)]"
                                         >
                                             <option value="Chapter">Chapter</option>
-                                            <option value="NPC">NPC Profile</option>
+                                            <option value="NPC">NPC</option>
                                             <option value="Location">Location</option>
                                         </select>
+                                    </div>
+                                    <div className="mb-4">
+                                        <label htmlFor="editorTitle" className="block text-xs font-mono uppercase text-[#666] mb-1">Title</label>
                                         <input
+                                            id="editorTitle"
                                             type="text"
-                                            placeholder="Entry Title"
-                                            className="flex-1 bg-[#0a0a0a] border border-[#333] p-2 text-sm text-white focus:border-[var(--gold-accent)] outline-none"
                                             value={editorTitle}
-                                            onChange={e => setEditorTitle(e.target.value)}
+                                            onChange={(e) => setEditorTitle(e.target.value)}
+                                            className="w-full p-2 bg-[#1a1a1a] border border-[#333] text-[#d4d4d4] text-sm font-mono focus:outline-none focus:border-[var(--gold-accent)]"
+                                            placeholder="Enter title..."
                                         />
                                     </div>
-                                    <textarea
-                                        className="w-full h-[60vh] bg-[#0a0a0a] border border-[#333] p-4 text-[#ccc] font-serif text-lg leading-relaxed resize-none focus:border-[var(--gold-accent)] outline-none"
-                                        placeholder="Write your content here..."
-                                        value={editorBody}
-                                        onChange={e => setEditorBody(e.target.value)}
-                                    />
-                                    <div className="flex justify-end mt-4">
-                                        <button
-                                            onClick={() => saveContent(editorType, editorTitle, editorBody)}
-                                            className="bg-[var(--gold-accent)] hover:bg-white text-black font-bold py-2 px-6 rounded uppercase tracking-widest text-sm flex items-center gap-2 transition"
-                                        >
-                                            <Save className="w-4 h-4" /> Save To Archive
-                                        </button>
+                                    <div className="mb-6">
+                                        <label htmlFor="editorBody" className="block text-xs font-mono uppercase text-[#666] mb-1">Content</label>
+                                        <textarea
+                                            id="editorBody"
+                                            value={editorBody}
+                                            onChange={(e) => setEditorBody(e.target.value)}
+                                            className="w-full h-64 p-2 bg-[#1a1a1a] border border-[#333] text-[#d4d4d4] text-sm font-mono focus:outline-none focus:border-[var(--gold-accent)] resize-y"
+                                            placeholder="Write your chapter content here..."
+                                        ></textarea>
+                                    </div>
+                                    <button
+                                        onClick={() => saveContent(editorType, editorTitle, editorBody)}
+                                        className="px-6 py-2 bg-[var(--gold-accent)] text-[#0a0a0a] font-bold uppercase tracking-widest text-sm hover:bg-[#e0b84f] transition flex items-center gap-2"
+                                    >
+                                        <Save size={16} /> Save Entry
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* FORGE MODE */}
+                            {mode === "forge" && (
+                                <PremiumGate feature="Statblock Forge">
+                                    <StatblockGenerator onSave={handleStatblockSave} />
+                                </PremiumGate>
+                            )}
+
+                            {/* SPELL MODE */}
+                            {mode === "spell" && (
+                                <PremiumGate feature="Spell Inscription">
+                                    <SpellEditor onSave={handleSpellSave} />
+                                </PremiumGate>
+                            )}
+
+                            {/* ITEM MODE */}
+                            {mode === "item" && (
+                                <PremiumGate feature="Item Forge">
+                                    <ItemEditor onSave={handleItemSave} />
+                                </PremiumGate>
+                            )}
+
+                            {/* VIEW MODE */}
+                            {mode === "view" && activeItem && (
+                                <div className="animate-fade-in max-w-[21cm] mx-auto min-h-[29.7cm] bg-[#e3dacb] text-black shadow-2xl overflow-hidden print:shadow-none print:m-0 print:w-full">
+                                    {/* Decorative Header for 'Pages' */}
+                                    <div className="h-4 bg-[#b5a685] mb-8 print:hidden" />
+
+                                    {/* Watermarks / Texture would go here */}
+
+                                    <div className="p-12 print:p-0">
+                                        {activeItem.type === "Statblock" ? (
+                                            <div className="flex justify-center items-start">
+                                                <div className="w-full max-w-md transform scale-110 origin-top">
+                                                    <StatblockCard data={JSON.parse(activeItem.body)} />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <article className="prose prose-p:font-serif prose-headings:font-header max-w-none">
+                                                <h1 className="text-4xl font-header border-b-2 border-[#b5a685] pb-2 mb-6 text-[#4a3b2a] uppercase tracking-wider">{activeItem.title}</h1>
+
+                                                <div className="text-sm font-mono text-[#886644] mb-8 uppercase tracking-widest flex justify-between">
+                                                    <span>Type: {activeItem.type}</span>
+                                                    <span>Archived: {activeItem.date}</span>
+                                                </div>
+
+                                                <div className="columns-1 md:columns-2 gap-8 text-justify leading-relaxed font-serif text-[#2c2c2c] text-lg">
+                                                    <div className="whitespace-pre-wrap">{activeItem.body}</div>
+                                                </div>
+                                            </article>
+                                        )}
+                                    </div>
+
+                                    {/* Footer */}
+                                    <div className="mt-12 text-center text-[#886644] text-xs font-mono absolute bottom-8 left-0 right-0 print:bottom-4">
+                                        HEART&apos;S CURSE CAMPAIGN ARCHIVE • {activeItem.id.split('-')[0]}
                                     </div>
                                 </div>
-                            </div>
-                        )}
-
-                        {/* FORGE MODE */}
-                        {mode === "forge" && (
-                            <div className="max-w-4xl mx-auto animate-fade-in">
-                                <h2 className="text-xl font-header text-[#666] mb-6 flex items-center gap-2"><Hammer className="w-5 h-5" /> CREATURE FORGE</h2>
-                                <StatblockGenerator onSave={handleStatblockSave} />
-                            </div>
-                        )}
-
-                        {/* VIEW MODE */}
-                        {mode === "view" && activeItem && (
-                            <div className="animate-fade-in max-w-[21cm] mx-auto min-h-[29.7cm] bg-[#e3dacb] text-black shadow-2xl overflow-hidden print:shadow-none print:m-0 print:w-full">
-                                {/* Decorative Header for 'Pages' */}
-                                <div className="h-4 bg-[#b5a685] mb-8 print:hidden" />
-
-                                {/* Watermarks / Texture would go here */}
-
-                                <div className="p-12 print:p-0">
-                                    {activeItem.type === "Statblock" ? (
-                                        <div className="flex justify-center items-start">
-                                            <div className="w-full max-w-md transform scale-110 origin-top">
-                                                <StatblockCard data={JSON.parse(activeItem.body)} />
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <article className="prose prose-p:font-serif prose-headings:font-header max-w-none">
-                                            <h1 className="text-4xl font-header border-b-2 border-[#b5a685] pb-2 mb-6 text-[#4a3b2a] uppercase tracking-wider">{activeItem.title}</h1>
-
-                                            <div className="text-sm font-mono text-[#886644] mb-8 uppercase tracking-widest flex justify-between">
-                                                <span>Type: {activeItem.type}</span>
-                                                <span>Archived: {activeItem.date}</span>
-                                            </div>
-
-                                            <div className="columns-1 md:columns-2 gap-8 text-justify leading-relaxed font-serif text-[#2c2c2c] text-lg">
-                                                <div className="whitespace-pre-wrap">{activeItem.body}</div>
-                                            </div>
-                                        </article>
-                                    )}
-                                </div>
-
-                                {/* Footer */}
-                                <div className="mt-12 text-center text-[#886644] text-xs font-mono absolute bottom-8 left-0 right-0 print:bottom-4">
-                                    HEART&apos;S CURSE CAMPAIGN ARCHIVE • {activeItem.id.split('-')[0]}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </PremiumGate>
-        </div>
+                            )}
+                        </div>
+                </div >
+            </PremiumGate >
+        </div >
     );
 }
