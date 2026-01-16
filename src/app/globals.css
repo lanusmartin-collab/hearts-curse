@@ -1356,6 +1356,80 @@ select:focus {
   animation: heartbeat 2s infinite ease-in-out;
 }
 
+/* =========================================
+   PRINT STYLES (Campaign Export)
+   ========================================= */
+@media print {
+
+  /* HIDE UI ELEMENTS */
+  header,
+  aside,
+  .no-print,
+  .premium-gate-banner,
+  button,
+  nav,
+  .command-bar,
+  .campaign-btn {
+    display: none !important;
+  }
+
+  /* RESET LAYOUT FOR PAGE */
+  body,
+  .retro-container,
+  main,
+  .flex-1 {
+    background: white !important;
+    color: black !important;
+    height: auto !important;
+    width: 100% !important;
+    overflow: visible !important;
+    display: block !important;
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* TEXT READABILITY */
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  li,
+  span,
+  div {
+    color: black !important;
+    text-shadow: none !important;
+  }
+
+  /* CONTENT SPECIFIC */
+  .statblock-card {
+    border: 2px solid #000 !important;
+    background: white !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 2rem;
+  }
+
+  /* TYPOGRAPHY OVERRIDES */
+  h1,
+  h2,
+  h3 {
+    font-family: 'Cinzel', serif !important;
+    color: black !important;
+    border-bottom: 1px solid #000 !important;
+  }
+
+  /* LINKS */
+  a {
+    text-decoration: none !important;
+    color: black !important;
+  }
+}
+
 /* RE-APPENDED CLEAN ANIMATION */
 @keyframes heartbeat {
   0% {
