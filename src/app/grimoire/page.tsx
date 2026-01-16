@@ -44,12 +44,14 @@ function GrimoireContent() {
         // Level Filter
         if (selectedLevel !== "All") {
             const lvl = selectedLevel === "Cantrip" ? 0 : parseInt(selectedLevel);
-            if (spell.level !== lvl) return false;
+            // Fix: Ensure we compare comparable types. spell.level might be string or number.
+            if (String(spell.level) !== String(lvl)) return false;
         }
 
         // Class Filter
         if (selectedClass !== "All") {
-            if (!spell.classes.includes(selectedClass)) return false;
+            // Fix: spell.classes could be undefined
+            if (!spell.classes?.includes(selectedClass)) return false;
         }
 
         // Toggles
@@ -213,7 +215,7 @@ function GrimoireContent() {
                                             <span className="text-[10px] text-[#444]">{spell.school}</span>
                                         </div>
                                         <span className="text-[10px] text-[#444] font-mono ml-auto bg-[#111] px-1 rounded border border-[#222] min-w-[20px] text-center">
-                                            {spell.level === 0 ? 'C' : `${spell.level}`}
+                                            {(spell.level === "0" || spell.level === "Cantrip") ? 'C' : `${spell.level}`}
                                         </span>
                                     </div>
                                 ))
@@ -240,7 +242,7 @@ function GrimoireContent() {
                                     <div className="border-b-[3px] border-[#8a1c1c] pb-2 mb-4">
                                         <h1 className="text-4xl font-header font-bold text-[#1a0f0f] uppercase tracking-wide leading-none">{activeSpell.name}</h1>
                                         <div className="mt-1 font-sans font-bold text-sm text-[#333] italic">
-                                            {activeSpell.level === 0 ? "Cantrip" : `Level ${activeSpell.level}`}
+                                            {activeSpell.level === "0" || activeSpell.level === "Cantrip" ? "Cantrip" : `Level ${activeSpell.level}`}
                                             <span className="mx-2 text-[#8a1c1c]">•</span>
                                             {activeSpell.school}
                                             {activeSpell.ritual && <span className="ml-2 uppercase text-[10px] bg-[#ddd] px-1 rounded border border-[#ccc]">Ritual</span>}
