@@ -7,6 +7,7 @@ import DungeonModuleTemplate from "@/components/ui/DungeonModuleTemplate";
 import { CAMPAIGN_MAPS, CampaignMap } from "@/lib/data/maps";
 import { MechanicsDashboard } from "@/components/ui/MechanicsDashboard";
 import RegionalMechanicsWidget from "@/components/ui/RegionalMechanicsWidget";
+import PremiumGate from "@/components/auth/PremiumGate";
 import { getRegionalEffect, rollWildMagic } from "@/lib/game/curseLogic";
 import { useRouter } from "next/navigation";
 import {
@@ -201,20 +202,41 @@ export default function MapsPage() {
                             />
                         </div>
 
-                        <InteractiveMap
-                            key={mapKey}
-                            src={selectedMap.imagePath}
-                            title={selectedMap.title}
-                            gridType={selectedMap.gridType || "hex"}
-                            nodes={selectedMap.nodes}
-                            onNodeClick={(node) => {
-                                if (node.link) {
-                                    router.push(node.link);
-                                } else {
-                                    alert(`[${node.type.toUpperCase()}] ${node.label}\n\n${node.description || "No details available."}`);
-                                }
-                            }}
-                        />
+                        {selectedMap.id !== 'oakhaven' ? (
+                            <div className="w-full h-full p-8 flex items-center justify-center bg-[#050505]">
+                                <PremiumGate feature={`Map: ${selectedMap.title}`}>
+                                    <InteractiveMap
+                                        key={mapKey}
+                                        src={selectedMap.imagePath}
+                                        title={selectedMap.title}
+                                        gridType={selectedMap.gridType || "hex"}
+                                        nodes={selectedMap.nodes}
+                                        onNodeClick={(node) => {
+                                            if (node.link) {
+                                                router.push(node.link);
+                                            } else {
+                                                alert(`[${node.type.toUpperCase()}] ${node.label}\n\n${node.description || "No details available."}`);
+                                            }
+                                        }}
+                                    />
+                                </PremiumGate>
+                            </div>
+                        ) : (
+                            <InteractiveMap
+                                key={mapKey}
+                                src={selectedMap.imagePath}
+                                title={selectedMap.title}
+                                gridType={selectedMap.gridType || "hex"}
+                                nodes={selectedMap.nodes}
+                                onNodeClick={(node) => {
+                                    if (node.link) {
+                                        router.push(node.link);
+                                    } else {
+                                        alert(`[${node.type.toUpperCase()}] ${node.label}\n\n${node.description || "No details available."}`);
+                                    }
+                                }}
+                            />
+                        )}
                     </div>
 
                     {/* Info / Description Panel */}

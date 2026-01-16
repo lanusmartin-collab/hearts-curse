@@ -66,8 +66,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
     };
 
     const activateLicense = async (key: string): Promise<boolean> => {
-        if (!user) return false;
-
         try {
             const res = await fetch("/api/verify-license", {
                 method: "POST",
@@ -77,7 +75,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
             const data = await res.json();
 
             if (data.valid) {
-                setUser({ ...user, isPro: true, licenseKey: key });
+                // If user exists, update them. If not, create a new profile.
+                const baseUser = user || {
+                    id: Date.now().toString(),
+                    name: "Dungeon Master", // Default name for key-holders
+                    isPro: false // Will be set to true below
+                };
+
+                setUser({ ...baseUser, isPro: true, licenseKey: key });
                 return true;
             } else {
                 console.error("License validation failed:", data.error);
