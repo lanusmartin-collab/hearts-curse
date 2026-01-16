@@ -4,6 +4,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE, SHOP_AMBUSH_TABLE, SILENT_WARDS_TABLE, LIBRARY_WHISPERS_TABLE, HEART_CHAMBER_TABLE, UNDERDARK_TRAVEL_TABLE, OAKHAVEN_MINES_TABLE, NETHERIL_RUINS_TABLE, OSSUARY_TABLE, ARACH_TINILITH_TABLE, CASTLE_MOURNWATCH_TABLE, CATACOMBS_DESPAIR_TABLE, DWARVEN_RUINS_TABLE, MIND_FLAYER_COLONY_TABLE, BEHOLDER_LAIR_TABLE, Encounter } from "@/lib/data/encounters";
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
+import { Statblock } from "@/lib/data/statblocks";
 import StatblockCard from "@/components/ui/StatblockCard";
 import Link from "next/link";
 import { Combatant, Condition } from "@/types/combat";
@@ -29,6 +30,26 @@ function EncountersContent() {
     const [isScanning, setIsScanning] = useState(false);
     const [viewMode, setViewMode] = useState<'tracker' | 'tables'>('tracker');
     const [inspectedCombatantId, setInspectedCombatantId] = useState<string | null>(null);
+    const [allStatblocks, setAllStatblocks] = useState<Record<string, Statblock>>(MONSTERS_2024);
+
+    // Load Custom Statblocks
+    useEffect(() => {
+        const saved = localStorage.getItem('custom_statblocks');
+        if (saved) {
+            try {
+                const custom: Statblock[] = JSON.parse(saved);
+                const merged = { ...MONSTERS_2024 };
+                custom.forEach((sb, idx) => {
+                    // Create a slug for the custom monster
+                    const slug = `custom-${sb.name.toLowerCase().replace(/\s+/g, '-')}-${idx}`;
+                    merged[slug] = sb;
+                });
+                setAllStatblocks(merged);
+            } catch (e) {
+                console.error("Failed to load custom statblocks", e);
+            }
+        }
+    }, []);
 
     // Combat State
     const [combatants, setCombatants] = useState<Combatant[]>([]);
@@ -45,7 +66,7 @@ function EncountersContent() {
 
     const summonMonster = () => {
         if (!selectedSummon) return;
-        const data = MONSTERS_2024[selectedSummon];
+        const data = allStatblocks[selectedSummon];
         if (!data) return;
 
         // Auto-increment name if exists
@@ -175,7 +196,7 @@ function EncountersContent() {
         // Add them
         let processedCounts: Record<string, number> = {};
         linkedStatblocks.forEach(slug => {
-            const data = MONSTERS_2024[slug];
+            const data = allStatblocks[slug] || MONSTERS_2024[slug]; // Fallback just in case
             if (!data) return;
 
             const total = existingCounts[slug];
@@ -295,8 +316,8 @@ function EncountersContent() {
     };
 
     // Get inspected data (Combines Active Combatants AND Preview Slugs)
-    const inspectedData = combatants.find(c => c.id === inspectedCombatantId)?.statblock || (previewSlug ? MONSTERS_2024[previewSlug] : null);
-    const inspectedName = combatants.find(c => c.id === inspectedCombatantId)?.name || (previewSlug ? MONSTERS_2024[previewSlug]?.name : null);
+    const inspectedData = combatants.find(c => c.id === inspectedCombatantId)?.statblock || (previewSlug ? allStatblocks[previewSlug] : null);
+    const inspectedName = combatants.find(c => c.id === inspectedCombatantId)?.name || (previewSlug ? allStatblocks[previewSlug]?.name : null);
 
     const ALL_TABLES_DATA = [
         { id: "town_day", title: "Sector 01: Oakhaven (Day)", table: TOWN_DAY_TABLE },
@@ -441,12 +462,12 @@ function EncountersContent() {
                                 />
                                 {summonSearch && (
                                     <div className="absolute left-0 right-0 top-full mt-1 bg-[#0a0a0c] border border-[#333] max-h-40 overflow-y-auto z-50">
-                                        {Object.values(MONSTERS_2024)
+                                        {Object.values(allStatblocks)
                                             .filter(m => m.name.toLowerCase().includes(summonSearch.toLowerCase()))
                                             .slice(0, 8)
                                             .map(m => (
                                                 <button
-                                                    key={m.slug}
+                                                    key={m.slug || m.name}
                                                     onClick={() => {
                                                         setSummonSearch(m.name);
                                                         setSelectedSummon(m.slug!);
@@ -462,11 +483,11 @@ function EncountersContent() {
                             </div>
 
                             {/* Quick Stats Preview */}
-                            {selectedSummon && MONSTERS_2024[selectedSummon] && (
+                            {selectedSummon && allStatblocks[selectedSummon] && (
                                 <div className="text-[10px] text-[#666] flex gap-2">
-                                    <span>HP: <span className="text-[#ccc]">{MONSTERS_2024[selectedSummon].hp}</span></span>
-                                    <span>AC: <span className="text-[#ccc]">{MONSTERS_2024[selectedSummon].ac}</span></span>
-                                    <span>Type: <span className="text-[#ccc]">{MONSTERS_2024[selectedSummon].type}</span></span>
+                                    <span>HP: <span className="text-[#ccc]">{allStatblocks[selectedSummon].hp}</span></span>
+                                    <span>AC: <span className="text-[#ccc]">{allStatblocks[selectedSummon].ac}</span></span>
+                                    <span>Type: <span className="text-[#ccc]">{allStatblocks[selectedSummon].type}</span></span>
                                 </div>
                             )}
 
@@ -542,9 +563,9 @@ function EncountersContent() {
                                             >
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-[var(--accent-red)] opacity-0 group-hover:opacity-100 transition-opacity">👁️</span>
-                                                    <span className="group-hover:text-[#d4af37] transition-colors">{MONSTERS_2024[slug]?.name || slug}</span>
+                                                    <span className="group-hover:text-[#d4af37] transition-colors">{allStatblocks[slug]?.name || slug}</span>
                                                 </div>
-                                                <span className="text-[#666] text-xs">CR {MONSTERS_2024[slug]?.cr}</span>
+                                                <span className="text-[#666] text-xs">CR {allStatblocks[slug]?.cr}</span>
                                             </button>
                                         ))}
                                     </div>
