@@ -64,6 +64,9 @@ function EncountersContent() {
     const [summonSearch, setSummonSearch] = useState('');
     const [selectedSummon, setSelectedSummon] = useState<string>('');
 
+    // Mobile Tab State
+    const [mobileTab, setMobileTab] = useState<'scanners' | 'battlefield' | 'initiative'>('battlefield');
+
     const summonMonster = () => {
         if (!selectedSummon) return;
         const data = allStatblocks[selectedSummon];
@@ -338,7 +341,7 @@ function EncountersContent() {
     ];
 
     return (
-        <div className="h-screen flex flex-row bg-[var(--obsidian-base)] text-[var(--grim-text)] font-sans overflow-hidden">
+        <div className="h-screen flex flex-col md:flex-row bg-[var(--obsidian-base)] text-[var(--grim-text)] font-sans overflow-hidden">
             {/* Background Effects */}
             <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, #222 1px, #222 2px)" }}></div>
 
@@ -347,7 +350,10 @@ function EncountersContent() {
             </Link>
 
             {/* LEFT SIDEBAR: CONTROLS (Fixed Width) - Grimoire Palette */}
-            <div className="w-[280px] bg-[var(--obsidian-secondary)] border-r border-[#333] flex flex-col overflow-y-auto custom-scrollbar z-10 shadow-[5px_0_20px_rgba(0,0,0,0.5)] shrink-0">
+            <div className={`
+                w-full md:w-[280px] bg-[var(--obsidian-secondary)] border-r border-[#333] flex flex-col overflow-y-auto custom-scrollbar z-10 shadow-[5px_0_20px_rgba(0,0,0,0.5)] shrink-0
+                ${mobileTab === 'scanners' ? 'block' : 'hidden md:flex'}
+            `}>
                 <div className="p-4 border-b border-[#333] mb-4">
                     <h1 className="terminal-title text-2xl">HEART'S CURSE</h1>
                     <div className="text-[9px] font-mono text-[#666] tracking-[0.2em] uppercase mt-1">Tactical uplink v3.2</div>
@@ -504,7 +510,10 @@ function EncountersContent() {
             </div>
 
             {/* CENTER STAGE: VISUALS / STATS (Flexible) */}
-            <div className="flex-1 bg-[var(--obsidian-base)] relative overflow-hidden flex flex-col">
+            <div className={`
+                flex-1 bg-[var(--obsidian-base)] relative overflow-hidden flex flex-col
+                ${mobileTab === 'battlefield' ? 'flex' : 'hidden md:flex'}
+            `}>
                 {/* View Toggle */}
                 <div className="absolute top-4 right-20 z-20 flex gap-2">
                     <button onClick={() => setViewMode('tracker')} className={`campaign-btn text-[10px] px-3 py-1 ${viewMode === 'tracker' ? 'primary' : ''}`}>Tactical</button>
@@ -587,7 +596,10 @@ function EncountersContent() {
             </div>
 
             {/* RIGHT SIDEBAR: INITIATIVE TRACKER (Vertical) */}
-            <div className="w-[380px] h-full bg-[#0c0c0e] border-l-4 border-double border-[#5c1212] relative z-30 flex flex-col shadow-[-10px_0_40px_rgba(0,0,0,0.7)] shrink-0">
+            <div className={`
+                w-full md:w-[380px] h-full bg-[#0c0c0e] border-l-4 border-double border-[#5c1212] relative z-30 flex flex-col shadow-[-10px_0_40px_rgba(0,0,0,0.7)] shrink-0
+                ${mobileTab === 'initiative' ? 'block' : 'hidden md:flex'}
+            `}>
                 <div className="flex items-center justify-between px-4 py-3 bg-[#111] border-b border-[#333] shrink-0">
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
@@ -621,6 +633,30 @@ function EncountersContent() {
                         </div>
                     )}
                 </div>
+            </div>
+            {/* MOBILE BOTTOM NAV */}
+            <div className="md:hidden flex h-16 bg-[#0a0a0c] border-t border-[#333] shrink-0 z-50">
+                <button
+                    onClick={() => setMobileTab('scanners')}
+                    className={`flex-1 flex flex-col items-center justify-center gap-1 border-r border-[#222] ${mobileTab === 'scanners' ? 'text-[var(--accent-red)] bg-[#1a0505]' : 'text-[#666]'}`}
+                >
+                    <RefreshCw className="w-5 h-5" />
+                    <span className="text-[10px] font-mono uppercase tracking-wider">Scanners</span>
+                </button>
+                <button
+                    onClick={() => setMobileTab('battlefield')}
+                    className={`flex-1 flex flex-col items-center justify-center gap-1 border-r border-[#222] ${mobileTab === 'battlefield' ? 'text-[var(--accent-red)] bg-[#1a0505]' : 'text-[#666]'}`}
+                >
+                    <Swords className="w-5 h-5" />
+                    <span className="text-[10px] font-mono uppercase tracking-wider">Battlefield</span>
+                </button>
+                <button
+                    onClick={() => setMobileTab('initiative')}
+                    className={`flex-1 flex flex-col items-center justify-center gap-1 ${mobileTab === 'initiative' ? 'text-[var(--accent-red)] bg-[#1a0505]' : 'text-[#666]'}`}
+                >
+                    <ChevronRight className="w-5 h-5" />
+                    <span className="text-[10px] font-mono uppercase tracking-wider">Init.</span>
+                </button>
             </div>
         </div>
     );
