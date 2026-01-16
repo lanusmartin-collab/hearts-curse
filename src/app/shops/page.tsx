@@ -8,6 +8,7 @@ import CommandBar from "@/components/ui/CommandBar";
 import EconomyControlPanel from "@/components/ui/EconomyControlPanel";
 import clsx from 'clsx';
 import { Edit2, Plus, RefreshCw, Save, Trash2, X, AlertTriangle } from "lucide-react";
+import PremiumGate from "@/components/auth/PremiumGate";
 
 export default function ShopsPage() {
     const [activeTab, setActiveTab] = useState<'khelben' | 'fimble' | 'iron' | 'crow' | 'forge'>('khelben');
@@ -144,11 +145,16 @@ export default function ShopsPage() {
                     setIronItems(newItems);
                     localStorage.setItem('shop_iron', JSON.stringify(newItems));
                 }} />}
-                {activeTab === 'crow' && <ShopList title="The Crow's Nest" items={crowItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} onBatchDelete={(indices) => {
-                    const newItems = crowItems.filter((_, i) => !indices.includes(i));
-                    setCrowItems(newItems);
-                    localStorage.setItem('shop_crow', JSON.stringify(newItems));
-                }} onAddSpecial={handleSpecialOrder} />}
+
+                {activeTab === 'crow' && (
+                    <PremiumGate feature="The Black Market">
+                        <ShopList title="The Crow's Nest" items={crowItems} economy={economy} onReplace={handleReplace} onAdd={(item) => handleAddItem(item)} onEdit={handleEditItem} onDelete={handleDeleteItem} onBatchDelete={(indices) => {
+                            const newItems = crowItems.filter((_, i) => !indices.includes(i));
+                            setCrowItems(newItems);
+                            localStorage.setItem('shop_crow', JSON.stringify(newItems));
+                        }} onAddSpecial={handleSpecialOrder} />
+                    </PremiumGate>
+                )}
                 {activeTab === 'forge' && <CraftingPanel economy={economy} />}
             </div>
         </div>
