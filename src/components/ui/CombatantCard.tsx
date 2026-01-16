@@ -71,18 +71,18 @@ export default function CombatantCard({ data, onUpdate, onRemove, onInspect, isA
             {isActive && <div className="absolute inset-0 bg-[#a32222]/5 animate-pulse pointer-events-none"></div>}
 
             {/* Main Bar */}
-            <div className={`flex items-center p-3 gap-3 relative z-10 ${isDead ? 'line-through text-[#666]' : ''}`}>
+            <div className={`flex items-center p-2 gap-3 relative z-10 ${isDead ? 'line-through text-[#666]' : ''}`}>
 
                 {/* Initiative Badge (Zap) */}
                 <div className={`
-                    flex flex-col items-center justify-center w-10 h-10 rounded border-2 shrink-0 transition-colors
-                    ${isActive ? "border-[#ffd700] bg-[#2a1a05]" : "border-[#444] bg-[#222]"}
+                    flex flex-col items-center justify-center w-8 h-8 rounded border shrink-0 transition-colors
+                    ${isActive ? "border-[#ffd700] bg-[#2a1a05]" : "border-[#333] bg-[#111]"}
                 `}>
                     <input
                         type="number"
                         value={data.initiative}
                         onChange={(e) => onUpdate(data.id, { initiative: parseInt(e.target.value) || 0 })}
-                        className={`w-full text-center bg-transparent font-mono text-lg font-bold focus:outline-none ${isActive ? 'text-[#ffd700]' : 'text-[#888]'}`}
+                        className={`w-full text-center bg-transparent font-mono text-sm font-bold focus:outline-none ${isActive ? 'text-[#ffd700]' : 'text-[#666]'}`}
                     />
                 </div>
 
@@ -91,28 +91,28 @@ export default function CombatantCard({ data, onUpdate, onRemove, onInspect, isA
                     <div className="flex items-center gap-2">
                         {/* Name with Heartbeat if Active */}
                         <span className={`
-                            font-header tracking-wider text-sm truncate select-none block
+                            font-header tracking-wider text-xs truncate select-none block
                             ${isActive ? 'text-[#fff] text-shadow-sm font-bold animate-heartbeat origin-left' : 'text-[#ccc]'}
                         `}>
                             {data.name}
                         </span>
-                        {isDead && <Skull size={14} className="text-[#666]" />}
+                        {isDead && <Skull size={12} className="text-[#666]" />}
                     </div>
 
                     {/* Compact Conditions Icons in Main View */}
-                    <div className="flex flex-wrap gap-1 mt-1 min-h-[16px]">
+                    <div className="flex flex-wrap gap-0.5 mt-0.5 min-h-[14px]">
                         {data.conditions.length > 0 ? (
                             data.conditions.map(c => (
                                 <span
                                     key={c}
                                     title={c}
-                                    className="flex items-center justify-center w-5 h-5 bg-[#220a0a] border border-[#5c1212] text-[#ff6b6b] rounded-sm hover:scale-110 transition-transform cursor-help"
+                                    className="flex items-center justify-center w-4 h-4 bg-[#220a0a] border border-[#5c1212] text-[#ff6b6b] rounded-[1px] hover:scale-110 transition-transform cursor-help"
                                 >
-                                    {CONDITION_ICONS[c.toLowerCase()] || <span className="text-[8px]">{c.slice(0, 2)}</span>}
+                                    {CONDITION_ICONS[c.toLowerCase()] || <span className="text-[6px]">{c.slice(0, 2)}</span>}
                                 </span>
                             ))
                         ) : isActive && !isDead ? (
-                            <span className="text-[9px] text-[#444] italic">Concentrating...</span>
+                            <span className="text-[8px] text-[#444] italic">Focusing...</span>
                         ) : null}
                     </div>
                 </div>
@@ -124,29 +124,29 @@ export default function CombatantCard({ data, onUpdate, onRemove, onInspect, isA
                     {data.statblock && (
                         <button
                             onClick={() => onInspect(data.id)}
-                            className={`p-1.5 rounded transition-colors ${isInspected ? 'text-[#d4af37] bg-[#d4af37]/10' : 'text-[#666] hover:text-[#d4af37] hover:bg-[#222]'}`}
+                            className={`p-1 rounded transition-colors ${isInspected ? 'text-[#d4af37] bg-[#d4af37]/10' : 'text-[#444] hover:text-[#d4af37] hover:bg-[#222]'}`}
                             title="Inspect Statblock"
                         >
-                            <MoreVertical size={14} />
+                            <MoreVertical size={12} />
                         </button>
                     )}
 
                     {/* AC */}
-                    <div className="flex flex-col items-center justify-center group cursor-help w-8" title={`AC: ${data.ac}`}>
-                        <Shield size={14} className={`mb-0.5 ${isActive ? 'text-[#4a9eff]' : 'text-[#555] group-hover:text-[#888]'}`} />
-                        <span className="text-[9px] font-mono text-[#666] font-bold">{data.ac}</span>
+                    <div className="flex flex-col items-center justify-center group cursor-help w-6" title={`AC: ${data.ac}`}>
+                        <Shield size={12} className={`mb-0.5 ${isActive ? 'text-[#4a9eff]' : 'text-[#444] group-hover:text-[#888]'}`} />
+                        <span className="text-[8px] font-mono text-[#555] font-bold">{data.ac}</span>
                     </div>
 
                     {/* HP Mini-Controls */}
-                    <div className="flex flex-col items-end gap-0.5 w-16">
-                        <div className="flex items-center justify-between w-full bg-[#050505] border border-[#333] rounded-sm overflow-hidden h-5">
-                            <button onClick={() => handleHpChange(-1)} className="text-[#666] hover:text-red-500 hover:bg-[#1a0505] px-1.5 h-full text-[10px] transition-colors">-</button>
-                            <span className={`text-[10px] font-mono font-bold ${isBloodied ? 'text-orange-500' : isDead ? 'text-red-700' : 'text-green-500'}`}>
+                    <div className="flex flex-col items-end gap-0.5 w-14">
+                        <div className="flex items-center justify-between w-full bg-[#050505] border border-[#333] rounded-[1px] overflow-hidden h-4">
+                            <button onClick={() => handleHpChange(-1)} className="text-[#666] hover:text-red-500 hover:bg-[#1a0505] px-1 h-full text-[8px] transition-colors">-</button>
+                            <span className={`text-[9px] font-mono font-bold ${isBloodied ? 'text-orange-500' : isDead ? 'text-red-700' : 'text-green-500'}`}>
                                 {data.hp}
                             </span>
-                            <button onClick={() => handleHpChange(1)} className="text-[#666] hover:text-green-500 hover:bg-[#051a05] px-1.5 h-full text-[10px] transition-colors">+</button>
+                            <button onClick={() => handleHpChange(1)} className="text-[#666] hover:text-green-500 hover:bg-[#051a05] px-1 h-full text-[8px] transition-colors">+</button>
                         </div>
-                        <div className="w-full bg-[#111] h-1.5 rounded-full overflow-hidden border border-[#222]">
+                        <div className="w-full bg-[#111] h-1 rounded-full overflow-hidden border border-[#222]">
                             <div
                                 className={`h-full transition-all duration-300 ${isBloodied ? 'bg-orange-600' : 'bg-[#2e7d32]'}`}
                                 style={{ width: `${hpPercent}%` }}
@@ -155,15 +155,15 @@ export default function CombatantCard({ data, onUpdate, onRemove, onInspect, isA
                     </div>
 
                     {/* Divider */}
-                    <div className="w-px h-6 bg-[#222] mx-1"></div>
+                    <div className="w-px h-5 bg-[#222] mx-0.5"></div>
 
                     {/* Expand/Delete */}
-                    <div className="flex flex-col gap-1">
-                        <button onClick={() => setIsExpanded(!isExpanded)} className={`p-1 hover:bg-[#222] rounded transition-colors ${isExpanded ? 'text-[#a32222] bg-[#a32222]/10' : 'text-[#666]'}`} title="Manage Conditions">
-                            <Activity size={12} />
+                    <div className="flex flex-col gap-0.5">
+                        <button onClick={() => setIsExpanded(!isExpanded)} className={`p-0.5 hover:bg-[#222] rounded transition-colors ${isExpanded ? 'text-[#a32222] bg-[#a32222]/10' : 'text-[#444]'}`} title="Manage Conditions">
+                            <Activity size={10} />
                         </button>
-                        <button onClick={() => onRemove(data.id)} className="p-1 hover:bg-[#2a0a0a] text-[#444] hover:text-red-500 rounded transition-colors">
-                            <X size={12} />
+                        <button onClick={() => onRemove(data.id)} className="p-0.5 hover:bg-[#2a0a0a] text-[#333] hover:text-red-500 rounded transition-colors">
+                            <X size={10} />
                         </button>
                     </div>
                 </div>

@@ -12,7 +12,7 @@ import CombatantCard from "@/components/ui/CombatantCard";
 import { createCombatantFromStatblock, rollInitiative, sortCombatants } from "@/lib/game/combatUtils";
 
 import { useSearchParams } from "next/navigation";
-import { Plus, RefreshCw, Trash2, Swords, ChevronRight } from "lucide-react";
+import { Plus, RefreshCw, Trash2, Swords, ChevronRight, Activity, X } from "lucide-react";
 
 export default function EncountersPage() {
     return (
@@ -66,6 +66,9 @@ function EncountersContent() {
 
     // Mobile Tab State
     const [mobileTab, setMobileTab] = useState<'scanners' | 'battlefield' | 'initiative'>('battlefield');
+
+    // UI State
+    const [reinforcementMode, setReinforcementMode] = useState<'party' | 'summon' | 'manual'>('party');
 
     const summonMonster = () => {
         if (!selectedSummon) return;
@@ -354,156 +357,186 @@ function EncountersContent() {
                 w-full md:w-[280px] bg-[var(--obsidian-secondary)] border-r border-[#333] flex flex-col overflow-y-auto custom-scrollbar z-10 shadow-[5px_0_20px_rgba(0,0,0,0.5)] shrink-0
                 ${mobileTab === 'scanners' ? 'block' : 'hidden md:flex'}
             `}>
-                <div className="p-4 border-b border-[#333] mb-4">
-                    <h1 className="terminal-title text-2xl">HEART'S CURSE</h1>
-                    <div className="text-[9px] font-mono text-[#666] tracking-[0.2em] uppercase mt-1">Tactical uplink v3.2</div>
+                <div className="p-4 border-b border-[#333] bg-[#0c0c0e]">
+                    <h1 className="terminal-title text-xl text-[var(--accent-red)]">TACTICAL UPLINK</h1>
+                    <div className="text-[9px] font-mono text-[#666] tracking-[0.2em] uppercase mt-1">System v3.2 // Connected</div>
                 </div>
 
-                <div className="px-4 pb-8 space-y-6">
+                <div className="flex-1 overflow-y-auto custom-scrollbar">
+                    {/* SCANNERS SECTION */}
+                    <div className="p-4">
+                        <h3 className="text-[#888] font-mono text-[10px] uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 bg-[#444] rounded-full"></span>
+                            Sector Scanners
+                        </h3>
 
-                    {/* PARTY MANAGEMENT */}
-                    <div>
-                        <h3 className="text-[var(--accent-red)] font-mono text-xs uppercase tracking-widest mb-2">Party Deployment</h3>
-                        <div className="flex gap-2 mb-2">
-                            <div className="relative flex-1">
-                                <select
-                                    value={selectedPlayerId}
-                                    onChange={e => setSelectedPlayerId(e.target.value)}
-                                    className="w-full bg-[#111] border border-[#333] text-[var(--grim-text)] text-xs p-2 appearance-none outline-none focus:border-[var(--accent-red)] transition-colors"
-                                >
-                                    <option value="">Select Operative...</option>
-                                    {availablePlayers.map(p => (
-                                        <option key={p.id} value={p.id}>{p.name} ({p.class})</option>
-                                    ))}
-                                </select>
-                                <div className="absolute right-2 top-2.5 pointer-events-none text-[#666] text-[10px]">▼</div>
+                        <div className="space-y-4">
+                            {/* Oakhaven Region */}
+                            <div className="space-y-1">
+                                <div className="text-[9px] text-[#555] font-bold uppercase tracking-wider mb-1 ml-1">Sector 01: Oakhaven</div>
+                                <ControlButton label="Town Center" sub="Civilian Zone" onClick={() => rollTable(TOWN_DAY_TABLE)} />
+                                <ControlButton label="Outskirts" sub="Wilderness" onClick={() => rollTable(OUTSKIRTS_TABLE)} />
+                                <ControlButton label="Mournwatch" sub="Fortress" highlight onClick={() => rollTable(CASTLE_MOURNWATCH_TABLE)} />
                             </div>
+
+                            {/* Deep Places */}
+                            <div className="space-y-1">
+                                <div className="text-[9px] text-[#555] font-bold uppercase tracking-wider mb-1 ml-1">Sector 02: Depths</div>
+                                <ControlButton label="Mines" sub="Dungeon" onClick={() => rollTable(OAKHAVEN_MINES_TABLE)} />
+                                <ControlButton label="Underdark" sub="Travel" onClick={() => rollTable(UNDERDARK_TRAVEL_TABLE)} />
+                                <ControlButton label="Synaptic" sub="Illithid Colony" onClick={() => rollTable(MIND_FLAYER_COLONY_TABLE)} />
+                                <ControlButton label="Arach Link" sub="Drow City" highlight onClick={() => rollTable(ARACH_TINILITH_TABLE)} />
+                            </div>
+
+                            {/* Forbidden */}
+                            <div className="space-y-1">
+                                <div className="text-[9px] text-[var(--accent-red)] opacity-50 font-bold uppercase tracking-wider mb-1 ml-1">Sector 03: Forbidden</div>
+                                <ControlButton label="Silent Wards" sub="Hazard" highlight onClick={() => rollTable(SILENT_WARDS_TABLE)} />
+                                <ControlButton label="Netheril Void" sub="Arcane" highlight onClick={() => rollTable(NETHERIL_RUINS_TABLE)} />
+                                <ControlButton label="The Library" sub="Endless" highlight onClick={() => rollTable(LIBRARY_WHISPERS_TABLE)} />
+                            </div>
+
                             <button
-                                onClick={addPartyMember}
-                                disabled={!selectedPlayerId}
-                                className="campaign-btn primary text-xs px-3"
+                                onClick={triggerShopAmbush}
+                                className="w-full bg-[#1a0505] border border-[#a32222]/30 text-[var(--accent-red)] p-2 font-mono text-[10px] uppercase tracking-widest hover:bg-[var(--accent-red)] hover:text-white transition-all shadow-sm mt-2"
                             >
-                                <Plus size={14} />
+                                ⚠️ Zhentarim Ambush
                             </button>
                         </div>
                     </div>
 
-                    {/* MANUAL ENTRY */}
-                    <div>
-                        <h3 className="text-[var(--accent-red)] font-mono text-xs uppercase tracking-widest mb-2">Manual Threat</h3>
-                        <div className="flex flex-col gap-2">
-                            <input
-                                type="text"
-                                placeholder="Entity Name"
-                                value={manualEntry.name}
-                                onChange={e => setManualEntry(prev => ({ ...prev, name: e.target.value }))}
-                                className="w-full bg-[#111] border border-[#333] text-xs p-2 outline-none focus:border-[var(--accent-red)]"
-                            />
-                            <div className="flex gap-2">
-                                <input
-                                    type="number"
-                                    placeholder="HP"
-                                    value={manualEntry.hp}
-                                    onChange={e => setManualEntry(prev => ({ ...prev, hp: e.target.value }))}
-                                    className="w-1/2 bg-[#111] border border-[#333] text-xs p-2 outline-none focus:border-[var(--accent-red)]"
-                                />
-                                <button onClick={() => addCombatant()} disabled={!manualEntry.name} className="campaign-btn primary text-xs flex-1">
-                                    ADD
-                                </button>
-                            </div>
+                    {/* REINFORCEMENTS SECTION (Tabbed) */}
+                    <div className="border-t border-[#333]">
+                        <div className="flex border-b border-[#333] bg-[#0a0a0c]">
+                            <button
+                                onClick={() => setReinforcementMode('party')}
+                                className={`flex-1 py-2 text-[10px] uppercase tracking-wider font-bold transition-colors ${reinforcementMode === 'party' ? 'text-white bg-[#1a1a1a] border-b-2 border-[var(--accent-red)]' : 'text-[#555] hover:text-[#888]'}`}
+                            >
+                                Party
+                            </button>
+                            <button
+                                onClick={() => setReinforcementMode('summon')}
+                                className={`flex-1 py-2 text-[10px] uppercase tracking-wider font-bold transition-colors ${reinforcementMode === 'summon' ? 'text-white bg-[#1a1a1a] border-b-2 border-[var(--accent-red)]' : 'text-[#555] hover:text-[#888]'}`}
+                            >
+                                Summon
+                            </button>
+                            <button
+                                onClick={() => setReinforcementMode('manual')}
+                                className={`flex-1 py-2 text-[10px] uppercase tracking-wider font-bold transition-colors ${reinforcementMode === 'manual' ? 'text-white bg-[#1a1a1a] border-b-2 border-[var(--accent-red)]' : 'text-[#555] hover:text-[#888]'}`}
+                            >
+                                Manual
+                            </button>
                         </div>
-                    </div>
 
-                    {/* SCANNERS */}
-                    <div>
-                        <h3 className="text-[var(--accent-red)] font-mono text-xs uppercase tracking-widest mb-2">Sector Scanners</h3>
-                        <div className="space-y-1">
-                            <ControlButton label="Oakhaven" sub="Town (Day)" onClick={() => rollTable(TOWN_DAY_TABLE)} />
-                            <ControlButton label="Oakhaven" sub="Town (Night)" onClick={() => rollTable(TOWN_NIGHT_TABLE)} />
-                            <ControlButton label="Outskirts" sub="Wilderness" onClick={() => rollTable(OUTSKIRTS_TABLE)} />
-                            <ControlButton label="Mournwatch" sub="Fortress" highlight onClick={() => rollTable(CASTLE_MOURNWATCH_TABLE)} />
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 className="text-[var(--accent-red)] font-mono text-xs uppercase tracking-widest mb-2">Deep Systems</h3>
-                        <div className="space-y-1">
-                            <ControlButton label="Mines" sub="Dungeon" onClick={() => rollTable(OAKHAVEN_MINES_TABLE)} />
-                            <ControlButton label="Underdark" sub="Travel" onClick={() => rollTable(UNDERDARK_TRAVEL_TABLE)} />
-                            <ControlButton label="Synaptic" sub="Illithid" onClick={() => rollTable(MIND_FLAYER_COLONY_TABLE)} />
-                            <ControlButton label="Arach" sub="Drow City" highlight onClick={() => rollTable(ARACH_TINILITH_TABLE)} />
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 className="text-[var(--accent-red)] font-mono text-xs uppercase tracking-widest mb-2">Forbidden Zones</h3>
-                        <div className="space-y-1">
-                            <ControlButton label="Silent Wards" sub="Hazard" highlight onClick={() => rollTable(SILENT_WARDS_TABLE)} />
-                            <ControlButton label="Netheril Void" sub="Arcane" highlight onClick={() => rollTable(NETHERIL_RUINS_TABLE)} />
-                            <ControlButton label="Library" sub="Forbidden" highlight onClick={() => rollTable(LIBRARY_WHISPERS_TABLE)} />
-                        </div>
-                    </div>
-
-                    <div className="pt-4 border-t border-[#333]">
-                        <button
-                            onClick={triggerShopAmbush}
-                            className="w-full bg-[#1a0505] border border-[var(--accent-red)] text-[var(--accent-red)] p-3 font-bold uppercase tracking-widest text-xs hover:bg-[var(--accent-red)] hover:text-white transition-all shadow-[0_0_10px_rgba(163,34,34,0.3)]"
-                        >
-                            ⚠️ Zhentarim Ambush
-                        </button>
-                    </div>
-
-                    {/* SUMMON ENTITY (Integrated Compendium) */}
-                    <div className="pt-4 border-t border-[#333]">
-                        <h3 className="text-[var(--accent-red)] font-mono text-xs uppercase tracking-widest mb-2">Summon Entity</h3>
-                        <div className="space-y-2">
-                            {/* Search Input */}
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    placeholder="Search Compendium..."
-                                    value={summonSearch}
-                                    onChange={e => setSummonSearch(e.target.value)}
-                                    className="w-full bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none focus:border-[var(--accent-red)] placeholder:text-[#444]"
-                                />
-                                {summonSearch && (
-                                    <div className="absolute left-0 right-0 top-full mt-1 bg-[#0a0a0c] border border-[#333] max-h-40 overflow-y-auto z-50">
-                                        {Object.values(allStatblocks)
-                                            .filter(m => m.name.toLowerCase().includes(summonSearch.toLowerCase()))
-                                            .slice(0, 8)
-                                            .map(m => (
-                                                <button
-                                                    key={m.slug || m.name}
-                                                    onClick={() => {
-                                                        setSummonSearch(m.name);
-                                                        setSelectedSummon(m.slug!);
-                                                    }}
-                                                    className="w-full text-left px-2 py-1 text-xs hover:bg-[var(--accent-red)] hover:text-white text-[#888] flex justify-between"
-                                                >
-                                                    <span>{m.name}</span>
-                                                    <span className="opacity-50">CR {m.cr}</span>
-                                                </button>
-                                            ))}
+                        <div className="p-4 bg-[#0a0a0c]">
+                            {reinforcementMode === 'party' && (
+                                <div className="space-y-2 animate-fade-in">
+                                    <div className="flex gap-2">
+                                        <div className="relative flex-1">
+                                            <select
+                                                value={selectedPlayerId}
+                                                onChange={e => setSelectedPlayerId(e.target.value)}
+                                                className="w-full bg-[#111] border border-[#333] text-[var(--grim-text)] text-xs p-2 appearance-none outline-none focus:border-[var(--accent-red)] transition-colors"
+                                            >
+                                                <option value="">Select Operative...</option>
+                                                {availablePlayers.map(p => (
+                                                    <option key={p.id} value={p.id}>{p.name} ({p.class})</option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute right-2 top-2.5 pointer-events-none text-[#666] text-[10px]">▼</div>
+                                        </div>
+                                        <button
+                                            onClick={addPartyMember}
+                                            disabled={!selectedPlayerId}
+                                            className="campaign-btn primary text-xs px-3"
+                                        >
+                                            <Plus size={14} />
+                                        </button>
                                     </div>
-                                )}
-                            </div>
-
-                            {/* Quick Stats Preview */}
-                            {selectedSummon && allStatblocks[selectedSummon] && (
-                                <div className="text-[10px] text-[#666] flex gap-2">
-                                    <span>HP: <span className="text-[#ccc]">{allStatblocks[selectedSummon].hp}</span></span>
-                                    <span>AC: <span className="text-[#ccc]">{allStatblocks[selectedSummon].ac}</span></span>
-                                    <span>Type: <span className="text-[#ccc]">{allStatblocks[selectedSummon].type}</span></span>
+                                    <p className="text-[10px] text-[#444] italic text-center">Deploy registered agents to the field.</p>
                                 </div>
                             )}
 
-                            <button
-                                onClick={summonMonster}
-                                disabled={!selectedSummon}
-                                className="w-full campaign-btn primary py-2 text-xs"
-                            >
-                                MANIFEST THREAT
-                            </button>
+                            {reinforcementMode === 'summon' && (
+                                <div className="space-y-3 animate-fade-in">
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            placeholder="Search Compendium..."
+                                            value={summonSearch}
+                                            onChange={e => setSummonSearch(e.target.value)}
+                                            className="w-full bg-[#111] border border-[#333] text-[#ccc] text-xs p-2 outline-none focus:border-[var(--accent-red)] placeholder:text-[#444]"
+                                        />
+                                        {summonSearch && (
+                                            <div className="absolute left-0 right-0 top-full mt-1 bg-[#0a0a0c] border border-[#333] max-h-40 overflow-y-auto z-50 shadow-xl">
+                                                {Object.values(allStatblocks)
+                                                    .filter(m => m.name.toLowerCase().includes(summonSearch.toLowerCase()))
+                                                    .slice(0, 8)
+                                                    .map(m => (
+                                                        <button
+                                                            key={m.slug || m.name}
+                                                            onClick={() => {
+                                                                setSummonSearch(m.name);
+                                                                setSelectedSummon(m.slug!);
+                                                            }}
+                                                            className="w-full text-left px-2 py-1 text-xs hover:bg-[var(--accent-red)] hover:text-white text-[#888] flex justify-between border-b border-[#222] last:border-0"
+                                                        >
+                                                            <span>{m.name}</span>
+                                                            <span className="opacity-50">CR {m.cr}</span>
+                                                        </button>
+                                                    ))}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {selectedSummon && allStatblocks[selectedSummon] && (
+                                        <div className="bg-[#111] p-2 border border-[#222] text-[10px] text-[#666] grid grid-cols-2 gap-2">
+                                            <div>HP: <span className="text-[#ccc]">{allStatblocks[selectedSummon].hp}</span></div>
+                                            <div>AC: <span className="text-[#ccc]">{allStatblocks[selectedSummon].ac}</span></div>
+                                            <div className="col-span-2">Type: <span className="text-[#ccc]">{allStatblocks[selectedSummon].type}</span></div>
+                                        </div>
+                                    )}
+
+                                    <button
+                                        onClick={summonMonster}
+                                        disabled={!selectedSummon}
+                                        className="w-full campaign-btn primary py-2 text-xs"
+                                    >
+                                        MANIFEST
+                                    </button>
+                                </div>
+                            )}
+
+                            {reinforcementMode === 'manual' && (
+                                <div className="space-y-2 animate-fade-in">
+                                    <input
+                                        type="text"
+                                        placeholder="Entity Name"
+                                        value={manualEntry.name}
+                                        onChange={e => setManualEntry(prev => ({ ...prev, name: e.target.value }))}
+                                        className="w-full bg-[#111] border border-[#333] text-xs p-2 outline-none focus:border-[var(--accent-red)]"
+                                    />
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="number"
+                                            placeholder="HP"
+                                            value={manualEntry.hp}
+                                            onChange={e => setManualEntry(prev => ({ ...prev, hp: e.target.value }))}
+                                            className="w-1/2 bg-[#111] border border-[#333] text-xs p-2 outline-none focus:border-[var(--accent-red)]"
+                                        />
+                                        <input
+                                            type="number"
+                                            placeholder="Init"
+                                            value={manualEntry.initiative}
+                                            onChange={e => setManualEntry(prev => ({ ...prev, initiative: e.target.value }))}
+                                            className="w-1/2 bg-[#111] border border-[#333] text-xs p-2 outline-none focus:border-[var(--accent-red)]"
+                                        />
+                                    </div>
+                                    <button onClick={() => addCombatant()} disabled={!manualEntry.name} className="campaign-btn primary text-xs w-full py-2">
+                                        ADD THREAT
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -514,82 +547,120 @@ function EncountersContent() {
                 flex-1 bg-[var(--obsidian-base)] relative overflow-hidden flex flex-col
                 ${mobileTab === 'battlefield' ? 'flex' : 'hidden md:flex'}
             `}>
-                {/* View Toggle */}
-                <div className="absolute top-4 right-20 z-20 flex gap-2">
-                    <button onClick={() => setViewMode('tracker')} className={`campaign-btn text-[10px] px-3 py-1 ${viewMode === 'tracker' ? 'primary' : ''}`}>Tactical</button>
-                    <button onClick={() => setViewMode('tables')} className={`campaign-btn text-[10px] px-3 py-1 ${viewMode === 'tables' ? 'primary' : ''}`}>Compendium</button>
+                {/* Header Bar */}
+                <div className="flex items-center justify-between px-6 py-3 border-b border-[#333] bg-[#0c0c0e] shrink-0 z-20">
+                    <div className="flex items-center gap-2 text-[#444] font-mono text-xs tracking-widest uppercase">
+                        <span className="text-[var(--accent-red)] animate-pulse">●</span> Battlefield
+                    </div>
+                    <div className="flex gap-1 bg-[#1a1a1a] p-1 rounded-sm border border-[#333]">
+                        <button
+                            onClick={() => setViewMode('tracker')}
+                            className={`text-[10px] px-4 py-1.5 rounded-sm transition-all font-mono uppercase tracking-wider ${viewMode === 'tracker' ? 'bg-[#a32222] text-white shadow-sm' : 'text-[#666] hover:text-[#ccc]'}`}
+                        >
+                            Tactical
+                        </button>
+                        <button
+                            onClick={() => setViewMode('tables')}
+                            className={`text-[10px] px-4 py-1.5 rounded-sm transition-all font-mono uppercase tracking-wider ${viewMode === 'tables' ? 'bg-[#d4af37] text-black font-bold shadow-sm' : 'text-[#666] hover:text-[#ccc]'}`}
+                        >
+                            Compendium
+                        </button>
+                    </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar relative">
-                    {/* Decorative Corners */}
-                    <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-[var(--accent-red)]"></div>
-                    <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-[var(--accent-red)]"></div>
-                    <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-[var(--accent-red)]"></div>
-                    <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-[var(--accent-red)]"></div>
+                    {/* Decorative Background Grid */}
+                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                        style={{
+                            backgroundImage: "linear-gradient(#d4af37 1px, transparent 1px), linear-gradient(90deg, #d4af37 1px, transparent 1px)",
+                            backgroundSize: "40px 40px"
+                        }}
+                    ></div>
 
                     {viewMode === 'tables' ? (
-                        <div className="max-w-4xl mx-auto">
-                            <h2 className="text-2xl font-serif text-[#e0e0e0] mb-6">Encounter Tables</h2>
+                        <div className="max-w-4xl mx-auto relative z-10">
+                            <h2 className="text-2xl font-serif text-[#e0e0e0] mb-6 border-b border-[#333] pb-4 flex items-center justify-between">
+                                <span>Encounter Matrices</span>
+                                <span className="text-xs font-mono text-[#666] tracking-widest">SELECT REGION</span>
+                            </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {ALL_TABLES_DATA.map(t => (
                                     <button
                                         key={t.id}
                                         onClick={() => { rollTable(t.table); setViewMode('tracker'); }}
-                                        className="p-4 bg-[#111] border border-[#333] hover:border-[#d4af37] text-left transition-all hover:bg-[#1a1a1a]"
+                                        className="p-4 bg-[#111] border border-[#333] hover:border-[#d4af37] text-left transition-all hover:bg-[#1f1a0c] group relative overflow-hidden"
                                     >
-                                        <div className="font-header text-[var(--grim-text)] text-sm">{t.title}</div>
-                                        <div className="text-[10px] text-[#666] font-mono mt-1">{t.table.length} Entries</div>
+                                        <div className="absolute top-0 right-0 p-1 opacity-0 group-hover:opacity-100 transition-opacity text-[#d4af37]">
+                                            <RefreshCw size={12} />
+                                        </div>
+                                        <div className="font-header text-[#e0e0e0] text-sm group-hover:text-[#d4af37] transition-colors">{t.title}</div>
+                                        <div className="text-[10px] text-[#666] font-mono mt-1 group-hover:text-[#998c5e] transition-colors">{t.table.length} Entries</div>
                                     </button>
                                 ))}
                             </div>
                         </div>
                     ) : inspectedData ? (
-                        <div className="w-full max-w-5xl mx-auto animate-slide-up">
+                        <div className="w-full max-w-5xl mx-auto animate-slide-up relative z-10">
                             <div className="flex justify-between items-center mb-6 border-b border-[var(--accent-red)] pb-2">
                                 <div className="flex items-center gap-4">
                                     <h2 className="text-3xl font-header text-[#d4af37] tracking-widest drop-shadow-lg">{inspectedName}</h2>
                                     <span className="text-xs bg-[var(--accent-red)] text-white px-2 py-0.5 rounded-sm">TARGET LOCK</span>
                                 </div>
-                                <button onClick={() => { setInspectedCombatantId(null); setPreviewSlug(null); }} className="text-[#666] hover:text-white">CLOSE SCAN</button>
+                                <button onClick={() => { setInspectedCombatantId(null); setPreviewSlug(null); }} className="text-[#666] hover:text-white flex items-center gap-2 text-xs">
+                                    <X size={14} /> CLOSE SCAN
+                                </button>
                             </div>
                             <StatblockCard data={inspectedData} />
                         </div>
                     ) : result ? (
-                        <div className="w-full max-w-3xl mx-auto text-center mt-12 animate-flicker">
-                            <div className="inline-block border-b border-[var(--accent-red)] pb-1 mb-4 text-[var(--accent-red)] font-mono tracking-[0.2em] text-sm">ENCOUNTER DETECTED // ROLL: {lastRoll}</div>
-                            <h2 className="text-5xl font-header text-[#e0e0e0] mb-6 text-shadow-[0_4px_20px_rgba(0,0,0,1)]">{result.name}</h2>
-                            <p className="text-lg text-[#888] italic mb-8 leading-relaxed max-w-2xl mx-auto">"{result.description}"</p>
+                        <div className="w-full max-w-3xl mx-auto text-center mt-8 animate-flicker relative z-10">
+                            <div className="inline-block border border-[var(--accent-red)] px-4 py-1 mb-6 text-[var(--accent-red)] font-mono tracking-[0.2em] text-xs bg-[#1a0505]">
+                                ALERT // MOTION DETECTED
+                            </div>
+                            <h2 className="text-5xl font-header text-[#e0e0e0] mb-6 text-shadow-[0_4px_20px_rgba(0,0,0,0.8)] leading-tight">{result.name}</h2>
+                            <p className="text-lg text-[#aaa] font-serif italic mb-10 leading-relaxed max-w-2xl mx-auto border-l-2 border-[#333] pl-6 ml-auto">
+                                "{result.description}"
+                            </p>
 
                             {linkedStatblocks.length > 0 && (
-                                <div className="bg-[#111] border border-[#333] p-6 max-w-xl mx-auto relative group">
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[var(--obsidian-base)] px-4 text-[10px] font-bold text-[var(--accent-red)] tracking-widest border border-[#333]">THREAT SIGNATURES</div>
-                                    <div className="flex flex-col gap-3 mt-2">
+                                <div className="bg-[#111] border border-[#333] p-0 max-w-xl mx-auto relative group shadow-2xl">
+                                    <div className="bg-[#1a1a1a] px-4 py-2 border-b border-[#333] flex justify-between items-center">
+                                        <span className="text-[10px] font-bold text-[var(--accent-red)] tracking-widest uppercase">Threat Signatures</span>
+                                        <span className="text-[10px] font-mono text-[#666]">CONFIDENCE: 98%</span>
+                                    </div>
+                                    <div className="divide-y divide-[#222]">
                                         {linkedStatblocks.map(slug => (
                                             <button
                                                 key={slug}
                                                 onClick={() => setPreviewSlug(slug)}
-                                                className="flex justify-between items-center text-sm text-[#ccc] border-b border-[#222] pb-2 last:border-0 w-full hover:bg-[#1a0505] transition-colors p-2 text-left group-hover:border-[#333]"
+                                                className="flex justify-between items-center text-sm text-[#ccc] w-full hover:bg-[#1a0505] transition-colors p-3 text-left group-hover:border-[#333]"
                                             >
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-[var(--accent-red)] opacity-0 group-hover:opacity-100 transition-opacity">👁️</span>
-                                                    <span className="group-hover:text-[#d4af37] transition-colors">{allStatblocks[slug]?.name || slug}</span>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-[var(--accent-red)] opacity-50 group-hover:opacity-100 transition-opacity">
+                                                        <Activity size={12} />
+                                                    </span>
+                                                    <span className="group-hover:text-[#d4af37] transition-colors font-bold">{allStatblocks[slug]?.name || slug}</span>
                                                 </div>
-                                                <span className="text-[#666] text-xs">CR {allStatblocks[slug]?.cr}</span>
+                                                <span className="text-[#666] text-xs font-mono bg-[#0c0c0e] px-2 py-0.5 rounded border border-[#222]">CR {allStatblocks[slug]?.cr}</span>
                                             </button>
                                         ))}
                                     </div>
-                                    <div className="mt-6 flex justify-center">
-                                        <button onClick={engageHostiles} className="campaign-btn primary w-full">INITIATE COMBAT SEQUENCE</button>
+                                    <div className="p-4 bg-[#1a1a1a] border-t border-[#333]">
+                                        <button onClick={engageHostiles} className="campaign-btn primary w-full py-3 text-sm tracking-widest hover:scale-[1.02] shadow-lg">
+                                            INITIATE COMBAT SEQUENCE
+                                        </button>
                                     </div>
                                 </div>
                             )}
                         </div>
                     ) : (
-                        <div className="flex items-center justify-center h-full opacity-20">
-                            <div className="text-center">
-                                <div className="text-6xl mb-4 text-[#333]">📡</div>
-                                <div className="text-xl font-mono tracking-[0.5em] text-[#444] uppercase">System Resting</div>
+                        <div className="flex flex-col items-center justify-center h-full opacity-30 select-none pb-20">
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-[var(--accent-red)] blur-[50px] opacity-20"></div>
+                                <div className="text-8xl mb-6 text-[#222] animate-pulse">📡</div>
                             </div>
+                            <div className="text-2xl font-mono tracking-[0.5em] text-[#444] uppercase font-bold">System Resting</div>
+                            <div className="text-xs font-mono text-[#333] mt-2 tracking-widest">WAITING FOR INPUT...</div>
                         </div>
                     )}
                 </div>

@@ -288,8 +288,8 @@ export default function EditorPage() {
                                 </div>
                             )}
                         </div>
-                </div >
-            </PremiumGate >
-        </div >
+                    </main>
+            </PremiumGate>
+        </div>
     );
 }
