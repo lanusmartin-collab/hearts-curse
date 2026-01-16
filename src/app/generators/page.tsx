@@ -35,6 +35,24 @@ export default function GeneratorsPage() {
     const [isGenerating, setIsGenerating] = useState(false);
     const [registry, setRegistry] = useState<RegistryItem[]>([]);
     const [hoardCR, setHoardCR] = useState<number>(5);
+    const [targetShop, setTargetShop] = useState<'khelben' | 'fimble' | 'iron' | 'crow'>('crow');
+
+    const saveToMarket = (item: ShopItem) => {
+        const key = `shop_${targetShop}`;
+        const existingStr = localStorage.getItem(key);
+        const existing: ShopItem[] = existingStr ? JSON.parse(existingStr) : [];
+        const updated = [...existing, item];
+        localStorage.setItem(key, JSON.stringify(updated));
+        alert(`Saved "${item.name}" to ${targetShop === 'crow' ? "The Crow's Nest" : targetShop === 'khelben' ? "Khelben's Gifts" : targetShop === 'fimble' ? "The Gilded Coffer" : "The Iron Knot"}!`);
+    };
+
+    const saveToCompendium = (statblock: Statblock) => {
+        const existingStr = localStorage.getItem('custom_statblocks');
+        const existing: Statblock[] = existingStr ? JSON.parse(existingStr) : [];
+        const updated = [...existing, statblock];
+        localStorage.setItem('custom_statblocks', JSON.stringify(updated));
+        alert(`Saved "${statblock.name}" to Custom Compendium!`);
+    };
 
     // Persistence: Load Registry on Mount
     useEffect(() => {
