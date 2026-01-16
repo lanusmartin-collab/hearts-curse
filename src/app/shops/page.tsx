@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { KHELBEN_GIFTS, FIMBLE_INVENTORY, IRON_KNOT_SERVICES, CROW_NEST_INVENTORY, ShopItem, ZHENTARIM_SPECIAL_STOCK } from '@/lib/data/items';
 import { generateLootItem, GeneratorTheme } from "@/lib/generators";
 import PrintButton from "@/components/ui/PrintButton";
-import CommandBar from "@/components/ui/CommandBar";
+
 import EconomyControlPanel from "@/components/ui/EconomyControlPanel";
 import clsx from 'clsx';
 import { Edit2, Plus, RefreshCw, Save, Trash2, X, AlertTriangle } from "lucide-react";
@@ -93,7 +93,7 @@ export default function ShopsPage() {
 
     return (
         <div className="retro-container min-h-screen bg-[#0a0a0a] text-[#d4d4d4] p-8">
-            <CommandBar />
+
 
             <header className="mb-8 flex justify-between items-center border-b border-[#333] pb-4">
                 <div>
