@@ -87,7 +87,7 @@ export default function PricingPage() {
                     </div>
 
                     <div className="mt-16 text-center text-xs text-[#444] font-mono">
-                        SECURED BY IRON BANK OF BALDUR'S GATE • CANCEL ANYTIME • v3.1 (Hotfix)
+                        SECURED BY IRON BANK OF BALDUR'S GATE • CANCEL ANYTIME • v3.2 (Stable)
                     </div>
                 </div>
             </div>

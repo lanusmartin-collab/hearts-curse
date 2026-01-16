@@ -56,7 +56,6 @@ export default function SilentWardsPage() {
     };
 
     return (
-    return (
         <PremiumGate feature="The Silent Wards">
             <div className="retro-container">
                 <div className="no-print mb-4">

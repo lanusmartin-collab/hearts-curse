@@ -24,7 +24,6 @@ export default function HeartChamberPage() {
     const [selectedNode, setSelectedNode] = useState<MapNode | null>(null);
 
     return (
-    return (
         <PremiumGate feature="The Heart Chamber">
             <div className="retro-container">
                 <div className="no-print mb-4">
