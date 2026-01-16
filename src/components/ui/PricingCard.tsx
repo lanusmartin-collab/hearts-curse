@@ -49,7 +49,7 @@ export default function PricingCard({
                 </h3>
                 <div className="flex items-baseline justify-center gap-1">
                     <span className="text-3xl font-bold text-white">{price}</span>
-                    <span className="text-sm text-[#666]">{price === "Free" ? "" : "/month"}</span>
+                    <span className="text-sm text-[#666]">{price === "Free" ? "" : ""}</span>
                 </div>
                 <p className="text-xs text-[#888] mt-2 font-mono">{description}</p>
             </div>

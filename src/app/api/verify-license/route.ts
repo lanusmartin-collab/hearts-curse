@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
         // 👑 ADMIN BYPASS / MASTER KEY
         // Use this key to unlock the app for yourself without paying
-        if (license_key === "HEARTS-CURSE-MASTER-KEY") {
+        if (license_key.trim().toUpperCase() === "HEARTS-CURSE-MASTER-KEY") {
             return NextResponse.json({
                 valid: true,
                 license_key: "MASTER_OVERRIDE",

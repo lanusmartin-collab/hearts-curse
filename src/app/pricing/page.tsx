@@ -109,6 +109,8 @@ function LicenseActivator() {
         setStatus(success ? "success" : "error");
         if (success) {
             alert("License Activated! Welcome back.");
+        } else {
+            alert("Activation Failed. Please check your key.");
         }
     };
 
