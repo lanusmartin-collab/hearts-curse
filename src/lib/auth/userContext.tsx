@@ -6,6 +6,7 @@ type UserProfile = {
     id: string;
     name: string;
     isPro: boolean;
+    licenseKey?: string;
 };
 
 type UserContextType = {
@@ -14,6 +15,7 @@ type UserContextType = {
     login: (name: string) => void;
     logout: () => void;
     upgradeToPro: () => void;
+    activateLicense: (key: string) => Promise<boolean>;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -60,11 +62,35 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const upgradeToPro = () => {
         if (!user) return;
         setUser({ ...user, isPro: true });
-        alert("🎉 UPGRADE SUCCESSFUL!\n\nWelcome to the Inner Circle, Dungeon Master.\nAll restrictions have been lifted.");
+        alert("🎉 UPGRADE SUCCESSFUL (Simulation)!\n\nWelcome to the Inner Circle.");
+    };
+
+    const activateLicense = async (key: string): Promise<boolean> => {
+        if (!user) return false;
+
+        try {
+            const res = await fetch("/api/verify-license", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ license_key: key }),
+            });
+            const data = await res.json();
+
+            if (data.valid) {
+                setUser({ ...user, isPro: true, licenseKey: key });
+                return true;
+            } else {
+                console.error("License validation failed:", data.error);
+                return false;
+            }
+        } catch (e) {
+            console.error("License validation error:", e);
+            return false;
+        }
     };
 
     return (
-        <UserContext.Provider value={{ user, isLoading, login, logout, upgradeToPro }}>
+        <UserContext.Provider value={{ user, isLoading, login, logout, upgradeToPro, activateLicense }}>
             {children}
         </UserContext.Provider>
     );
