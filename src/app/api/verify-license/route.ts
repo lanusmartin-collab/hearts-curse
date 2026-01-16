@@ -9,6 +9,16 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'License key is required' }, { status: 400 });
         }
 
+        // 👑 ADMIN BYPASS / MASTER KEY
+        // Use this key to unlock the app for yourself without paying
+        if (license_key === "HEARTS-CURSE-MASTER-KEY") {
+            return NextResponse.json({
+                valid: true,
+                license_key: "MASTER_OVERRIDE",
+                meta: { variant_name: "Dungeon Master (Admin)" }
+            });
+        }
+
         const response = await fetch('https://api.lemonsqueezy.com/v1/licenses/validate', {
             method: 'POST',
             headers: {
