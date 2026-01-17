@@ -94,8 +94,16 @@ const CATACOMB_NODES: MapNode[] = [
     { id: "c3", x: 90, y: 90, label: "The True Phylactery", type: "boss", description: "FINAL BOSS: Larloch's Human Form. He wields the Ioun Stones as weapons." }
 ];
 
+
+const TOMB_NODES: MapNode[] = [
+    { id: "t1", x: 50, y: 80, label: "The Sealed Gate", type: "info", description: "A massive adamantine door sealed with 9th level magic. Requires the Key of the Warden." },
+    { id: "t2", x: 50, y: 50, label: "Sarcophagus of the First", type: "boss", description: "BOSS: The First Warden (Death Knight). Immune to Turn Undead." },
+    { id: "t3", x: 20, y: 20, label: "Left Reliquary", type: "loot", description: "Loot: Shield of the Hidden Lord." },
+    { id: "t4", x: 80, y: 20, label: "Right Reliquary", type: "loot", description: "Loot: SunBlade of Aumvor." }
+];
+
 export default function HeartChamberPage() {
-    const [view, setView] = useState<"chamber" | "catacombs">("chamber");
+    const [view, setView] = useState<"chamber" | "catacombs" | "tomb">("chamber");
     const [selectedNode, setSelectedNode] = useState<MapNode | null>(null);
     const [finaleMusicPlaying, setFinaleMusicPlaying] = useState(false);
 
@@ -142,16 +150,22 @@ export default function HeartChamberPage() {
                                 onClick={() => { setView("catacombs"); setSelectedNode(null); }}
                                 className={`flex-1 py-2 text-xs font-mono tracking-widest ${view === "catacombs" ? "bg-red-900 text-white" : "bg-black text-red-500 hover:bg-red-950"}`}
                             >
-                                SUB-LAYER: CATACOMBS
+                                SUB-LAYER 1: CATACOMBS
+                            </button>
+                            <button
+                                onClick={() => { setView("tomb"); setSelectedNode(null); }}
+                                className={`flex-1 py-2 text-xs font-mono tracking-widest ${view === "tomb" ? "bg-red-900 text-white" : "bg-black text-red-500 hover:bg-red-950"}`}
+                            >
+                                SUB-LAYER 2: THE TOMB
                             </button>
                         </div>
 
                         <div className="flex-1 relative">
                             <InteractiveMap
                                 key={view}
-                                src={view === "chamber" ? "/heart_chamber_map.png" : "/catacombs_map.png"}
-                                title={view === "chamber" ? "DRAKHARAZ'S LAIR" : "THE TRUE CATACOMBS"}
-                                nodes={view === "chamber" ? CHAMBER_NODES : CATACOMB_NODES}
+                                src={view === "chamber" ? "/heart_chamber_map.png" : (view === "tomb" ? "/tomb_map.png" : "/catacombs_map.png")}
+                                title={view === "chamber" ? "DRAKHARAZ'S LAIR" : (view === "tomb" ? "THE FIRST TOMB" : "THE TRUE CATACOMBS")}
+                                nodes={view === "chamber" ? CHAMBER_NODES : (view === "tomb" ? TOMB_NODES : CATACOMB_NODES)}
                                 onNodeClick={setSelectedNode}
                                 gridType={view === "chamber" ? "hex" : "square"}
                             />
@@ -241,7 +255,7 @@ export default function HeartChamberPage() {
                             <div className="h-full flex flex-col items-center justify-center text-center opacity-40 space-y-4 p-8">
                                 <Skull size={48} className="text-red-900" />
                                 <div className="italic font-serif text-red-900">
-                                    {view === "chamber" ? "The heartbeat allows no silence." : "Quiet... they are listening."}
+                                    {view === "chamber" ? "The heartbeat allows no silence." : (view === "tomb" ? "The First Warden sleeps." : "Quiet... they are listening.")}
                                 </div>
                                 <div className="text-xs font-mono text-red-800 mt-8 border-t border-red-300 pt-4 w-full">
                                     SELECT A NODE TO VIEW DETAILS

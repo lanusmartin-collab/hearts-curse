@@ -89,7 +89,7 @@ export default function MechanicsPage() {
                         </ul>
                     </DashboardWidget>
 
-                    <DashboardWidget title="Safe Haven" subtitle="The Sunken Crypt" icon={Shield} variant="parchment">
+                    <DashboardWidget title="Safe Haven" subtitle="The Sunken Crypt" icon={Shield} variant="parchment" href="/mechanics/safe-haven">
                         <div className="mb-2 text-sm font-bold text-[#8b1c1c]">ACCESS CODE: CANDLEKEEP</div>
                         <ul className="space-y-1">
                             {SAFE_HAVEN.features.map((feat, i) => (

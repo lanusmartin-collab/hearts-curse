@@ -6,9 +6,24 @@ import SidebarNav from "@/components/ui/SidebarNav";
 import CurseOverlay from "@/components/ui/CurseOverlay";
 
 export const metadata: Metadata = {
-  title: "Heart's Curse Campaign",
-  description: "DM Tools for the Heart's Curse adventure.",
+  title: {
+    template: "%s | Heart's Curse",
+    default: "Heart's Curse Campaign Manager",
+  },
+  description: "A specialized D&D 5e Campaign Manager for the Heart's Curse adventure. Manage curses, track quests, and survive the darkness.",
   manifest: "/manifest.json",
+  openGraph: {
+    title: "Heart's Curse Campaign Manager",
+    description: "Survive the Curse. Manage the Heart. All in one tab.",
+    siteName: "Heart's Curse",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Heart's Curse Campaign Manager",
+    description: "Survive the Curse. Manage the Heart. All in one tab.",
+  },
 };
 
 import { AudioProvider } from "@/components/providers/AudioProvider";
