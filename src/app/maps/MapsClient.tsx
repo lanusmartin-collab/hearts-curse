@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Save, Trash2, Crosshair, Edit, Move, Upload, FolderUp, Swords, Skull, ShieldAbsorb } from "lucide-react";
+import { Plus, Save, Trash2, Crosshair, Edit, Move, Upload, FolderUp, Swords, Skull, Shield } from "lucide-react";
 import StatblockCard from "@/components/ui/StatblockCard";
 import { STATBLOCKS } from "@/lib/data/statblocks";
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
@@ -368,7 +368,7 @@ export default function MapsClient() {
                                                         >
                                                             <div className="font-bold text-gray-300 group-hover:text-white flex justify-between items-center">
                                                                 {m.name}
-                                                                <ShieldAbsorb size={14} />
+                                                                <Shield size={14} />
                                                             </div>
                                                             <div className="text-xs text-gray-500 mt-1">CR {m.cr} • {m.type}</div>
                                                         </button>

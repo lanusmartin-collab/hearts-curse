@@ -8,6 +8,7 @@ export type MapNode = {
     description?: string;
     itemId?: string; // [NEW] Link to ShopItem.name
     link?: string; // [NEW] URL to navigate to (e.g. /shops?tab=crow)
+    monsters?: string[]; // [NEW] List of monster slugs for encounter nodes
 };
 
 export type CampaignMap = {
@@ -183,7 +184,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
             { id: "vault_door", x: 90, y: 65, label: "The Vault of Despair", type: "loot", description: "**LOCKED:** Hidden on the East Isle. **SOLUTION:** Fill the door's chalice with the 'Tear of Regret'. Inside contains the *Shadowfell Shard*.", itemId: "Shadowfell Shard" },
 
             { id: "avatar", x: 50, y: 35, label: "The Throne of Loss", type: "boss", description: "**BOSS:** Umbravos (Shadow Dragon). He guards the final gate. **OFFER:** Sacrafice a 'Memory of true happiness' (Perm -1 Wisdom) to pass without fighting. Fight him to keep your soul." },
-            { id: "exit", x: 50, y: 10, label: "The Event Horizon Gate", type: "entrance", description: "**PORTAL:** A swirling vortex leading UP to the Heart Chamber. It looks like the eye of a storm.", link: "/maps/heart-chamber" }
+            { id: "exit", x: 50, y: 10, label: "The Event Horizon Gate", type: "entrance", description: "**PORTAL:** A swirling vortex leading UP to the Heart Chamber. It looks like the eye of a storm.", link: "/maps?id=heart_chamber" }
         ],
         questGuide: `**OBJECTIVE:** Open the Vault of Despair.
 **CONTEXT:** The Vault is not locked by a key, but by an emotion. It requires a specific resonance to open.
@@ -218,7 +219,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         nodes: [
             { id: "dracolich", x: 50, y: 40, label: "Drakharaz's Corpse", type: "boss", description: "**BOSS:** Drakharaz (Ancient White Dracolich). The massive skeletal dragon acts as a living battery, attached to the castle by pulsating necrotic cables. **WEAKNESS:** Severing the cables deals 50 damage to him." },
             { id: "larloch", x: 50, y: 20, label: "Larloch's Throne", type: "boss", description: "**SCENE:** Larloch levitates above the central spire, ignoring the battle until provoked. **LOOT:** *Larloch's Spare Robes* (Acts as *Robes of the Archmagi* [Neutral Evil]) found in a chest that defies gravity.", itemId: "Larloch's Spare Robes" },
-            { id: "catacomb_ent", x: 50, y: 80, label: "Secret Hatch", type: "entrance", description: "**ESCAPE:** A hidden hatch in the floor. It smells of ozone and ancient dust. Leads down to the 'True Foundation' (The Ossuary)." }
+            { id: "catacomb_ent", x: 50, y: 80, label: "Secret Hatch", type: "entrance", description: "**ESCAPE:** A hidden hatch in the floor. It smells of ozone and ancient dust. Leads down to the 'True Foundation' (The Ossuary).", link: "/maps?id=ossuary" }
         ],
         description: `
 **Location:** Castle Mournwatch (Summit)
