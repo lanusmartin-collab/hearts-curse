@@ -836,7 +836,7 @@ select:focus {
 }
 
 .grimoire-item.active::after {
-  content: 'âœ¦';
+  content: '\2726';
   position: absolute;
   right: 1rem;
   color: var(--scarlet-accent);
