@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Shield, Flame, BedDouble, Lock, RefreshCcw } from "lucide-react";
 import DashboardWidget from "@/components/ui/DashboardWidget";
 
 export default function SafeHavenPage() {
+    const [isUnlocked, setIsUnlocked] = useState(false);
+    const [isShaking, setIsShaking] = useState(false);
     return (
         <div className="retro-container min-h-screen text-[var(--adnd-ink)] bg-[var(--parchment-bg)] flex flex-col items-center">
 
@@ -50,13 +53,65 @@ export default function SafeHavenPage() {
                     <div className="space-y-6">
 
                         <div className="p-1 bg-[#d4cebd] border border-[#8b7e66]">
-                            <div className="border border-dashed border-[#8b7e66] p-4 text-center">
-                                <h3 className="font-bold text-[#4a0404] uppercase tracking-widest mb-2">The Vault Door</h3>
-                                <Lock className="w-12 h-12 text-[#8b7e66] mx-auto mb-2 opacity-50" />
-                                <p className="text-xs text-gray-600">Requires <span className="font-bold">Keystone of the First Warden</span> to open.</p>
-                                <button className="mt-4 px-4 py-2 bg-[#8b7e66] text-[#e8e4d9] hover:bg-[#4a0404] transition-colors font-bold uppercase text-xs rounded-sm">
-                                    Attempt to Open
-                                </button>
+                            <div className={`border border-dashed border-[#8b7e66] p-4 text-center transition-all duration-300 ${isUnlocked ? "bg-[#e8e4d9] border-solid" : "bg-[#d4cebd]"}`}>
+                                <h3 className="font-bold text-[#4a0404] uppercase tracking-widest mb-2">
+                                    {isUnlocked ? "Vault of the First Warden" : "The Vault Door"}
+                                </h3>
+
+                                {isUnlocked ? (
+                                    <div className="animate-fade-in space-y-4">
+                                        <div className="text-left text-sm font-serif text-[#4a0404] italic border-l-2 border-[#8b7e66] pl-3">
+                                            "If you are reading this, I have failed. The curse is not a disease; it is a circuit. Larloch is the battery, but the heart... the heart is the switch."
+                                        </div>
+                                        <div className="flex gap-2 justify-center">
+                                            <button
+                                                onClick={() => alert("Curse Intensity Reduced by 1 Stage (Manual Edit Required in Dashboard)")}
+                                                className="px-3 py-1 bg-blue-900 text-white text-xs uppercase tracking-widest hover:bg-blue-800"
+                                            >
+                                                Purge Corruption
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <Lock className={`w-12 h-12 text-[#8b7e66] mx-auto mb-2 opacity-50 transition-transform ${isShaking ? "animate-shake text-red-800 opacity-100" : ""}`} />
+                                        <p className="text-xs text-gray-600 mb-3">Requires <span className="font-bold">Keystone of the First Warden</span> or Passphrase.</p>
+
+                                        <div className="flex gap-2 justify-center">
+                                            <input
+                                                type="text"
+                                                placeholder="Enter Passphrase..."
+                                                className="bg-[#e8e4d9] border border-[#8b7e66] px-2 py-1 text-xs text-[#4a0404] w-32 focus:outline-none focus:border-[#4a0404]"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        const val = (e.target as HTMLInputElement).value.toLowerCase();
+                                                        if (val.includes("shadow") || val.includes("warden") || val.includes("admin")) {
+                                                            setIsUnlocked(true);
+                                                        } else {
+                                                            setIsShaking(true);
+                                                            setTimeout(() => setIsShaking(false), 500);
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                            <button
+                                                onClick={(e) => {
+                                                    // Quick unlock for DM convenience
+                                                    const input = ((e.target as HTMLElement).previousElementSibling as HTMLInputElement).value.toLowerCase();
+                                                    if (input.includes("shadow") || input.includes("warden") || input.includes("admin")) {
+                                                        setIsUnlocked(true);
+                                                    } else {
+                                                        setIsShaking(true);
+                                                        setTimeout(() => setIsShaking(false), 500);
+                                                    }
+                                                }}
+                                                className="px-3 py-1 bg-[#8b7e66] text-[#e8e4d9] hover:bg-[#4a0404] transition-colors font-bold uppercase text-xs rounded-sm"
+                                            >
+                                                Open
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
 
