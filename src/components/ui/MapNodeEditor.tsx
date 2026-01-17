@@ -15,7 +15,7 @@ export default function MapNodeEditor({ node, onSave, onDelete, onClose }: MapNo
         setEditedNode({ ...node });
     }, [node]);
 
-    const handleChange = (field: keyof MapNode, value: string | number) => {
+    const handleChange = (field: keyof MapNode, value: string | number | string[]) => {
         setEditedNode(prev => ({ ...prev, [field]: value }));
     };
 
@@ -98,6 +98,18 @@ export default function MapNodeEditor({ node, onSave, onDelete, onClose }: MapNo
                             value={editedNode.itemId || ""}
                             onChange={(e) => handleChange("itemId", e.target.value)}
                             placeholder="Exact Item Name"
+                            className="w-full bg-black border border-gray-700 p-2 text-white font-mono text-sm"
+                        />
+                    </div>
+
+                    {/* Monsters */}
+                    <div>
+                        <label className="block text-xs uppercase text-gray-500 mb-1">Monsters (Comma-separated slugs)</label>
+                        <input
+                            type="text"
+                            value={editedNode.monsters?.join(", ") || ""}
+                            onChange={(e) => handleChange("monsters", e.target.value.split(",").map(s => s.trim()).filter(s => s !== ""))}
+                            placeholder="goblin, ancient-red-dragon"
                             className="w-full bg-black border border-gray-700 p-2 text-white font-mono text-sm"
                         />
                     </div>

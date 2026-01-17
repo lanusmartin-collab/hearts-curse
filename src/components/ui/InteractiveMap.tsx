@@ -95,17 +95,25 @@ export default function InteractiveMap({
         }
 
         // [EDIT MODE] Add New Node (Click on empty space)
-        if (isEditing && !isDraggingMap && !(e.target as HTMLElement).closest(".map-node") && mapImageRef.current) {
-            // Check if it was a click (not a drag)
+        if (isEditing && !draggingNodeId) {
+            // Check if we clicked on an existing node (bubble up)
+            if ((e.target as HTMLElement).closest(".map-node")) return;
+
+            // Check if it was a drag operation
             const wasDrag = Math.abs((e.clientX - pos.x) - dragStart.x) > 5 || Math.abs((e.clientY - pos.y) - dragStart.y) > 5;
 
-            if (!wasDrag && onMapClick) {
+            // If it wasn't a drag, and we have the map image ref for context
+            if (!wasDrag && onMapClick && mapImageRef.current) {
                 const rect = mapImageRef.current.getBoundingClientRect();
                 const rawX = e.clientX - rect.left;
                 const rawY = e.clientY - rect.top;
-                const percentX = Math.max(0, Math.min(100, (rawX / rect.width) * 100));
-                const percentY = Math.max(0, Math.min(100, (rawY / rect.height) * 100));
-                onMapClick(percentX, percentY);
+
+                // Only allow clicks roughly within the image bounds
+                if (rawX >= 0 && rawX <= rect.width && rawY >= 0 && rawY <= rect.height) {
+                    const percentX = Math.max(0, Math.min(100, (rawX / rect.width) * 100));
+                    const percentY = Math.max(0, Math.min(100, (rawY / rect.height) * 100));
+                    onMapClick(percentX, percentY);
+                }
             }
         }
 

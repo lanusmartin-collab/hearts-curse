@@ -85,7 +85,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
             { id: "node1", x: 20, y: 80, label: "South Geode", type: "quest", description: "**MECHANIC:** 'Unstable Geode'. A humming crystal pylon. **OPTION A:** Destroy (AC 15, 30HP) -> 4d6 Force Damage explosion. **OPTION B:** Attune (DC 18 Arcana) -> Disables quietly. **LOOT:** *Scroll of Counterspell* on a scorched wizard.", itemId: "Scroll of Counterspell" },
             { id: "node2", x: 80, y: 80, label: "East Geode", type: "quest", description: "**ENCOUNTER:** 'Thayan Interference'. A Red Wizard Enforcer is channeling the Geode. He counts as 'Attuned'. Defeating him breaks the link. **LOOT:** *Wand of Magic Missiles*.", itemId: "Wand of Magic Missiles" },
             { id: "node3", x: 50, y: 50, label: "Central Geode", type: "quest", description: "**MECHANIC:** 'Gravity Well'. The Geode floats in a debris field. **OPTION A:** Smash it (Range only). **OPTION B:** Attune (Jump check to reach it). **LOOT:** *Boots of Striding and Springing* drifting nearby.", itemId: "Boots of Striding and Springing" },
-            { id: "gate", x: 50, y: 20, label: "The Obsidian Gate", type: "boss", description: "**BOSS:** General Varth (Death Knight). He guards the main gate on a Nightmare steed. **TACTIC:** He uses 'Hellfire Orb' and attempts to shove players off the floating island into the abyss.", link: "/maps/silent-wards" }
+            { id: "gate", x: 50, y: 20, label: "The Obsidian Gate", type: "boss", description: "**BOSS:** General Varth (Death Knight). He guards the main gate on a Nightmare steed. **TACTIC:** He uses 'Hellfire Orb' and attempts to shove players off the floating island into the abyss.", link: "/maps?id=silent_wards" }
         ],
         description: `
 **Location:** 1 Day Hike North (Vertical Ascent)
@@ -219,7 +219,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         nodes: [
             { id: "dracolich", x: 50, y: 40, label: "Drakharaz's Corpse", type: "boss", description: "**BOSS:** Drakharaz (Ancient White Dracolich). The massive skeletal dragon acts as a living battery, attached to the castle by pulsating necrotic cables. **WEAKNESS:** Severing the cables deals 50 damage to him." },
             { id: "larloch", x: 50, y: 20, label: "Larloch's Throne", type: "boss", description: "**SCENE:** Larloch levitates above the central spire, ignoring the battle until provoked. **LOOT:** *Larloch's Spare Robes* (Acts as *Robes of the Archmagi* [Neutral Evil]) found in a chest that defies gravity.", itemId: "Larloch's Spare Robes" },
-            { id: "catacomb_ent", x: 50, y: 80, label: "Secret Hatch", type: "entrance", description: "**ESCAPE:** A hidden hatch in the floor. It smells of ozone and ancient dust. Leads down to the 'True Foundation' (The Ossuary).", link: "/maps?id=ossuary" }
+            { id: "catacomb_ent", x: 50, y: 80, label: "Entrance to Ossuary", type: "entrance", description: "**ESCAPE:** A hidden hatch in the floor. It smells of ozone and ancient dust. Leads down to the 'True Foundation' (The Ossuary).", link: "/maps?id=ossuary" }
         ],
         description: `
 **Location:** Castle Mournwatch (Summit)

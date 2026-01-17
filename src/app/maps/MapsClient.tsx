@@ -17,7 +17,8 @@ import {
     TOWN_DAY_TABLE, OAKHAVEN_MINES_TABLE, UNDERDARK_TRAVEL_TABLE,
     NETHERIL_RUINS_TABLE, SILENT_WARDS_TABLE, OUTSKIRTS_TABLE,
     LIBRARY_WHISPERS_TABLE, ARACH_TINILITH_TABLE, HEART_CHAMBER_TABLE, OSSUARY_TABLE,
-    SPIRE_TABLE, DWARVEN_RUINS_TABLE, MIND_FLAYER_COLONY_TABLE, BEHOLDER_LAIR_TABLE
+    SPIRE_TABLE, DWARVEN_RUINS_TABLE, MIND_FLAYER_COLONY_TABLE, BEHOLDER_LAIR_TABLE,
+    CATACOMBS_DESPAIR_TABLE, CASTLE_MOURNWATCH_TABLE
 } from "@/lib/data/encounters";
 
 import QuestJournal from "@/components/ui/QuestJournal";
@@ -51,10 +52,34 @@ export default function MapsClient() {
         }
     }, [searchParams]);
 
-    // Initialize nodes when map changes
+    // Initialize nodes when map changes (Load from LocalStorage if available)
     useEffect(() => {
-        setMapNodes(selectedMap.nodes || []);
+        const savedNodes = localStorage.getItem(`map_nodes_${selectedMapId}`);
+        if (savedNodes) {
+            try {
+                setMapNodes(JSON.parse(savedNodes));
+            } catch (e) {
+                console.error("Failed to parse saved map nodes", e);
+                setMapNodes(selectedMap.nodes || []);
+            }
+        } else {
+            setMapNodes(selectedMap.nodes || []);
+        }
     }, [selectedMapId, selectedMap]);
+
+    // Auto-save nodes to LocalStorage whenever they change
+    useEffect(() => {
+        if (mapNodes.length > 0) {
+            localStorage.setItem(`map_nodes_${selectedMapId}`, JSON.stringify(mapNodes));
+        }
+    }, [mapNodes, selectedMapId]);
+
+    const handleResetMap = () => {
+        if (confirm("Reset this map to its default state? All custom changes will be lost.")) {
+            localStorage.removeItem(`map_nodes_${selectedMapId}`);
+            setMapNodes(selectedMap.nodes || []);
+        }
+    };
 
     const handleRollEncounter = () => {
         let table = null;
@@ -65,8 +90,10 @@ export default function MapsClient() {
             case 'netheril': table = NETHERIL_RUINS_TABLE; break;
             case 'library': table = LIBRARY_WHISPERS_TABLE; break;
             case 'arach': table = ARACH_TINILITH_TABLE; break;
-            case 'heart': table = HEART_CHAMBER_TABLE; break;
+            case 'heart_chamber': table = HEART_CHAMBER_TABLE; break;
             case 'ossuary': table = OSSUARY_TABLE; break;
+            case 'catacombs_despair': table = CATACOMBS_DESPAIR_TABLE; break;
+            case 'castle': table = CASTLE_MOURNWATCH_TABLE; break;
             case 'spire': table = SPIRE_TABLE; break;
             case 'silent_wards': table = SILENT_WARDS_TABLE; break;
             case 'outskirts': table = OUTSKIRTS_TABLE; break;
@@ -218,12 +245,20 @@ export default function MapsClient() {
                                 <Edit size={14} /> {isEditing ? "DM EDITING ACTIVE" : "DM TOOLS"}
                             </button>
                             {isEditing && (
-                                <button
-                                    onClick={handleExport}
-                                    className="flex items-center gap-2 px-3 py-1 text-xs font-bold bg-green-800 text-green-100 border border-green-600 rounded hover:bg-green-700 shadow-lg"
-                                >
-                                    <Upload size={14} /> EXPORT JSON
-                                </button>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={handleExport}
+                                        className="flex items-center gap-2 px-3 py-1 text-xs font-bold bg-green-800 text-green-100 border border-green-600 rounded hover:bg-green-700 shadow-lg"
+                                    >
+                                        <Upload size={14} /> EXPORT JSON
+                                    </button>
+                                    <button
+                                        onClick={handleResetMap}
+                                        className="flex items-center gap-2 px-3 py-1 text-xs font-bold bg-red-900/80 text-white border border-red-600 rounded hover:bg-red-700 shadow-lg"
+                                    >
+                                        <Trash2 size={14} /> RESET MAP
+                                    </button>
+                                </div>
                             )}
                         </div>
 
