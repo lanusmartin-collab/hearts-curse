@@ -49,7 +49,7 @@ const OAKHAVEN: CampaignMap = {
         { id: "crows_nest", x: 60, y: 5, label: "The Crow's Nest", type: "info", description: "**ZHENTARIM MARKET:** A black market hidden on the cliff edge. 'The Crow' sells illicit goods and poisons. **SERVICES:** Fence stolen goods, buy *Drow Poison*.", link: "/shops?tab=crow" },
         { id: "bridge", x: 50, y: 90, label: "The Looping Bridge", type: "entrance", description: "**THE OUTER MISTS:** A stone bridge crossing a sluggish grey river. **CURSE:** Any attempt to cross it loops the traveler back to the Town Square. The mist is impenetrable and whispers your name." },
         { id: "forge", x: 15, y: 20, label: "The Artisan's Row", type: "encounter", description: "**THE IRON KNOT:** Kaelen Muldar's forge (Top-Left) is cold, covered in grey ash. **HAUNT:** The sound of a ghostly hammer rings eternally. **LOOT:** *Adamantine Ingot* found in the cold coals, still warm to the touch.", link: "/shops?tab=iron" },
-        { id: "cliff", x: 85, y: 20, label: "The Cliffside Ascent", type: "encounter", description: "**PATH TO CASTLE:** A steep, winding path (Top-Right) leads to Mournwatch. **ENCOUNTER:** 'The Night Shard'. 3 Assassins (Zhentarim & Cultist alliance) ambush the party from the shadows. They drop a *Dagger of Venom*." },
+        { id: "cliff", x: 85, y: 20, label: "The Cliffside Ascent", type: "encounter", description: "**PATH TO CASTLE:** A steep, winding path (Top-Right) leads to Mournwatch. **ENCOUNTER:** 'The Night Shard'. 3 Assassins (Zhentarim & Cultist alliance) ambush the party from the shadows. They drop a *Dagger of Venom*.", link: "/maps?id=castle" },
         { id: "shrine", x: 10, y: 40, label: "Ancient Shrine (Lore)", type: "info", description: "**LORE:** A crumbled statue of Mystra. Reading the inscription (DC 14 Religion) reveals: 'When the Heart stops, the Weave unravels.' You feel a moment of peace here (+1d4 Temp HP)." },
         { id: "outpost", x: 90, y: 35, label: "Abandoned Outpost", type: "encounter", description: "**COMBAT:** An old watchtower. **THREAT:** 4 Ghouls wearing tattered town guard uniforms. They are eating a horse carcass. **LOOT:** *Potion of Vitality* in a saddlebag." },
         { id: "grove", x: 35, y: 10, label: "Whispering Grove", type: "trap", description: "**SKILL CHECK:** The trees lean in. **SURVIVAL DC 13:** The roots try to trip you (Prone). **ARCANA DC 15:** You hear the trees gossiping. They say 'The Library is not on this plane'." }
@@ -84,7 +84,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
             { id: "node1", x: 20, y: 80, label: "South Geode", type: "quest", description: "**MECHANIC:** 'Unstable Geode'. A humming crystal pylon. **OPTION A:** Destroy (AC 15, 30HP) -> 4d6 Force Damage explosion. **OPTION B:** Attune (DC 18 Arcana) -> Disables quietly. **LOOT:** *Scroll of Counterspell* on a scorched wizard.", itemId: "Scroll of Counterspell" },
             { id: "node2", x: 80, y: 80, label: "East Geode", type: "quest", description: "**ENCOUNTER:** 'Thayan Interference'. A Red Wizard Enforcer is channeling the Geode. He counts as 'Attuned'. Defeating him breaks the link. **LOOT:** *Wand of Magic Missiles*.", itemId: "Wand of Magic Missiles" },
             { id: "node3", x: 50, y: 50, label: "Central Geode", type: "quest", description: "**MECHANIC:** 'Gravity Well'. The Geode floats in a debris field. **OPTION A:** Smash it (Range only). **OPTION B:** Attune (Jump check to reach it). **LOOT:** *Boots of Striding and Springing* drifting nearby.", itemId: "Boots of Striding and Springing" },
-            { id: "gate", x: 50, y: 20, label: "The Obsidian Gate", type: "boss", description: "**BOSS:** General Varth (Death Knight). He guards the main gate on a Nightmare steed. **TACTIC:** He uses 'Hellfire Orb' and attempts to shove players off the floating island into the abyss." }
+            { id: "gate", x: 50, y: 20, label: "The Obsidian Gate", type: "boss", description: "**BOSS:** General Varth (Death Knight). He guards the main gate on a Nightmare steed. **TACTIC:** He uses 'Hellfire Orb' and attempts to shove players off the floating island into the abyss.", link: "/maps/silent-wards" }
         ],
         description: `
 **Location:** 1 Day Hike North (Vertical Ascent)
@@ -100,7 +100,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         category: "Main Quest",
         imagePath: "/silent_wards_map_v5.png",
         gridType: "square",
-        route: "/maps/silent-wards", // [NEW] Directs to the custom mechanic page
+        // route removed to enable generic editor
         mechanics: [
             "Shifting Layout: On Initiative 20, the dungeon reconfigures. Roll 1d4. 1: 90° Clockwise Rotation. 2: 90° Counter-Clockwise. 3: Walls shift 10ft inward (Dex Save DC 15 or 4d10 Bludgeoning). 4: Gravity reverses for 1 round.",
             "Absolute Silence: The entire floor is under a permanent 'Silence' spell. Replaced by a low mechanical thrum. Verbal spells are impossible unless the caster is inside a 'Tiny Hut' or similar shelter.",
@@ -120,7 +120,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
             { id: "furnace", x: 20, y: 80, label: "Furnace Room (Bottom-Left)", type: "quest", description: "**SCENE:** Lava pools illuminate the room with angry red light. **LOOT:** *Potion of Fire Resistance* (x2) and the **Ruby Keystone** resting in the flames." },
             { id: "vault", x: 80, y: 80, label: "Void Vault (Bottom-Right)", type: "quest", description: "**SCENE:** A floating platform over a starry void. **MECHANIC:** Zero Gravity. **LOOT:** *Driftglobe* (Essential for the dark layers below) and the **Emerald Keystone**.", itemId: "Driftglobe" },
             { id: "boss", x: 50, y: 50, label: "The Minotaur's Ghosts", type: "boss", description: "**BOSS:** Goristroi the Lost. A Minotaur spirit bound to the maze. **MECHANIC:** He can phase through walls (Incorporeal Movement). Drops *Horn of Blasting*." },
-            { id: "exit", x: 50, y: 15, label: "Stairs to Library", type: "entrance", description: "**LOCKED:** Requires 3 Keystones (Ruby, Sapphire, Emerald) to open the spiral stairs. They decend upward into the ceiling." },
+            { id: "exit", x: 50, y: 15, label: "Stairs to Library", type: "entrance", description: "**LOCKED:** Requires 3 Keystones (Ruby, Sapphire, Emerald) to open the spiral stairs. They decend upward into the ceiling.", link: "/maps?id=library" },
             { id: "hidden_cell", x: 10, y: 50, label: "The Hidden Cell", type: "info", description: "**SECRET:** A small room behind a fake wall. Scratched on the floor: 'Rotation is the key. North becomes East. Wait for the click.' (Hint for Puzzle)." }
         ],
         description: `
@@ -135,7 +135,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         category: "Main Quest",
         imagePath: "/library_whispers_map.png",
         gridType: "square",
-        route: "/maps/library", // [NEW] Dedicated Silence Page
+        // route removed to enable generic editor
         mechanics: [
             "Silence Required: The library is semi-sentient and hates noise. Casting any spell with a Verbal (V) component triggers an immediate 'Counterspell' (+7 bonus) from the environment itself. Whispering allows normal conversation.",
             "Scholars of the Void: Passive Liches study at the tables. They ignore players unless spoken to loudly or interrupted. Any loud noise (Thunder dmg, shouting) causes them to ALL cast 'Power Word Kill' on the offender.",
@@ -149,7 +149,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
 2.  **Bargain with Rhaugilath:** The Lich in the *Private Study* has the key to the Red Portal (Catacombs). He will trade it for a secret or a service (removing his curse).
 3.  **Silence is Key:** Combat here is dangerous because noise attracts the *Scholars of the Void*. Keep it quiet.`,
         nodes: [
-            { id: "portals", x: 50, y: 80, label: "The Portal Gallery", type: "info", description: "**HUB:** Three arches float in the void. 1. Blue (Open) -> The Index. 2. Silver (Needs Key) -> Rhaugilath. 3. Red (Locked) -> Catacombs." },
+            { id: "portals", x: 50, y: 80, label: "The Portal Gallery", type: "info", description: "**HUB:** Three arches float in the void. 1. Blue (Open) -> The Index. 2. Silver (Needs Key) -> Rhaugilath. 3. Red (Locked) -> Catacombs.", link: "/maps?id=catacombs_despair" },
             { id: "rhaugilath", x: 90, y: 90, label: "Rhaugilath's Study (Off-Map)", type: "quest", description: "**NPC:** Rhaugilath the Ageless (Lich). He is tired of Larloch's rule. **QUEST:** 'The Calibration'. **LOOT:** His old arcane focus: *Pearl of Power*.", itemId: "Pearl of Power" },
             { id: "index", x: 10, y: 90, label: "The Infinite Index (Off-Map)", type: "info", description: "**SCENE:** A pocket dimension of flying books. **LOOT:** 'The Codex of Forgotten Wars' (Worth 750gp to Candlekeep, or grants +1 INT)." },
             { id: "tyrant", x: 20, y: 60, label: "The Eye of Decay", type: "boss", description: "**BOSS:** Death Tyrant. It guards 'The Nether Scrolls'. **LOOT:** *Ring of Spell Storing* inside its floating eye-socket.", itemId: "Ring of Spell Storing" },
@@ -183,7 +183,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
             { id: "vault_door", x: 90, y: 65, label: "The Vault of Despair", type: "loot", description: "**LOCKED:** Hidden on the East Isle. **SOLUTION:** Fill the door's chalice with the 'Tear of Regret'. Inside contains the *Shadowfell Shard*.", itemId: "Shadowfell Shard" },
 
             { id: "avatar", x: 50, y: 35, label: "The Throne of Loss", type: "boss", description: "**BOSS:** Umbravos (Shadow Dragon). He guards the final gate. **OFFER:** Sacrafice a 'Memory of true happiness' (Perm -1 Wisdom) to pass without fighting. Fight him to keep your soul." },
-            { id: "exit", x: 50, y: 10, label: "The Event Horizon Gate", type: "entrance", description: "**PORTAL:** A swirling vortex leading UP to the Heart Chamber. It looks like the eye of a storm." }
+            { id: "exit", x: 50, y: 10, label: "The Event Horizon Gate", type: "entrance", description: "**PORTAL:** A swirling vortex leading UP to the Heart Chamber. It looks like the eye of a storm.", link: "/maps/heart-chamber" }
         ],
         questGuide: `**OBJECTIVE:** Open the Vault of Despair.
 **CONTEXT:** The Vault is not locked by a key, but by an emotion. It requires a specific resonance to open.
@@ -203,7 +203,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         title: "❤️ The Heart Chamber",
         category: "Main Quest",
         imagePath: "/heart_chamber_map.png",
-        route: "/maps/heart-chamber", // [NEW] Dedicated Finale Page
+        // route removed to enable generic editor
         gridType: "hex",
         mechanics: [
             "Pulse of the Dead: Lair Action. DC 22 CON save or Exhaustion.",
@@ -267,7 +267,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         category: "Plot Twist",
         imagePath: "/oakhaven_mine_v9.png",
         gridType: "hex",
-        route: "/maps/mines", // [NEW] Dedicated Hex-Crawl Page
+        // route removed to enable generic editor
         mechanics: [
             "The Great Chasm: A single massive void cuts through all 3 layers. The Drow Silk Lift connects them.",
             "Tremor Sense (Global): Moving >15ft/turn in 'Unstable' zones triggers DC 13 Dex save vs Rockfall (2d6 Bludgeoning).",
@@ -300,7 +300,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
             { id: "crystal", x: 80, y: 85, label: "Crystal Grotto", type: "loot", description: "**LOOT:** *Ioun Stone (Protection)* and a Sleeping Behir (if awakened, CR 11). The crystal formation amplifies magic (+1 spell attacks while standing near)." },
             { id: "sump", x: 15, y: 90, label: "The Sump", type: "loot", description: "**HIDDEN:** *Dagger of Venom* found in the black, oily water. DC 16 Perception to spot the glint." },
             { id: "lift_3", x: 50, y: 75, label: "Lift Foundation", type: "encounter", description: "**MECHANIC:** 'Spider Engine Room'. Giant mutated spiders turn the crank. Setting them free disables the lift for reinforcements." },
-            { id: "breach", x: 90, y: 90, label: "The Ancient Breach", type: "quest", description: "**EXIT:** Glowing blue crack in the wall where the Drow broke through. The air gets colder. Leads to Tieg Duran." }
+            { id: "breach", x: 90, y: 90, label: "The Ancient Breach", type: "quest", description: "**EXIT:** Glowing blue crack in the wall where the Drow broke through. The air gets colder. Leads to Tieg Duran.", link: "/maps?id=dwarven_ruins" }
         ],
         description: `
 **Location:** Beneath Oakhaven
@@ -334,7 +334,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
             { id: "bridge", x: 50, y: 50, label: "The Spire-Bridge", type: "encounter", description: "**SCENE:** A razor-thin arch over the void. **THREAT:** Drow Snipers (Crossbow experts) hiding on the underside of the bridge. Cover is essential." },
             { id: "temple", x: 80, y: 60, label: "Temple of the Broken Anvil", type: "quest", description: "**QUEST:** 'The Ancestral Call'. The statue of Moradin is beheaded. Placing a specific gemstone (Found in Market) in the socket reveals a hidden compartment. **LOOT:** *Hammer of the Ancestors* (+2 Warhammer, Throws and returns).", itemId: "Hammer of the Ancestors" },
             { id: "command", x: 50, y: 15, label: "Baenre's Forward Command", type: "boss", description: "**BOSS:** High Priestess Yaz'mina Baenre. She coordinates the invasion from a repurposed Dwarven Throne. **LOOT:** *Rod of the Pact Keeper +2*, *Insignia of House Baenre* (Safe passage through Drow lines).", itemId: "Rod of the Pact Keeper +2" },
-            { id: "exit", x: 50, y: 5, label: "The Deep Road", type: "entrance", description: "**EXIT:** The military highway continues down into the true Underdark. Leads to the 'Underdark Travel' Map." }
+            { id: "exit", x: 50, y: 5, label: "The Deep Road", type: "entrance", description: "**EXIT:** The military highway continues down into the true Underdark. Leads to the 'Underdark Travel' Map.", link: "/maps?id=underdark" }
         ],
         description: `
 **Location:** Buried City (The Drow Road)
@@ -364,7 +364,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
             { id: "colony", x: 20, y: 60, label: "Mind Flayer Colony", type: "entrance", description: "**DANGER:** Psionic static detected. High risk, high reward. A massive nautiloid ship is crashed here. Leads to 'The Synaptic Deep'." },
             { id: "beholder", x: 80, y: 40, label: "Beholder's Lair", type: "entrance", description: "**DANGER:** Vertical shaft with anti-magic readings. The walls are smooth, melted by disintegration beams. Leads to 'The Eye's Domain'." },
             { id: "merchant", x: 50, y: 50, label: "The Wandering Emporium", type: "quest", description: "**ENCOUNTER:** Xorn-Trader 'Gravel-Mouth'. He sets up camp in a giant geode. **SERVICES:** Sells 'Surface Air' (bottled, removes Exhaustion) and *Rope of Climbing* for gemstones." },
-            { id: "arach", x: 50, y: 80, label: "Arach-Tinilith", type: "boss", description: "**DESTINATION:** The Drow City. The Soul-Gem is here. Towers of spun iron pierce the ceiling." }
+            { id: "arach", x: 50, y: 80, label: "Arach-Tinilith", type: "boss", description: "**DESTINATION:** The Drow City. The Soul-Gem is here. Towers of spun iron pierce the ceiling.", link: "/maps?id=arach" }
         ],
         description: `
 **Location:** Below Oakhaven Mines
@@ -433,7 +433,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         id: "spire",
         title: "🌪️ The Spire of Screaming Gales",
         category: "Plot Twist",
-        route: "/maps/spire",
+        // route removed to enable generic editor
         imagePath: "/spire_map.png",
         gridType: "hex",
         mechanics: [
@@ -464,7 +464,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         id: "netheril",
         title: "⚡ The Netheril Ruins",
         category: "Plot Twist",
-        route: "/maps/netheril", // Dedicated page
+        // route removed to enable generic editor
         imagePath: "/netheril_map.png",
         gridType: "square",
         mechanics: [
