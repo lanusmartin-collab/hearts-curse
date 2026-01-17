@@ -199,7 +199,7 @@ export default function MapsClient() {
                 <div className="mb-4 shrink-0 pointer-events-none relative z-20">
                     <RegionalMechanicsWidget
                         mechanics={selectedMap.mechanics || []}
-                        curseLevel="Active"
+                        curseLevel="Medium"
                         faction="Neutral"
                     />
                 </div>
@@ -247,32 +247,20 @@ export default function MapsClient() {
                                     <MapNodeEditor
                                         node={editingNode}
                                         onSave={handleNodeSave}
-                                        onCancel={() => setEditingNode(null)}
+                                        onClose={() => setEditingNode(null)}
                                         onDelete={handleNodeDelete}
                                     />
                                 )}
                             </div>
                         ) : (
                             <DungeonModuleTemplate
-                                title={selectedMap.title}
-                                minLevel={1} maxLevel={20}
-                                summary={selectedMap.description || "No data available."}
-                                quests={[]}
-                                npcs={[]}
-                                secrets={[]}
-                            >
-                                <div className="p-4 text-gray-300 whitespace-pre-wrap font-serif">
-                                    {selectedMap.questGuide || selectedMap.description}
-                                </div>
-                            </DungeonModuleTemplate>
+                                mapData={selectedMap}
+                                onClose={() => setViewMode("interactive")}
+                            />
                         )}
 
-                        {/* Journal Overlay */}
                         {showJournal && (
-                            <div className="absolute inset-0 bg-black/90 z-40 p-8 overflow-auto animate-in slide-in-from-right duration-300">
-                                <button onClick={() => setShowJournal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white">CLOSE [x]</button>
-                                <QuestJournal />
-                            </div>
+                            <QuestJournal onClose={() => setShowJournal(false)} />
                         )}
                     </div>
 
@@ -302,7 +290,7 @@ export default function MapsClient() {
                                     <Swords size={12} /> ENCOUNTER
                                 </button>
                                 <button onClick={handleWildMagic} className="flex-1 bg-pink-900 text-white px-2 py-2 text-xs font-bold hover:bg-pink-800 border border-pink-700 flex items-center justify-center gap-1">
-                                    <ShieldAbsorb size={12} /> WILD MAGIC
+                                    <Shield size={12} /> WILD MAGIC
                                 </button>
                             </div>
                         </div>
