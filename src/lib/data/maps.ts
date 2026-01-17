@@ -203,6 +203,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         title: "❤️ The Heart Chamber",
         category: "Main Quest",
         imagePath: "/heart_chamber_map.png",
+        route: "/maps/heart-chamber", // [NEW] Dedicated Finale Page
         gridType: "hex",
         mechanics: [
             "Pulse of the Dead: Lair Action. DC 22 CON save or Exhaustion.",
