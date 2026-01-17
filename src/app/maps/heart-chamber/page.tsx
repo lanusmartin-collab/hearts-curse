@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import InteractiveMap, { MapNode } from "@/components/ui/InteractiveMap";
 import PremiumGate from "@/components/auth/PremiumGate";
@@ -85,31 +86,25 @@ const CHAMBER_NODES: MapNode[] = [
     { id: "2", x: 20, y: 20, label: "West Pylon (Active)", type: "encounter", description: "Shield Pylon. Must be destroyed to lower Larloch's AC. Guarded by 2 Death Tyrants." },
     { id: "3", x: 80, y: 20, label: "East Pylon (Active)", type: "encounter", description: "Shield Pylon. Guarded by 2 Liches." },
     { id: "4", x: 50, y: 90, label: "Void Edge", type: "info", description: "Falling here leads to the Negative Energy Plane (Instant Death)." },
-    { id: "5", x: 50, y: 80, label: "Entrance to Catacombs", type: "quest", description: "Hidden hatch revealed only when Drakharaz is defeated. Leads to the True Phylactery." }
-];
-
-const CATACOMB_NODES: MapNode[] = [
-    { id: "c1", x: 10, y: 10, label: "The Bone Tunnel", type: "info", description: "Walls made of crushed skulls. Claustrophobic." },
-    { id: "c2", x: 50, y: 50, label: "The Reflection", type: "encounter", description: "A mirror room where PCs fight their own shadows (Shadow Assassin stats)." },
-    { id: "c3", x: 90, y: 90, label: "The True Phylactery", type: "boss", description: "FINAL BOSS: Larloch's Human Form. He wields the Ioun Stones as weapons." }
-];
-
-
-const TOMB_NODES: MapNode[] = [
-    { id: "t1", x: 50, y: 80, label: "The Sealed Gate", type: "info", description: "A massive adamantine door sealed with 9th level magic. Requires the Key of the Warden." },
-    { id: "t2", x: 50, y: 50, label: "Sarcophagus of the First", type: "boss", description: "BOSS: The First Warden (Death Knight). Immune to Turn Undead." },
-    { id: "t3", x: 20, y: 20, label: "Left Reliquary", type: "loot", description: "Loot: Shield of the Hidden Lord." },
-    { id: "t4", x: 80, y: 20, label: "Right Reliquary", type: "loot", description: "Loot: SunBlade of Aumvor." }
+    { id: "5", x: 50, y: 80, label: "Entrance to Catacombs", type: "entrance", description: "Hidden hatch. NAVIGATE: Takes you to The Fathomless Ossuary.", link: "/maps?id=ossuary" }
 ];
 
 export default function HeartChamberPage() {
-    const [view, setView] = useState<"chamber" | "catacombs" | "tomb">("chamber");
     const [selectedNode, setSelectedNode] = useState<MapNode | null>(null);
     const [finaleMusicPlaying, setFinaleMusicPlaying] = useState(false);
+    const router = useRouter();
 
     const toggleMusic = () => {
         // Placeholder for music logic
         setFinaleMusicPlaying(!finaleMusicPlaying);
+    };
+
+    const handleNodeClick = (node: MapNode) => {
+        if (node.link) {
+            router.push(node.link);
+        } else {
+            setSelectedNode(node);
+        }
     };
 
     return (
@@ -137,37 +132,13 @@ export default function HeartChamberPage() {
                 <div className="flex gap-4 flex-1 overflow-hidden">
                     {/* Map Area */}
                     <div className="flex-1 relative bg-black border border-red-900 flex flex-col">
-
-                        {/* Map Tabs */}
-                        <div className="flex border-b border-red-900">
-                            <button
-                                onClick={() => { setView("chamber"); setSelectedNode(null); }}
-                                className={`flex-1 py-2 text-xs font-mono tracking-widest ${view === "chamber" ? "bg-red-900 text-white" : "bg-black text-red-500 hover:bg-red-950"}`}
-                            >
-                                LAYER 3: THE HEART
-                            </button>
-                            <button
-                                onClick={() => { setView("catacombs"); setSelectedNode(null); }}
-                                className={`flex-1 py-2 text-xs font-mono tracking-widest ${view === "catacombs" ? "bg-red-900 text-white" : "bg-black text-red-500 hover:bg-red-950"}`}
-                            >
-                                SUB-LAYER 1: CATACOMBS
-                            </button>
-                            <button
-                                onClick={() => { setView("tomb"); setSelectedNode(null); }}
-                                className={`flex-1 py-2 text-xs font-mono tracking-widest ${view === "tomb" ? "bg-red-900 text-white" : "bg-black text-red-500 hover:bg-red-950"}`}
-                            >
-                                SUB-LAYER 2: THE TOMB
-                            </button>
-                        </div>
-
                         <div className="flex-1 relative">
                             <InteractiveMap
-                                key={view}
-                                src={view === "chamber" ? "/heart_chamber_map.png" : (view === "tomb" ? "/tomb_map.png" : "/catacombs_map.png")}
-                                title={view === "chamber" ? "DRAKHARAZ'S LAIR" : (view === "tomb" ? "THE FIRST TOMB" : "THE TRUE CATACOMBS")}
-                                nodes={view === "chamber" ? CHAMBER_NODES : (view === "tomb" ? TOMB_NODES : CATACOMB_NODES)}
-                                onNodeClick={setSelectedNode}
-                                gridType={view === "chamber" ? "hex" : "square"}
+                                src="/heart_chamber_map.png"
+                                title="DRAKHARAZ'S LAIR"
+                                nodes={CHAMBER_NODES}
+                                onNodeClick={handleNodeClick}
+                                gridType="hex"
                             />
                         </div>
                     </div>
@@ -200,52 +171,27 @@ export default function HeartChamberPage() {
                                                     <Skull size={16} /> Lair Actions
                                                 </h3>
 
-                                                {view === "chamber" ? (
-                                                    <div className="space-y-3">
-                                                        <div className="flex items-center justify-between p-2 bg-white border border-red-200 rounded">
-                                                            <div className="flex items-center gap-2">
-                                                                <Zap size={14} className="text-red-600" />
-                                                                <span className="text-xs font-bold text-red-800">PULSE OF THE DEAD</span>
-                                                            </div>
-                                                            <button className="text-[10px] bg-red-900 text-white px-2 py-1 rounded hover:bg-red-700 transition">TRIGGER (DC 24)</button>
+                                                <div className="space-y-3">
+                                                    <div className="flex items-center justify-between p-2 bg-white border border-red-200 rounded">
+                                                        <div className="flex items-center gap-2">
+                                                            <Zap size={14} className="text-red-600" />
+                                                            <span className="text-xs font-bold text-red-800">PULSE OF THE DEAD</span>
                                                         </div>
-                                                        <div className="flex items-center justify-between p-2 bg-white border border-red-200 rounded">
-                                                            <div className="flex items-center gap-2">
-                                                                <Skull size={14} className="text-blue-600" />
-                                                                <span className="text-xs font-bold text-red-800">NECROTIC BREATH</span>
-                                                            </div>
-                                                            <button className="text-[10px] bg-blue-900 text-white px-2 py-1 rounded hover:bg-blue-700 transition">RECHARGE 5-6</button>
-                                                        </div>
+                                                        <button className="text-[10px] bg-red-900 text-white px-2 py-1 rounded hover:bg-red-700 transition">TRIGGER (DC 24)</button>
                                                     </div>
-                                                ) : (
-                                                    <div className="space-y-3">
-                                                        <div className="flex items-center justify-between p-2 bg-white border border-red-200 rounded">
-                                                            <div className="flex items-center gap-2">
-                                                                <Zap size={14} className="text-indigo-600" />
-                                                                <span className="text-xs font-bold text-red-800">TIME STOP</span>
-                                                            </div>
-                                                            <button className="text-[10px] bg-indigo-900 text-white px-2 py-1 rounded hover:bg-indigo-700 transition">CAST</button>
+                                                    <div className="flex items-center justify-between p-2 bg-white border border-red-200 rounded">
+                                                        <div className="flex items-center gap-2">
+                                                            <Skull size={14} className="text-blue-600" />
+                                                            <span className="text-xs font-bold text-red-800">NECROTIC BREATH</span>
                                                         </div>
-                                                        <div className="p-2 bg-white border border-red-200 rounded">
-                                                            <div className="flex items-center gap-2 mb-2">
-                                                                <Shield size={14} className="text-green-600" />
-                                                                <span className="text-xs font-bold text-red-800">PHYLACTERY SHIELD</span>
-                                                            </div>
-                                                            <div className="flex gap-1 h-3">
-                                                                {[1, 2, 3].map(i => (
-                                                                    <div key={i} className="flex-1 bg-green-200 border border-green-500 rounded-sm"></div>
-                                                                ))}
-                                                            </div>
-                                                            <div className="text-[9px] text-center mt-1 text-gray-500 uppercase tracking-widest">3 Anchors Active</div>
-                                                        </div>
+                                                        <button className="text-[10px] bg-blue-900 text-white px-2 py-1 rounded hover:bg-blue-700 transition">RECHARGE 5-6</button>
                                                     </div>
-                                                )}
+                                                </div>
                                             </div>
 
                                             {/* BOSS STATBLOCK RENDERING */}
                                             <div className="shadow-lg transform scale-[0.98]">
                                                 {selectedNode.id === '1' && <StatblockCard data={BOSS_DATA['drakharaz']} />}
-                                                {selectedNode.id === 'c3' && <StatblockCard data={BOSS_DATA['larloch']} />}
                                             </div>
                                         </>
                                     )}
@@ -255,7 +201,7 @@ export default function HeartChamberPage() {
                             <div className="h-full flex flex-col items-center justify-center text-center opacity-40 space-y-4 p-8">
                                 <Skull size={48} className="text-red-900" />
                                 <div className="italic font-serif text-red-900">
-                                    {view === "chamber" ? "The heartbeat allows no silence." : (view === "tomb" ? "The First Warden sleeps." : "Quiet... they are listening.")}
+                                    The heartbeat allows no silence.
                                 </div>
                                 <div className="text-xs font-mono text-red-800 mt-8 border-t border-red-300 pt-4 w-full">
                                     SELECT A NODE TO VIEW DETAILS
