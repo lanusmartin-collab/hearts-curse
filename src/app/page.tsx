@@ -8,6 +8,7 @@ import {
 import DashboardWidget from "@/components/ui/DashboardWidget";
 import CurseTracker from "@/components/ui/CurseTracker";
 import CampaignModuleTemplate from "@/components/ui/CampaignModuleTemplate";
+import PartyStatusWidget from "@/components/ui/PartyStatusWidget";
 
 export default function Home() {
   const [viewMode, setViewMode] = useState<"home" | "book">("home");
@@ -128,7 +129,7 @@ export default function Home() {
             <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
             <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
             {/* [NEW] Players Link in Tools Grid */}
-            <DashboardWidget title="Party" subtitle="Players" icon={FileText} href="/players" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <PartyStatusWidget />
             {/* [NEW] Store Link */}
             <DashboardWidget title="Store" subtitle="Upgrade" icon={ShoppingBag} href="/pricing" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center", border: "1px solid var(--gold-accent)" }} />
           </div>
