@@ -97,8 +97,8 @@ export default function MapsClient() {
     };
 
     const handleWildMagic = () => {
-        const result = rollWildMagic(1);
-        alert(`WILD MAGIC SURGE!\n\nYou rolled a ${result.roll} using a 1d20.\n\nEFFECT: ${result.effect}`);
+        const result = rollWildMagic();
+        alert(`WILD MAGIC SURGE!\n\nYou rolled a ${result.roll} using a 1d20.\n\nEFFECT: ${result.result}`);
     };
 
     const handleMapSelect = (m: CampaignMap) => {
