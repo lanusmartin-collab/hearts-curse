@@ -9,7 +9,7 @@ import { MechanicsDashboard } from "@/components/ui/MechanicsDashboard";
 import RegionalMechanicsWidget from "@/components/ui/RegionalMechanicsWidget";
 import PremiumGate from "@/components/auth/PremiumGate";
 import { getRegionalEffect, rollWildMagic } from "@/lib/game/curseLogic";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
     TOWN_DAY_TABLE, OAKHAVEN_MINES_TABLE, UNDERDARK_TRAVEL_TABLE,
     NETHERIL_RUINS_TABLE, SILENT_WARDS_TABLE, OUTSKIRTS_TABLE,
@@ -20,7 +20,9 @@ import {
 import QuestJournal from "@/components/ui/QuestJournal";
 
 export default function MapsPage() {
-    const [selectedMapId, setSelectedMapId] = useState<string>(CAMPAIGN_MAPS[0].id);
+    const searchParams = useSearchParams();
+    const initialMapId = searchParams.get('id') || CAMPAIGN_MAPS[0].id;
+    const [selectedMapId, setSelectedMapId] = useState<string>(initialMapId);
     const [viewMode, setViewMode] = useState<"interactive" | "book">("interactive");
     const [showJournal, setShowJournal] = useState(false);
     const router = useRouter();

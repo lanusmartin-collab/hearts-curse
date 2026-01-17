@@ -8,6 +8,8 @@ import PremiumGate from "@/components/auth/PremiumGate";
 import StatblockCard from "@/components/ui/StatblockCard";
 import { Skull, X, Zap, Shield, Music } from "lucide-react";
 import { Statblock } from "@/lib/data/statblocks";
+import RegionalMechanicsWidget from "@/components/ui/RegionalMechanicsWidget";
+import { CAMPAIGN_MAPS } from "@/lib/data/maps";
 
 // Embedded Boss Data to ensure no import issues for the finale
 const BOSS_DATA: Record<string, Statblock> = {
@@ -132,7 +134,16 @@ export default function HeartChamberPage() {
                 <div className="flex gap-4 flex-1 overflow-hidden">
                     {/* Map Area */}
                     <div className="flex-1 relative bg-black border border-red-900 flex flex-col">
-                        <div className="flex-1 relative">
+                        <div className="flex-1 relative overflow-hidden">
+                            {/* Mechanics HUD */}
+                            <div className="absolute top-0 left-0 z-30 pointer-events-none w-full h-full">
+                                <RegionalMechanicsWidget
+                                    mechanics={CAMPAIGN_MAPS.find(m => m.id === 'heart_chamber')?.mechanics || []}
+                                    curseLevel="Critical"
+                                    faction="Undead"
+                                />
+                            </div>
+
                             <InteractiveMap
                                 src="/heart_chamber_map.png"
                                 title="DRAKHARAZ'S LAIR"
