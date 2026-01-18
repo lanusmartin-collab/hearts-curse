@@ -348,9 +348,14 @@ function EncountersContent() {
             {/* Background Effects */}
             <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, #222 1px, #222 2px)" }}></div>
 
-            <Link href="/" className="no-print campaign-btn danger text-xs px-3 py-1 no-underline fixed top-4 right-4 z-[99999]">
-                SANCTUM
-            </Link>
+            <div className="fixed top-4 right-4 z-[99999] flex gap-2">
+                <Link href="/maps" className="no-print campaign-btn text-xs px-3 py-1 no-underline bg-[#1a1a1a] text-white hover:bg-[#333] border border-[#333]">
+                    CARTOGRAPHY
+                </Link>
+                <Link href="/" className="no-print campaign-btn danger text-xs px-3 py-1 no-underline">
+                    SANCTUM
+                </Link>
+            </div>
 
             {/* LEFT SIDEBAR: CONTROLS (Fixed Width) - Grimoire Palette */}
             <div className={`

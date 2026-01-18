@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Save, Trash2, Crosshair, Edit, Move, Upload, FolderUp, Swords, Skull, Shield } from "lucide-react";
+import { Plus, Save, Trash2, Crosshair, Edit, Move, Upload, FolderUp, Swords, Skull, Shield, ArrowLeft } from "lucide-react";
 import StatblockCard from "@/components/ui/StatblockCard";
 import { STATBLOCKS } from "@/lib/data/statblocks";
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
@@ -39,6 +39,7 @@ export default function MapsClient() {
     // Editor State
     const [isEditing, setIsEditing] = useState(false);
     const [editingNode, setEditingNode] = useState<MapNode | null>(null);
+    const [defaultNodeType, setDefaultNodeType] = useState<"info" | "encounter" | "boss" | "loot" | "quest" | "entrance" | "trap">("info");
     const [viewingStatblock, setViewingStatblock] = useState<string | null>(null); // Slug or ID
 
     // Force Map to re-mount when map changes to reset state
@@ -151,7 +152,7 @@ export default function MapsClient() {
             id: `node_${Date.now()}`,
             x, y,
             label: "New Location",
-            type: "info",
+            type: defaultNodeType,
             description: "Description pending..."
         };
         setMapNodes(prev => [...prev, newNode]);
@@ -237,27 +238,52 @@ export default function MapsClient() {
                     <div className="flex-1 bg-black border border-gray-700 relative overflow-hidden shadow-inner flex flex-col">
 
                         {/* DM Tools Overlay */}
-                        <div className="absolute top-2 left-2 z-10 flex gap-2">
-                            <button
-                                onClick={() => setIsEditing(!isEditing)}
-                                className={`flex items-center gap-2 px-3 py-1 text-xs font-bold border rounded shadow-lg transition-colors ${isEditing ? "bg-yellow-600 text-black border-yellow-400 animate-pulse" : "bg-gray-900 text-gray-400 border-gray-600 hover:text-white"}`}
-                            >
-                                <Edit size={14} /> {isEditing ? "DM EDITING ACTIVE" : "DM TOOLS"}
-                            </button>
+                        <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 items-start">
+                            <div className="flex gap-2">
+                                <Link href="/" className="flex items-center gap-2 px-3 py-1 text-xs font-bold bg-black/50 text-gray-400 border border-gray-700 rounded hover:bg-black hover:text-white hover:border-gray-500 transition-colors">
+                                    <ArrowLeft size={14} /> DASHBOARD
+                                </Link>
+                                <button
+                                    onClick={() => setIsEditing(!isEditing)}
+                                    className={`flex items-center gap-2 px-3 py-1 text-xs font-bold border rounded shadow-lg transition-colors ${isEditing ? "bg-yellow-600 text-black border-yellow-400 animate-pulse" : "bg-gray-900 text-gray-400 border-gray-600 hover:text-white"}`}
+                                >
+                                    <Edit size={14} /> {isEditing ? "DM EDITING ACTIVE" : "DM TOOLS"}
+                                </button>
+                            </div>
+
                             {isEditing && (
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={handleExport}
-                                        className="flex items-center gap-2 px-3 py-1 text-xs font-bold bg-green-800 text-green-100 border border-green-600 rounded hover:bg-green-700 shadow-lg"
-                                    >
-                                        <Upload size={14} /> EXPORT JSON
-                                    </button>
-                                    <button
-                                        onClick={handleResetMap}
-                                        className="flex items-center gap-2 px-3 py-1 text-xs font-bold bg-red-900/80 text-white border border-red-600 rounded hover:bg-red-700 shadow-lg"
-                                    >
-                                        <Trash2 size={14} /> RESET MAP
-                                    </button>
+                                <div className="flex flex-col gap-2 bg-black/80 p-2 rounded border border-yellow-600/50 backdrop-blur-sm">
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={handleExport}
+                                            className="flex items-center gap-2 px-3 py-1 text-xs font-bold bg-green-800 text-green-100 border border-green-600 rounded hover:bg-green-700 shadow-lg"
+                                        >
+                                            <Upload size={14} /> EXPORT JSON
+                                        </button>
+                                        <button
+                                            onClick={handleResetMap}
+                                            className="flex items-center gap-2 px-3 py-1 text-xs font-bold bg-red-900/80 text-white border border-red-600 rounded hover:bg-red-700 shadow-lg"
+                                        >
+                                            <Trash2 size={14} /> RESET MAP
+                                        </button>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 mt-1 border-t border-gray-700 pt-2">
+                                        <span className="text-[10px] uppercase text-yellow-500 font-bold whitespace-nowrap">Create Mode:</span>
+                                        <select
+                                            value={defaultNodeType}
+                                            onChange={(e) => setDefaultNodeType(e.target.value as any)}
+                                            className="bg-black border border-yellow-700 text-yellow-500 text-[10px] uppercase p-1 rounded w-full outline-none focus:border-yellow-400"
+                                        >
+                                            <option value="info">Info (Blue)</option>
+                                            <option value="encounter">Encounter (Orange)</option>
+                                            <option value="boss">Boss (Red)</option>
+                                            <option value="loot">Loot (Green)</option>
+                                            <option value="quest">Quest (Gold)</option>
+                                            <option value="entrance">Entrance (Cyan)</option>
+                                            <option value="trap">Trap (Magenta)</option>
+                                        </select>
+                                    </div>
                                 </div>
                             )}
                         </div>
