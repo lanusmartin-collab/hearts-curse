@@ -21,11 +21,11 @@ export default function Home() {
     <div className="retro-container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
 
       {/* HEADER SECTION */}
-      <header className="campaign-header" style={{ marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid var(--glass-border)", paddingBottom: "1.5rem" }}>
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.5rem" }}>
-            <div className="relative w-96 h-96" style={{ position: "relative", width: "24rem", height: "24rem" }}>
-              <div className="animate-pulse-slow absolute inset-0 border border-[var(--scarlet-accent)] rounded-full opacity-50 blur-md"></div>
+      <header className="campaign-header" style={{ marginBottom: "2rem", display: "flex", flexWrap: "wrap", gap: "2rem", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid var(--glass-border)", paddingBottom: "1.5rem" }}>
+        <div style={{ flex: "1 1 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.5rem", flexWrap: "wrap" }}>
+            <div className="relative w-full max-w-[24rem] aspect-square" style={{ position: "relative", width: "24rem", height: "24rem" }}>
+              <div className="animate-pulse-hero absolute inset-0 border border-[var(--scarlet-accent)] rounded-full opacity-50 blur-md"></div>
               <Image
                 src="/hearts_curse_hero_v15.png"
                 alt="Logo"
@@ -34,7 +34,7 @@ export default function Home() {
               />
             </div>
             <div className="flex flex-col">
-              <h1 className="campaign-title-glitch text-5xl m-0 leading-none" data-text="HEART'S CURSE">
+              <h1 className="campaign-title-glitch text-4xl md:text-5xl m-0 leading-none" data-text="HEART'S CURSE">
                 HEART&apos;S CURSE
               </h1>
               <p className="campaign-subtitle text-xs tracking-[0.4em] text-[var(--gold-accent)] opacity-80 mt-1">
@@ -47,7 +47,7 @@ export default function Home() {
         {/* Quick Action: Open PDF Book */}
         <button
           onClick={() => setViewMode("book")}
-          className="group relative px-6 py-2 bg-[var(--obsidian-base)] border border-[rgba(201,188,160,0.5)] text-[var(--gold-accent)] font-serif uppercase text-xs tracking-widest hover:bg-[var(--gold-accent)] hover:text-black transition-all flex items-center gap-2"
+          className="group relative px-6 py-2 bg-[var(--obsidian-base)] border border-[rgba(201,188,160,0.5)] text-[var(--gold-accent)] font-serif uppercase text-xs tracking-widest hover:bg-[var(--gold-accent)] hover:text-black transition-all flex items-center gap-2 shrink-0 mb-2 md:mb-0"
         >
           <BookOpen className="w-4 h-4" /> <span>Open Campaign Module</span>
         </button>
