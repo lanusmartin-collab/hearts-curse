@@ -60,8 +60,8 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
 
     return (
         <div className="fixed inset-0 z-50 bg-gray-100 flex flex-row font-serif print:static print:overflow-visible print:h-auto print:bg-white text-justify leading-snug isolate">
-            {/* Sidebar Controls - No Print */}
-            <div className="no-print w-64 bg-gray-900 text-white flex flex-col shadow-2xl z-[99999] shrink-0 border-r border-gray-700">
+            {/* Sidebar Controls - No Print - Fixed position for reliability on small screens or overlays */}
+            <div className="no-print w-64 bg-gray-900 text-white flex flex-col shadow-2xl z-[50] shrink-0 border-r border-gray-700 relative">
                 <div className="p-6 bg-black border-b border-gray-800">
                     <h2 className="font-bold text-accent text-xl uppercase tracking-widest leading-none">AD&D<br /><span className="text-white text-sm">Campaign Book</span></h2>
                 </div>
@@ -101,15 +101,15 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                     {/* COVER PAGE (Only in Full Mode) */}
                     <div className={`print-cover-container w-full min-h-screen flex flex-col items-center justify-between relative overflow-hidden bg-black border-4 border-yellow-600 rounded-lg mb-8 pt-20 pb-20 print:border-none print:rounded-none ${printMode !== 'full' ? 'print:hidden' : ''}`}>
                         {/* Background Image - Absolute z-0 */}
-                        <div className="absolute inset-0 z-0">
+                        <div className="absolute inset-0 z-0 bg-black">
                             <Image
-                                src="/cover_art_v8.png"
+                                src="/hearts_curse_hero_v15.png"
                                 alt="Heart's Curse Campaign Cover"
                                 fill
-                                className="object-cover opacity-60 grayscale contrast-125"
+                                className="object-cover opacity-80"
                                 priority
                             />
-                            <div className="absolute inset-0 bg-black/30 z-10" /> {/* Dim overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50 z-10" />
                         </div>
 
                         {/* Header Content - Relative z-20 */}
