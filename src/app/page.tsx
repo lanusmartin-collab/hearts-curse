@@ -178,7 +178,7 @@ export default function Home() {
           </DashboardWidget>
 
           <footer style={{ marginTop: "auto", textAlign: "center", opacity: 0.4, fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--fg-dim)" }}>
-            HEART'S CURSE // SESSION 24 (BUILD 2.0)
+            HEART'S CURSE // SESSION 25 (BUILD 2.1)
           </footer>
         </div>
 
