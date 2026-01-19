@@ -38,11 +38,18 @@
 *   **Open Playtest:** Invite 10 DMs to run a one-shot using the app and provide feedback.
 *   **Feature Countdown:** Reveal one major feature per day for a week (e.g., "Day 1: The Spire", "Day 2: The Shops", "Day 3: The Curse").
 
-## 5. Post-Launch Retention
+## 5. Launch Strategy: "The Whispering Glitch"
+*   **Concept**: The VTT isn't just a tool; it's a cursed artifact.
+*   **The Hook**: "I got tired of Excel-sheet VTTs. So I built one that acts like a forbidden tome."
+*   **Assets Ready**:
+    *   [x] **Glitch Trailer**: Showcasing the "Pulse" and "Decay" animations.
+    *   [x] **Critical State**: Screenshot of Day 21 (Red UI).
+
+## 6. Post-Launch Retention
 *   **Updates:** Regular "Grimoire Updates" (new spells) or "Bestiary Expansions" (new monsters).
 *   **User Content:** specific distinct styles for "Safe Havens" or "Loot Tables" that users can submit.
 
 ## Action Plan (Next 48 Hours)
-1.  [ ] **Capture:** Record a 30s video of the Curse Tracker and Map interactions.
+1.  [x] **Capture:** Record a 30s video of the Curse Tracker and Map interactions.
 2.  [ ] **Package:** Ensure `README.md` is perfect and explains how to run the app.
 3.  [ ] **Tease:** Post one screenshot to r/DnD with the title "Working on a UI that gets more corrupted as the campaign progresses."

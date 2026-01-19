@@ -59,9 +59,9 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
     ];
 
     return (
-        <div className="fixed inset-0 z-50 bg-gray-100 flex flex-row font-serif print:static print:overflow-visible print:h-auto print:bg-white text-justify leading-snug isolate">
-            {/* Sidebar Controls - No Print - Fixed position for reliability on small screens or overlays */}
-            <div className="no-print w-64 bg-gray-900 text-white flex flex-col shadow-2xl z-[50] shrink-0 border-r border-gray-700 relative">
+        <div className="fixed inset-0 z-50 bg-gray-100 font-serif print:static print:overflow-visible print:h-auto print:bg-white text-justify leading-snug isolate">
+            {/* Sidebar Controls - Fixed Left */}
+            <div className="no-print fixed top-0 left-0 bottom-0 w-64 bg-gray-900 text-white flex flex-col shadow-2xl z-[60] border-r border-gray-700">
                 <div className="p-6 bg-black border-b border-gray-800">
                     <h2 className="font-bold text-accent text-xl uppercase tracking-widest leading-none">AD&D<br /><span className="text-white text-sm">Campaign Book</span></h2>
                 </div>
@@ -94,8 +94,8 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                 </div>
             </div>
 
-            {/* Book Content Container - Scrollable Area */}
-            <div className="flex-1 overflow-y-auto w-full relative z-0 bg-gray-200 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+            {/* Book Content Container - Padded Left for Sidebar */}
+            <div className="fixed inset-0 pl-64 w-full h-full overflow-y-auto bg-gray-200 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 print:pl-0 print:static">
                 <div className="max-w-[816px] mx-auto bg-white min-h-screen pt-8 pb-12 px-12 shadow-2xl print:shadow-none print:pt-0 print:mx-0 print:w-full print:max-w-none print:px-8 my-8 print:my-0">
 
                     {/* COVER PAGE (Only in Full Mode) */}
@@ -106,7 +106,8 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
                                 src="/hearts_curse_hero_v15.png"
                                 alt="Heart's Curse Campaign Cover"
                                 fill
-                                className="object-cover opacity-80"
+                                className="opacity-80"
+                                style={{ objectFit: 'cover', objectPosition: 'center' }}
                                 priority
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50 z-10" />
