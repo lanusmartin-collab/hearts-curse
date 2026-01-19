@@ -112,7 +112,7 @@ export default function PrologueController({ playerCharacter, onComplete }: Prol
                         </div>
                     </div>
 
-                    import {downgradeCharacter} from "@/lib/game/CharacterMechanics";
+
 
                     // ... inside the component ...
 
