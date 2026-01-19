@@ -85,7 +85,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
             };
         }).filter(Boolean) as Combatant[];
 
-        const hero = playerCharacter ? { ...playerCharacter, initiative: Math.floor(Math.random() * 20) + playerCharacter.stats.dex } : MOCK_PLAYER;
+        const hero = playerCharacter ? { ...playerCharacter, initiative: Math.floor(Math.random() * 20) + (playerCharacter.stats?.dex || 0) } : MOCK_PLAYER;
 
         // Optionally add a narrative ally for the Intro fight? Keeping it solo for dragging effect
         const all = [hero, ...enemies].sort((a, b) => b.initiative - a.initiative);
