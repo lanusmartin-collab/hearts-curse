@@ -72,7 +72,14 @@ export default function Home() {
     return (
       <MainMenu
         onCreateChar={() => setViewMode("char_creation")}
-        onLoadGame={() => alert("Save system not implemented yet.")}
+        onLoadGame={(savedGame) => {
+          // RESTORE STATE
+          setPlayerCharacter(savedGame.playerCharacter);
+          setSelectedMapId(savedGame.currentMapId);
+          setSelectedNodeId(savedGame.currentNodeId);
+          // TODO: Restore quest state and inventory if we had global providers for them
+          setViewMode("game");
+        }}
       />
     );
   }

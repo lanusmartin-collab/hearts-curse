@@ -1,13 +1,36 @@
-import React from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { Skull, Moon, Save } from 'lucide-react';
+import SaveLoadMenu from './SaveLoadMenu';
+import { GameSaveData } from '@/lib/game/SaveManager';
 
 interface MainMenuProps {
     onCreateChar: () => void;
-    onLoadGame: () => void; // Placeholder
+    onLoadGame: (save: GameSaveData) => void;
 }
 
 export default function MainMenu({ onCreateChar, onLoadGame }: MainMenuProps) {
+    const [showLoadMenu, setShowLoadMenu] = useState(false);
+
+    if (showLoadMenu) {
+        return (
+            <div className="fixed inset-0 bg-[#0a0a0c] z-[100] flex items-center justify-center p-4">
+                <Image
+                    src="/hearts_curse_hero_v15.png"
+                    alt="Background"
+                    fill
+                    className="object-cover opacity-20"
+                />
+                <div className="relative z-10 w-full max-w-2xl">
+                    <SaveLoadMenu
+                        onLoad={onLoadGame}
+                        onBack={() => setShowLoadMenu(false)}
+                    />
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="fixed inset-0 bg-[#0a0a0c] z-[100] flex flex-col font-serif overflow-hidden">
 
@@ -49,32 +72,12 @@ export default function MainMenu({ onCreateChar, onLoadGame }: MainMenuProps) {
                 </button>
 
                 <button
-                    onClick={onLoadGame}
+                    onClick={() => setShowLoadMenu(true)}
                     className="w-72 py-4 border-2 border-[#444] hover:border-[#a32222] bg-[#1a1a1a] hover:bg-[#2a1a1a] text-[#aaa] hover:text-white transition-all duration-300 uppercase tracking-[0.2em] text-sm font-bold flex items-center justify-center gap-3 shadow-xl group relative"
                 >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-                    <input
-                        type="file"
-                        accept=".json"
-                        className="absolute inset-0 opacity-0 cursor-pointer"
-                        onChange={(e) => {
-                            if (e.target.files?.[0]) {
-                                const reader = new FileReader();
-                                reader.onload = (ev) => {
-                                    try {
-                                        const char = JSON.parse(ev.target?.result as string);
-                                        alert(`Loaded: ${char.name}`);
-                                        // TODO: Actually load this
-                                    } catch (err) {
-                                        alert("Invalid character file");
-                                    }
-                                };
-                                reader.readAsText(e.target.files[0]);
-                            }
-                        }}
-                    />
                     <Save className="w-4 h-4 text-[#555] group-hover:text-[#a32222] transition-colors" />
-                    Load Character
+                    Load Game
                 </button>
 
                 <div className="absolute bottom-8 text-[#333] text-[10px] font-mono tracking-widest">

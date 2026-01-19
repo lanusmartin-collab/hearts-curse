@@ -6,6 +6,7 @@ import { useAudio } from "@/lib/context/AudioContext";
 import { Typewriter } from "@/components/ui/Typewriter";
 import { CAMPAIGN_MAPS, MapNode } from "@/lib/data/maps";
 import { NarrativeEngine } from "@/lib/game/NarrativeEngine";
+import { SaveManager } from "@/lib/game/SaveManager";
 import CombatLayout from "./CombatLayout";
 
 // Placeholder for Party Data
@@ -95,10 +96,33 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
 
     // ... (Visited persisted useEffect remains same)
 
+    // ... inside component
+
     useEffect(() => {
         // Switch to Dungeon Ambience
         playAmbience("dungeon");
     }, [playAmbience]);
+
+    // AUTO-SAVE on Node Change
+    useEffect(() => {
+        if (playerCharacter && currentNodeId) {
+            SaveManager.saveGame("autosave", {
+                id: "autosave",
+                timestamp: Date.now(),
+                name: "Auto Save",
+                version: "2.3",
+                playerCharacter: playerCharacter,
+                currentMapId: currentMapId,
+                currentNodeId: currentNodeId,
+                questState: {}, // TODO
+                inventory: [], // TODO
+                gold: 0, // TODO
+                playtime: 0 // TODO: Track playtime
+            });
+            // Optional: Small notification or log?
+            // addToLog("Game Saved."); // Maybe too spammy
+        }
+    }, [currentNodeId, currentMapId, playerCharacter]);
 
     const addToLog = (msg: string) => {
         setConsoleLog(prev => [...prev.slice(-20), `> ${msg}`]); // Increased log history

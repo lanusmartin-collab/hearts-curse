@@ -38,6 +38,34 @@ export type Statblock = {
 };
 
 export const STATBLOCKS: Record<string, Statblock> = {
+    "larloch_shadow_king": {
+        name: "Larloch the Shadow King",
+        size: "Medium", type: "Undead (Lich)", alignment: "Lawful Evil",
+        ac: 22, armorType: "Natural Armor + Bracers", hp: 400, hitDice: "40d8 + 200", speed: "30 ft., fly 60 ft.",
+        stats: { str: 12, dex: 16, con: 20, int: 30, wis: 24, cha: 20 },
+        saves: "Con +12, Int +17, Wis +14",
+        skills: "Arcana +25, History +25, Perception +14",
+        immunities: "Poison, Bludgeoning/Piercing/Slashing from Nonmagical Attacks, Necrotic, Cold",
+        conditionImmunities: "Charmed, Exhaustion, Frightened, Paralyzed, Poisoned",
+        senses: "Truesight 120 ft., Passive Perception 24",
+        languages: "All",
+        cr: "30", xp: 155000,
+        traits: [
+            { name: "Legendary Resistance (5/Day)", desc: "Succeeds on failed save." },
+            { name: "Rejuvenation", desc: "If destroyed, regains all HP in 1d10 hours." },
+            { name: "Master of Magic", desc: "Larloch has advantage on saves against spells. Spells of 3rd level or lower do not affect him." },
+            { name: "Spellcasting", desc: "29th-level spellcaster. Int DC 27. Spells: Time Stop, Wish, Meteor Swarm, Power Word Kill, etc." }
+        ],
+        actions: [
+            { name: "Paralyzing Touch", desc: "+17 to hit, 3d6 cold damage. DC 20 Con save or Paralyzed." },
+            { name: "Necrotic Bolt", desc: "Ranged Spell Attack: +19 to hit, range 120ft. Hit: 8d8 necrotic. Target cannot regain HP." }
+        ],
+        legendary: [
+            { name: "Cantrip", desc: "Casts a cantrip." },
+            { name: "Cast Spell (2 actions)", desc: "Casts a spell." },
+            { name: "Life Drain (3 actions)", desc: "Each creature within 20ft takes 10d6 necrotic damage. Larloch heals for half." }
+        ]
+    },
     "fimble": {
         name: "Fimble Futterly",
         size: "Small",

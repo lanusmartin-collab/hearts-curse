@@ -21,13 +21,15 @@ interface MapLocation {
 const LOCATIONS: MapLocation[] = [
     {
         id: "heart_chamber",
-        name: "The Heart's Chamber",
+        name: "Castle Mournwatch (Summit)",
         description: "Larloch's inner sanctum. Facing the Shadow King himself.",
         top: "45%",
         left: "52%",
         icon: <Skull className="w-6 h-6 text-red-500 animate-pulse" />,
         difficulty: "Deadly"
-    },
+    }
+    /* HIDDEN FOR PROLOGUE CONTEXT
+    ,
     {
         id: "underdark",
         name: "Upper Underdark",
@@ -47,6 +49,7 @@ const LOCATIONS: MapLocation[] = [
         difficulty: "Low",
         locked: true
     }
+    */
 ];
 
 export default function WorldMap({ onSelectLocation }: WorldMapProps) {
@@ -58,7 +61,7 @@ export default function WorldMap({ onSelectLocation }: WorldMapProps) {
             {/* BACKGROUND MAP */}
             <div className="absolute inset-0 opacity-60">
                 <Image
-                    src="/netheril_map.png"
+                    src="/castle_mournwatch_map.png"
                     alt="World Map"
                     fill
                     className="object-cover"
@@ -77,7 +80,7 @@ export default function WorldMap({ onSelectLocation }: WorldMapProps) {
             {/* PINS CONTAINER */}
             <div className="relative w-full h-full max-w-5xl max-h-[80vh] border border-[#333] shadow-2xl bg-[#111]/50 backdrop-blur-sm rounded-lg overflow-hidden">
                 <Image
-                    src="/netheril_map.png"
+                    src="/castle_mournwatch_map.png"
                     alt="Region"
                     fill
                     className="object-contain opacity-80 hover:scale-105 transition-transform duration-[10s] ease-linear"

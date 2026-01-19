@@ -92,6 +92,15 @@ export function CommandMenu() {
                     <Command.Item onSelect={() => runCommand(() => alert('Rolling D20... implementation pending'))}>
                         <span className="mr-2">🎲</span> Roll D20
                     </Command.Item>
+                    <Command.Item onSelect={() => runCommand(() => {
+                        // Triggers a manual save via event or router? 
+                        // Since CommandMenu is isolated, we might need a Global Context for saving or just save via localStorage hacking if we have access to state.
+                        // Actually, CommandMenu doesn't have access to Game State (playerCharacter etc) directly here.
+                        // For now, we'll just alert that Quick Save uses Auto-Save mostly.
+                        alert("Game Auto-Saves on movement. Manual Save coming soon.");
+                    })}>
+                        <span className="mr-2">💾</span> Save Game
+                    </Command.Item>
                 </Command.Group>
 
             </Command.List>
