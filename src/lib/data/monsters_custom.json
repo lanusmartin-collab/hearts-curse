@@ -1,5 +1,34 @@
 [
     {
+        "slug": "drakharaz_eternal",
+        "name": "Drakharaz the Eternal",
+        "size": "Gargantuan",
+        "type": "Undead",
+        "alignment": "Neutral Evil",
+        "ac": 22,
+        "hp": 450,
+        "speed": "40 ft, Fly 80 ft",
+        "stats": {
+            "str": 27,
+            "dex": 10,
+            "con": 25,
+            "int": 18,
+            "wis": 15,
+            "cha": 19
+        },
+        "cr": "25",
+        "actions": [
+            {
+                "name": "Bite",
+                "desc": "Melee Weapon Attack: +15 to hit, reach 15 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 9 (2d8) necrotic damage."
+            },
+            {
+                "name": "Necrotic Breath (Recharge 5-6)",
+                "desc": "The dracolich exhales black fire in a 90-foot cone. Each creature in that area must make a DC 22 Dexterity saving throw, taking 63 (18d6) necrotic damage on a failed save, or half as much damage on a successful one."
+            }
+        ]
+    },
+    {
         "slug": "larloch_shadow_king",
         "name": "Larloch the Shadow King",
         "size": "Medium",
