@@ -13,6 +13,11 @@ export interface ClassData {
         spellsKnown?: number; // For 'known' casters
         slots: { [level: number]: number }; // Lvl 20 Slots
     };
+    subclasses?: {
+        name: string;
+        description: string;
+        features: string[];
+    }[];
 }
 
 // Standard 5e Slot Progression for Full Casters at Lvl 20
@@ -24,7 +29,11 @@ export const CLASSES: ClassData[] = [
         id: "barbarian", name: "Barbarian", hp: 12,
         saves: ["Strength", "Constitution"],
         proficiencies: ["Light Armor", "Medium Armor", "Shields", "Simple Weapons", "Martial Weapons"],
-        traits: ["Rage", "Unarmored Defense", "Reckless Attack", "Danger Sense", "Extra Attack", "Fast Movement", "Feral Instinct", "Brutal Critical", "Relentless Rage", "Persistent Rage", "Indomitable Might", "Primal Champion"]
+        traits: ["Rage", "Unarmored Defense", "Reckless Attack", "Danger Sense", "Extra Attack", "Fast Movement", "Feral Instinct", "Brutal Critical", "Relentless Rage", "Persistent Rage", "Indomitable Might", "Primal Champion"],
+        subclasses: [
+            { name: "Path of the Berserker", description: "Fury incarnate.", features: ["Frenzy", "Mindless Rage", "Intimidating Presence", "Retaliation"] },
+            { name: "Path of the Totem Warrior", description: "Spirit guided.", features: ["Spirit Seeker", "Totem Spirit", "Aspect of the Beast", "Totemic Attunement"] }
+        ]
     },
     {
         id: "bard", name: "Bard", hp: 8,
@@ -34,7 +43,11 @@ export const CLASSES: ClassData[] = [
         spellcasting: {
             ability: "cha", type: "known", cantripsKnown: 4, spellsKnown: 22,
             slots: FULL_CASTER_SLOTS
-        }
+        },
+        subclasses: [
+            { name: "College of Lore", description: "Seekers of knowledge.", features: ["Bonus Proficiencies", "Cutting Words", "Additional Magical Secrets", "Peerless Skill"] },
+            { name: "College of Valor", description: "Heroes of old.", features: ["Combat Inspiration", "Extra Attack", "Battle Magic"] }
+        ]
     },
     {
         id: "cleric", name: "Cleric", hp: 8,
@@ -44,7 +57,11 @@ export const CLASSES: ClassData[] = [
         spellcasting: {
             ability: "wis", type: "prepared", cantripsKnown: 5,
             slots: FULL_CASTER_SLOTS
-        }
+        },
+        subclasses: [
+            { name: "Life Domain", description: "Preservers of vitality.", features: ["Bonus Proficiency", "Disciple of Life", "Channel Divinity: Preserve Life", "Blessed Healer", "Divine Strike", "Supreme Healing"] },
+            { name: "Light Domain", description: "Servants of truth.", features: ["Warding Flare", "Radiance of the Dawn", "Corona of Light"] }
+        ]
     },
     {
         id: "druid", name: "Druid", hp: 8,
@@ -54,19 +71,31 @@ export const CLASSES: ClassData[] = [
         spellcasting: {
             ability: "wis", type: "prepared", cantripsKnown: 4,
             slots: FULL_CASTER_SLOTS
-        }
+        },
+        subclasses: [
+            { name: "Circle of the Land", description: "Guardians of ancient knowledge.", features: ["Bonus Cantrip", "Natural Recovery", "Land's Stride", "Nature's Ward", "Nature's Sanctuary"] },
+            { name: "Circle of the Moon", description: "Changeable as the moon.", features: ["Combat Wild Shape", "Circle Forms", "Primal Strike", "Elemental Wild Shape", "Thousand Forms"] }
+        ]
     },
     {
         id: "fighter", name: "Fighter", hp: 10,
         saves: ["Strength", "Constitution"],
         proficiencies: ["All Armor", "Shields", "Simple Weapons", "Martial Weapons"],
-        traits: ["Fighting Style", "Second Wind", "Action Surge", "Martial Archetype", "Extra Attack (3)", "Indomitable"]
+        traits: ["Fighting Style", "Second Wind", "Action Surge", "Martial Archetype", "Extra Attack (3)", "Indomitable"],
+        subclasses: [
+            { name: "Champion", description: "Raw physical power.", features: ["Improved Critical", "Remarkable Athlete", "Additional Fighting Style", "Superior Critical", "Survivor"] },
+            { name: "Battle Master", description: "Combat superiority.", features: ["Combat Superiority", "Student of War", "Know Your Enemy", "Relentless"] }
+        ]
     },
     {
         id: "monk", name: "Monk", hp: 8,
         saves: ["Strength", "Dexterity"],
         proficiencies: ["Simple Weapons", "Shortswords"],
-        traits: ["Unarmored Defense", "Martial Arts", "Ki", "Unarmored Movement", "Deflect Missiles", "Slow Fall", "Extra Attack", "Stunning Strike", "Ki-Empowered Strikes", "Evasion", "Stillness of Mind", "Purity of Body", "Tongue of the Sun and Moon", "Diamond Soul", "Timeless Body", "Empty Body", "Perfect Self"]
+        traits: ["Unarmored Defense", "Martial Arts", "Ki", "Unarmored Movement", "Deflect Missiles", "Slow Fall", "Extra Attack", "Stunning Strike", "Ki-Empowered Strikes", "Evasion", "Stillness of Mind", "Purity of Body", "Tongue of the Sun and Moon", "Diamond Soul", "Timeless Body", "Empty Body", "Perfect Self"],
+        subclasses: [
+            { name: "Way of the Open Hand", description: "Masters of martial arts.", features: ["Open Hand Technique", "Wholeness of Body", "Tranquility", "Quivering Palm"] },
+            { name: "Way of Shadow", description: "Assassins and spies.", features: ["Shadow Arts", "Shadow Step", "Cloak of Shadows", "Opportunist"] }
+        ]
     },
     {
         id: "paladin", name: "Paladin", hp: 10,
@@ -76,7 +105,11 @@ export const CLASSES: ClassData[] = [
         spellcasting: {
             ability: "cha", type: "prepared", cantripsKnown: 0,
             slots: HALF_CASTER_SLOTS // Lvl 20 finishes at 5th level spells
-        }
+        },
+        subclasses: [
+            { name: "Oath of Devotion", description: "The ideal of the knight in shining armor.", features: ["Sacred Weapon", "Turn the Unholy", "Aura of Devotion", "Purity of Spirit", "Holy Nimbus"] },
+            { name: "Oath of Vengeance", description: "Punishers of the wicked.", features: ["Abjure Enemy", "Vow of Enmity", "Relentless Avenger", "Soul of Vengeance", "Avenging Angel"] }
+        ]
     },
     {
         id: "ranger", name: "Ranger", hp: 10,
@@ -86,13 +119,21 @@ export const CLASSES: ClassData[] = [
         spellcasting: {
             ability: "wis", type: "known", cantripsKnown: 0, spellsKnown: 11,
             slots: HALF_CASTER_SLOTS
-        }
+        },
+        subclasses: [
+            { name: "Hunter", description: "Master of the wild.", features: ["Hunter's Prey", "Defensive Tactics", "Multiattack", "Superior Hunter's Defense"] },
+            { name: "Beast Master", description: "Bonded with a beast.", features: ["Ranger's Companion", "Exceptional Training", "Bestial Fury", "Share Spells"] }
+        ]
     },
     {
         id: "rogue", name: "Rogue", hp: 8,
         saves: ["Dexterity", "Intelligence"],
         proficiencies: ["Light Armor", "Simple Weapons", "Hand Crossbows", "Longswords", "Rapiers", "Shortswords"],
-        traits: ["Expertise", "Sneak Attack", "Thieves' Cant", "Cunning Action", "Uncanny Dodge", "Evasion", "Reliable Talent", "Blindsense", "Slippery Mind", "Elusive", "Stroke of Luck"]
+        traits: ["Expertise", "Sneak Attack", "Thieves' Cant", "Cunning Action", "Uncanny Dodge", "Evasion", "Reliable Talent", "Blindsense", "Slippery Mind", "Elusive", "Stroke of Luck"],
+        subclasses: [
+            { name: "Thief", description: "Burglars and bandits.", features: ["Fast Hands", "Second-Story Work", "Supreme Sneak", "Use Magic Device", "Thief's Reflexes"] },
+            { name: "Assassin", description: "Masters of death.", features: ["Bonus Proficiencies", "Assassinate", "Infiltration Expertise", "Impostor", "Death Strike"] }
+        ]
     },
     {
         id: "sorcerer", name: "Sorcerer", hp: 6,
@@ -102,7 +143,11 @@ export const CLASSES: ClassData[] = [
         spellcasting: {
             ability: "cha", type: "known", cantripsKnown: 6, spellsKnown: 15,
             slots: FULL_CASTER_SLOTS
-        }
+        },
+        subclasses: [
+            { name: "Draconic Bloodline", description: "Dragon's power.", features: ["Dragon Ancestor", "Draconic Resilience", "Elemental Affinity", "Dragon Wings", "Draconic Presence"] },
+            { name: "Wild Magic", description: "Chaos incarnate.", features: ["Wild Magic Surge", "Tides of Chaos", "Bend Luck", "Controlled Chaos", "Spell Bombardment"] }
+        ]
     },
     {
         id: "warlock", name: "Warlock", hp: 8,
@@ -112,7 +157,11 @@ export const CLASSES: ClassData[] = [
         spellcasting: {
             ability: "cha", type: "known", cantripsKnown: 4, spellsKnown: 15,
             slots: { 5: 4 } // Pact Magic is weird, just 4 slots of 5th level (plus Mystic Arcanum handled via traits for now)
-        }
+        },
+        subclasses: [
+            { name: "The Fiend", description: "A deal with a devil.", features: ["Dark One's Blessing", "Dark One's Own Luck", "Fiendish Resilience", "Hurl Through Hell"] },
+            { name: "The Genie", description: "Noble genie patron.", features: ["Genie's Vessel", "Elemental Gift", "Sanctuary Vessel", "Limited Wish"] }
+        ]
     },
     {
         id: "wizard", name: "Wizard", hp: 6,
@@ -122,6 +171,10 @@ export const CLASSES: ClassData[] = [
         spellcasting: {
             ability: "int", type: "prepared", cantripsKnown: 5,
             slots: FULL_CASTER_SLOTS
-        }
+        },
+        subclasses: [
+            { name: "School of Evocation", description: "Destructive magic.", features: ["Evocation Savant", "Sculpt Spells", "Potent Cantrip", "Empowered Evocation", "Overchannel"] },
+            { name: "School of Abjuration", description: "Protective magic.", features: ["Abjuration Savant", "Arcane Ward", "Projected Ward", "Improved Abjuration", "Spell Resistance"] }
+        ]
     }
 ];

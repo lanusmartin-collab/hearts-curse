@@ -31,17 +31,25 @@ export default function TacticalMap({ combatants, activeCombatantId, canMove, on
     const [hoveredTile, setHoveredTile] = React.useState<{ x: number, y: number } | null>(null);
 
     React.useEffect(() => {
-        // Initialize positions
-        const newPos: any = {};
-        combatants.forEach((c, i) => {
-            if (c.type === 'player') {
-                newPos[c.id] = { x: 2, y: 4 }; // Left side
-            } else {
-                newPos[c.id] = { x: 9, y: 2 + (i * 2) }; // Right side
-            }
+        // Initialize positions if empty or mismatch
+        if (combatants.length === 0) return;
+
+        setPositions(prev => {
+            const newPos = { ...prev };
+            let changed = false;
+            combatants.forEach((c, i) => {
+                if (!newPos[c.id]) {
+                    if (c.type === 'player') {
+                        newPos[c.id] = { x: 2, y: 4 };
+                    } else {
+                        newPos[c.id] = { x: 9, y: 2 + (i % 6) }; // Spread better
+                    }
+                    changed = true;
+                }
+            });
+            return changed ? newPos : prev;
         });
-        setPositions(newPos);
-    }, [combatants.length]);
+    }, [combatants, activeCombatantId]); // Add activeCombatantId dependency to ensure redraw
 
     const getDistance = (p1: { x: number, y: number }, p2: { x: number, y: number }) => {
         return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)) * 5;
@@ -86,7 +94,13 @@ export default function TacticalMap({ combatants, activeCombatantId, canMove, on
 
     return (
         <div
-            className="relative w-[800px] h-[600px] bg-[#1a1515] border-4 border-[#333] shadow-2xl overflow-hidden grid grid-cols-12 grid-rows-8 gap-1 p-4 bg-[url('/locations/dungeon_floor.jpg')] bg-cover"
+            className="relative w-[800px] h-[600px] border-4 border-[#333] shadow-2xl overflow-hidden grid grid-cols-12 grid-rows-8 gap-1 p-4"
+            style={{
+                backgroundColor: '#1a1515',
+                backgroundImage: "url('/locations/dungeon_floor.jpg')",
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+            }}
             onMouseLeave={() => setHoveredTile(null)}
         >
             {/* Grid Cells */}

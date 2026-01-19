@@ -29,6 +29,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
     const [name, setName] = useState("Hero");
     const [raceId, setRaceId] = useState("human");
     const [classId, setClassId] = useState("paladin");
+    const [subclassIndex, setSubclassIndex] = useState(0);
     const [backgroundId, setBackgroundId] = useState("noble");
     const [alignment, setAlignment] = useState(ALIGNMENTS[0]);
 
@@ -197,7 +198,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
             type: 'player',
             level: 20,
             race: raceId,
-            class: classId,
+            class: selectedClass?.subclasses ? `${selectedClass.name} (${selectedClass.subclasses[subclassIndex].name})` : classId,
             background: backgroundId,
             alignment,
             equipment: equippedNames,
@@ -317,13 +318,33 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                 <label className="text-xs uppercase tracking-widest text-[#666]">Class</label>
                                 <div className="grid grid-cols-4 gap-2">
                                     {CLASSES.map(cls => (
-                                        <button key={cls.id} onClick={() => { setClassId(cls.id); setKnownSpells(new Set()); setPreparedSpells(new Set()); }} className={`p-3 border transition-all flex flex-col items-center gap-1 ${classId === cls.id ? 'bg-[#a32222] border-[#ff4444] text-white' : 'bg-[#111] border-[#333] text-[#666] hover:border-[#666]'}`}>
+                                        <button key={cls.id} onClick={() => { setClassId(cls.id); setSubclassIndex(0); setKnownSpells(new Set()); setPreparedSpells(new Set()); }} className={`p-3 border transition-all flex flex-col items-center gap-1 ${classId === cls.id ? 'bg-[#a32222] border-[#ff4444] text-white' : 'bg-[#111] border-[#333] text-[#666] hover:border-[#666]'}`}>
                                             <span className="font-bold text-sm">{cls.name}</span>
                                             <span className="text-[10px] opacity-60">d{cls.hp} HD</span>
                                         </button>
                                     ))}
                                 </div>
                             </div>
+
+                            {/* SUBCLASS SELECTOR */}
+                            {selectedClass?.subclasses && (
+                                <div className="space-y-2 animate-in fade-in">
+                                    <label className="text-xs uppercase tracking-widest text-[#666]">Subclass (Archetype)</label>
+                                    <select value={subclassIndex} onChange={e => setSubclassIndex(parseInt(e.target.value))} className="w-full bg-[#111] border border-[#333] p-3 text-white focus:border-[#a32222] outline-none">
+                                        {selectedClass.subclasses.map((sub, i) => (
+                                            <option key={sub.name} value={i}>{sub.name}</option>
+                                        ))}
+                                    </select>
+                                    <div className="bg-[#111] p-4 text-sm text-[#888] border border-[#222]">
+                                        <p className="italic text-[#ccc] mb-2">{selectedClass.subclasses[subclassIndex].description}</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {selectedClass.subclasses[subclassIndex].features.map(f => (
+                                                <span key={f} className="px-2 py-1 bg-[#222] text-[#888] text-xs rounded border border-[#333]">{f}</span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -358,6 +379,15 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                     <h4 className="text-[#a32222] font-bold mb-4 flex items-center gap-2"><BookOpen className="w-4 h-4" /> Class Traits</h4>
                                     <ul className="space-y-2 text-sm text-[#ccc]">
                                         {selectedClass?.traits.map(t => <li key={t} className="flex gap-2"><div className="w-1 h-1 bg-[#555] rounded-full mt-2" />{t}</li>)}
+                                        {/* SUBCLASS FEATURES */}
+                                        {selectedClass?.subclasses?.[subclassIndex] && (
+                                            <>
+                                                <li className="mt-4 font-bold text-[#a32222] uppercase text-xs tracking-widest">{selectedClass.subclasses[subclassIndex].name} Traits</li>
+                                                {selectedClass.subclasses[subclassIndex].features.map(f => (
+                                                    <li key={f} className="flex gap-2"><div className="w-1 h-1 bg-[#a32222] rounded-full mt-2" />{f}</li>
+                                                ))}
+                                            </>
+                                        )}
                                     </ul>
                                 </div>
                                 <div className="bg-[#111] p-6 border border-[#333]">
@@ -538,7 +568,10 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                         </div>
                         <div className="text-right">
                             <h2 className="text-2xl font-bold uppercase tracking-tighter border-b-2 border-[#1a1a1a] pb-1">{name}</h2>
-                            <p className="text-xs font-bold uppercase mt-1">{selectedRace?.name} {selectedClass?.name}</p>
+                            <p className="text-xs font-bold uppercase mt-1">
+                                {selectedRace?.name} {selectedClass?.name}
+                                {selectedClass?.subclasses && <span className="text-[#a32222]"> [{selectedClass.subclasses[subclassIndex].name}]</span>}
+                            </p>
                             <p className="text-xs font-mono mt-1">Lvl 20 • {alignment} • {selectedBackground?.name}</p>
                         </div>
                     </div>
