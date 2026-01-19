@@ -257,8 +257,6 @@ export default function DiceRoller() {
         setVisorTotal(diceTotal);
 
         if (hasNat1) {
-            document.body.classList.add('animate-shake');
-            setTimeout(() => document.body.classList.remove('animate-shake'), 500);
             playSfx("/sfx/glitch_crit.mp3");
         } else if (hasNat20) {
             playSfx("/sfx/holy_crit.mp3");
@@ -278,23 +276,29 @@ export default function DiceRoller() {
         <div className="no-print">
             <style jsx>{`
                 .dice-rolling .die-content { 
-                    animation: tumble 0.5s linear infinite; 
+                    animation: tumble 0.4s linear infinite; 
                 }
                 
                 @keyframes tumble { 
-                    0% { transform: rotate3d(1, 1, 1, 0deg); }
-                    50% { transform: rotate3d(1, 2, 0, 180deg); }
-                    100% { transform: rotate3d(1, 1, 1, 360deg); }
+                    0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+                    25% { transform: rotateX(90deg) rotateY(45deg) rotateZ(180deg); }
+                    50% { transform: rotateX(180deg) rotateY(90deg) rotateZ(0deg); }
+                    75% { transform: rotateX(270deg) rotateY(135deg) rotateZ(180deg); }
+                    100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); } 
                 }
 
                 .crit-success-effect { 
-                    filter: drop-shadow(0 0 10px var(--gold-accent));
+                    filter: drop-shadow(0 0 8px var(--gold-accent));
                     animation: pulse-crit 1s infinite;
                 }
                 
                 .crit-fail-effect {
-                    filter: drop-shadow(0 0 10px red);
-                    animation: shake-crit 0.4s infinite;
+                    filter: drop-shadow(0 0 8px red);
+                }
+
+                @keyframes pulse-crit {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
                 }
             `}</style>
 
@@ -316,8 +320,9 @@ export default function DiceRoller() {
                 <div
                     className="dice-panel glass-panel animate-slide-up flex flex-col fixed z-[9000]"
                     style={{
-                        left: position.x - 280, // Offset to open to Left/Top
-                        top: position.y - 300,  // Offset to open upwards
+                        // Intelligent positioning: ensure it stays on screen
+                        left: Math.min(Math.max(0, position.x - 280), window.innerWidth - 330),
+                        top: Math.min(Math.max(0, position.y - 300), window.innerHeight - 500),
                         width: '320px',
                         zIndex: 9005
                     }}
