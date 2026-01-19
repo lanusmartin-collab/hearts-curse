@@ -44,13 +44,11 @@ export default function Home() {
 
   // -- STATE HANDLERS --
   const handleGameStart = () => {
-    if (locked) {
-      setShowLockAuth(true);
-      return;
-    }
+    // Lock removed for ease of access
     setViewMode("intro_narrative");
   };
 
+  /* Lock Code Removed
   if (showLockAuth) {
     return (
       <LockScreen
@@ -62,6 +60,7 @@ export default function Home() {
       />
     );
   }
+  */
 
   if (viewMode === "intro_narrative") {
     return <NarrativeIntro onComplete={() => setViewMode("main_menu")} />;
