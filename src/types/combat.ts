@@ -30,6 +30,8 @@ export interface Combatant {
         name: string;
         bonus: number;
         damage: string; // e.g. "1d8+3"
+        isAoE?: boolean;
+        radius?: number;
     }[];
 }
 
