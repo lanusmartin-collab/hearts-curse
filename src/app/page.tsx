@@ -79,7 +79,7 @@ export default function Home() {
     return (
       <GameLayout
         onExit={() => setViewMode("home")}
-      // We might want to pass playerClass/rewards here later
+        playerCharacter={playerCharacter}
       />
     );
   }

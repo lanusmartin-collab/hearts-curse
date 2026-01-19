@@ -16,13 +16,34 @@ const PARTY = [
     { name: "Torag", class: "Cleric", hp: 38, maxHp: 44, mana: 25, maxMana: 30, img: "/portraits/torag.png" },
 ];
 
+import { Combatant } from "@/types/combat";
+
 interface GameLayoutProps {
     onExit: () => void;
     startingRewards?: any;
+    playerCharacter?: Combatant;
 }
 
-export default function GameLayout({ onExit, startingRewards }: GameLayoutProps) {
+export default function GameLayout({ onExit, startingRewards, playerCharacter }: GameLayoutProps) {
     const { playSfx, playAmbience } = useAudio();
+    // Use playerCharacter to override the first slot of the party
+    const initialParty = playerCharacter
+        ? [
+            {
+                name: playerCharacter.name,
+                class: playerCharacter.stats.str > 14 ? "Warrior" : "Adventurer", // Simple heuristic or pass class name in Combatant
+                hp: playerCharacter.hp,
+                maxHp: playerCharacter.maxHp,
+                mana: 10,
+                maxMana: 20,
+                img: "/portraits/kaelen.png" // Placeholder or dynamic based on class
+            },
+            ...PARTY.slice(1) // Keep companions for now? Or solo? Let's keep companions.
+        ]
+        : PARTY;
+
+    const [partyState, setPartyState] = useState(initialParty);
+
     const [consoleLog, setConsoleLog] = useState<string[]>([
         "> System initialized...",
         "> Rendering Narrative Interface...",
@@ -141,7 +162,7 @@ export default function GameLayout({ onExit, startingRewards }: GameLayoutProps)
     };
 
     if (inCombat) {
-        return <CombatLayout enemySlugs={combatEnemies} onVictory={handleVictory} onFlee={handleFlee} />;
+        return <CombatLayout enemySlugs={combatEnemies} playerCharacter={playerCharacter} onVictory={handleVictory} onFlee={handleFlee} />;
     }
 
     return (
@@ -281,7 +302,7 @@ export default function GameLayout({ onExit, startingRewards }: GameLayoutProps)
                     <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
                         {activeTab === 'party' && (
                             <div className="space-y-4">
-                                {PARTY.map((char, i) => (
+                                {partyState.map((char, i) => (
                                     <div key={i} className="bg-[#0a0a0c] border border-[#333] p-2 flex gap-3 group hover:border-[#a32222] transition-colors cursor-pointer">
                                         <div className="w-12 h-12 bg-black border border-[#444] relative shrink-0">
                                             {/* Portrait Placeholder */}
