@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { ArrowRight, Sword, Shield, Zap, Skull, Heart, Ghost, Timer } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import { ArrowRight, Sword, Shield, Zap, Skull, Heart, Ghost, Timer, Swords, User, ShieldAlert } from 'lucide-react';
 import TacticalMap from './combat/TacticalMap';
 import CombatantCard from "@/components/ui/CombatantCard";
 import { Combatant } from "@/types/combat";
@@ -47,6 +47,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
     const [log, setLog] = useState<string[]>(["> Combat initiated.", "> Roll for initiative!"]);
     const [targetingMode, setTargetingMode] = useState(false);
     const [pendingAction, setPendingAction] = useState<any>(null);
+    const logEndRef = useRef<HTMLDivElement>(null);
 
     // Initialize Combat
     useEffect(() => {
@@ -324,9 +325,8 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                     </div>
                 )}
             </div>
-        </div>
 
-            {/* Combat Log */ }
+            {/* Combat Log */}
             <div className="h-48 bg-[#050505] border-t border-[#222] p-4 text-xs font-mono text-[#666] overflow-y-auto custom-scrollbar">
                 {log.map((l, i) => <div key={i} className="mb-1">{l}</div>)}
                 <div ref={(el) => el?.scrollIntoView({ behavior: 'smooth' })} />

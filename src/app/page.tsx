@@ -67,8 +67,11 @@ export default function Home() {
     return (
       <PrologueController
         playerCharacter={playerCharacter}
-        onComplete={(rewards) => {
-          setStartingRewards(rewards);
+        onComplete={(data) => {
+          if (data.updatedCharacter) {
+            setPlayerCharacter(data.updatedCharacter);
+          }
+          setStartingRewards(data);
           setViewMode("game");
         }}
       />

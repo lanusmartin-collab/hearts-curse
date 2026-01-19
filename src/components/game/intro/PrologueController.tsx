@@ -3,6 +3,7 @@ import CombatLayout from "@/components/game/CombatLayout";
 import { Typewriter } from "@/components/ui/Typewriter";
 import { useAudio } from "@/lib/context/AudioContext";
 import { Sparkles, Scroll } from "lucide-react";
+import { downgradeCharacter } from "@/lib/game/CharacterMechanics";
 
 interface PrologueControllerProps {
     playerCharacter: any; // Combatant
@@ -111,8 +112,15 @@ export default function PrologueController({ playerCharacter, onComplete }: Prol
                         </div>
                     </div>
 
+                    import {downgradeCharacter} from "@/lib/game/CharacterMechanics";
+
+                    // ... inside the component ...
+
                     <button
-                        onClick={() => onComplete({ item: "essence_djinn" })}
+                        onClick={() => {
+                            const downgradedChar = downgradeCharacter(playerCharacter);
+                            onComplete({ item: "essence_djinn", updatedCharacter: downgradedChar });
+                        }}
                         className="w-full py-4 bg-[#a32222] text-white font-bold uppercase tracking-[0.2em] hover:bg-[#c42828] transition-all border border-red-900"
                     >
                         Accept Destiny & Begin
