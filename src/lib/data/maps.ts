@@ -9,6 +9,12 @@ export type MapNode = {
     itemId?: string; // [NEW] Link to ShopItem.name
     link?: string; // [NEW] URL to navigate to (e.g. /shops?tab=crow)
     monsters?: string[]; // [NEW] List of monster slugs for encounter nodes
+    exits?: { // [NEW] Navigation Links
+        north?: string;
+        south?: string;
+        east?: string;
+        west?: string;
+    };
 };
 
 export type CampaignMap = {
@@ -44,13 +50,43 @@ const OAKHAVEN: CampaignMap = {
     nodes: [
         { id: "q1", x: 25, y: 50, label: "The Echo's Ledger", type: "quest", description: "**QUEST:** 'The Unfinished Business'. The spectral Town Clerk, a weeping ghost in ink-stained robes, frantically searches the **Ruined Archive** (Center-Left). **OBJECTIVE:** Forge a 'Completed Ledger' (DC 15 Forgery) or find the real one hidden in the rubble. **REWARD:** +2 Reputation, *Scroll of Remove Curse*." },
         { id: "q2", x: 75, y: 50, label: "The Coffer's Shadow", type: "quest", description: "**QUEST:** 'Shadows of Greed'. Fimble's **Magic Shop** (Purple Banners, Center-Right) is under siege. A Shadow Demon has possessed his shadow and is stealing gold. **REWARD:** 100gp (Ancient minted), *Bag of Holding*." },
-        { id: "market", x: 50, y: 50, label: "The Gilded Coffer", type: "info", description: "**MARKET:** Fimble trades in 'Sentient Capital' in the **Central Square**. The air smells of ozone and old parchment. **TRINKETS:** 'Coin of Bad Luck', 'Memory in a Bottle', 'Ghost-Lantern'.", link: "/shops?tab=fimble" },
-        { id: "tavern", x: 25, y: 70, label: "The Drowned Tankard", type: "info", description: "**SAFE HAVEN:** The warm-lit building (Bottom-Left) stands defiant against the mist. Inside, the fire is real. **RUMORS:** 1. 'The Castle's magic acts like a lightning rod.' 2. 'The miners dug too deep and found a drow highway.' 3. 'The Librarian eats the sounds of the dying.'" },
-        { id: "thay_embassy", x: 75, y: 70, label: "Red Wizards Enclave", type: "encounter", description: "**ENCOUNTER:** 'The Red Ultimatum'. Zoltus (Red Wizard) has barricaded the **Fortified Embassy** (Bottom-Right). He demands the *Prism of the Void*. **OFFER:** Retrieve it, and he grants a *Thayan Writ of Passage*." },
-        { id: "crows_nest", x: 60, y: 5, label: "The Crow's Nest", type: "info", description: "**ZHENTARIM MARKET:** A black market hidden on the cliff edge. 'The Crow' sells illicit goods and poisons. **SERVICES:** Fence stolen goods, buy *Drow Poison*.", link: "/shops?tab=crow" },
-        { id: "bridge", x: 50, y: 90, label: "The Looping Bridge", type: "entrance", description: "**THE OUTER MISTS:** A stone bridge crossing a sluggish grey river. **CURSE:** Any attempt to cross it loops the traveler back to the Town Square. The mist is impenetrable and whispers your name." },
+        {
+            id: "market",
+            x: 50, y: 50,
+            label: "The Gilded Coffer",
+            type: "info",
+            description: "**MARKET:** Fimble trades in 'Sentient Capital' in the **Central Square**. The air smells of ozone and old parchment. **TRINKETS:** 'Coin of Bad Luck', 'Memory in a Bottle', 'Ghost-Lantern'.",
+            link: "/shops?tab=fimble",
+            exits: { north: "crows_nest", south: "bridge", west: "tavern", east: "thay_embassy" }
+        },
+        {
+            id: "tavern",
+            x: 25, y: 70,
+            label: "The Drowned Tankard",
+            type: "info",
+            description: "**SAFE HAVEN:** The warm-lit building (Bottom-Left) stands defiant against the mist. Inside, the fire is real. **RUMORS:** 1. 'The Castle's magic acts like a lightning rod.' 2. 'The miners dug too deep and found a drow highway.' 3. 'The Librarian eats the sounds of the dying.'",
+            exits: { east: "market" }
+        },
+        {
+            id: "thay_embassy",
+            x: 75, y: 70,
+            label: "Red Wizards Enclave",
+            type: "encounter",
+            description: "**ENCOUNTER:** 'The Red Ultimatum'. Zoltus (Red Wizard) has barricaded the **Fortified Embassy** (Bottom-Right). He demands the *Prism of the Void*. **OFFER:** Retrieve it, and he grants a *Thayan Writ of Passage*.",
+            exits: { west: "market", north: "cliff" }
+        },
+        {
+            id: "crows_nest",
+            x: 60, y: 5,
+            label: "The Crow's Nest",
+            type: "info",
+            description: "**ZHENTARIM MARKET:** A black market hidden on the cliff edge. 'The Crow' sells illicit goods and poisons. **SERVICES:** Fence stolen goods, buy *Drow Poison*.",
+            link: "/shops?tab=crow",
+            exits: { south: "market" }
+        },
+        { id: "bridge", x: 50, y: 90, label: "The Looping Bridge", type: "entrance", description: "**THE OUTER MISTS:** A stone bridge crossing a sluggish grey river. **CURSE:** Any attempt to cross it loops the traveler back to the Town Square. The mist is impenetrable and whispers your name.", exits: { north: "market" } },
         { id: "forge", x: 15, y: 20, label: "The Artisan's Row", type: "encounter", description: "**THE IRON KNOT:** Kaelen Muldar's forge (Top-Left) is cold, covered in grey ash. **HAUNT:** The sound of a ghostly hammer rings eternally. **LOOT:** *Adamantine Ingot* found in the cold coals, still warm to the touch.", link: "/shops?tab=iron" },
-        { id: "cliff", x: 85, y: 20, label: "The Cliffside Ascent", type: "encounter", description: "**PATH TO CASTLE:** A steep, winding path (Top-Right) leads to Mournwatch. **ENCOUNTER:** 'The Night Shard'. 3 Assassins (Zhentarim & Cultist alliance) ambush the party from the shadows. They drop a *Dagger of Venom*.", link: "/maps?id=castle" },
+        { id: "cliff", x: 85, y: 20, label: "The Cliffside Ascent", type: "encounter", description: "**PATH TO CASTLE:** A steep, winding path (Top-Right) leads to Mournwatch. **ENCOUNTER:** 'The Night Shard'. 3 Assassins (Zhentarim & Cultist alliance) ambush the party from the shadows. They drop a *Dagger of Venom*.", link: "/maps?id=castle", exits: { south: "thay_embassy" } },
         { id: "shrine", x: 10, y: 40, label: "Ancient Shrine (Lore)", type: "info", description: "**LORE:** A crumbled statue of Mystra. Reading the inscription (DC 14 Religion) reveals: 'When the Heart stops, the Weave unravels.' You feel a moment of peace here (+1d4 Temp HP)." },
         { id: "outpost", x: 90, y: 35, label: "Abandoned Outpost", type: "encounter", description: "**COMBAT:** An old watchtower. **THREAT:** 4 Ghouls wearing tattered town guard uniforms. They are eating a horse carcass. **LOOT:** *Potion of Vitality* in a saddlebag." },
         { id: "grove", x: 35, y: 10, label: "Whispering Grove", type: "trap", description: "**SKILL CHECK:** The trees lean in. **SURVIVAL DC 13:** The roots try to trip you (Prone). **ARCANA DC 15:** You hear the trees gossiping. They say 'The Library is not on this plane'." }

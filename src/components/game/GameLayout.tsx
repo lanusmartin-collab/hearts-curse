@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useAudio } from "@/lib/context/AudioContext";
-import DiceRoller from "@/components/ui/DiceRoller"; // Reuse or wrap? For now, we might want a specific game-mode wrapper.
+import { CAMPAIGN_MAPS, MapNode } from "@/lib/data/maps";
 
 // Placeholder for Party Data
 const PARTY = [
@@ -26,13 +26,66 @@ export default function GameLayout({ onExit }: GameLayoutProps) {
     ]);
     const [activeTab, setActiveTab] = useState("party"); // party, inventory, spellbook
 
+    // -- NAVIGATION STATE --
+    const [currentMapId, setCurrentMapId] = useState("oakhaven");
+    const [currentNodeId, setCurrentNodeId] = useState("market"); // Start at Market
+    const [visitedNodes, setVisitedNodes] = useState<Set<string>>(new Set(["market"]));
+    const [showMap, setShowMap] = useState(false);
+
+    // Derived State
+    const currentMap = CAMPAIGN_MAPS.find(m => m.id === currentMapId);
+    const currentNode = currentMap?.nodes?.find(n => n.id === currentNodeId);
+
+    // Initial Load & Persistence
+    useEffect(() => {
+        const saved = localStorage.getItem("hc_visited");
+        if (saved) {
+            setVisitedNodes(new Set(JSON.parse(saved)));
+        }
+    }, []);
+
+    // Update Visited & Persist
+    useEffect(() => {
+        if (!currentNodeId) return;
+        setVisitedNodes(prev => {
+            const next = new Set(prev);
+            next.add(currentNodeId);
+            localStorage.setItem("hc_visited", JSON.stringify(Array.from(next)));
+            return next;
+        });
+    }, [currentNodeId]);
+
     useEffect(() => {
         // Switch to Dungeon Ambience
         playAmbience("dungeon");
     }, [playAmbience]);
 
     const addToLog = (msg: string) => {
-        setConsoleLog(prev => [...prev.slice(-4), `> ${msg}`]);
+        setConsoleLog(prev => [...prev.slice(-6), `> ${msg}`]);
+    };
+
+    const handleMove = (direction: "north" | "south" | "east" | "west") => {
+        if (!currentNode?.exits) {
+            addToLog("There are no exits here.");
+            return;
+        }
+
+        const targetNodeId = currentNode.exits[direction];
+
+        if (targetNodeId) {
+            // Check if target exists
+            const targetNode = currentMap?.nodes?.find(n => n.id === targetNodeId);
+            if (targetNode) {
+                setCurrentNodeId(targetNodeId);
+                addToLog(`Moving ${direction.toUpperCase()} to ${targetNode.label}...`);
+                playSfx("/sfx/footsteps.mp3"); // Assuming this exists or will be added
+            } else {
+                addToLog(`Error: Path to '${targetNodeId}' is blocked (Node missing).`);
+            }
+        } else {
+            addToLog("You cannot go that way.");
+            playSfx("/sfx/bump.mp3"); // Optional bump sound
+        }
     };
 
     return (
@@ -40,7 +93,9 @@ export default function GameLayout({ onExit }: GameLayoutProps) {
             {/* 1. TOP BAR (Status / Compass) */}
             <div className="h-12 bg-[#1a1515] border-b-2 border-[#5c1212] flex items-center justify-between px-4">
                 <div className="flex items-center gap-4">
-                    <span className="text-[#a32222] font-bold tracking-widest">LAYER 1: THE VEINS</span>
+                    <span className="text-[#a32222] font-bold tracking-widest uppercase">
+                        {currentMap?.title || "UNKNOWN REGION"} // {currentNode?.label || "Unknown Location"}
+                    </span>
                     <span className="text-xs text-gray-500">|</span>
                     <span className="text-amber-600 animate-pulse">TORCH: 84%</span>
                 </div>
@@ -50,27 +105,89 @@ export default function GameLayout({ onExit }: GameLayoutProps) {
             </div>
 
             {/* 2. MAIN CONTENT GRID */}
-            <div className="flex-1 flex overflow-hidden">
+            <div className="flex-1 flex overflow-hidden relative">
+
+                {/* MAP OVERLAY */}
+                {showMap && (
+                    <div className="absolute inset-0 z-50 bg-black/90 flex items-center justify-center p-8 backdrop-blur-sm animate-in fade-in duration-200">
+                        <div className="relative w-full max-w-4xl aspect-video border-2 border-[#a32222] bg-[#0a0a0c] p-4 shadow-2xl">
+                            <button
+                                onClick={() => setShowMap(false)}
+                                className="absolute top-2 right-2 text-red-500 hover:text-white border border-red-900 px-2 bg-black z-10"
+                            >
+                                CLOSE MAP [X]
+                            </button>
+                            <div className="w-full h-full relative">
+                                {/* Simple Dot Map Render */}
+                                {currentMap?.nodes?.map(node => {
+                                    const isVisited = visitedNodes.has(node.id);
+                                    if (!isVisited) return null;
+
+                                    const isCurrent = node.id === currentNodeId;
+                                    return (
+                                        <div
+                                            key={node.id}
+                                            className={`absolute w-3 h-3 rounded-full -translate-x-1/2 -translate-y-1/2 border transition-all
+                                                ${isCurrent ? 'bg-red-500 border-white shadow-[0_0_10px_red] scale-125 z-20' : 'bg-gray-600 border-gray-800 z-10'}
+                                            `}
+                                            style={{ left: `${node.x}%`, top: `${node.y}%` }}
+                                        >
+                                            <span className="absolute top-4 left-1/2 -translate-x-1/2 text-[10px] whitespace-nowrap bg-black/80 px-1 text-gray-400">
+                                                {node.label}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                                {/* Base Grid Lines (Optional Decoration) */}
+                                <div className="absolute inset-0 grid grid-cols-12 grid-rows-6 pointer-events-none opacity-10">
+                                    {[...Array(72)].map((_, i) => <div key={i} className="border border-[#a32222]"></div>)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* LEFT: VIEWPORT (The Eye) */}
                 <div className="flex-1 relative bg-black border-r-2 border-[#333]">
                     {/* SCENE RENDER */}
                     <div className="absolute inset-4 border-4 border-[#2a2a2a] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]">
-                        <div className="w-full h-full bg-[#0a0a0c] flex items-center justify-center relative">
+                        <div className="w-full h-full bg-[#0a0a0c] flex flex-col items-center justify-center relative p-8 text-center">
+
+                            {/* Node Visualization (Text for now, Image later) */}
+                            <div className="mb-8">
+                                <h2 className="text-2xl text-[#a32222] font-bold mb-2">{currentNode?.label}</h2>
+                                <div className="text-gray-400 text-sm max-w-md mx-auto leading-relaxed">
+                                    {currentNode?.description?.replace(/\*\*/g, "") || "The area is dark and silent."}
+                                </div>
+                            </div>
+
                             {/* Placeholder for 3D View / Art */}
-                            <div className="text-[#333] opacity-20 text-9xl">👁️</div>
-                            <div className="absolute bottom-4 left-0 w-full text-center text-gray-600 font-mono text-xs">
-                                viewport_render: [nodata]
+                            <div className="text-[#333] opacity-20 text-9xl absolute bottom-12 z-0">👁️</div>
+
+                            <div className="absolute bottom-4 left-0 w-full text-center text-gray-600 font-mono text-xs z-10">
+                                loc: {currentNodeId} [{currentNode?.x}, {currentNode?.y}]
                             </div>
                         </div>
 
                         {/* COMPASS OVERLAY */}
-                        <div className="absolute top-4 right-4 flex flex-col items-center gap-1 opacity-70">
-                            <button className="w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222]">N</button>
+                        <div className="absolute top-4 right-4 flex flex-col items-center gap-1 opacity-70 z-20">
+                            <button
+                                onClick={() => handleMove("north")}
+                                className={`w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222] ${currentNode?.exits?.north ? 'text-white border-gray-500' : 'opacity-30 cursor-not-allowed'}`}
+                            >N</button>
                             <div className="flex gap-1">
-                                <button className="w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222]">W</button>
-                                <button className="w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222]">S</button>
-                                <button className="w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222]">E</button>
+                                <button
+                                    onClick={() => handleMove("west")}
+                                    className={`w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222] ${currentNode?.exits?.west ? 'text-white border-gray-500' : 'opacity-30 cursor-not-allowed'}`}
+                                >W</button>
+                                <button
+                                    onClick={() => handleMove("south")}
+                                    className={`w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222] ${currentNode?.exits?.south ? 'text-white border-gray-500' : 'opacity-30 cursor-not-allowed'}`}
+                                >S</button>
+                                <button
+                                    onClick={() => handleMove("east")}
+                                    className={`w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222] ${currentNode?.exits?.east ? 'text-white border-gray-500' : 'opacity-30 cursor-not-allowed'}`}
+                                >E</button>
                             </div>
                         </div>
                     </div>
@@ -139,7 +256,12 @@ export default function GameLayout({ onExit }: GameLayoutProps) {
                         <button className="game-btn bg-[#222] border border-[#444] hover:bg-blue-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Spell</button>
 
                         <button className="game-btn bg-[#222] border border-[#444] hover:bg-amber-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Item</button>
-                        <button className="game-btn bg-[#222] border border-[#444] hover:bg-green-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Map</button>
+                        <button
+                            onClick={() => setShowMap(true)}
+                            className={`game-btn bg-[#222] border border-[#444] hover:bg-green-900 hover:text-white text-[10px] uppercase font-bold text-gray-400 ${showMap ? 'border-green-500 text-green-500' : ''}`}
+                        >
+                            Map
+                        </button>
                         <button className="game-btn bg-[#222] border border-[#444] hover:bg-purple-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Rest</button>
 
                         <div className="col-span-3 mt-1 bg-black border border-[#333] p-1 text-[10px] text-center text-gray-600 font-mono">

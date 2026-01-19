@@ -143,6 +143,21 @@ export default function Home() {
               </div>
             </div>
           </DashboardWidget>
+
+          {/* GAME MODE LAUNCHER - Redundant Link for Visibility */}
+          <button
+            onClick={() => setGameMode(true)}
+            className="group relative w-full h-32 bg-[#2a0a0a] border-2 border-[#ff3333] hover:bg-[#4a0a0a] transition-all flex flex-col items-center justify-center gap-2 overflow-hidden shadow-[0_0_20px_rgba(163,34,34,0.3)] hover:shadow-[0_0_30px_rgba(255,50,50,0.6)]"
+          >
+            <div className="absolute inset-0 bg-[url('/hearts_curse_hero_v15.png')] bg-cover bg-center opacity-20 group-hover:opacity-40 transition-opacity blur-[2px]"></div>
+            <Skull className="w-8 h-8 text-[#ffaaaa] animate-pulse relative z-10" />
+            <span className="text-[#ffaaaa] font-bold text-lg tracking-widest uppercase relative z-10 group-hover:text-white group-hover:scale-105 transition-all">
+              Enter The Dungeon
+            </span>
+            <span className="text-[10px] text-[#ffaaaa]/70 font-mono relative z-10">
+              [ START SESSION SIMULATION ]
+            </span>
+          </button>
         </div>
 
         {/* RIGHT COLUMN: Tools & Utils */}
