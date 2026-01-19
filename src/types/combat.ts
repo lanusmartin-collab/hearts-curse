@@ -13,6 +13,11 @@ export interface Combatant {
     isHidden?: boolean;
 
     // New Combat Properties
+    level?: number;
+    race?: string;
+    alignment?: string;
+    equipment?: string[];
+
     stats?: {
         str: number;
         dex: number;

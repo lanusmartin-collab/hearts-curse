@@ -54,7 +54,7 @@ export default function Home() {
 
   if (viewMode === "char_creation") {
     return (
-      <CharacterCreation
+      <AdvancedCharacterCreation
         onComplete={(character) => {
           setPlayerCharacter(character);
           setViewMode("prologue");
