@@ -1,21 +1,37 @@
 [
     {
-        "name": "Iolum's Longevity",
+        "name": "Abi-Dalzim's Horrid Wilting",
         "classes": [
-            "Wizard",
             "Sorcerer",
-            "Warlock"
+            "Wizard"
         ],
-        "level": 9,
+        "level": 8,
         "school": "Necromancy",
         "ritual": false,
-        "castingTime": "Instantaneous",
-        "range": "Self (30-foot radius)",
+        "castingTime": "Action",
+        "range": "150 feet",
         "components": "V, S, M",
-        "material": "A phylactery or soul jar",
+        "material": "a bit of sponge",
         "duration": "Instantaneous",
-        "description": "This 10th-level magic (reduced to 9th in modern weaving) allows the caster to drain the life force of others to extend their own life. You regain 100 hit points. Each creature of your choice within 30 feet of you must make a Constitution saving throw (DC 22). On a failed save, a creature takes 50 necrotic damage. On a successful save, the creature takes half as much damage. This spell can also be used to extend the caster's lifespan by one year for every hit point drained.",
-        "source": "Netherese History",
+        "description": "You draw the moisture from every creature in a 30-foot cube centered on a point you choose within range. Each creature in that area must make a Constitution saving throw. Constructs and undead aren't affected, and plants and water elementals have disadvantage on this saving throw. A creature takes 12d8 necrotic damage on a failed save, or half as much damage on a successful one.",
+        "source": "Player's Handbook",
         "page": 0
-    }
+    },
+    "classes": [
+        "Wizard",
+        "Sorcerer",
+        "Warlock"
+    ],
+    "level": 9,
+    "school": "Necromancy",
+    "ritual": false,
+    "castingTime": "Instantaneous",
+    "range": "Self (30-foot radius)",
+    "components": "V, S, M",
+    "material": "A phylactery or soul jar",
+    "duration": "Instantaneous",
+    "description": "This 10th-level magic (reduced to 9th in modern weaving) allows the caster to drain the life force of others to extend their own life. You regain 100 hit points. Each creature of your choice within 30 feet of you must make a Constitution saving throw (DC 22). On a failed save, a creature takes 50 necrotic damage. On a successful save, the creature takes half as much damage. This spell can also be used to extend the caster's lifespan by one year for every hit point drained.",
+    "source": "Netherese History",
+    "page": 0
+}
 ]
