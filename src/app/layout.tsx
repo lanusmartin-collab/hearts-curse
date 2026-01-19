@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "./globals_v2.css";
 import DiceRoller from "@/components/ui/DiceRoller";
 
 import SidebarNav from "@/components/ui/SidebarNav";
