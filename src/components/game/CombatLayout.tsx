@@ -44,11 +44,18 @@ export default function CombatLayout({ enemySlugs, onVictory, onFlee }: CombatLa
         if (savedDays >= 20) curseMultiplier = 1.5;
 
         // Load Enemies from JSON
+        console.log("Loading combat with slugs:", enemySlugs);
+
         const enemies: Combatant[] = enemySlugs.map((slug, i) => {
             const data = (monstersData as any[]).find((m: any) => m.slug === slug);
-            if (!data) return null;
+            if (!data) {
+                console.warn(`Monster data not found for slug: ${slug}`);
+                return null;
+            }
 
-            const maxHp = Math.floor(data.hp * curseMultiplier);
+            // Fallback for HP if missing
+            const baseHp = data.hp || 10;
+            const maxHp = Math.floor(baseHp * curseMultiplier);
 
             return {
                 id: `e-${i}-${slug}`,
@@ -56,7 +63,7 @@ export default function CombatLayout({ enemySlugs, onVictory, onFlee }: CombatLa
                 type: "monster",
                 hp: maxHp,
                 maxHp: maxHp,
-                ac: data.ac,
+                ac: data.ac || 10,
                 initiative: Math.floor(Math.random() * 20) + 1, // Random Init for now
                 conditions: [],
                 statblock: data // Store full data for inspection
