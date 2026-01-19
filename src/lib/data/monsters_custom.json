@@ -3,28 +3,108 @@
         "slug": "drakharaz_eternal",
         "name": "Drakharaz the Eternal",
         "size": "Gargantuan",
-        "type": "Undead",
-        "alignment": "Neutral Evil",
+        "type": "Undead (Dragon)",
         "ac": 22,
-        "hp": 450,
-        "speed": "40 ft, Fly 80 ft",
+        "hp": 750,
+        "speed": "40 ft, Burrow 40 ft, Fly 80 ft, Swim 40 ft",
         "stats": {
-            "str": 27,
-            "dex": 10,
-            "con": 25,
-            "int": 18,
-            "wis": 15,
-            "cha": 19
+            "str": 30,
+            "dex": 13,
+            "con": 30,
+            "int": 13,
+            "wis": 17,
+            "cha": 18
         },
         "cr": "25",
-        "actions": [
+        "immunities": "Cold, Necrotic, Poison; Charmed, Exhaustion, Frightened, Paralyzed, Petrified, Poisoned",
+        "traits": [
             {
-                "name": "Bite",
-                "desc": "Melee Weapon Attack: +15 to hit, reach 15 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 9 (2d8) necrotic damage."
+                "name": "Magic Resistance",
+                "desc": "Advantage on saves against spells."
             },
             {
-                "name": "Necrotic Breath (Recharge 5-6)",
-                "desc": "The dracolich exhales black fire in a 90-foot cone. Each creature in that area must make a DC 22 Dexterity saving throw, taking 63 (18d6) necrotic damage on a failed save, or half as much damage on a successful one."
+                "name": "Heart of the Curse",
+                "desc": "Bound to the Heart's Curse. If Heart destroyed: Speed halved, loses Magic Resistance, takes 50 necrotic/turn."
+            },
+            {
+                "name": "Legendary Resistance (3/Day)",
+                "desc": "Can choose to succeed on failed saves."
+            }
+        ],
+        "spellcasting": {
+            "ability": "cha",
+            "dc": 19,
+            "attack": 11,
+            "spells": [
+                "Chill Touch",
+                "Mage Hand",
+                "Prestidigitation",
+                "Shield",
+                "Ray of Sickness",
+                "Misty Step",
+                "Darkness",
+                "Counterspell",
+                "Animate Dead",
+                "Blight",
+                "Dimension Door",
+                "Cloudkill",
+                "Circle of Death",
+                "Finger of Death",
+                "Teleport",
+                "Abi-Dalzim's Horrid Wilting",
+                "Power Word Kill"
+            ]
+        },
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "Frightful Presence, then one Bite and two Claws."
+            },
+            {
+                "name": "Bite",
+                "desc": "Melee Weapon Attack: +17 to hit, reach 15 ft. Hit: 21 (2d10 + 10) piercing + 9 (2d8) cold damage."
+            },
+            {
+                "name": "Claw",
+                "desc": "Melee Weapon Attack: +17 to hit, reach 10 ft. Hit: 17 (2d6 + 10) slashing damage."
+            },
+            {
+                "name": "Tail",
+                "desc": "Melee Weapon Attack: +17 to hit, reach 20 ft. Hit: 19 (2d8 + 10) bludgeoning damage."
+            },
+            {
+                "name": "Frightful Presence",
+                "desc": "120 ft, DC 19 Wis save or Frightened for 1 min."
+            },
+            {
+                "name": "Necrotic Frost Breath (Recharge 5–6)",
+                "desc": "90ft Cone. DC 25 Con save. 52 (8d12) cold + 52 (8d12) necrotic damage. Half on success."
+            },
+            {
+                "name": "Circle of Death",
+                "desc": "AoE: 60ft radius sphere within 150ft. DC 19 Con save. Hit: 8d6 necrotic damage."
+            },
+            {
+                "name": "Finger of Death",
+                "desc": "Ranged Spell Attack: +11 to hit, 60 ft range. Hit: 7d8 + 30 necrotic damage."
+            }
+        ],
+        "legendary_actions": [
+            {
+                "name": "Detect",
+                "desc": "Perception check."
+            },
+            {
+                "name": "Tail Attack",
+                "desc": "Makes a tail attack."
+            },
+            {
+                "name": "Wing Attack (2 Actions)",
+                "desc": "15 ft radius. DC 25 Dex save. 17 (2d6+10) bludgeoning + Prone. Fly half speed."
+            },
+            {
+                "name": "Cast Spell (2 Actions)",
+                "desc": "Casts a spell of 6th level or lower."
             }
         ]
     },
