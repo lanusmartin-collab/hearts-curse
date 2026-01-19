@@ -11,6 +11,7 @@ import CampaignModuleTemplate from "@/components/ui/CampaignModuleTemplate";
 import PartyStatusWidget from "@/components/ui/PartyStatusWidget";
 import { AudioProvider } from "@/lib/context/AudioContext";
 import AmbientController from "@/components/audio/AmbientController";
+import { CommandMenu } from "@/components/ui/CommandMenu";
 
 export default function Home() {
   const [viewMode, setViewMode] = useState<"home" | "book">("home");
@@ -23,6 +24,7 @@ export default function Home() {
     <AudioProvider>
       <div className="retro-container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <AmbientController />
+        <CommandMenu />
 
         {/* HEADER SECTION */}
         <header className="campaign-header" style={{ marginBottom: "2rem", display: "flex", flexWrap: "wrap", gap: "2rem", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid var(--glass-border)", paddingBottom: "1.5rem" }}>
