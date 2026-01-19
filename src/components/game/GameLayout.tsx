@@ -47,7 +47,50 @@ export default function GameLayout({ onExit }: GameLayoutProps) {
         if (saved) {
             setVisitedNodes(new Set(JSON.parse(saved)));
         }
+        // Add hints
+        setConsoleLog(prev => [...prev, "> Controls: WASD / Arrows to Move.", "> Status: Online."]);
     }, []);
+
+    // KEYBOARD CONTROLS
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (inCombat) return;
+
+            // Prevent default scrolling for arrows/space
+            if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].indexOf(e.code) > -1) {
+                e.preventDefault();
+            }
+
+            switch (e.key.toLowerCase()) {
+                case "w":
+                case "arrowup":
+                    handleMove("north");
+                    break;
+                case "s":
+                case "arrowdown":
+                    handleMove("south");
+                    break;
+                case "a":
+                case "arrowleft":
+                    handleMove("west");
+                    break;
+                case "d":
+                case "arrowright":
+                    handleMove("east");
+                    break;
+                case "m":
+                    setShowMap(prev => !prev);
+                    break;
+                case "escape":
+                    if (showMap) setShowMap(false);
+                    // maybe close other UI
+                    break;
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [currentNodeId, currentMapId, inCombat, showMap]); // Re-bind when node changes to capture fresh closures if needed, though handleMove depends on state
 
     // Update Visited & Persist
     useEffect(() => {
