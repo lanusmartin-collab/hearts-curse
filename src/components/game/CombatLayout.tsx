@@ -51,7 +51,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
     const [log, setLog] = useState<string[]>(["> Combat initiated.", "> Roll for initiative!"]);
 
     // UI STATES
-    const [targetingMode, setTargetingMode] = useState(false);
+    const [targetingMode, setTargetingMode] = useState<{ range: number, onSelect: (id: string | null) => void } | null>(null);
     const [spellMenuOpen, setSpellMenuOpen] = useState(false);
     const [pendingAction, setPendingAction] = useState<any>(null); // Attack or Spell object
     const [combatStarted, setCombatStarted] = useState(false);
@@ -150,7 +150,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
             return nextIndex;
         });
         setPendingAction(null);
-        setTargetingMode(false);
+        setTargetingMode(null);
         setSpellMenuOpen(false);
     };
 
@@ -185,19 +185,35 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
         setPendingAction(action);
 
         // Mode Check
-        const isAoE = action.isAoE || action.range?.includes("Radius") || action.name === "Fireball";
+        const isAoE = action.isAoE || action.range?.toLowerCase().includes("radius") || action.name === "Fireball";
+
+        // Parse range
+        let range = 5; // Default melee
+        if (action.range) {
+            const rangeMatch = action.range.match(/(\d+)/);
+            if (rangeMatch) range = parseInt(rangeMatch[1]);
+        }
+        // Override for melee attacks that might not have explicit range
+        if (type === 'attack' && !action.range) range = 5;
+
         if (isAoE) {
             addToLog(`> Aiming ${action.name}...`);
             setAoeData({
-                radius: 20,
-                range: 120,
+                radius: action.radius || 20,
+                range: range, // Range to CAST the spell
                 onConfirm: (x, y) => executeAction(null, { x, y })
             });
         } else if (action.target === "Self") {
             executeAction(currentCombatant.id);
         } else {
-            addToLog(`> Select target for ${action.name}.`);
-            setTargetingMode(true);
+            addToLog(`> Select target for ${action.name} (Range: ${range}ft).`);
+            setTargetingMode({
+                range,
+                onSelect: (targetId) => executeAction(targetId)
+            });
+            // We need to pass the actual range data to the map now
+            // But targetingMode in state is boolean. Refactoring state to object.
+            // See BELOW for state refactor
         }
         setSpellMenuOpen(false);
     };
@@ -244,7 +260,9 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
 
         setPendingAction(null);
         setAoeData(null);
-        setTargetingMode(false);
+        setPendingAction(null);
+        setAoeData(null);
+        setTargetingMode(null);
     };
 
     // AI TURN
@@ -302,6 +320,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                     activeCombatantId={currentCombatant?.id}
                     canMove={isPlayerTurn && combatStarted && (currentCombatant?.resources?.movement || 0) > 0}
                     aoeMode={aoeData}
+                    targetingMode={targetingMode}
                     onMove={(id, x, y) => {
                         // Deduct movement (Assume 5ft per step, TacMap handles path, simplified here to 5ft per move event)
                         // In reality TacMap calculates distance.
