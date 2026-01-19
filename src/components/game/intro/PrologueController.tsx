@@ -5,7 +5,7 @@ import { useAudio } from "@/lib/context/AudioContext";
 import { Sparkles, Scroll } from "lucide-react";
 
 interface PrologueControllerProps {
-    playerClass: string;
+    playerCharacter: any; // Combatant
     onComplete: (rewards: any) => void;
 }
 
@@ -14,7 +14,7 @@ type PrologueStage = "battle_intro" | "combat" | "wish_scene" | "khelben_scene";
 // Mock Larloch Data (if not in JSON yet)
 const LARLOCH_SLUG = "larloch_shadow_king";
 
-export default function PrologueController({ playerClass, onComplete }: PrologueControllerProps) {
+export default function PrologueController({ playerCharacter, onComplete }: PrologueControllerProps) {
     const [stage, setStage] = useState<PrologueStage>("battle_intro");
     const { playAmbience, playMusic } = useAudio();
     const [dialogueIndex, setDialogueIndex] = useState(0);
@@ -51,10 +51,11 @@ export default function PrologueController({ playerClass, onComplete }: Prologue
     if (stage === "combat") {
         return (
             <CombatLayout
-                enemySlugs={[LARLOCH_SLUG]} // Ensure this slug is handled or mapped to a fallback
-                onVictory={() => setStage("wish_scene")} // Should ideally trigger on death/loss too, but for now victory/end
-                onFlee={() => setStage("wish_scene")} // "Fleeing" effectively triggers the escape sequence
-                onDefeat={() => setStage("wish_scene")} // Main narrative path: "Larloch wins"
+                enemySlugs={[LARLOCH_SLUG]}
+                playerCharacter={playerCharacter} // Pass the created character
+                onVictory={() => setStage("wish_scene")}
+                onFlee={() => setStage("wish_scene")}
+                onDefeat={() => setStage("wish_scene")}
             />
         );
     }

@@ -1,83 +1,96 @@
-import React, { useState, useEffect } from 'react';
-import { Typewriter } from "@/components/ui/Typewriter";
-import { ArrowRight, SkipForward } from 'lucide-react';
+"use client";
+
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronDown, SkipForward, Sword } from 'lucide-react';
 import { useAudio } from "@/lib/context/AudioContext";
 
 interface NarrativeIntroProps {
     onComplete: () => void;
 }
 
-const INTRO_SLIDES = [
-    {
-        text: "The Year of the Ageless One. The Shadow of Larloch stretches across the Sword Coast.",
-        image: "/hearts_curse_hero_v15.png" // Placeholder, reuse hero or specific art
-    },
-    {
-        text: "Heroes from all corners of Faerûn have gathered, drawn by whisper and fate...",
-        image: "/hearts_curse_hero_v15.png"
-    },
-    {
-        text: "But the Warlock King is not so easily defied. Darkness falls, and hope flickers like a dying candle.",
-        image: "/hearts_curse_hero_v15.png"
-    }
-];
-
 export default function NarrativeIntro({ onComplete }: NarrativeIntroProps) {
-    const [slideIndex, setSlideIndex] = useState(0);
     const { playAmbience } = useAudio();
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [scrolledBottom, setScrolledBottom] = useState(false);
 
     useEffect(() => {
         playAmbience("dungeon"); // Start mood music
     }, [playAmbience]);
 
-    const nextSlide = () => {
-        if (slideIndex < INTRO_SLIDES.length - 1) {
-            setSlideIndex(prev => prev + 1);
-        } else {
-            onComplete();
+    // Check scroll position to show "Continue" button prominently
+    const handleScroll = () => {
+        if (!scrollRef.current) return;
+        const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+        if (scrollHeight - scrollTop <= clientHeight + 100) {
+            setScrolledBottom(true);
         }
     };
 
-    const currentSlide = INTRO_SLIDES[slideIndex];
-
     return (
-        <div className="fixed inset-0 bg-black text-[#c9bca0] z-[100] flex flex-col items-center justify-center p-8 font-serif">
-            {/* Background Image with Fade */}
-            <div key={slideIndex} className="absolute inset-0 z-0 opacity-30 animate-in fade-in duration-1000">
-                {/* Using a div background or Image component if available */}
-                <div
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url('${currentSlide.image}')` }}
-                />
-                <div className="absolute inset-0 bg-black/60"></div>
+        <div className="fixed inset-0 bg-black text-[#a8a29e] z-[100] font-serif overflow-hidden opacity-0 animate-in fade-in duration-2000">
+            {/* Background Texture */}
+            <div className="absolute inset-0 bg-[url('/textures/parchment_dark.jpg')] bg-cover opacity-20 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-10"></div>
+
+            {/* Scrolling Content */}
+            <div
+                ref={scrollRef}
+                onScroll={handleScroll}
+                className="relative z-20 h-full overflow-y-auto custom-scrollbar px-6 md:px-0 scroll-smooth"
+            >
+                <div className="max-w-2xl mx-auto py-24 space-y-16 text-center">
+
+                    {/* Header */}
+                    <div className="space-y-4 mb-24 opacity-0 animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-300 fill-mode-forwards">
+                        <p className="text-[#a32222] text-sm tracking-[0.5em] uppercase">The Chronicle of the Fall</p>
+                        <h1 className="text-4xl md:text-6xl font-bold text-[#d4c391] drop-shadow-md">THE SHADOW KING'S RISE</h1>
+                    </div>
+
+                    {/* Story Sections */}
+                    <div className="space-y-12 text-lg md:text-xl leading-relaxed text-[#c9bca0]/90">
+                        <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-1000 fill-mode-forwards">
+                            It began in the Year of the Ageless One. The sky over the Sword Coast turned the color of bruised iron. Birds fell silent. The Weave itself seemed to shiver.
+                        </p>
+                        <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-2000 fill-mode-forwards">
+                            Larloch, the Shadow King, Lich-Lord of Warlock's Crypt, has finally moved. Not with armies of bone and steel, but with a curse. A single, silent curse that spreads like frost through the veins of the world.
+                        </p>
+                        <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-3000 fill-mode-forwards">
+                            Entire cities have simply... stopped. Their people frozen in the final moments of their lives, trapped in an endless loop of grey memory. Oakhaven was the first to fall. Then Daggerford. Then Waterdeep's outskirts.
+                        </p>
+                        <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-4000 fill-mode-forwards">
+                            You are the only one left.
+                        </p>
+                        <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-5000 fill-mode-forwards text-[#a32222] font-bold">
+                            Or so you thought.
+                        </p>
+                    </div>
+
+                    {/* Call to Action */}
+                    <div className="pt-24 pb-48 opacity-0 animate-in zoom-in-95 fade-in duration-1000 delay-[6000ms] fill-mode-forwards">
+                        <button
+                            onClick={onComplete}
+                            className="group relative inline-flex items-center gap-4 px-12 py-4 bg-transparent border border-[#d4c391] hover:bg-[#d4c391] hover:text-black transition-all duration-500"
+                        >
+                            <Sword className="w-5 h-5 animate-pulse" />
+                            <span className="text-xl font-bold uppercase tracking-[0.2em]">Enter the Darkness</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div className="relative z-10 max-w-2xl w-full text-center space-y-8">
-                <div className="min-h-[150px] flex items-center justify-center text-2xl md:text-3xl leading-relaxed drop-shadow-md">
-                    <Typewriter
-                        key={slideIndex}
-                        text={currentSlide.text}
-                        speed={30}
-                        delay={500}
-                    />
-                </div>
-
-                <div className="flex justify-center pt-8">
-                    <button
-                        onClick={nextSlide}
-                        className="group flex items-center gap-2 px-8 py-3 bg-[#a32222] text-white hover:bg-[#c42828] transition-all uppercase tracking-widest font-bold text-sm border border-red-900 shadow-[0_0_15px_rgba(163,34,34,0.3)]"
-                    >
-                        <span>{slideIndex === INTRO_SLIDES.length - 1 ? "Begin Journey" : "Next"}</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
+            {/* Skip / Scroll Hint */}
+            <div className={`absolute bottom-8 right-8 z-30 transition-opacity duration-500 ${scrolledBottom ? 'opacity-0' : 'opacity-100'}`}>
+                <div className="flex flex-col items-center gap-2 text-[#555] animate-bounce">
+                    <span className="text-[10px] uppercase tracking-widest">Scroll</span>
+                    <ChevronDown className="w-4 h-4" />
                 </div>
             </div>
 
             <button
                 onClick={onComplete}
-                className="absolute bottom-8 right-8 text-xs text-gray-500 hover:text-white flex items-center gap-1 uppercase tracking-widest transition-colors z-20"
+                className="absolute top-8 right-8 z-30 text-[10px] text-[#444] hover:text-[#a32222] uppercase tracking-widest transition-colors flex items-center gap-2"
             >
-                <SkipForward className="w-3 h-3" /> Skip Intro
+                Start Immediately <SkipForward className="w-3 h-3" />
             </button>
         </div>
     );

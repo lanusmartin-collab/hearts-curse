@@ -33,32 +33,35 @@ export default function MainMenu({ onCreateChar, onLoadGame }: MainMenuProps) {
             </div>
 
             {/* Menu Buttons */}
-            <div className="relative z-10 flex flex-col gap-4 w-full max-w-md animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+            <div className="relative z-10 flex flex-col gap-6 w-full max-w-sm animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
 
                 <button
                     onClick={onCreateChar}
-                    className="group relative px-8 py-4 bg-[#1a0a0a] border border-[#a32222]/50 hover:bg-[#a32222] hover:text-white transition-all duration-300 overflow-hidden"
+                    className="group relative px-6 py-3 bg-[#0a0505] border-[1px] border-[#a32222] hover:border-[#ff4444] transition-all duration-300 overflow-hidden shadow-[0_0_15px_rgba(0,0,0,0.8)] hover:shadow-[0_0_20px_rgba(163,34,34,0.3)]"
                 >
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] opacity-30"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#a32222]/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 pointer-events-none"></div>
                     <div className="relative flex items-center justify-center gap-3">
-                        <Skull className="w-5 h-5 text-[#ff4444] group-hover:text-white transition-colors" />
-                        <span className="text-lg font-bold tracking-[0.2em] uppercase">New Game</span>
+                        <Skull className="w-4 h-4 text-[#8b7e66] group-hover:text-[#ff4444] transition-colors" />
+                        <span className="text-base font-serif font-bold tracking-[0.15em] uppercase text-[#d4c391] group-hover:text-white">New Game</span>
                     </div>
+                    {/* Corner Accents */}
+                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#d4c391] opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#d4c391] opacity-50 group-hover:opacity-100 transition-opacity"></div>
                 </button>
 
                 <button
                     onClick={onLoadGame}
-                    className="group relative px-8 py-4 bg-[#0a0a0a] border border-[#333] hover:border-[#8b7e66] hover:text-white transition-opacity opacity-50 cursor-not-allowed"
+                    className="group relative px-6 py-3 bg-[#0a0505] border border-[#333] transition-all opacity-60 cursor-not-allowed"
                     disabled
                 >
                     <div className="relative flex items-center justify-center gap-3">
-                        <Save className="w-5 h-5 text-gray-600 group-hover:text-[#d4c391]" />
-                        <span className="text-lg font-bold tracking-[0.2em] uppercase text-gray-500 group-hover:text-[#d4c391]">Load Game</span>
+                        <Save className="w-4 h-4 text-gray-700" />
+                        <span className="text-base font-serif font-bold tracking-[0.15em] uppercase text-gray-600">Load Game</span>
                     </div>
                 </button>
 
-                <div className="text-center mt-8 text-xs text-[#555] font-mono hover:text-[#777] cursor-pointer">
-                    v2.1.0 // PRE-ALPHA BUILD
+                <div className="text-center mt-8 text-[10px] text-[#444] font-mono tracking-widest hover:text-[#a32222] cursor-pointer transition-colors">
+                    v2.1.0 // HEART'S CURSE
                 </div>
             </div>
         </div>
