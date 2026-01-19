@@ -20,6 +20,7 @@ import NarrativeIntro from "@/components/game/intro/NarrativeIntro";
 import MainMenu from "@/components/game/intro/MainMenu";
 import CharacterCreation from "@/components/game/CharacterCreation";
 import PrologueController from "@/components/game/intro/PrologueController";
+import { Combatant } from "@/types/combat";
 
 export default function Home() {
   // GAME STATE MANAGEMENT
@@ -33,7 +34,7 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<"home" | "book" | "intro_narrative" | "main_menu" | "char_creation" | "prologue" | "game">("home");
 
   // Player State passed to GameLayout
-  const [playerClass, setPlayerClass] = useState<string>("warrior");
+  const [playerCharacter, setPlayerCharacter] = useState<Combatant | undefined>(undefined);
   const [startingRewards, setStartingRewards] = useState<any>(null);
 
   // -- STATE HANDLERS --
@@ -52,11 +53,10 @@ export default function Home() {
   }
 
   if (viewMode === "char_creation") {
-    // We'll need to import CharacterCreation. Assuming it exists in components/game
     return (
       <CharacterCreation
-        onComplete={(cls) => {
-          setPlayerClass(cls);
+        onComplete={(character) => {
+          setPlayerCharacter(character);
           setViewMode("prologue");
         }}
       />
@@ -66,7 +66,7 @@ export default function Home() {
   if (viewMode === "prologue") {
     return (
       <PrologueController
-        playerClass={playerClass}
+        playerCharacter={playerCharacter}
         onComplete={(rewards) => {
           setStartingRewards(rewards);
           setViewMode("game");

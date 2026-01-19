@@ -31,7 +31,7 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter }:
         ? [
             {
                 name: playerCharacter.name,
-                class: playerCharacter.stats.str > 14 ? "Warrior" : "Adventurer", // Simple heuristic or pass class name in Combatant
+                class: (playerCharacter.stats?.str || 10) > 14 ? "Warrior" : "Adventurer", // Simple heuristic or pass class name in Combatant
                 hp: playerCharacter.hp,
                 maxHp: playerCharacter.maxHp,
                 mana: 10,
