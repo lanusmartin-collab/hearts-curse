@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HEART'S CURSE // DM COMMAND CENTER
+
+> "Survive the Curse. Manage the Heart. All in one tab."
+
+![Heart's Curse Hero](/hearts_curse_hero_v15.png)
+
+## Overview
+
+**Heart's Curse** is a specialized Virtual Tabletop (VTT) dashboard designed for high-stakes, darker D&D 5e campaigns. Unlike generic VTTs, this application focuses on specific narrative mechanics: a ticking clock (The Curse), resource scarcity, and atmospheric immersion.
+
+It acts as a "Second Screen" for the Dungeon Master, providing quick access to lore, monster stat blocks, and the relentless progression of the campaign's central threat.
+
+## Features
+
+### 🩸 The Curse Tracker
+A visual representation of the party's doom.
+-   **Dynamic States:** progresses from *Latent* to *Critical* (Level 21).
+-   **Visual Feedback:** The UI "glitches" and reddens as the curse intensifies.
+-   **Mechanics Integration:** Hover over stages to see daily effects (e.g., "Cannot regain Hit Dice").
+
+### 🗺️ The Spire Map
+Interactive cartography for the mega-dungeon.
+-   **Fog of War:** Click nodes to reveal them.
+-   **Status Indicators:** Mark zones as "Safe", "Hostile", or "Cleared".
+-   **DM Tools:** Edit nodes on the fly during the session.
+
+### 📜 The Grimoire & Archives
+-   **Spell Database:** Complete 5e spell list with search and filtering.
+-   **Lore Bank:** Decrypted Netherese texts and campaign timeline.
+-   **Monster Compendium:** Fast reference for custom and standard creatures.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+-   Node.js 18+
+-   npm / yarn / pnpm
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Installation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/lanusmartin-collab/hearts-curse.git
+    cd hearts-curse/web-app
+    ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3.  Run the development server:
+    ```bash
+    npm run dev
+    ```
 
-## Learn More
+4.  Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
 
-To learn more about Next.js, take a look at the following resources:
+## Aesthetics & Design
+The UI is built with a **"Neon Dark Fantasy"** aesthetic in mind.
+-   **Font:** *Geist* (Tech) + *Cinzel* (Fantasy).
+-   **Palette:** Obsidian, Scarlet, and Gold.
+-   **Animations:** CSS-based heartbeats, CRT flickers, and glitch effects.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Media Assets
+Run the app to see the live "Glitch" effects, or check the `walkthrough.md` for the captured trailer.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Built for the "Heart's Curse" Campaign. Do not distribute to players under penalty of [DATA EXPUNGED].*
