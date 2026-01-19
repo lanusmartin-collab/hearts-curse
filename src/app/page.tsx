@@ -20,6 +20,7 @@ import NarrativeIntro from "@/components/game/intro/NarrativeIntro";
 import MainMenu from "@/components/game/intro/MainMenu";
 import AdvancedCharacterCreation from "@/components/game/AdvancedCharacterCreation";
 import PrologueController from "@/components/game/intro/PrologueController";
+import WorldMap from "@/components/game/intro/WorldMap";
 import LockScreen from "@/components/ui/LockScreen";
 import { Combatant } from "@/types/combat";
 
@@ -30,9 +31,10 @@ export default function Home() {
   // "intro_narrative" = Scrolling text / context
   // "main_menu" = New Game / Load Game
   // "char_creation" = Select Class
+  // "world_map" = Select Region
   // "prologue" = Larloch Fight -> Wish -> Tower
   // "game" = Actual Dungeon Crawl
-  const [viewMode, setViewMode] = useState<"home" | "book" | "intro_narrative" | "main_menu" | "char_creation" | "prologue" | "game">("home");
+  const [viewMode, setViewMode] = useState<"home" | "book" | "intro_narrative" | "main_menu" | "char_creation" | "world_map" | "prologue" | "game">("home");
 
   // Player State passed to GameLayout
   const [playerCharacter, setPlayerCharacter] = useState<Combatant | undefined>(undefined);
@@ -80,7 +82,18 @@ export default function Home() {
       <AdvancedCharacterCreation
         onComplete={(character) => {
           setPlayerCharacter(character);
-          setViewMode("prologue");
+          setViewMode("world_map"); // Navigate to Map instead of straight to Prologue
+        }}
+      />
+    );
+  }
+
+  if (viewMode === "world_map") {
+    return (
+      <WorldMap
+        onSelectLocation={(locId: string) => {
+          if (locId === "heart_chamber") setViewMode("prologue");
+          if (locId === "underdark") setViewMode("game");
         }}
       />
     );

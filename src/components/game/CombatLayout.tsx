@@ -270,24 +270,83 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
         if (!isPlayerTurn && combatStarted && currentCombatant && currentCombatant.hp > 0) {
             const t = setTimeout(() => {
                 const players = combatants.filter(c => c.type === 'player' && c.hp > 0);
-                if (players.length > 0) {
-                    const atk = currentCombatant.attacks?.[0]; // Default attack
-                    if (atk) {
-                        const target = players[0];
-                        const roll = Math.floor(Math.random() * 20) + 1 + (atk.bonus || 5);
-                        if (roll >= target.ac) {
-                            const dmg = resolveRoll(atk.damage);
-                            addToLog(`> ${currentCombatant.name} hits ${target.name} for ${dmg}.`);
-                            handleUpdate(target.id, { hp: Math.max(0, target.hp - dmg) });
-                            if (target.hp <= dmg) handleDefeat(target.id);
-                        } else {
-                            addToLog(`> ${currentCombatant.name} misses ${target.name}.`);
-                        }
-                    } else {
-                        addToLog(`> ${currentCombatant.name} glare menacingly.`);
+                if (players.length === 0) {
+                    nextTurn();
+                    return;
+                }
+
+                const target = players[0]; // Primary target (simplification)
+                const distance = 5; // AI assumes close range for now or calculates mock distance
+
+                // BOSS AI: LARLOCH
+                if (currentCombatant.name.includes("Larloch") || currentCombatant.name.includes("Lich")) {
+                    const spells = currentCombatant.statblock?.spellcasting?.spells || [];
+
+                    // 1. Kill Threshold
+                    if (target.hp < 100 && spells.includes("Power Word Kill")) {
+                        addToLog(`> ${currentCombatant.name} utters a Word of Power...`);
+                        const pwk = ALL_SPELLS.find(s => s.name === "Power Word Kill") || { name: "Power Word Kill", damage: "1000" };
+                        selectAction(pwk, 'spell');
+                        setTimeout(() => executeAction(target.id), 1000); // Trigger after brief delay
+                        return; // Turn ends after execute
+                    }
+
+                    // 2. Critical Self-Preservation
+                    if (currentCombatant.hp < (currentCombatant.maxHp * 0.3) && spells.includes("Time Stop")) {
+                        addToLog(`> ${currentCombatant.name} bends time around himself!`);
+                        // Mock healing/buffing during time stop
+                        handleUpdate(currentCombatant.id, { hp: currentCombatant.hp + 50 });
+                        addToLog(`> ...and re-appears revitalized.`);
+                        nextTurn();
+                        return;
+                    }
+
+                    // 3. AoE / Big Damage
+                    if (spells.includes("Meteor Swarm") && Math.random() > 0.7) {
+                        addToLog(`> ${currentCombatant.name} calls down the stars!`);
+                        const meteor = ALL_SPELLS.find(s => s.name === "Meteor Swarm") || { name: "Meteor Swarm", damage: "40d6" };
+                        selectAction(meteor, 'spell');
+                        // Auto-confirm AoE on player location
+                        setTimeout(() => executeAction(null, { x: 0, y: 0 }), 1000);
+                        return;
+                    }
+
+                    // 4. Default Cantrip/Attack
+                    const finger = ALL_SPELLS.find(s => s.name === "Finger of Death");
+                    if (finger && Math.random() > 0.5) {
+                        selectAction(finger, 'spell');
+                        setTimeout(() => executeAction(target.id), 1000);
+                        return;
                     }
                 }
-                nextTurn();
+
+                // GENERIC MONSTER AI
+                const atk = currentCombatant.attacks?.[0]; // Default attack
+                if (atk) {
+                    // Check Range (Mock) - Assume always in range for melee monsters for now to keep flow moving
+                    const hitBonus = atk.bonus || 5;
+                    const roll = Math.floor(Math.random() * 20) + 1;
+                    const total = roll + hitBonus;
+
+                    if (total >= target.ac) {
+                        const dmg = resolveRoll(atk.damage);
+                        addToLog(`> ${currentCombatant.name} attacks ${target.name} with ${atk.name}.`);
+                        addToLog(`> HIT! (${total}) for ${dmg} damage.`);
+                        handleUpdate(target.id, { hp: Math.max(0, target.hp - dmg) });
+                        playSfx("/sfx/hit.mp3");
+                        if (target.hp <= dmg) handleDefeat(target.id);
+                    } else {
+                        addToLog(`> ${currentCombatant.name} attacks ${target.name} with ${atk.name}.`);
+                        addToLog(`> MISS! (${total})`);
+                        playSfx("/sfx/miss.mp3");
+                    }
+                } else {
+                    addToLog(`> ${currentCombatant.name} glares menacingly.`);
+                }
+
+                // End Turn delayed to allow logs to be read
+                setTimeout(nextTurn, 1000);
+
             }, 1000);
             return () => clearTimeout(t);
         }

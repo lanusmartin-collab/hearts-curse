@@ -29,6 +29,12 @@ export type Statblock = {
     description?: string;
     initiative?: number;
     slug?: string;
+    spellcasting?: {
+        ability?: string;
+        dc?: number;
+        attack?: number;
+        spells?: string[];
+    };
 };
 
 export const STATBLOCKS: Record<string, Statblock> = {
