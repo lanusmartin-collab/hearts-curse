@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useAudio } from "@/lib/context/AudioContext";
 
 type Position = { x: number; y: number };
 
@@ -27,37 +26,43 @@ const DieShape = ({ sides, val, className, style }: { sides: number, val: string
 
     // Define shapes
     switch (sides) {
-        case 4: path = "M50 5 L95 90 L5 90 Z"; break;
-        case 6: path = "M10 10 H90 V90 H10 Z"; break;
-        case 8: path = "M50 2 L95 50 L50 98 L5 50 Z"; break;
-        case 10: path = "M50 2 L90 40 L50 98 L10 40 Z"; break;
-        case 12: path = "M50 2 L95 35 L78 90 H22 L5 35 Z"; break;
-        case 20: path = "M50 2 L93 25 V75 L50 98 L7 75 V25 Z"; break;
-        default: path = "M10 10 H90 V90 H10 Z";
+        case 4: // Triangle
+            path = "M50 5 L95 90 L5 90 Z";
+            break;
+        case 6: // Square / Cube
+            path = "M10 10 H90 V90 H10 Z";
+            break;
+        case 8: // Diamond
+            path = "M50 2 L95 50 L50 98 L5 50 Z";
+            break;
+        case 10: // Kite
+            path = "M50 2 L90 40 L50 98 L10 40 Z"; // Approximately d10 face
+            break;
+        case 12: // Pentagon-ish
+            path = "M50 2 L95 35 L78 90 H22 L5 35 Z";
+            break;
+        case 20: // Hexagon (approx for 2D d20)
+            path = "M50 2 L93 25 V75 L50 98 L7 75 V25 Z";
+            break;
+        default:
+            path = "M10 10 H90 V90 H10 Z"; // Fallback box
     }
 
     return (
-        <div className={className} style={{ ...style, position: "relative", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", perspective: "500px" }}>
-            <div className="die-content" style={{ width: "100%", height: "100%", position: "relative", transformStyle: "preserve-3d" }}>
-                <svg viewBox={viewBox} width="100%" height="100%" style={{ position: "absolute", top: 0, left: 0, filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.6))" }}>
-                    <path d={path} fill="rgba(20,20,25,0.95)" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-                    <path d={path} fill="url(#shine)" opacity="0.3" style={{ mixBlendMode: 'overlay' }} />
-                    <defs>
-                        <linearGradient id="shine" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stopColor="rgba(255,255,255,0.1)" />
-                            <stop offset="50%" stopColor="rgba(255,255,255,0.4)" />
-                            <stop offset="100%" stopColor="rgba(255,255,255,0.1)" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-                <span className="die-val" style={{ position: "relative", zIndex: 1, fontWeight: "bold", fontSize: "1rem", top: sides === 4 ? "4px" : (sides === 10 ? "-2px" : "0") }}>{val}</span>
-            </div>
+        <div className={className} style={{ ...style, position: "relative", width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg viewBox={viewBox} width="100%" height="100%" style={{ position: "absolute", top: 0, left: 0, filter: "drop-shadow(0px 2px 2px rgba(0,0,0,0.5))" }}>
+                <path d={path} fill="var(--paper-highlight)" stroke="var(--border-color)" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+            </svg>
+            <span style={{ position: "relative", zIndex: 1, fontWeight: "bold", fontSize: "1.1rem", top: sides === 4 ? "5px" : (sides === 10 ? "-3px" : "0") }}>{val}</span>
         </div>
     );
 };
 
-export default function DiceRoller() {
-    const { playSfx } = useAudio();
+type Props = {
+    onRollComplete?: (result: { total: number, dice: { sides: number, val: number }[] }) => void;
+};
+
+export default function DiceRoller({ onRollComplete }: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const [formula, setFormula] = useState("");
     const [isRolling, setIsRolling] = useState(false);
@@ -66,82 +71,145 @@ export default function DiceRoller() {
     const [visorTotal, setVisorTotal] = useState<number | string>("-");
     const [showModifier, setShowModifier] = useState(false);
 
-    // Draggable State - Initial position anchored to bottom right safe zone
-    const [position, setPosition] = useState<Position>({ x: 1000, y: 500 }); // Will be reset by useEffect
+    // Draggable State - DEFAULT TO UPPER RIGHT
+    const [position, setPosition] = useState<Position>({ x: 1000, y: 100 });
     const [isDragging, setIsDragging] = useState(false);
     const dragOffset = useRef({ x: 0, y: 0 });
+
+    const resultsRef = useRef<HTMLDivElement>(null);
     const diceTypes = [4, 6, 8, 10, 12, 20];
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const savedPos = localStorage.getItem("dicePos");
-            if (savedPos) {
-                try {
-                    const parsed = JSON.parse(savedPos);
-                    if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
-                        setPosition(clampPosition(parsed.x, parsed.y));
-                        return;
-                    }
-                } catch (e) { }
+        const savedPos = localStorage.getItem("dicePos");
+        if (savedPos) {
+            try {
+                const parsed = JSON.parse(savedPos);
+                if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
+                    setPosition(parsed);
+                    return;
+                }
+            } catch (e) {
+                console.error("Failed to parse dice position", e);
             }
-            // Default: Bottom Right, safely above stats
-            setPosition({ x: window.innerWidth - 380, y: window.innerHeight - 500 });
+        } else {
+            // Updated default position logic: Top Right
+            setPosition({
+                x: window.innerWidth - 100,
+                y: 50 // Top padding
+            });
         }
     }, []);
 
-    const clampPosition = (x: number, y: number) => {
-        if (typeof window === 'undefined') return { x, y };
-        const maxX = window.innerWidth - 60; // Button width approx
-        const maxY = window.innerHeight - 60;
-        return {
-            x: Math.min(Math.max(10, x), maxX),
-            y: Math.min(Math.max(10, y), maxY)
-        };
-    };
-
     const handleMouseDown = (e: React.MouseEvent) => {
-        // Prevent drag if interacting with inputs
-        if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'BUTTON' && !(e.target as HTMLElement).classList.contains('dice-trigger')) {
-            if (!(e.target as HTMLElement).classList.contains('drag-handle')) return;
-        }
-
         e.preventDefault();
         setIsDragging(true);
+        // Correct offset calculation: distance from mouse to top-left of element
+        // Using getBoundingClientRect ensures we account for scroll or other shifts if necessary, 
+        // though strictly 'position' is what we are rendering at.
         dragOffset.current = {
             x: e.clientX - position.x,
             y: e.clientY - position.y
         };
     };
 
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            if (!isDragging) return;
-            const newX = e.clientX - dragOffset.current.x;
-            const newY = e.clientY - dragOffset.current.y;
-            setPosition({ x: newX, y: newY });
-        };
-        const handleMouseUp = () => {
-            if (isDragging) {
-                setIsDragging(false);
-                const clamped = clampPosition(position.x, position.y);
-                setPosition(clamped);
-                localStorage.setItem("dicePos", JSON.stringify(clamped));
-            }
-        };
+    const handleMouseMove = (e: MouseEvent) => {
+        if (!isDragging) return;
 
+        let newX = e.clientX - dragOffset.current.x;
+        let newY = e.clientY - dragOffset.current.y;
+
+        // Bounds Checking
+        const padding = 10;
+        const buttonSize = 60;
+
+        const maxX = window.innerWidth - buttonSize - padding;
+        const maxY = window.innerHeight - buttonSize - padding;
+
+        newX = Math.max(padding, Math.min(newX, maxX));
+        newY = Math.max(padding, Math.min(newY, maxY));
+
+        setPosition({ x: newX, y: newY });
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+        localStorage.setItem("dicePos", JSON.stringify(position));
+    };
+
+    useEffect(() => {
         if (isDragging) {
             window.addEventListener("mousemove", handleMouseMove);
             window.addEventListener("mouseup", handleMouseUp);
+        } else {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
         }
         return () => {
             window.removeEventListener("mousemove", handleMouseMove);
             window.removeEventListener("mouseup", handleMouseUp);
         };
-    }, [isDragging, position]);
+    }, [isDragging]);
+
+    const animationStyles = `
+        @keyframes pixel-spin {
+            0% { transform: rotate(0deg) scale(0.9); }
+            50% { transform: rotate(180deg) scale(0.8); }
+            100% { transform: rotate(360deg) scale(0.9); }
+        }
+        @keyframes slam {
+            0% { transform: scale(1.5); opacity: 0.8; }
+            60% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        @keyframes glow-pulse {
+            0% { filter: drop-shadow(0 0 2px var(--accent-color)); }
+            50% { filter: drop-shadow(0 0 10px var(--accent-color)); }
+            100% { filter: drop-shadow(0 0 2px var(--accent-color)); }
+        }
+        
+        .dice-rolling {
+            animation: pixel-spin 0.3s linear infinite;
+        }
+        
+        .dice-rolling path {
+            fill: #333 !important;
+            stroke: #555 !important;
+        }
+
+        .dice-settled {
+            animation: slam 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .crit-success path {
+            fill: var(--accent-color) !important;
+            stroke: #fff !important;
+        }
+        .crit-success span {
+            color: #000 !important;
+        }
+        .crit-success {
+            animation: glow-pulse 1.5s infinite !important;
+        }
+
+        .crit-fail path {
+            fill: #330000 !important;
+            stroke: #ff3333 !important;
+        }
+        .crit-fail span {
+            color: #ff3333 !important;
+        }
+
+        .modifier-float {
+            animation: flyUp 0.5s ease-out forwards;
+        }
+        @keyframes flyUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    `;
 
     const addToFormula = (sides: number) => {
         if (isRolling) return;
-        playSfx("/sfx/ui_click.mp3");
         const regex = new RegExp(`(\\d*)d${sides}$`);
         const match = formula.match(regex);
 
@@ -197,8 +265,6 @@ export default function DiceRoller() {
         setShowModifier(false);
         setModifier(mod);
 
-        playSfx("/sfx/dice_throw.mp3");
-
         const initialGroups = groups.map(g => ({
             sides: g.sides,
             count: g.count,
@@ -233,20 +299,12 @@ export default function DiceRoller() {
 
     const finishRoll = (groups: RollGroup[], mod: number) => {
         let diceTotal = 0;
-        let hasNat1 = false;
-        let hasNat20 = false;
-
         const finalGroups = groups.map(g => {
             const newResults = g.results.map(r => {
                 const val = Math.floor(Math.random() * g.sides) + 1;
                 diceTotal += val;
-
                 const isCrit = g.sides === 20 && val === 20;
                 const isCritFail = g.sides === 20 && val === 1;
-
-                if (isCrit) hasNat20 = true;
-                if (isCritFail) hasNat1 = true;
-
                 return { ...r, val, settled: true, isCrit, isCritFail };
             });
             return { ...g, results: newResults };
@@ -256,164 +314,247 @@ export default function DiceRoller() {
         setIsRolling(false);
         setVisorTotal(diceTotal);
 
-        if (hasNat1) {
-            playSfx("/sfx/glitch_crit.mp3");
-        } else if (hasNat20) {
-            playSfx("/sfx/holy_crit.mp3");
-        } else {
-            playSfx("/sfx/dice_settle.mp3");
-        }
-
         if (mod !== 0) {
             setTimeout(() => {
                 setShowModifier(true);
                 setVisorTotal(diceTotal + mod);
             }, 600);
         }
+
+        // Dispatch Global Event for Decoupled Listeners
+        if (typeof window !== 'undefined') {
+            const event = new CustomEvent('dice-roll-complete', {
+                detail: {
+                    total: diceTotal + mod,
+                    dice: finalGroups.flatMap(g => g.results).map(r => ({ sides: r.sides, val: Number(r.val) }))
+                }
+            });
+            window.dispatchEvent(event);
+        }
+
+        if (onRollComplete) {
+            // Pass simplified results for triggers
+            onRollComplete({
+                total: diceTotal + mod,
+                dice: finalGroups.flatMap(g => g.results).map(r => ({ sides: r.sides, val: Number(r.val) }))
+            });
+        }
     };
+
+    // Calculate smart position for panel
+    const getPanelPosition = () => {
+        const panelWidth = 360;
+        const panelHeight = 500; // Estimated max height
+
+        let left = position.x - 300;
+        let top = position.y - 400;
+
+        // If off right screen, shift left
+        if (typeof window !== 'undefined') {
+            if (position.x + 100 > window.innerWidth) {
+                left = position.x - panelWidth + 50;
+            } else if (left < 10) {
+                // Check left edge
+                left = 10;
+            }
+
+            // Check top edge
+            if (top < 10) {
+                top = 10;
+            } else if (top + panelHeight > window.innerHeight) {
+                top = window.innerHeight - panelHeight - 10;
+            }
+        }
+
+        return { left, top };
+    };
+
+    const panelPos = getPanelPosition();
 
     return (
         <div className="no-print">
-            <style jsx>{`
-                .dice-rolling .die-content { 
-                    animation: tumble 0.4s linear infinite; 
-                }
-                
-                @keyframes tumble { 
-                    0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-                    25% { transform: rotateX(90deg) rotateY(45deg) rotateZ(180deg); }
-                    50% { transform: rotateX(180deg) rotateY(90deg) rotateZ(0deg); }
-                    75% { transform: rotateX(270deg) rotateY(135deg) rotateZ(180deg); }
-                    100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); } 
-                }
+            <style>{animationStyles}</style>
 
-                .crit-success-effect { 
-                    filter: drop-shadow(0 0 8px var(--gold-accent));
-                    animation: pulse-crit 1s infinite;
-                }
-                
-                .crit-fail-effect {
-                    filter: drop-shadow(0 0 8px red);
-                }
-
-                @keyframes pulse-crit {
-                    0%, 100% { transform: scale(1); }
-                    50% { transform: scale(1.1); }
-                }
-            `}</style>
-
-            {/* Trigger Button - Draggable */}
             {!isOpen && (
                 <button
-                    onMouseDown={handleMouseDown}
                     onClick={() => !isDragging && setIsOpen(true)}
-                    className="dice-trigger arcane-button fixed z-[9000] cursor-grab active:cursor-grabbing"
-                    title="Open Dice"
-                    style={{ left: position.x, top: position.y, width: '3.5rem', height: '3.5rem' }}
+                    onMouseDown={handleMouseDown}
+                    className="dice-trigger arcane-button"
+                    title="Open Fate Weaver (Drag to Move)"
+                    style={{
+                        position: 'fixed',
+                        left: position.x,
+                        top: position.y,
+                        bottom: 'auto',
+                        right: 'auto',
+                        cursor: isDragging ? 'grabbing' : 'grab',
+                        transform: isDragging ? 'scale(1.1)' : 'scale(1)',
+                        zIndex: 10000 // Ensure always on top
+                    }}
                 >
-                    <span style={{ fontSize: "2rem", pointerEvents: 'none' }}>🎲</span>
+                    <span style={{ fontSize: "28px", pointerEvents: 'none' }}>🎲</span>
                 </button>
             )}
 
-            {/* Panel - Draggable Header */}
             {isOpen && (
                 <div
-                    className="dice-panel glass-panel animate-slide-up flex flex-col fixed z-[9000]"
+                    className="dice-panel glass-panel animate-slide-up"
                     style={{
-                        // Intelligent positioning: ensure it stays on screen
-                        left: Math.min(Math.max(0, position.x - 280), window.innerWidth - 330),
-                        top: Math.min(Math.max(0, position.y - 300), window.innerHeight - 500),
-                        width: '320px',
-                        zIndex: 9005
+                        position: 'fixed',
+                        left: panelPos.left,
+                        top: panelPos.top,
+                        bottom: 'auto',
+                        right: 'auto',
+                        width: '360px',
+                        zIndex: 10000
                     }}
                 >
-                    {/* Header */}
-                    <div
-                        className="p-3 border-b border-[var(--glass-border)] flex justify-between items-center bg-black/60 select-none cursor-move drag-handle"
-                        onMouseDown={handleMouseDown}
-                    >
-                        <h3 className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-accent)] flex items-center gap-2 pointer-events-none">
-                            <span className="text-lg">🎲</span> Fate & Chance
-                        </h3>
-                        <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-white px-2 py-1">✕</button>
+                    <div className="p-4" onMouseDown={handleMouseDown} style={{ borderBottom: '1px solid rgba(163,34,34,0.3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to right, #000, #1a0505)', cursor: 'grab' }}>
+                        <h3 style={{ margin: 0, fontSize: "0.9rem", color: "#eecfa1", letterSpacing: "0.2em", textTransform: "uppercase" }}>Fate Weaver</h3>
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                color: "#666",
+                                cursor: "pointer"
+                            }}
+                        >
+                            ✕
+                        </button>
                     </div>
 
-                    <div className="p-4 flex-1 flex flex-col gap-4">
-                        {/* RESULT VISOR */}
-                        <div className="bg-black/80 border border-[var(--glass-border)] rounded-lg p-3 text-center relative h-20 flex items-center justify-center shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]">
-                            <span className={`text-4xl font-serif transition-all ${typeof visorTotal === 'number' ? 'scale-110' : ''} text-[var(--scarlet-accent)]`}>
+                    <div className="p-4">
+                        <div style={{
+                            background: "rgba(0,0,0,0.6)",
+                            border: "1px solid #333",
+                            borderRadius: "4px",
+                            padding: "1rem",
+                            textAlign: "center",
+                            minHeight: "5rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            boxShadow: "inset 0 0 20px rgba(0,0,0,0.8)",
+                            position: "relative",
+                            marginBottom: "1rem"
+                        }}>
+                            <span style={{
+                                fontSize: "3rem",
+                                color: "#a32222",
+                                textShadow: "0 0 15px rgba(163,34,34,0.5)",
+                                fontFamily: "var(--font-serif)",
+                                transition: "all 0.3s"
+                            }}>
                                 {visorTotal}
                             </span>
-                            {showModifier && modifier !== 0 && (
-                                <div className="absolute bottom-1 right-2 text-[10px] text-gray-500 font-mono">
-                                    {modifier > 0 ? `+${modifier}` : modifier}
+                            {showModifier && (
+                                <div className="modifier-float" style={{
+                                    position: "absolute",
+                                    bottom: "5px",
+                                    right: "10px",
+                                    fontSize: "0.8rem",
+                                    color: "#666",
+                                    fontFamily: "var(--font-mono)"
+                                }}>
+                                    {modifier >= 0 ? "+" : ""}{modifier}
                                 </div>
                             )}
                         </div>
 
-                        {/* DICE TRAY */}
-                        <div className="min-h-[80px] max-h-[140px] overflow-y-auto border border-[var(--glass-border)] bg-black/30 p-2 custom-scrollbar rounded-md">
-                            <div className="flex flex-wrap gap-3 justify-center">
-                                {rollGroups.flatMap((g) => g.results).map((r, i) => (
-                                    <DieShape
-                                        key={r.id + i}
-                                        sides={r.sides}
-                                        val={r.val}
-                                        className={`
-                                            ${isRolling ? "dice-rolling" : ""}
-                                            ${r.settled && r.isCrit ? "crit-success-effect" : ""}
-                                            ${r.settled && r.isCritFail ? "crit-fail-effect" : ""}
-                                            transition-all duration-300
-                                        `}
-                                        style={{
-                                            color: r.settled && r.isCrit ? 'var(--gold-accent)' : r.settled && r.isCritFail ? '#ff0000' : '#ccc'
-                                        }}
-                                    />
-                                ))}
-                            </div>
+                        <div ref={resultsRef} className="custom-scrollbar" style={{
+                            maxHeight: "150px",
+                            overflowY: "auto",
+                            padding: "4px",
+                            marginBottom: "1rem",
+                            border: "1px solid #222",
+                            background: "rgba(0,0,0,0.3)"
+                        }}>
+                            {rollGroups.map((g, i) => (
+                                <div key={i} style={{ marginBottom: "0.8rem" }}>
+                                    <div style={{
+                                        fontSize: "0.7rem",
+                                        color: "#666",
+                                        marginBottom: "4px",
+                                        fontFamily: "var(--font-mono)",
+                                        textTransform: "uppercase"
+                                    }}>
+                                        {g.count}d{g.sides}
+                                    </div>
+                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                                        {g.results.map((r, ri) => (
+                                            <DieShape
+                                                key={ri}
+                                                sides={r.sides}
+                                                val={r.val}
+                                                className={
+                                                    isRolling
+                                                        ? "dice-rolling die-shape"
+                                                        : r.isCrit
+                                                            ? "dice-settled crit-success die-shape"
+                                                            : r.isCritFail
+                                                                ? "dice-settled crit-fail die-shape"
+                                                                : "dice-settled die-shape"
+                                                }
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
                             {rollGroups.length === 0 && (
-                                <div className="text-center text-[10px] text-gray-600 py-4 tracking-widest uppercase">
-                                    Select dice to roll
+                                <div style={{ textAlign: "center", color: "#444", fontSize: "0.7rem", letterSpacing: "0.2em", padding: "1rem" }}>
+                                    Systems Ready
                                 </div>
                             )}
                         </div>
 
-                        {/* CONTROLS */}
-                        <div className="flex flex-col gap-3">
-                            {/* Input Form */}
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    value={formula}
-                                    onChange={(e) => setFormula(e.target.value)}
-                                    placeholder="e.g. 1d20 + 5"
-                                    className="flex-1 bg-[#0a0a0a] border border-[#333] text-gray-300 px-3 py-1 font-mono text-xs rounded focus:border-[var(--cardinal-accent)]"
-                                />
-                                <button onClick={clear} className="px-3 bg-[#111] border border-[#333] text-gray-500 hover:text-white text-xs uppercase rounded">Clr</button>
-                            </div>
-
-                            {/* Dice Buttons */}
-                            <div className="grid grid-cols-6 gap-1">
-                                {diceTypes.map(d => (
-                                    <button
-                                        key={d}
-                                        onClick={() => addToFormula(d)}
-                                        disabled={isRolling}
-                                        className="py-2 text-[10px] font-mono border border-[#333] bg-[#1a1a1a] text-gray-400 hover:bg-[var(--scarlet-accent)] hover:text-white transition-colors rounded hover:shadow-[0_0_10px_rgba(138,28,28,0.5)]"
-                                    >
-                                        d{d}
-                                    </button>
-                                ))}
-                            </div>
-
-                            <button
-                                onClick={roll}
-                                disabled={isRolling || !formula}
-                                className="w-full py-3 bg-[var(--scarlet-accent)] text-white font-bold uppercase tracking-widest text-xs rounded shadow-[0_4px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_0_15px_var(--scarlet-accent)] disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
-                            >
-                                {isRolling ? "ROLLING..." : "ROLL DICE"}
-                            </button>
+                        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                            <input
+                                type="text"
+                                value={formula}
+                                onChange={(e) => setFormula(e.target.value)}
+                                placeholder="e.g. 2d6 + 5"
+                                style={{ flex: 1, fontFamily: "var(--font-mono)", fontSize: "0.8rem", background: "#111", border: "1px solid #333", color: "#ccc" }}
+                            />
+                            <button onClick={clear} style={{ minWidth: "30px", padding: 0, border: "1px solid #333", background: "#111", color: "#666" }}>✕</button>
                         </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: "4px" }}>
+                            {diceTypes.map(d => (
+                                <button
+                                    key={d}
+                                    onClick={() => addToFormula(d)}
+                                    disabled={isRolling}
+                                    style={{
+                                        padding: "0.4rem 0",
+                                        fontSize: "0.8rem",
+                                        fontFamily: "var(--font-mono)",
+                                        background: "rgba(255,255,255,0.02)",
+                                        border: "1px solid #333",
+                                        color: "#888",
+                                        transition: "all 0.2s"
+                                    }}
+                                    className="hover:bg-[#a32222] hover:text-white hover:border-[#a32222]"
+                                >
+                                    d{d}
+                                </button>
+                            ))}
+                        </div>
+
+                        <button
+                            onClick={roll}
+                            disabled={isRolling || !formula}
+                            style={{
+                                width: "100%",
+                                marginTop: "1rem",
+                                padding: "0.8rem",
+                                fontSize: "0.9rem",
+                                letterSpacing: "0.1em"
+                            }}
+                            className="arcane-button"
+                        >
+                            {isRolling ? "CALCULATING..." : "EXECUTE ROLL"}
+                        </button>
                     </div>
                 </div>
             )}
