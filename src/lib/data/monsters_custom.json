@@ -114,36 +114,109 @@
         "size": "Medium",
         "type": "Undead",
         "alignment": "Lawful Evil",
-        "ac": 22,
-        "hp": 999,
-        "speed": "Fly 60 ft.",
+        "ac": 24,
+        "hp": 585,
+        "speed": "Fly 60 ft. (hover)",
         "stats": {
-            "str": 10,
+            "str": 12,
             "dex": 16,
-            "con": 20,
+            "con": 24,
             "int": 30,
-            "wis": 24,
-            "cha": 22
+            "wis": 26,
+            "cha": 24
         },
-        "immunities": "All Damage (Narrative)",
+        "immunities": "Poison, Necrotic; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks",
+        "conditionImmunities": "Charmed, Exhaustion, Frightened, Paralyzed, Poisoned, Stunned",
         "cr": "30",
         "traits": [
             {
-                "name": "Narrative Invulnerability",
-                "desc": "Larloch cannot be defeated by conventional means."
-            }
-        ],
-        "actions": [
-            {
-                "name": "Shadow Bolt",
-                "desc": "Ranged Spell Attack: +19 to hit, range 120 ft., one target. Hit: 50 (10d10) necrotic damage."
+                "name": "Special Equipment",
+                "desc": "Larloch wears 'Larloch's Spare Robes' and wields a 'Staff of Power'. He orbits several Ioun Stones (Regeneration, Insight, Intellect)."
             },
             {
-                "name": "The Unmaking",
-                "desc": "Larloch targets one creature. The target must succeed on a DC 25 Constitution saving throw or be reduced to 0 hit points immediately."
+                "name": "Legendary Resistance (5/Day)",
+                "desc": "If Larloch fails a saving throw, he can choose to succeed instead."
+            },
+            {
+                "name": "Rejuvenation",
+                "desc": "If destroyed, Larloch gains a new body next to his phylactery in 1d10 days."
+            },
+            {
+                "name": "Regeneration (Ioun Stone)",
+                "desc": "Larloch regains 15 hit points at the start of his turn if he has at least 1 hit point."
+            },
+            {
+                "name": "Master of Magic",
+                "desc": "Larloch has advantage on saving throws against spells and other magical effects."
             }
         ],
-        "source": "Custom"
+        "spellcasting": {
+            "ability": "int",
+            "dc": 27,
+            "attack": 19,
+            "spells": [
+                "Mage Hand",
+                "Prestidigitation",
+                "Ray of Frost",
+                "Shield",
+                "Counterspell",
+                "Dispel Magic",
+                "Fireball",
+                "Lightning Bolt",
+                "Blight",
+                "Dimension Door",
+                "Cloudkill",
+                "Dominate Person",
+                "Disintegrate",
+                "Finger of Death",
+                "Plane Shift",
+                "Dominate Monster",
+                "Power Word Kill",
+                "Meteor Swarm",
+                "Time Stop",
+                "Ioulaum's Longevity"
+            ]
+        },
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "Larloch uses his Paralyzing Touch or Staff of Power. He then casts a spell."
+            },
+            {
+                "name": "Paralyzing Touch",
+                "desc": "Melee Spell Attack: +19 to hit, reach 5 ft., one creature. Hit: 14 (4d6) cold damage. The target must succeed on a DC 25 Constitution saving throw or be paralyzed for 1 minute."
+            },
+            {
+                "name": "Staff of Power",
+                "desc": "Melee Weapon Attack: +19 to hit, reach 5 ft., one target. Hit: 9 (1d6+6) bludgeoning damage plus 3 (1d6) force damage."
+            },
+            {
+                "name": "Power Strike (Staff Charge)",
+                "desc": "Melee Spell Attack: +19 to hit, reach 5ft. Hit: 9 (1d6+6) bludgeoning + 14 (4d6) force damage. Target must succeed DC 18 Str save or be knocked prone."
+            },
+            {
+                "name": "Example: Meteor Swarm",
+                "desc": "40d6 fire + 40d6 bludgeoning damage in four 40ft radius spheres. DC 27 Dex save half."
+            }
+        ],
+        "legendary_actions": [
+            {
+                "name": "Cantrip",
+                "desc": "Casts a cantrip."
+            },
+            {
+                "name": "Staff Strike",
+                "desc": "Makes one attack with the Staff of Power."
+            },
+            {
+                "name": "Frightening Gaze (2 Actions)",
+                "desc": "Fixes gaze on one creature within 10 ft. DC 25 Wis save or frightened for 1 min."
+            },
+            {
+                "name": "Cast Spell (3 Actions)",
+                "desc": "Casts a spell of 1st to 3rd level."
+            }
+        ]
     },
     {
         "slug": "air-elemental",

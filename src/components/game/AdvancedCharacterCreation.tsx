@@ -396,20 +396,42 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                 {/* AVAILABLE */}
                                 <div className="border border-[#333] bg-[#111] flex flex-col">
                                     <div className="p-3 border-b border-[#333] bg-[#050505] font-bold text-sm text-[#888]">Available Spells</div>
-                                    <div className="overflow-y-auto flex-1 p-2">
-                                        {availableSpells.map(spell => {
-                                            const isKnown = knownSpells.has(spell.name) || preparedSpells.has(spell.name);
-                                            const isCantrip = spell.level === "0" || spell.level === "Cantrip";
-                                            return (
-                                                <div key={spell.name}
-                                                    onClick={() => toggleSpell(spell.name, isCantrip)}
-                                                    className={`p-2 flex justify-between items-center text-sm cursor-pointer hover:bg-[#222] ${isKnown ? 'opacity-50' : 'opacity-100'}`}
-                                                >
-                                                    <span className={isKnown ? "text-green-500" : "text-[#ccc]"}>{spell.name}</span>
-                                                    <span className="text-[10px] text-[#555] font-mono">{isCantrip ? "C" : spell.level}</span>
-                                                </div>
-                                            );
-                                        })}
+                                    <div className="overflow-y-auto flex-1 p-2 custom-scrollbar">
+                                        {(() => {
+                                            const grouped: Record<string, typeof availableSpells> = { "Cantrips": [], "Level 1": [], "Level 2": [], "Level 3": [], "Level 4": [], "Level 5": [], "Level 6": [], "Level 7": [], "Level 8": [], "Level 9": [] };
+
+                                            availableSpells.forEach(s => {
+                                                const key = (s.level === '0' || s.level === 'Cantrip') ? 'Cantrips' : `Level ${s.level}`;
+                                                if (!grouped[key]) grouped[key] = [];
+                                                grouped[key].push(s);
+                                            });
+
+                                            return Object.entries(grouped).map(([level, spells]) => {
+                                                if (spells.length === 0) return null;
+                                                return (
+                                                    <details key={level} className="mb-2 group" open={level === "Cantrips" || level === "Level 1" || level === "Level 9"}>
+                                                        <summary className="font-bold text-[#d4c391] bg-[#1a1a1a] p-2 cursor-pointer hover:bg-[#222] select-none flex items-center justify-between border-l-2 border-transparent group-open:border-[#a32222] transition-all">
+                                                            {level} <span className="text-xs text-[#666] bg-[#0a0a0a] px-2 py-0.5 rounded-full">{spells.length}</span>
+                                                        </summary>
+                                                        <div className="grid grid-cols-1 gap-1 p-2 bg-[#050505]/50">
+                                                            {spells.map(spell => {
+                                                                const isKnown = knownSpells.has(spell.name) || preparedSpells.has(spell.name);
+                                                                const isCantrip = spell.level === "0" || spell.level === "Cantrip";
+                                                                return (
+                                                                    <div key={spell.name}
+                                                                        onClick={() => toggleSpell(spell.name, isCantrip)}
+                                                                        className={`p-2 flex justify-between items-center text-sm cursor-pointer hover:bg-[#222] transition-colors ${isKnown ? 'opacity-50 blur-[0.5px]' : 'opacity-100'}`}
+                                                                    >
+                                                                        <span className={isKnown ? "text-green-600 font-bold decoration-line-through decoration-green-800" : "text-[#ccc]"}>{spell.name}</span>
+                                                                        {isKnown && <span className="text-[10px] text-green-500 font-bold uppercase tracking-wider">Prepared</span>}
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </details>
+                                                )
+                                            });
+                                        })()}
                                     </div>
                                 </div>
 
@@ -453,47 +475,58 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                             </div>
 
                             <div className="grid grid-cols-1 gap-2">
-                                {/* Standard Items */}
-                                {STARTING_EQUIPMENT.map(item => (
-                                    <div
-                                        key={item.id}
-                                        onClick={() => handleToggleEquip(item.id)}
-                                        className={`flex justify-between items-center p-4 cursor-pointer border transition-all ${equipment.has(item.id) ? 'border-[#d4c391] bg-[#1a1818]' : 'border-[#222] bg-[#111] hover:bg-[#1a1a1a]'}`}
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            {item.type === 'weapon' && <Sword className="w-5 h-5 text-red-500" />}
-                                            {item.type === 'armor' && <Shield className="w-5 h-5 text-blue-500" />}
-                                            {item.type === 'gear' && <Crown className="w-5 h-5 text-yellow-500" />}
-                                            <div>
-                                                <span className="font-bold block text-sm">{item.name}</span>
-                                                <span className="text-xs text-[#666]">{item.stats}</span>
+                                <div className="grid grid-cols-1 gap-8 pb-12">
+                                    {/* Standard Items Sorted by Type */}
+                                    {(['weapon', 'armor', 'gear'] as const).map(type => (
+                                        <div key={type}>
+                                            <h4 className="text-[#a32222] font-bold uppercase tracking-widest border-b border-[#333] mb-4 pb-2 flex items-center gap-2">
+                                                {type === 'weapon' && <Sword className="w-5 h-5" />}
+                                                {type === 'armor' && <Shield className="w-5 h-5" />}
+                                                {type === 'gear' && <Crown className="w-5 h-5" />}
+                                                {type === 'gear' ? 'Wondrous Items & Artifacts' : `${type}s`}
+                                            </h4>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                {STARTING_EQUIPMENT.filter(i => i.type === type).map(item => (
+                                                    <div
+                                                        key={item.id}
+                                                        onClick={() => handleToggleEquip(item.id)}
+                                                        className={`flex justify-between items-start p-4 cursor-pointer border transition-all hover:scale-[1.02] active:scale-95 ${equipment.has(item.id) ? 'border-[#d4c391] bg-[#1a1818] shadow-lg shadow-[#d4c391]/10' : 'border-[#222] bg-[#111] hover:bg-[#1a1a1a] opacity-80 hover:opacity-100'}`}
+                                                    >
+                                                        <div className="flex flex-col gap-1">
+                                                            <span className={`font-bold block text-sm ${equipment.has(item.id) ? 'text-[#d4c391]' : 'text-[#aaa]'}`}>{item.name}</span>
+                                                            <span className="text-xs text-[#555] italic">{item.stats}</span>
+                                                        </div>
+                                                        {equipment.has(item.id) && <div className="w-3 h-3 bg-[#d4c391] rotate-45 shadow-[0_0_10px_#d4c391]"></div>}
+                                                    </div>
+                                                ))}
                                             </div>
                                         </div>
-                                        {equipment.has(item.id) && <div className="w-2 h-2 bg-[#d4c391] rounded-full shadow-[0_0_10px_#d4c391]"></div>}
-                                    </div>
-                                ))}
+                                    ))}
 
-                                {/* Custom Items */}
-                                {customItems.map(item => (
-                                    <div
-                                        key={item.id}
-                                        onClick={() => handleToggleEquip(item.id)}
-                                        className={`flex justify-between items-center p-4 cursor-pointer border transition-all ${equipment.has(item.id) ? 'border-cyan-500 bg-[#0a1a1a]' : 'border-[#222] bg-[#111] hover:bg-[#1a1a1a]'}`}
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-5 h-5 flex items-center justify-center text-cyan-400 font-bold">C</div>
-                                            <div>
-                                                <span className="font-bold block text-sm text-cyan-200">{item.name}</span>
-                                                <span className="text-xs text-cyan-400/50">{item.stats}</span>
+                                    {/* Custom Items */}
+                                    {customItems.map(item => (
+                                        <div
+                                            key={item.id}
+                                            onClick={() => handleToggleEquip(item.id)}
+                                            className={`flex justify-between items-center p-4 cursor-pointer border transition-all ${equipment.has(item.id) ? 'border-cyan-500 bg-[#0a1a1a]' : 'border-[#222] bg-[#111] hover:bg-[#1a1a1a]'}`}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-5 h-5 flex items-center justify-center text-cyan-400 font-bold">C</div>
+                                                <div>
+                                                    <span className="font-bold block text-sm text-cyan-200">{item.name}</span>
+                                                    <span className="text-xs text-cyan-400/50">{item.stats}</span>
+                                                </div>
                                             </div>
+                                            {equipment.has(item.id) && <div className="w-2 h-2 bg-cyan-400 rounded-full shadow-[0_0_10px_cyan]"></div>}
                                         </div>
-                                        {equipment.has(item.id) && <div className="w-2 h-2 bg-cyan-400 rounded-full shadow-[0_0_10px_cyan]"></div>}
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     )}
                 </div>
+
+
             </div>
 
             {/* RIGHT: Character Card Preview */}

@@ -27,6 +27,7 @@ export default function TacticalMap({ combatants, activeCombatantId, canMove, on
     // We will render a 12x8 grid.
 
     const [positions, setPositions] = React.useState<Record<string, { x: number, y: number }>>({});
+    const [hoveredTile, setHoveredTile] = React.useState<{ x: number, y: number } | null>(null);
 
     React.useEffect(() => {
         // Initialize positions
@@ -57,16 +58,33 @@ export default function TacticalMap({ combatants, activeCombatantId, canMove, on
     };
 
     return (
-        <div className="relative w-[800px] h-[600px] bg-[#1a1515] border-4 border-[#333] shadow-2xl overflow-hidden grid grid-cols-12 grid-rows-8 gap-1 p-4 bg-[url('/locations/dungeon_floor.jpg')] bg-cover">
+        <div
+            className="relative w-[800px] h-[600px] bg-[#1a1515] border-4 border-[#333] shadow-2xl overflow-hidden grid grid-cols-12 grid-rows-8 gap-1 p-4 bg-[url('/locations/dungeon_floor.jpg')] bg-cover"
+            onMouseLeave={() => setHoveredTile(null)}
+        >
             {/* Grid Cells */}
             {Array.from({ length: 96 }).map((_, i) => {
                 const x = i % 12;
                 const y = Math.floor(i / 12);
+
+                let isHighlighted = false;
+                if (aoeMode && hoveredTile) {
+                    // Distance calculation (Euclidean 5ft squares)
+                    const dist = Math.sqrt(Math.pow(x - hoveredTile.x, 2) + Math.pow(y - hoveredTile.y, 2)) * 5;
+                    // Highlight if within radius (inclusive, typically center to center)
+                    if (dist <= aoeMode.radius + 2.5) { // +2.5 buffer for "touching"
+                        isHighlighted = true;
+                    }
+                }
+
                 return (
                     <div
                         key={i}
                         onClick={() => handleTileClick(x, y)}
-                        className={`border border-[#ffffff10] hover:bg-[#ffffff20] transition-colors cursor-crosshair ${aoeMode ? 'hover:bg-red-500/30' : ''}`}
+                        onMouseEnter={() => setHoveredTile({ x, y })}
+                        className={`border border-[#ffffff10] hover:bg-[#ffffff20] transition-colors cursor-crosshair 
+                            ${isHighlighted ? 'bg-red-500/40 border-red-500 shadow-[inset_0_0_10px_red]' : ''}
+                            ${aoeMode ? '' : ''}`}
                     ></div>
                 );
             })}
@@ -81,26 +99,25 @@ export default function TacticalMap({ combatants, activeCombatantId, canMove, on
                         key={c.id}
                         className="absolute transition-all duration-500 ease-in-out flex flex-col items-center justify-center pointer-events-none"
                         style={{
-                            left: `calc(1rem + ${pos.x} * ((800px - 2rem) / 12) + ${(800px - 2rem) / 24
-            }px - 1.5rem)`, // Center in cell
-                            top: `calc(1rem + ${pos.y} * ((600px - 2rem) / 8) + ${(600px - 2rem) / 16}px - 1.5rem)`,
-            width: '3rem',
-            height: '3rem'
+                            left: `${16 + pos.x * ((800 - 32) / 12) + ((800 - 32) / 24) - 24}px`,
+                            top: `${16 + pos.y * ((600 - 32) / 8) + ((600 - 32) / 16) - 24}px`,
+                            width: '3rem',
+                            height: '3rem'
                         }}
-                     >
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 shadow-lg
+                    >
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 shadow-lg
                             ${c.type === 'player' ? 'bg-blue-900 border-blue-400' : 'bg-red-900 border-red-500'}
                             ${isActive ? 'scale-125 ring-2 ring-white z-20' : 'scale-100 z-10'}
                          `}>
-                {c.type === 'player' ? <User className="w-6 h-6 text-blue-200" /> : <Skull className="w-6 h-6 text-red-200" />}
-            </div>
-            {/* Health Bar */}
-            <div className="w-12 h-1 bg-black mt-1">
-                <div className="h-full bg-green-500" style={{ width: `${(c.hp / c.maxHp) * 100}%` }}></div>
-            </div>
-        </div>
-    );
-})}
+                            {c.type === 'player' ? <User className="w-6 h-6 text-blue-200" /> : <Skull className="w-6 h-6 text-red-200" />}
+                        </div>
+                        {/* Health Bar */}
+                        <div className="w-12 h-1 bg-black mt-1">
+                            <div className="h-full bg-green-500" style={{ width: `${(c.hp / c.maxHp) * 100}%` }}></div>
+                        </div>
+                    </div>
+                );
+            })}
         </div >
     );
 }
