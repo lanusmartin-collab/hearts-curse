@@ -216,49 +216,106 @@ export default function GameLayout({ onExit }: GameLayoutProps) {
                 )}
 
                 {/* LEFT: VIEWPORT (The Eye) */}
-                <div className="flex-1 relative bg-black border-r-2 border-[#333]">
-                    {/* SCENE RENDER */}
-                    <div className="absolute inset-4 border-4 border-[#2a2a2a] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]">
-                        <div className="w-full h-full bg-[#0a0a0c] flex flex-col items-center justify-center relative p-8 text-center">
+                <div className="flex-1 relative bg-[#050505] border-r-2 border-[#333] flex flex-col overflow-hidden">
 
-                            {/* Node Visualization (Text for now, Image later) */}
-                            <div className="mb-8">
-                                <h2 className="text-2xl text-[#a32222] font-bold mb-2">{currentNode?.label}</h2>
-                                <div className="text-gray-400 text-sm max-w-md mx-auto leading-relaxed">
-                                    {currentNode?.description?.replace(/\*\*/g, "") || "The area is dark and silent."}
+                    {/* 1. VISUAL MAP LAYER (Background) */}
+                    <div className="absolute inset-0 z-0">
+                        {currentMap?.imagePath && (
+                            <div className="relative w-full h-full">
+                                <Image
+                                    src={currentMap.imagePath}
+                                    alt="Map Region"
+                                    fill
+                                    className="object-cover opacity-60"
+                                />
+                                {/* Grid Overlay */}
+                                <div className="absolute inset-0 bg-[url('/grid-pattern.png')] opacity-20 pointer-events-none"></div>
+                            </div>
+                        )}
+
+                        {/* Node Overlay */}
+                        <div className="absolute inset-0">
+                            {currentMap?.nodes?.map(node => {
+                                const isVisited = visitedNodes.has(node.id);
+                                if (!isVisited) return null; // Fog of War
+
+                                const isCurrent = node.id === currentNodeId;
+                                return (
+                                    <div
+                                        key={node.id}
+                                        className={`absolute transition-all duration-500 flex flex-col items-center justify-center
+                                            ${isCurrent ? 'z-20 scale-125' : 'z-10 opacity-70'}
+                                        `}
+                                        style={{ left: `${node.x}%`, top: `${node.y}%`, transform: 'translate(-50%, -50%)' }}
+                                    >
+                                        {/* Node Plot Point */}
+                                        <div className={`w-3 h-3 rounded-full border-2 
+                                            ${isCurrent ? 'bg-[#ff3333] border-white shadow-[0_0_15px_red] animate-pulse' : 'bg-[#333] border-[#666]'}
+                                        `}></div>
+
+                                        {/* Label */}
+                                        <span className={`mt-2 px-2 py-0.5 text-[10px] font-mono rounded backdrop-blur-md whitespace-nowrap
+                                            ${isCurrent ? 'bg-red-950/80 text-white border border-red-500/50' : 'bg-black/80 text-gray-500 border border-gray-800'}
+                                        `}>
+                                            {node.label}
+                                        </span>
+
+                                        {/* Player Icon (If Current) */}
+                                        {isCurrent && (
+                                            <div className="absolute -top-6 text-2xl filter drop-shadow-[0_0_5px_rgba(0,0,0,1)] animate-bounce">
+                                                📍
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* 2. HUD LAYER (Foreground) */}
+                    <div className="relative z-10 flex-1 flex flex-col justify-between pointer-events-none">
+
+                        {/* Top HUD: Location Info */}
+                        <div className="p-4 flex justify-between items-start bg-gradient-to-b from-black/90 to-transparent">
+                            <div>
+                                <h2 className="text-2xl text-[#ff3333] font-bold tracking-wider drop-shadow-md">{currentNode?.label}</h2>
+                                <div className="text-xs text-gray-400 font-mono mt-1">
+                                    COORD: {currentNode?.x}, {currentNode?.y} | SECTOR: {currentMap?.title}
                                 </div>
                             </div>
 
-                            {/* Placeholder for 3D View / Art */}
-                            <div className="text-[#333] opacity-20 text-9xl absolute bottom-12 z-0">👁️</div>
-
-                            <div className="absolute bottom-4 left-0 w-full text-center text-gray-600 font-mono text-xs z-10">
-                                loc: {currentNodeId} [{currentNode?.x}, {currentNode?.y}]
+                            {/* Compass Control (Interactive) */}
+                            <div className="pointer-events-auto bg-black/50 p-2 rounded border border-[#333] backdrop-blur-sm">
+                                <div className="grid grid-cols-3 gap-1 w-24">
+                                    <div className="col-start-2">
+                                        <button onClick={() => handleMove("north")} className={`w-full h-8 flex items-center justify-center border text-xs ${currentNode?.exits?.north ? 'bg-[#222] border-[#555] text-white hover:bg-[#a32222]' : 'border-transparent text-gray-700'}`}>N</button>
+                                    </div>
+                                    <div className="col-start-1 row-start-2">
+                                        <button onClick={() => handleMove("west")} className={`w-full h-8 flex items-center justify-center border text-xs ${currentNode?.exits?.west ? 'bg-[#222] border-[#555] text-white hover:bg-[#a32222]' : 'border-transparent text-gray-700'}`}>W</button>
+                                    </div>
+                                    <div className="col-start-2 row-start-2 flex items-center justify-center">
+                                        <div className="w-2 h-2 rounded-full bg-red-500 animate-ping"></div>
+                                    </div>
+                                    <div className="col-start-3 row-start-2">
+                                        <button onClick={() => handleMove("east")} className={`w-full h-8 flex items-center justify-center border text-xs ${currentNode?.exits?.east ? 'bg-[#222] border-[#555] text-white hover:bg-[#a32222]' : 'border-transparent text-gray-700'}`}>E</button>
+                                    </div>
+                                    <div className="col-start-2 row-start-3">
+                                        <button onClick={() => handleMove("south")} className={`w-full h-8 flex items-center justify-center border text-xs ${currentNode?.exits?.south ? 'bg-[#222] border-[#555] text-white hover:bg-[#a32222]' : 'border-transparent text-gray-700'}`}>S</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        {/* COMPASS OVERLAY */}
-                        <div className="absolute top-4 right-4 flex flex-col items-center gap-1 opacity-70 z-20">
-                            <button
-                                onClick={() => handleMove("north")}
-                                className={`w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222] ${currentNode?.exits?.north ? 'text-white border-gray-500' : 'opacity-30 cursor-not-allowed'}`}
-                            >N</button>
-                            <div className="flex gap-1">
-                                <button
-                                    onClick={() => handleMove("west")}
-                                    className={`w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222] ${currentNode?.exits?.west ? 'text-white border-gray-500' : 'opacity-30 cursor-not-allowed'}`}
-                                >W</button>
-                                <button
-                                    onClick={() => handleMove("south")}
-                                    className={`w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222] ${currentNode?.exits?.south ? 'text-white border-gray-500' : 'opacity-30 cursor-not-allowed'}`}
-                                >S</button>
-                                <button
-                                    onClick={() => handleMove("east")}
-                                    className={`w-8 h-8 bg-[#111] border border-[#444] text-[#888] hover:text-white hover:border-[#a32222] ${currentNode?.exits?.east ? 'text-white border-gray-500' : 'opacity-30 cursor-not-allowed'}`}
-                                >E</button>
+                        {/* Bottom HUD: Description */}
+                        <div className="p-6 bg-gradient-to-t from-black via-black/95 to-transparent pt-12">
+                            <div className="max-w-3xl mx-auto pointer-events-auto">
+                                <div className="bg-[#111]/90 border-l-4 border-[#a32222] p-4 text-[#e5e5e5] text-sm leading-relaxed shadow-2xl backdrop-blur-md">
+                                    <p>{currentNode?.description?.replace(/\*\*/g, "") || "The area is dark and silent."}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 {/* RIGHT: SIDEBAR (Party) */}
