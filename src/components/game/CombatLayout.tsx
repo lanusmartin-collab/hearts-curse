@@ -33,17 +33,29 @@ export default function CombatLayout({ enemySlugs, onVictory, onFlee }: CombatLa
     useEffect(() => {
         playAmbience("combat");
 
+        // Load Curse Level for Difficulty Scaling
+        const savedDays = typeof window !== 'undefined' ? parseInt(localStorage.getItem('curse_days') || '0', 10) : 0;
+        let curseMultiplier = 1;
+        // Stage 2 (Day 7+): The Fading Color -> +10% HP
+        if (savedDays >= 7) curseMultiplier = 1.1;
+        // Stage 3 (Day 14+): The Whispering Void -> +25% HP
+        if (savedDays >= 14) curseMultiplier = 1.25;
+        // Stage 4 (Day 20+): Heart Failure -> +50% HP
+        if (savedDays >= 20) curseMultiplier = 1.5;
+
         // Load Enemies from JSON
         const enemies: Combatant[] = enemySlugs.map((slug, i) => {
             const data = (monstersData as any[]).find((m: any) => m.slug === slug);
             if (!data) return null;
 
+            const maxHp = Math.floor(data.hp * curseMultiplier);
+
             return {
                 id: `e-${i}-${slug}`,
                 name: data.name,
                 type: "monster",
-                hp: data.hp,
-                maxHp: data.hp,
+                hp: maxHp,
+                maxHp: maxHp,
                 ac: data.ac,
                 initiative: Math.floor(Math.random() * 20) + 1, // Random Init for now
                 conditions: [],
@@ -54,7 +66,7 @@ export default function CombatLayout({ enemySlugs, onVictory, onFlee }: CombatLa
         // Combine & Sort by Initiative
         const all = [...INITIAL_PARTY, ...enemies].sort((a, b) => b.initiative - a.initiative);
         setCombatants(all);
-        setLog(prev => [...prev, `> ${enemies.length} hostiles detected.`]);
+        setLog(prev => [...prev, `> ${enemies.length} hostiles detected.`, savedDays >= 7 ? `> CURSE EFFECT: Enemies buffed by ${Math.round((curseMultiplier - 1) * 100)}% HP.` : ""]);
 
     }, [enemySlugs, playAmbience]);
 
