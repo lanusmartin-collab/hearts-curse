@@ -10,7 +10,22 @@ export interface Combatant {
     conditions: string[];
     statblock?: Statblock;
     type: 'player' | 'monster' | 'npc';
-    isHidden?: boolean; // For fog of war / hidden enemies potentially
+    isHidden?: boolean;
+
+    // New Combat Properties
+    stats?: {
+        str: number;
+        dex: number;
+        con: number;
+        int: number;
+        wis: number;
+        cha: number;
+    };
+    attacks?: {
+        name: string;
+        bonus: number;
+        damage: string; // e.g. "1d8+3"
+    }[];
 }
 
 export type Condition =

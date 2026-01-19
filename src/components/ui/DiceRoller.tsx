@@ -313,9 +313,9 @@ export default function DiceRoller() {
             {!isOpen && (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="dice-trigger arcane-button fixed z-[9000] w-12 h-12 flex items-center justify-center p-0"
+                    className="dice-trigger arcane-button fixed z-[9000]"
                     title="Open Dice"
-                    style={{ bottom: '1.5rem', right: '1.5rem' }}
+                    style={{ bottom: '5.5rem', right: '1.5rem' }}
                 >
                     <span style={{ fontSize: "24px", pointerEvents: 'none' }}>🎲</span>
                 </button>
