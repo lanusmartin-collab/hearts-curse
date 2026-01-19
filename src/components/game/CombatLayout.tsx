@@ -242,7 +242,8 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                         players.forEach(p => {
                             const dmg = resolveRoll(atk.damage);
                             // Sim Save
-                            const saveRoll = Math.floor(Math.random() * 20) + (p.stats.dex - 10); // Rough Dex Save
+                            const dex = p.stats?.dex || 10;
+                            const saveRoll = Math.floor(Math.random() * 20) + (dex - 10); // Rough Dex Save
                             const dc = 18; // Default High DC
                             const taken = saveRoll >= dc ? Math.floor(dmg / 2) : dmg;
 
