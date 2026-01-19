@@ -137,6 +137,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
         if (attack.isAoE || attack.name === "Fireball" || attack.name === "Meteor Swarm") {
             // ENTER AOE MODE
             addToLog(`> Aiming ${attack.name}... (Click map to cast)`);
+            setPendingAction(attack); // Set pending action for UI feedback
             setAoeData({
                 radius: 20, // 20ft radius default
                 range: 120,
@@ -372,9 +373,23 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                 {/* Action Interface (Only visible on Player Turn) */}
                 {isPlayerTurn && (
                     <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        {targetingMode ? (
+                        {aoeData ? (
+                            <div className="text-center bg-black/80 p-6 border border-cyan-500 shadow-[0_0_20px_cyan]">
+                                <p className="text-cyan-400 font-bold animate-pulse mb-4 uppercase tracking-widest text-xl">
+                                    <Zap className="w-6 h-6 inline-block mr-2" />
+                                    Cast {pendingAction?.name || "Spell"}
+                                </p>
+                                <p className="text-[#ccc] mb-6">Click any tile on the map to center the blast.</p>
+                                <button
+                                    onClick={() => { setAoeData(null); setPendingAction(null); }}
+                                    className="px-8 py-2 border border-red-500 text-red-400 hover:bg-red-900/30 transition-colors uppercase font-bold"
+                                >
+                                    Cancel Casting
+                                </button>
+                            </div>
+                        ) : targetingMode ? (
                             <div className="text-center">
-                                <p className="text-[#a32222] font-bold animate-pulse mb-6 uppercase tracking-widest">Select Target</p>
+                                <p className="text-[#a32222] font-bold animate-pulse mb-6 uppercase tracking-widest">Select Target Enemy</p>
                                 <div className="flex justify-center gap-6">
                                     {enemies.map(e => (
                                         <button
@@ -392,7 +407,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                                         </button>
                                     ))}
                                 </div>
-                                <button onClick={() => setTargetingMode(false)} className="mt-8 text-sm text-[#555] hover:text-[#bbb] uppercase underline decoration-1 underline-offset-4">
+                                <button onClick={() => { setTargetingMode(false); setPendingAction(null); }} className="mt-8 text-sm text-[#555] hover:text-[#bbb] uppercase underline decoration-1 underline-offset-4">
                                     Cancel Action
                                 </button>
                             </div>
