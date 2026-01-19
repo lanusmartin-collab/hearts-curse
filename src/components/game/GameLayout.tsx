@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useAudio } from "@/lib/context/AudioContext";
 import { CAMPAIGN_MAPS, MapNode } from "@/lib/data/maps";
+import CombatLayout from "./CombatLayout";
 
 // Placeholder for Party Data
 const PARTY = [
@@ -31,6 +32,10 @@ export default function GameLayout({ onExit }: GameLayoutProps) {
     const [currentNodeId, setCurrentNodeId] = useState("market"); // Start at Market
     const [visitedNodes, setVisitedNodes] = useState<Set<string>>(new Set(["market"]));
     const [showMap, setShowMap] = useState(false);
+
+    // Combat State
+    const [inCombat, setInCombat] = useState(false);
+    const [combatEnemies, setCombatEnemies] = useState<string[]>([]);
 
     // Derived State
     const currentMap = CAMPAIGN_MAPS.find(m => m.id === currentMapId);
@@ -87,6 +92,26 @@ export default function GameLayout({ onExit }: GameLayoutProps) {
             playSfx("/sfx/bump.mp3"); // Optional bump sound
         }
     };
+
+    const startCombat = () => {
+        if (!currentNode?.monsters || currentNode.monsters.length === 0) {
+            addToLog("No enemies detected here.");
+            return;
+        }
+        setCombatEnemies(currentNode.monsters);
+        setInCombat(true);
+        addToLog("COMBAT STARTED!");
+    };
+
+    const handleCombatEnd = () => {
+        setInCombat(false);
+        playAmbience("dungeon"); // Restore exploration music
+        addToLog("Combat ended. You can recover.");
+    };
+
+    if (inCombat) {
+        return <CombatLayout enemySlugs={combatEnemies} onVictory={handleCombatEnd} onFlee={handleCombatEnd} />;
+    }
 
     return (
         <div className="game-shell fixed inset-0 z-[1000] bg-black text-[#c9bca0] font-serif overflow-hidden flex flex-col">
@@ -251,7 +276,13 @@ export default function GameLayout({ onExit }: GameLayoutProps) {
 
                     {/* ACTION GRID (Bottom of Sidebar) */}
                     <div className="h-48 border-t-2 border-[#333] bg-[#111] p-2 grid grid-cols-3 gap-1">
-                        <button className="game-btn bg-[#222] border border-[#444] hover:bg-[#a32222] hover:text-white text-[10px] uppercase font-bold text-gray-400">Attack</button>
+                        <button
+                            onClick={startCombat}
+                            disabled={!currentNode?.monsters}
+                            className={`game-btn bg-[#222] border border-[#444] text-[10px] uppercase font-bold text-gray-400 ${currentNode?.monsters ? 'hover:bg-[#a32222] hover:text-white border-red-900 text-red-500' : 'opacity-50 cursor-not-allowed'}`}
+                        >
+                            Attack
+                        </button>
                         <button className="game-btn bg-[#222] border border-[#444] hover:bg-[#a32222] hover:text-white text-[10px] uppercase font-bold text-gray-400">Defend</button>
                         <button className="game-btn bg-[#222] border border-[#444] hover:bg-blue-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Spell</button>
 

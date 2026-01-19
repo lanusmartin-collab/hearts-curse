@@ -11,8 +11,8 @@ interface AudioContextType {
     playSfx: (src: string) => void;
     initializeAudio: () => void;
     isInitialized: boolean;
-    ambienceMode: "safe" | "dungeon";
-    playAmbience: (mode: "safe" | "dungeon") => void;
+    ambienceMode: "safe" | "dungeon" | "combat";
+    playAmbience: (mode: "safe" | "dungeon" | "combat") => void;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -21,7 +21,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     const [isMuted, setIsMuted] = useState(false);
     const [volume, setVolume] = useState(0.5);
     const [isInitialized, setIsInitialized] = useState(false);
-    const [ambienceMode, setAmbienceMode] = useState<"safe" | "dungeon">("safe");
+    const [ambienceMode, setAmbienceMode] = useState<"safe" | "dungeon" | "combat">("safe");
     const sfxRef = useRef<{ [key: string]: Howl }>({});
 
     // Initialize audio context (must be triggered by user interaction)
@@ -50,7 +50,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         sfxRef.current[src].play();
     };
 
-    const playAmbience = (mode: "safe" | "dungeon") => {
+    const playAmbience = (mode: "safe" | "dungeon" | "combat") => {
         setAmbienceMode(mode);
     };
 
@@ -64,7 +64,19 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 export function useAudio() {
     const context = useContext(AudioContext);
     if (context === undefined) {
-        throw new Error("useAudio must be used within an AudioProvider");
+        // Return a safe fallback to prevent build errors during static generation
+        // or if used outside the provider tree unexpectedly.
+        return {
+            isMuted: false,
+            volume: 0.5,
+            toggleMute: () => { },
+            setVolume: () => { },
+            playSfx: () => { },
+            initializeAudio: () => { },
+            isInitialized: false,
+            ambienceMode: "safe" as "safe" | "dungeon" | "combat", // Cast to satisfy type
+            playAmbience: () => { }
+        };
     }
     return context;
 }

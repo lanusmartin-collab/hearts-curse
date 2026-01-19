@@ -33,6 +33,8 @@ export default function AmbientController() {
         // DUNGEON MODE OVERRIDE: Always feel slightly dangerous
         if (ambienceMode === 'dungeon') {
             intensity = Math.max(intensity, 0.5);
+        } else if (ambienceMode === 'combat') {
+            intensity = 1.2; // Maximum danger
         }
 
         // Pitch Logic
@@ -43,7 +45,8 @@ export default function AmbientController() {
         // Beat Speed Logic
         // Safe: 2Hz difference (Slow breathe)
         // Critical: 8Hz difference (Fast panic)
-        const beatSpeed = 2 + (intensity * 6);
+        // Combat: 15Hz difference (Adrenaline)
+        const beatSpeed = ambienceMode === 'combat' ? 15 : (2 + (intensity * 6));
 
         // Apply Transition
         const now = audioCtxRef.current.currentTime;

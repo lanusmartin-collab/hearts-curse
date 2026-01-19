@@ -65,7 +65,8 @@ const OAKHAVEN: CampaignMap = {
             label: "The Drowned Tankard",
             type: "info",
             description: "**SAFE HAVEN:** The warm-lit building (Bottom-Left) stands defiant against the mist. Inside, the fire is real. **RUMORS:** 1. 'The Castle's magic acts like a lightning rod.' 2. 'The miners dug too deep and found a drow highway.' 3. 'The Librarian eats the sounds of the dying.'",
-            exits: { east: "market" }
+            exits: { east: "market" },
+            monsters: ["duergar"]
         },
         {
             id: "thay_embassy",
@@ -73,7 +74,8 @@ const OAKHAVEN: CampaignMap = {
             label: "Red Wizards Enclave",
             type: "encounter",
             description: "**ENCOUNTER:** 'The Red Ultimatum'. Zoltus (Red Wizard) has barricaded the **Fortified Embassy** (Bottom-Right). He demands the *Prism of the Void*. **OFFER:** Retrieve it, and he grants a *Thayan Writ of Passage*.",
-            exits: { west: "market", north: "cliff" }
+            exits: { west: "market", north: "cliff" },
+            monsters: ["zhentarim-champion"]
         },
         {
             id: "crows_nest",
@@ -85,10 +87,10 @@ const OAKHAVEN: CampaignMap = {
             exits: { south: "market" }
         },
         { id: "bridge", x: 50, y: 90, label: "The Looping Bridge", type: "entrance", description: "**THE OUTER MISTS:** A stone bridge crossing a sluggish grey river. **CURSE:** Any attempt to cross it loops the traveler back to the Town Square. The mist is impenetrable and whispers your name.", exits: { north: "market" } },
-        { id: "forge", x: 15, y: 20, label: "The Artisan's Row", type: "encounter", description: "**THE IRON KNOT:** Kaelen Muldar's forge (Top-Left) is cold, covered in grey ash. **HAUNT:** The sound of a ghostly hammer rings eternally. **LOOT:** *Adamantine Ingot* found in the cold coals, still warm to the touch.", link: "/shops?tab=iron" },
-        { id: "cliff", x: 85, y: 20, label: "The Cliffside Ascent", type: "encounter", description: "**PATH TO CASTLE:** A steep, winding path (Top-Right) leads to Mournwatch. **ENCOUNTER:** 'The Night Shard'. 3 Assassins (Zhentarim & Cultist alliance) ambush the party from the shadows. They drop a *Dagger of Venom*.", link: "/maps?id=castle", exits: { south: "thay_embassy" } },
+        { id: "forge", x: 15, y: 20, label: "The Artisan's Row", type: "encounter", description: "**THE IRON KNOT:** Kaelen Muldar's forge (Top-Left) is cold, covered in grey ash. **HAUNT:** The sound of a ghostly hammer rings eternally. **LOOT:** *Adamantine Ingot* found in the cold coals, still warm to the touch.", link: "/shops?tab=iron", monsters: ["specter"] },
+        { id: "cliff", x: 85, y: 20, label: "The Cliffside Ascent", type: "encounter", description: "**PATH TO CASTLE:** A steep, winding path (Top-Right) leads to Mournwatch. **ENCOUNTER:** 'The Night Shard'. 3 Assassins (Zhentarim & Cultist alliance) ambush the party from the shadows. They drop a *Dagger of Venom*.", link: "/maps?id=castle", exits: { south: "thay_embassy" }, monsters: ["arcanum-wraith", "arcanum-wraith"] },
         { id: "shrine", x: 10, y: 40, label: "Ancient Shrine (Lore)", type: "info", description: "**LORE:** A crumbled statue of Mystra. Reading the inscription (DC 14 Religion) reveals: 'When the Heart stops, the Weave unravels.' You feel a moment of peace here (+1d4 Temp HP)." },
-        { id: "outpost", x: 90, y: 35, label: "Abandoned Outpost", type: "encounter", description: "**COMBAT:** An old watchtower. **THREAT:** 4 Ghouls wearing tattered town guard uniforms. They are eating a horse carcass. **LOOT:** *Potion of Vitality* in a saddlebag." },
+        { id: "outpost", x: 90, y: 35, label: "Abandoned Outpost", type: "encounter", description: "**COMBAT:** An old watchtower. **THREAT:** 4 Ghouls wearing tattered town guard uniforms. They are eating a horse carcass. **LOOT:** *Potion of Vitality* in a saddlebag.", monsters: ["specter", "specter", "specter", "specter"] },
         { id: "grove", x: 35, y: 10, label: "Whispering Grove", type: "trap", description: "**SKILL CHECK:** The trees lean in. **SURVIVAL DC 13:** The roots try to trip you (Prone). **ARCANA DC 15:** You hear the trees gossiping. They say 'The Library is not on this plane'." }
     ],
     description: `
