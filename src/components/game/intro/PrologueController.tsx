@@ -113,9 +113,6 @@ export default function PrologueController({ playerCharacter, onComplete }: Prol
                     </div>
 
 
-
-                    // ... inside the component ...
-
                     <button
                         onClick={() => {
                             const downgradedChar = downgradeCharacter(playerCharacter);

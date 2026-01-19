@@ -108,6 +108,15 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
         }
     };
 
+    const handleToggleEquip = (itemId: string) => {
+        setEquipment(prev => {
+            const next = new Set(prev);
+            if (next.has(itemId)) next.delete(itemId);
+            else next.add(itemId);
+            return next;
+        });
+    };
+
     const rollHp = () => {
         const conMod = Math.floor((stats.con - 10) / 2);
         const hitDie = selectedClass?.hp || 10;
@@ -330,7 +339,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                 {STARTING_EQUIPMENT.map(item => (
                                     <div
                                         key={item.id}
-                                        onClick={() => toggleEquip(item.id)}
+                                        onClick={() => handleToggleEquip(item.id)}
                                         className={`flex justify-between items-center p-4 cursor-pointer border transition-all ${equipment.has(item.id) ? 'border-[#d4c391] bg-[#1a1818]' : 'border-[#222] bg-[#111] hover:bg-[#1a1a1a]'}`}
                                     >
                                         <div className="flex items-center gap-4">
@@ -350,7 +359,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                 {customItems.map(item => (
                                     <div
                                         key={item.id}
-                                        onClick={() => toggleEquip(item.id)}
+                                        onClick={() => handleToggleEquip(item.id)}
                                         className={`flex justify-between items-center p-4 cursor-pointer border transition-all ${equipment.has(item.id) ? 'border-cyan-500 bg-[#0a1a1a]' : 'border-[#222] bg-[#111] hover:bg-[#1a1a1a]'}`}
                                     >
                                         <div className="flex items-center gap-4">
