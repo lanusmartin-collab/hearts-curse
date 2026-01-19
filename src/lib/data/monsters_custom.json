@@ -890,6 +890,14 @@
             {
                 "name": "Necrotic Frost Breath (Recharge 5–6)",
                 "desc": "The dracolich exhales a blast of freezing rot in a 90-foot cone. Each creature in that area must make a DC 25 Constitution saving throw, taking 52 (8d12) cold damage and 52 (8d12) necrotic damage on a failed save, or half as much damage on a successful one."
+            },
+            {
+                "name": "Circle of Death",
+                "desc": "AoE: 60ft radius sphere within 150ft. DC 19 Con save. Hit: 8d6 necrotic damage."
+            },
+            {
+                "name": "Finger of Death",
+                "desc": "Ranged Spell Attack: +11 to hit, 60 ft range. Hit: 7d8 + 30 necrotic damage."
             }
         ],
         "source": "Custom"
@@ -1344,7 +1352,19 @@
             },
             {
                 "name": "Finger of Death (At Will)",
-                "desc": "Casts Finger of Death. If target dies, it rises as a Zombie under his control."
+                "desc": "Casts Finger of Death. Ranged Spell Attack: +17 to hit, 60 ft range. Hit: 60 (7d8 + 30) necrotic damage. If target dies, it rises as a Zombie."
+            },
+            {
+                "name": "Fireball (Lvl 9)",
+                "desc": "AoE: 20ft radius sphere within 150ft. DC 25 Dex save. Hit: 14d6 fire damage."
+            },
+            {
+                "name": "Power Word Kill",
+                "desc": "One creature within 60ft with 100 HP or less dies instantly."
+            },
+            {
+                "name": "Meteor Swarm",
+                "desc": "AoE: Four 40ft radius spheres. DC 25 Dex save. Hit: 20d6 fire + 20d6 bludgeoning damage."
             }
         ],
         "legendary": [

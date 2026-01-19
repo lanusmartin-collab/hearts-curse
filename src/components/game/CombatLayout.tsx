@@ -220,33 +220,61 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
         setTimeout(nextTurn, 1000);
     };
 
-    // Enemy AI (Simplified)
+    // Enemy AI (Deep Logic)
     useEffect(() => {
-        if (!isPlayerTurn && currentCombatant && currentCombatant.hp > 0) {
-            setTimeout(() => {
+        if (!isPlayerTurn && currentCombatant && currentCombatant.hp > 0 && combatStarted) {
+            const timer = setTimeout(() => {
                 const players = combatants.filter(c => c.type === 'player' && c.hp > 0);
-                const target = players[0]; // Simple AI targets first player
+                const target = players[0]; // Primary target
 
-                if (target) {
-                    const atk = currentCombatant.attacks?.[0];
-                    if (atk) {
-                        const hit = (Math.floor(Math.random() * 20) + 1) + atk.bonus;
-                        if (hit >= target.ac) {
+                if (target && currentCombatant.attacks && currentCombatant.attacks.length > 0) {
+                    // 1. Pick Random Action
+                    const atk = currentCombatant.attacks[Math.floor(Math.random() * currentCombatant.attacks.length)];
+
+                    // 2. Check AoE
+                    const isAoE = atk.isAoE || atk.name.includes("Breath") || atk.name.includes("Swarm") || atk.name.includes("Circle");
+
+                    if (isAoE) {
+                        addToLog(`> ${currentCombatant.name} unleashes ${atk.name}!`);
+                        playSfx("/sfx/explosion.mp3"); // Generic big sound
+
+                        // Hit all players
+                        players.forEach(p => {
                             const dmg = resolveRoll(atk.damage);
-                            addToLog(`> ${currentCombatant.name} hits ${target.name} for ${dmg} dmg!`);
+                            // Sim Save
+                            const saveRoll = Math.floor(Math.random() * 20) + (p.stats.dex - 10); // Rough Dex Save
+                            const dc = 18; // Default High DC
+                            const taken = saveRoll >= dc ? Math.floor(dmg / 2) : dmg;
+
+                            addToLog(`> ${p.name} takes ${taken} damage.`);
+                            handleUpdate(p.id, { hp: Math.max(0, p.hp - taken) });
+                            if (p.hp - taken <= 0) handleDefeat(p.id);
+                        });
+
+                    } else {
+                        // Single Target Attack
+                        // Parsing Bonus
+                        const hitBonus = atk.bonus || 10;
+                        const d20 = Math.floor(Math.random() * 20) + 1;
+
+                        if (d20 + hitBonus >= target.ac) {
+                            const dmg = resolveRoll(atk.damage);
+                            addToLog(`> ${currentCombatant.name} uses ${atk.name} on ${target.name} for ${dmg} dmg!`);
                             playSfx("/sfx/glitch_crit.mp3");
                             const newHp = Math.max(0, target.hp - dmg);
                             handleUpdate(target.id, { hp: newHp });
                             if (newHp === 0) handleDefeat(target.id);
                         } else {
-                            addToLog(`> ${currentCombatant.name} misses ${target.name}.`);
+                            addToLog(`> ${currentCombatant.name} uses ${atk.name} but misses.`);
+                            playSfx("/sfx/dice_settle.mp3");
                         }
                     }
                 }
                 nextTurn();
-            }, 1000);
+            }, 1500); // Slower AI for dramatic effect
+            return () => clearTimeout(timer);
         }
-    }, [turnIndex, combatants]);
+    }, [turnIndex, combatants, combatStarted]);
 
     const nextTurn = () => {
         setTurnIndex(prev => (prev + 1) % combatants.length);
