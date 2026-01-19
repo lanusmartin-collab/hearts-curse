@@ -27,6 +27,7 @@ export const metadata: Metadata = {
 };
 
 import { AudioProvider } from "@/lib/context/AudioContext";
+import { MusicProvider } from "@/components/providers/MusicProvider";
 import { SpellProvider } from "@/lib/game/spellContext";
 import ShadowCaster from "@/components/ui/ShadowCaster";
 
@@ -53,13 +54,15 @@ export default function RootLayout({
         <UserProvider>
           <AudioProvider>
             <SpellProvider>
-              <CurseOverlay />
-              <div className="noise-overlay"></div>
-              <SidebarNav />
-              <main>{children}</main>
-              <ShadowCaster />
-              <DiceRoller />
-              {/* GrimoireModal removed - migrated to /grimoire */}
+              <MusicProvider>
+                <CurseOverlay />
+                <div className="noise-overlay"></div>
+                <SidebarNav />
+                <main>{children}</main>
+                <ShadowCaster />
+                <DiceRoller />
+                {/* GrimoireModal removed - migrated to /grimoire */}
+              </MusicProvider>
             </SpellProvider>
           </AudioProvider>
         </UserProvider>

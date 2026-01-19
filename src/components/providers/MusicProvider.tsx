@@ -9,7 +9,7 @@ export type AudioTrack = {
     category: "music" | "ambience" | "sfx";
 };
 
-type AudioContextType = {
+type MusicContextType = {
     currentTrack: AudioTrack | null;
     isPlaying: boolean;
     volume: number;
@@ -21,7 +21,7 @@ type AudioContextType = {
     availableTracks: AudioTrack[];
 };
 
-const AudioContext = createContext<AudioContextType | undefined>(undefined);
+const MusicContext = createContext<MusicContextType | undefined>(undefined);
 
 const TRACKS: AudioTrack[] = [
     { id: "intro", title: "The Curse (Intro)", src: "/audio/intro.mp3", category: "music" },
@@ -31,7 +31,7 @@ const TRACKS: AudioTrack[] = [
     { id: "creepy", title: "Whispers (Horror)", src: "/audio/whispers.mp3", category: "ambience" },
 ];
 
-export function AudioProvider({ children }: { children: React.ReactNode }) {
+export function MusicProvider({ children }: { children: React.ReactNode }) {
     // State
     const [currentTrack, setCurrentTrack] = useState<AudioTrack | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -47,7 +47,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         audioRef.current.loop = true;
 
         // Restore preferences
-        const savedVol = localStorage.getItem("heartscurse_volume");
+        const savedVol = localStorage.getItem("heartscurse_music_volume"); // Changed key to avoid conflict
         if (savedVol) setVolumeState(parseFloat(savedVol));
 
         return () => {
@@ -102,13 +102,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     const setVolume = (vol: number) => {
         const clamped = Math.max(0, Math.min(1, vol));
         setVolumeState(clamped);
-        localStorage.setItem("heartscurse_volume", clamped.toString());
+        localStorage.setItem("heartscurse_music_volume", clamped.toString());
     };
 
     const toggleMute = () => setIsMuted(prev => !prev);
 
     return (
-        <AudioContext.Provider value={{
+        <MusicContext.Provider value={{
             currentTrack,
             isPlaying,
             volume,
@@ -120,14 +120,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
             availableTracks: TRACKS
         }}>
             {children}
-        </AudioContext.Provider>
+        </MusicContext.Provider>
     );
 }
 
-export function useAudio() {
-    const context = useContext(AudioContext);
+export function useMusic() {
+    const context = useContext(MusicContext);
     if (context === undefined) {
-        throw new Error("useAudio must be used within an AudioProvider");
+        throw new Error("useMusic must be used within a MusicProvider");
     }
     return context;
 }

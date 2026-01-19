@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useAudio } from "@/components/providers/AudioProvider";
+import { useMusic } from "@/components/providers/MusicProvider";
 import { Music, Volume2, VolumeX, Play, Pause, ChevronUp, ChevronDown, ListMusic } from "lucide-react";
 import clsx from "clsx";
 
 export default function ShadowCaster() {
-    const { currentTrack, isPlaying, volume, isMuted, playTrack, togglePlay, setVolume, toggleMute, availableTracks } = useAudio();
+    const { currentTrack, isPlaying, volume, isMuted, playTrack, togglePlay, setVolume, toggleMute, availableTracks } = useMusic();
     const [isExpanded, setIsExpanded] = useState(false);
     const [showPlaylist, setShowPlaylist] = useState(false);
     const [activeTab, setActiveTab] = useState<'local' | 'spotify'>('local');
