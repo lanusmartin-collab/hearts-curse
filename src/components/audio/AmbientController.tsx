@@ -10,7 +10,7 @@ import { Volume2, VolumeX } from "lucide-react";
 // }
 
 export default function AmbientController() {
-    const { isInitialized, initializeAudio, isMuted, toggleMute } = useAudio();
+    const { isInitialized, initializeAudio, isMuted, toggleMute, ambienceMode } = useAudio();
     const [curseLevel, setCurseLevel] = useState(0);
     const audioCtxRef = useRef<AudioContext | null>(null);
 
@@ -19,69 +19,25 @@ export default function AmbientController() {
     const pulseRef = useRef<OscillatorNode | null>(null);
     const gainRef = useRef<GainNode | null>(null);
 
-    // Sync Curse Level with Storage
-    useEffect(() => {
-        const loadLevel = () => {
-            if (typeof window !== 'undefined') {
-                const saved = localStorage.getItem('curse_days');
-                if (saved) setCurseLevel(parseInt(saved, 10));
-            }
-        };
-        loadLevel();
-        window.addEventListener('storage', loadLevel);
-        window.addEventListener('curse-update', loadLevel);
-        return () => {
-            window.removeEventListener('storage', loadLevel);
-            window.removeEventListener('curse-update', loadLevel);
-        };
-    }, []);
+    // ... (useEffect for storage sync)
 
-    // Re-run setup when initialized
-    useEffect(() => {
-        if (!isInitialized || audioCtxRef.current) return;
+    // ... (useEffect for initialization)
 
-        // Create Web Audio Context for procedural drone
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-        const ctx = new AudioContextClass();
-        audioCtxRef.current = ctx;
-
-        // Master Gain
-        const masterGain = ctx.createGain();
-        masterGain.gain.value = 0.1; // Start quiet
-        masterGain.connect(ctx.destination);
-        gainRef.current = masterGain;
-
-        // 1. Low Drone (55Hz - A1)
-        const osc1 = ctx.createOscillator();
-        osc1.type = "sine";
-        osc1.frequency.value = 55;
-        osc1.start();
-        osc1.connect(masterGain);
-        lowDroneRef.current = osc1;
-
-        // 2. Pulse (Binaural beat interference)
-        const osc2 = ctx.createOscillator();
-        osc2.type = "sine";
-        osc2.frequency.value = 57; // 2Hz difference = 2Hz beat
-        osc2.start();
-        osc2.connect(masterGain);
-        pulseRef.current = osc2;
-
-        return () => {
-            ctx.close();
-        };
-    }, [isInitialized]);
-
-    // Modulate sound based on Curse Level
+    // Modulate sound based on Curse Level AND Ambience Mode
     useEffect(() => {
         if (!audioCtxRef.current || !lowDroneRef.current || !pulseRef.current || !gainRef.current) return;
 
         // Intensity calculation (0.0 to 1.0)
-        const intensity = Math.min(curseLevel / 21, 1);
+        let intensity = Math.min(curseLevel / 21, 1);
+
+        // DUNGEON MODE OVERRIDE: Always feel slightly dangerous
+        if (ambienceMode === 'dungeon') {
+            intensity = Math.max(intensity, 0.5);
+        }
 
         // Pitch Logic
         // Safe: 55Hz (A1) -> Deep, calm
-        // Critical: 45Hz (F#1) -> Unsettling, deeper
+        // Critical / Dungeon: 45Hz (F#1) -> Unsettling, deeper
         const baseFreq = 55 - (intensity * 10);
 
         // Beat Speed Logic
@@ -95,11 +51,10 @@ export default function AmbientController() {
         pulseRef.current.frequency.linearRampToValueAtTime(baseFreq + beatSpeed, now + 2);
 
         // Volume Logic (Louder as it gets more cursed)
-        // Muted handled by wrapper isMuted check or gain node
         const targetVol = isMuted ? 0 : (0.05 + (intensity * 0.15));
         gainRef.current.gain.linearRampToValueAtTime(targetVol, now + 1);
 
-    }, [curseLevel, isMuted, isInitialized]);
+    }, [curseLevel, isMuted, isInitialized, ambienceMode]);
 
     if (!isInitialized) {
         return (

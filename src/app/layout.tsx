@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
 };
 
-import { AudioProvider } from "@/components/providers/AudioProvider";
+import { AudioProvider } from "@/lib/context/AudioContext";
 import { SpellProvider } from "@/lib/game/spellContext";
 import ShadowCaster from "@/components/ui/ShadowCaster";
 
