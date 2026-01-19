@@ -66,8 +66,8 @@ export default function DiceRoller() {
     const [visorTotal, setVisorTotal] = useState<number | string>("-");
     const [showModifier, setShowModifier] = useState(false);
 
-    // Draggable State
-    const [position, setPosition] = useState<Position>({ x: 1000, y: 100 });
+    // Draggable State - Initial position anchored to bottom right safe zone
+    const [position, setPosition] = useState<Position>({ x: 1000, y: 500 }); // Will be reset by useEffect
     const [isDragging, setIsDragging] = useState(false);
     const dragOffset = useRef({ x: 0, y: 0 });
     const diceTypes = [4, 6, 8, 10, 12, 20];
@@ -79,20 +79,32 @@ export default function DiceRoller() {
                 try {
                     const parsed = JSON.parse(savedPos);
                     if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
-                        // Clamp to screen
-                        const clampedX = Math.min(Math.max(0, parsed.x), window.innerWidth - 60);
-                        const clampedY = Math.min(Math.max(0, parsed.y), window.innerHeight - 60);
-                        setPosition({ x: clampedX, y: clampedY });
+                        setPosition(clampPosition(parsed.x, parsed.y));
                         return;
                     }
                 } catch (e) { }
             }
-            setPosition({ x: window.innerWidth - 80, y: window.innerHeight - 150 });
+            // Default: Bottom Right, safely above stats
+            setPosition({ x: window.innerWidth - 380, y: window.innerHeight - 500 });
         }
     }, []);
 
+    const clampPosition = (x: number, y: number) => {
+        if (typeof window === 'undefined') return { x, y };
+        const maxX = window.innerWidth - 60; // Button width approx
+        const maxY = window.innerHeight - 60;
+        return {
+            x: Math.min(Math.max(10, x), maxX),
+            y: Math.min(Math.max(10, y), maxY)
+        };
+    };
+
     const handleMouseDown = (e: React.MouseEvent) => {
-        // Only drag if clicking the trigger or the header
+        // Prevent drag if interacting with inputs
+        if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'BUTTON' && !(e.target as HTMLElement).classList.contains('dice-trigger')) {
+            if (!(e.target as HTMLElement).classList.contains('drag-handle')) return;
+        }
+
         e.preventDefault();
         setIsDragging(true);
         dragOffset.current = {
@@ -109,8 +121,12 @@ export default function DiceRoller() {
             setPosition({ x: newX, y: newY });
         };
         const handleMouseUp = () => {
-            setIsDragging(false);
-            localStorage.setItem("dicePos", JSON.stringify(position));
+            if (isDragging) {
+                setIsDragging(false);
+                const clamped = clampPosition(position.x, position.y);
+                setPosition(clamped);
+                localStorage.setItem("dicePos", JSON.stringify(clamped));
+            }
         };
 
         if (isDragging) {
@@ -196,7 +212,7 @@ export default function DiceRoller() {
         setRollGroups(initialGroups);
 
         let frame = 0;
-        const maxFrames = 25; // Slower, more impactful roll
+        const maxFrames = 25;
 
         const interval = setInterval(() => {
             frame++;
@@ -258,80 +274,60 @@ export default function DiceRoller() {
         }
     };
 
-    // Calculate panel position - Simplified to anchor near button
-    // The previous dynamic logic relied on window dimensions that might be unstable during resize or initial render
-    const panelStyle: React.CSSProperties = {
-        position: 'fixed',
-        bottom: '5rem', // Above the button
-        right: '2rem',  // Aligned with the button area
-        width: '320px',
-        maxHeight: 'calc(100vh - 6rem)',
-        zIndex: 9005
-    };
-
     return (
         <div className="no-print">
             <style jsx>{`
                 .dice-rolling .die-content { 
-                    animation: tumble 0.4s linear infinite; 
+                    animation: tumble 0.5s linear infinite; 
                 }
                 
                 @keyframes tumble { 
-                    0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-                    25% { transform: rotateX(90deg) rotateY(45deg) rotateZ(180deg); }
-                    50% { transform: rotateX(180deg) rotateY(90deg) rotateZ(0deg); }
-                    75% { transform: rotateX(270deg) rotateY(135deg) rotateZ(180deg); }
-                    100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); } 
+                    0% { transform: rotate3d(1, 1, 1, 0deg); }
+                    50% { transform: rotate3d(1, 2, 0, 180deg); }
+                    100% { transform: rotate3d(1, 1, 1, 360deg); }
                 }
 
                 .crit-success-effect { 
-                    filter: drop-shadow(0 0 8px var(--gold-accent));
+                    filter: drop-shadow(0 0 10px var(--gold-accent));
                     animation: pulse-crit 1s infinite;
                 }
                 
                 .crit-fail-effect {
-                    filter: drop-shadow(0 0 8px red);
+                    filter: drop-shadow(0 0 10px red);
                     animation: shake-crit 0.4s infinite;
                 }
-
-                @keyframes pulse-crit {
-                    0%, 100% { transform: scale(1); }
-                    50% { transform: scale(1.1); }
-                }
-
-                @keyframes shake-crit {
-                    0%, 100% { transform: translateX(0); }
-                    25% { transform: translateX(-2px); }
-                    75% { transform: translateX(2px); }
-                }
-
-                .crit-success-text { color: var(--gold-accent); text-shadow: 0 0 10px var(--gold-accent); font-weight: 900; }
-                .crit-fail-text { color: #ff0000; text-shadow: 0 0 10px red; font-weight: 900; }
             `}</style>
 
-            {/* Trigger Button */}
+            {/* Trigger Button - Draggable */}
             {!isOpen && (
                 <button
-                    onClick={() => setIsOpen(true)}
-                    className="dice-trigger arcane-button fixed z-[9000]"
+                    onMouseDown={handleMouseDown}
+                    onClick={() => !isDragging && setIsOpen(true)}
+                    className="dice-trigger arcane-button fixed z-[9000] cursor-grab active:cursor-grabbing"
                     title="Open Dice"
-                    style={{ bottom: '5.5rem', right: '1.5rem' }}
+                    style={{ left: position.x, top: position.y, width: '3.5rem', height: '3.5rem' }}
                 >
-                    <span style={{ fontSize: "24px", pointerEvents: 'none' }}>🎲</span>
+                    <span style={{ fontSize: "2rem", pointerEvents: 'none' }}>🎲</span>
                 </button>
             )}
 
-            {/* Panel */}
+            {/* Panel - Draggable Header */}
             {isOpen && (
                 <div
-                    className="dice-panel glass-panel animate-slide-up flex flex-col"
-                    style={panelStyle}
+                    className="dice-panel glass-panel animate-slide-up flex flex-col fixed z-[9000]"
+                    style={{
+                        left: position.x - 280, // Offset to open to Left/Top
+                        top: position.y - 300,  // Offset to open upwards
+                        width: '320px',
+                        zIndex: 9005
+                    }}
                 >
                     {/* Header */}
                     <div
-                        className="p-3 border-b border-[var(--glass-border)] flex justify-between items-center bg-black/60 select-none"
+                        className="p-3 border-b border-[var(--glass-border)] flex justify-between items-center bg-black/60 select-none cursor-move drag-handle"
+                        onMouseDown={handleMouseDown}
                     >
-                        <h3 className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-accent)] flex items-center gap-2">
+                        <h3 className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-accent)] flex items-center gap-2 pointer-events-none">
                             <span className="text-lg">🎲</span> Fate & Chance
                         </h3>
                         <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-white px-2 py-1">✕</button>
@@ -340,43 +336,36 @@ export default function DiceRoller() {
                     <div className="p-4 flex-1 flex flex-col gap-4">
                         {/* RESULT VISOR */}
                         <div className="bg-black/80 border border-[var(--glass-border)] rounded-lg p-3 text-center relative h-20 flex items-center justify-center shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]">
-                            <span className={`text-4xl font-serif transition-all ${rollGroups.some(g => g.results.some(r => r.isCrit)) ? 'crit-success-text scale-110' :
-                                rollGroups.some(g => g.results.some(r => r.isCritFail)) ? 'crit-fail-text' :
-                                    'text-[var(--scarlet-accent)]'
-                                }`}>
+                            <span className={`text-4xl font-serif transition-all ${typeof visorTotal === 'number' ? 'scale-110' : ''} text-[var(--scarlet-accent)]`}>
                                 {visorTotal}
                             </span>
-                            {showModifier && (
+                            {showModifier && modifier !== 0 && (
                                 <div className="absolute bottom-1 right-2 text-[10px] text-gray-500 font-mono">
-                                    MOD: {modifier >= 0 ? "+" : ""}{modifier}
+                                    {modifier > 0 ? `+${modifier}` : modifier}
                                 </div>
                             )}
                         </div>
 
                         {/* DICE TRAY */}
                         <div className="min-h-[80px] max-h-[140px] overflow-y-auto border border-[var(--glass-border)] bg-black/30 p-2 custom-scrollbar rounded-md">
-                            {rollGroups.map((g, i) => (
-                                <div key={i} className="mb-2 last:mb-0">
-                                    <div className="flex flex-wrap gap-3 justify-center">
-                                        {g.results.map((r, ri) => (
-                                            <DieShape
-                                                key={ri}
-                                                sides={r.sides}
-                                                val={r.val}
-                                                className={`
-                                                    ${isRolling ? "dice-rolling" : ""}
-                                                    ${r.settled && r.isCrit ? "crit-success-effect" : ""}
-                                                    ${r.settled && r.isCritFail ? "crit-fail-effect" : ""}
-                                                    text-gray-300 transition-all duration-300
-                                                `}
-                                                style={{
-                                                    color: r.settled && r.isCrit ? 'var(--gold-accent)' : r.settled && r.isCritFail ? '#ff0000' : 'inherit'
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
+                            <div className="flex flex-wrap gap-3 justify-center">
+                                {rollGroups.flatMap((g) => g.results).map((r, i) => (
+                                    <DieShape
+                                        key={r.id + i}
+                                        sides={r.sides}
+                                        val={r.val}
+                                        className={`
+                                            ${isRolling ? "dice-rolling" : ""}
+                                            ${r.settled && r.isCrit ? "crit-success-effect" : ""}
+                                            ${r.settled && r.isCritFail ? "crit-fail-effect" : ""}
+                                            transition-all duration-300
+                                        `}
+                                        style={{
+                                            color: r.settled && r.isCrit ? 'var(--gold-accent)' : r.settled && r.isCritFail ? '#ff0000' : '#ccc'
+                                        }}
+                                    />
+                                ))}
+                            </div>
                             {rollGroups.length === 0 && (
                                 <div className="text-center text-[10px] text-gray-600 py-4 tracking-widest uppercase">
                                     Select dice to roll
