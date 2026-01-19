@@ -34,23 +34,25 @@ export default function MainMenu({ onCreateChar, onLoadGame }: MainMenuProps) {
             </div>
 
             {/* Bottom Half: Controls */}
-            <div className="flex-1 flex flex-col items-center justify-start pt-12 gap-6 bg-[#0a0a0c] relative">
+            <div className="flex-1 flex flex-col items-center justify-start pt-12 gap-6 bg-[#050505] relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.8)]">
                 {/* Decorative Line */}
                 <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-[#a32222] to-transparent mb-4"></div>
 
-                {/* PRO BUTTON STYLE */}
+                {/* PRO BUTTON STYLE - High Contrast */}
                 <button
                     onClick={onCreateChar}
-                    className="w-72 py-4 border border-[#333] hover:border-[#a32222] bg-[#111] text-[#ccc] hover:text-white transition-all duration-300 uppercase tracking-[0.2em] text-sm font-bold flex items-center justify-center gap-3 hover:bg-[#1a1a1a] shadow-lg group"
+                    className="w-72 py-4 border-2 border-[#8b7e66] hover:border-[#a32222] bg-[#1a1a1a] hover:bg-[#2a1a1a] text-[#e5e5e5] hover:text-white transition-all duration-300 uppercase tracking-[0.2em] text-sm font-bold flex items-center justify-center gap-3 shadow-xl group relative overflow-hidden"
                 >
-                    <Skull className="w-4 h-4 text-[#555] group-hover:text-[#a32222] transition-colors" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                    <Skull className="w-4 h-4 text-[#8b7e66] group-hover:text-[#a32222] transition-colors" />
                     New Campaign
                 </button>
 
                 <button
                     onClick={onLoadGame}
-                    className="w-72 py-4 border border-[#333] hover:border-[#a32222] bg-[#111] text-[#ccc] hover:text-white transition-all duration-300 uppercase tracking-[0.2em] text-sm font-bold flex items-center justify-center gap-3 hover:bg-[#1a1a1a] shadow-lg group relative"
+                    className="w-72 py-4 border-2 border-[#444] hover:border-[#a32222] bg-[#1a1a1a] hover:bg-[#2a1a1a] text-[#aaa] hover:text-white transition-all duration-300 uppercase tracking-[0.2em] text-sm font-bold flex items-center justify-center gap-3 shadow-xl group relative"
                 >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                     <input
                         type="file"
                         accept=".json"
