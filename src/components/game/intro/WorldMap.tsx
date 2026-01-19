@@ -80,7 +80,7 @@ export default function WorldMap({ onSelectLocation }: WorldMapProps) {
                     src="/netheril_map.png"
                     alt="Region"
                     fill
-                    className="object-cover opacity-80 hover:scale-105 transition-transform duration-[10s] ease-linear"
+                    className="object-contain opacity-80 hover:scale-105 transition-transform duration-[10s] ease-linear"
                 />
 
                 {/* LOCATIONS */}
@@ -117,7 +117,7 @@ export default function WorldMap({ onSelectLocation }: WorldMapProps) {
                         <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-800">
                             <span className="text-[10px] uppercase tracking-widest text-gray-500">Threat Level</span>
                             <span className={`text-xs font-bold ${hoveredLoc.difficulty === "Deadly" ? "text-red-500 animate-pulse" :
-                                    hoveredLoc.difficulty === "High" ? "text-orange-400" : "text-green-400"
+                                hoveredLoc.difficulty === "High" ? "text-orange-400" : "text-green-400"
                                 }`}>
                                 {hoveredLoc.difficulty}
                             </span>

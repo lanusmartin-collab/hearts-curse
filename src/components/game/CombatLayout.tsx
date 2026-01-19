@@ -373,7 +373,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
             </div>
 
             {/* MAIN AREA */}
-            <div className="flex-1 relative bg-[#151515] flex items-center justify-center overflow-hidden">
+            <div className="flex-1 relative bg-[#151515] flex items-center justify-center overflow-hidden p-4">
                 <TacticalMap
                     combatants={combatants}
                     activeCombatantId={currentCombatant?.id}

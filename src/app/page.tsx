@@ -88,12 +88,20 @@ export default function Home() {
     );
   }
 
+  // Map Selection State
+  const [selectedMapId, setSelectedMapId] = useState<string>("oakhaven");
+  const [selectedNodeId, setSelectedNodeId] = useState<string>("market");
+
   if (viewMode === "world_map") {
     return (
       <WorldMap
         onSelectLocation={(locId: string) => {
           if (locId === "heart_chamber") setViewMode("prologue");
-          if (locId === "underdark") setViewMode("game");
+          if (locId === "underdark") {
+            setSelectedMapId("oakhaven_mines");
+            setSelectedNodeId("ent");
+            setViewMode("game");
+          }
         }}
       />
     );
@@ -108,6 +116,9 @@ export default function Home() {
             setPlayerCharacter(data.updatedCharacter);
           }
           setStartingRewards(data);
+          // Post-Prologue: Go to Oakhaven by default
+          setSelectedMapId("oakhaven");
+          setSelectedNodeId("market");
           setViewMode("game");
         }}
       />
@@ -119,6 +130,8 @@ export default function Home() {
       <GameLayout
         onExit={() => setViewMode("home")}
         playerCharacter={playerCharacter}
+        initialMapId={selectedMapId}
+        initialNodeId={selectedNodeId}
       />
     );
   }

@@ -22,9 +22,11 @@ interface GameLayoutProps {
     onExit: () => void;
     startingRewards?: any;
     playerCharacter?: Combatant;
+    initialMapId?: string;
+    initialNodeId?: string;
 }
 
-export default function GameLayout({ onExit, startingRewards, playerCharacter }: GameLayoutProps) {
+export default function GameLayout({ onExit, startingRewards, playerCharacter, initialMapId = "oakhaven", initialNodeId = "market" }: GameLayoutProps) {
     const { playSfx, playAmbience } = useAudio();
     // Use playerCharacter to override the first slot of the party
     const initialParty = playerCharacter
@@ -62,8 +64,8 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter }:
     const [activeTab, setActiveTab] = useState("party");
 
     // -- NAVIGATION STATE --
-    const [currentMapId, setCurrentMapId] = useState("oakhaven");
-    const [currentNodeId, setCurrentNodeId] = useState("market");
+    const [currentMapId, setCurrentMapId] = useState(initialMapId);
+    const [currentNodeId, setCurrentNodeId] = useState(initialNodeId);
     const [visitedNodes, setVisitedNodes] = useState<Set<string>>(new Set(["market"]));
     const [showMap, setShowMap] = useState(false);
 

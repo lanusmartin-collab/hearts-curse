@@ -94,9 +94,8 @@ export default function TacticalMap({ combatants, activeCombatantId, canMove, on
 
     return (
         <div
-            className="relative w-[800px] h-[600px] border-4 border-[#333] shadow-2xl overflow-hidden grid grid-cols-12 grid-rows-8 gap-1 p-4"
+            className="relative w-full h-full max-w-[800px] max-h-[600px] aspect-[4/3] border-4 border-[#333] shadow-2xl overflow-hidden grid grid-cols-12 grid-rows-8 gap-1 p-2 bg-[#1a1515]"
             style={{
-                backgroundColor: '#1a1515',
                 backgroundImage: "url('/locations/dungeon_floor.jpg')",
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
@@ -122,15 +121,12 @@ export default function TacticalMap({ combatants, activeCombatantId, canMove, on
                 // Range Logic
                 if ((aoeMode || targetingMode) && activePos) {
                     const distToActive = getDistance(activePos, { x, y });
-                    // If AOE, we check range to CENTER of AOE
-                    // If Targeting, we check range to TILE
-                    const maxRange = aoeMode ? 120 : (targetingMode?.range || 5); // Default 120 for spells
+                    const maxRange = aoeMode ? 120 : (targetingMode?.range || 5);
 
                     if (distToActive > maxRange + 2.5) {
                         isOutOfRange = true;
                     }
                 }
-
 
                 return (
                     <div
@@ -152,14 +148,11 @@ export default function TacticalMap({ combatants, activeCombatantId, canMove, on
             {combatants.map(c => {
                 const pos = positions[c.id] || { x: 0, y: 0 };
                 const isActive = c.id === activeCombatantId;
-
-                // Check if this entity is a valid target in range
                 let isValidTarget = false;
+
                 if (targetingMode && activePos) {
                     const dist = getDistance(activePos, pos);
-                    if (dist <= targetingMode.range) {
-                        isValidTarget = true;
-                    }
+                    if (dist <= targetingMode.range) isValidTarget = true;
                 }
 
                 return (
@@ -168,32 +161,27 @@ export default function TacticalMap({ combatants, activeCombatantId, canMove, on
                         onClick={() => handleTileClick(pos.x, pos.y)}
                         className={`absolute transition-all duration-500 ease-in-out flex flex-col items-center justify-center 
                          ${isValidTarget ? 'cursor-pointer z-30' : 'pointer-events-none'}`}
-                        // Note: We need pointer-events-auto for click to pass through to grid IF we rely on grid click, 
-                        // BUT we might want direct click on entity. 
-                        // The grid handles the click logic by coordinates, so pointer-events-none is safer 
-                        // UNLESS we explicitly add onClick here. 
-                        // Current Architecture: Grid click handler finds entity at X,Y. So pointer-events-none is correct.
                         style={{
-                            left: `${16 + pos.x * ((800 - 32) / 12) + ((800 - 32) / 24) - 24}px`,
-                            top: `${16 + pos.y * ((600 - 32) / 8) + ((600 - 32) / 16) - 24}px`,
-                            width: '3rem',
-                            height: '3rem'
+                            left: `${(pos.x / 12) * 100}%`,
+                            top: `${(pos.y / 8) * 100}%`,
+                            width: `${100 / 12}%`,
+                            height: `${100 / 8}%`
                         }}
                     >
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 shadow-lg
+                        <div className={`w-[80%] h-[80%] rounded-full flex items-center justify-center border-2 shadow-lg
                             ${c.type === 'player' ? 'bg-blue-900 border-blue-400' : 'bg-red-900 border-red-500'}
                             ${isActive ? 'scale-125 ring-2 ring-white z-20' : 'scale-100 z-10'}
                             ${isValidTarget ? 'ring-2 ring-green-400 animate-pulse' : ''}
                          `}>
-                            {c.type === 'player' ? <User className="w-6 h-6 text-blue-200" /> : <Skull className="w-6 h-6 text-red-200" />}
+                            {c.type === 'player' ? <User className="w-[60%] h-[60%] text-blue-200" /> : <Skull className="w-[60%] h-[60%] text-red-200" />}
                         </div>
                         {/* Health Bar */}
-                        <div className="w-12 h-1 bg-black mt-1">
+                        <div className="w-[80%] h-1 bg-black mt-1">
                             <div className="h-full bg-green-500" style={{ width: `${(c.hp / c.maxHp) * 100}%` }}></div>
                         </div>
                     </div>
                 );
             })}
-        </div >
+        </div>
     );
 }
