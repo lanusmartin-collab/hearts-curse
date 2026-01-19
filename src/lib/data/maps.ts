@@ -4,7 +4,7 @@ export type MapNode = {
     x: number;
     y: number;
     label: string;
-    type: "quest" | "encounter" | "boss" | "loot" | "info" | "entrance" | "trap";
+    type: "quest" | "encounter" | "boss" | "loot" | "info" | "entrance" | "trap" | "event";
     description?: string;
     itemId?: string; // [NEW] Link to ShopItem.name
     link?: string; // [NEW] URL to navigate to (e.g. /shops?tab=crow)
@@ -98,6 +98,31 @@ const OAKHAVEN: CampaignMap = {
 **Narrative:**
 "The mist clings to Oakhaven like a shroud. This is a town that forgot how to die. Dozens of grey row-houses and cottages crowd the streets, their windows dark and empty like skull sockets. The people are memories, trapped in the loop of their final week, unaware that they are dead. Above it all, the Castle looms, reachable only by the treacherous cliff path."
     `
+};
+
+const PROLOGUE_MAP: CampaignMap = {
+    id: "prologue_lair",
+    title: "💀 The Throne of the Shadow King",
+    imagePath: "/larloch_throne_v2.png", // Needs to be added or placeholder
+    gridType: "none",
+    description: "**PROLOGUE:** The final battle... or so you thought. You stand before Larloch, the Shadow King, broken and defeated.",
+    questGuide: "**OBJECTIVE:** Survive... somehow.",
+    nodes: [
+        { id: "throne", x: 50, y: 30, label: "Larloch's Throne", type: "boss", description: "**BOSS:** Larloch (Lich King). He hovers above you, bored. The air tastes of ash and failure.", monsters: ["larloch"] },
+        { id: "wish_trigger", x: 50, y: 70, label: "The Blue Flame", type: "event", description: "**INTERACT:** A strange blue flame flickers in the debris. It whispers: 'One more chance...'" }
+    ]
+};
+
+const BLACKSTAFF_MAP: CampaignMap = {
+    id: "blackstaff_tower",
+    title: "Blackstaff Tower (Sanctum)",
+    imagePath: "/blackstaff_study.png",
+    gridType: "square",
+    description: "**SAFE HAVEN:** The private study of Khelben 'Blackstaff' Arunsun in Waterdeep. The year is 1372 DR. You have been sent back.",
+    nodes: [
+        { id: "khelben", x: 50, y: 40, label: "Archmage Khelben", type: "quest", description: "**NPC:** Khelben Arunsun. He looks concerned. 'You have returned... changed. Take this.' (Grants Djinn Essence)." },
+        { id: "circle", x: 50, y: 80, label: "Teleport Circle", type: "entrance", description: "**EXIT:** The circle is tuned to Oakhaven. 'Go. Fix the timeline.'", link: "/maps?id=oakhaven" }
+    ]
 };
 
 const MAIN_QUEST_MAPS: CampaignMap[] = [
@@ -563,4 +588,4 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
     }
 ];
 
-export const CAMPAIGN_MAPS: CampaignMap[] = [OAKHAVEN, ...MAIN_QUEST_MAPS, ...PLOT_TWIST_MAPS];
+export const CAMPAIGN_MAPS: CampaignMap[] = [PROLOGUE_MAP, BLACKSTAFF_MAP, OAKHAVEN, ...MAIN_QUEST_MAPS, ...PLOT_TWIST_MAPS];

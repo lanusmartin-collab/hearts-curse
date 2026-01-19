@@ -15,13 +15,72 @@ import { CommandMenu } from "@/components/ui/CommandMenu";
 
 import GameLayout from "@/components/game/GameLayout";
 
-export default function Home() {
-  const [viewMode, setViewMode] = useState<"home" | "book">("home");
-  const [gameMode, setGameMode] = useState(false);
+// INTRO COMPONENTS
+import NarrativeIntro from "@/components/game/intro/NarrativeIntro";
+import MainMenu from "@/components/game/intro/MainMenu";
+import CharacterCreation from "@/components/game/CharacterCreation";
+import PrologueController from "@/components/game/intro/PrologueController";
 
-  if (gameMode) {
+export default function Home() {
+  // GAME STATE MANAGEMENT
+  // "home" = Dashboard (Default)
+  // "book" = Campaign Module PDF View
+  // "intro_narrative" = Scrolling text / context
+  // "main_menu" = New Game / Load Game
+  // "char_creation" = Select Class
+  // "prologue" = Larloch Fight -> Wish -> Tower
+  // "game" = Actual Dungeon Crawl
+  const [viewMode, setViewMode] = useState<"home" | "book" | "intro_narrative" | "main_menu" | "char_creation" | "prologue" | "game">("home");
+
+  // Player State passed to GameLayout
+  const [playerClass, setPlayerClass] = useState<string>("warrior");
+  const [startingRewards, setStartingRewards] = useState<any>(null);
+
+  // -- STATE HANDLERS --
+
+  if (viewMode === "intro_narrative") {
+    return <NarrativeIntro onComplete={() => setViewMode("main_menu")} />;
+  }
+
+  if (viewMode === "main_menu") {
     return (
-      <GameLayout onExit={() => setGameMode(false)} />
+      <MainMenu
+        onCreateChar={() => setViewMode("char_creation")}
+        onLoadGame={() => alert("Save system not implemented yet.")}
+      />
+    );
+  }
+
+  if (viewMode === "char_creation") {
+    // We'll need to import CharacterCreation. Assuming it exists in components/game
+    return (
+      <CharacterCreation
+        onComplete={(cls) => {
+          setPlayerClass(cls);
+          setViewMode("prologue");
+        }}
+      />
+    );
+  }
+
+  if (viewMode === "prologue") {
+    return (
+      <PrologueController
+        playerClass={playerClass}
+        onComplete={(rewards) => {
+          setStartingRewards(rewards);
+          setViewMode("game");
+        }}
+      />
+    );
+  }
+
+  if (viewMode === "game") {
+    return (
+      <GameLayout
+        onExit={() => setViewMode("home")}
+      // We might want to pass playerClass/rewards here later
+      />
     );
   }
 
@@ -59,9 +118,9 @@ export default function Home() {
         </div>
 
         <div className="flex gap-2 mb-2 md:mb-0">
-          {/* GAME MODE TOGGLE */}
+          {/* GAME MODE TOGGLE -> Launches Intro Flow now */}
           <button
-            onClick={() => setGameMode(true)}
+            onClick={() => setViewMode("intro_narrative")}
             className="group relative px-6 py-2 bg-[#4a0a0a] border-2 border-[#ff3333] text-[#ffaaaa] font-serif uppercase text-xs tracking-widest hover:bg-[#ff3333] hover:text-white transition-all flex items-center gap-2 shrink-0 animate-pulse shadow-[0_0_15px_rgba(255,0,0,0.5)]"
           >
             <Skull className="w-5 h-5" /> <span className="font-bold">ENTER DUNGEON</span>
@@ -144,9 +203,9 @@ export default function Home() {
             </div>
           </DashboardWidget>
 
-          {/* GAME MODE LAUNCHER - Redundant Link for Visibility */}
+          {/* GAME MODE LAUNCHER - Updates to Intro Flow */}
           <button
-            onClick={() => setGameMode(true)}
+            onClick={() => setViewMode("intro_narrative")}
             className="group relative w-full h-32 bg-[#2a0a0a] border-2 border-[#ff3333] hover:bg-[#4a0a0a] transition-all flex flex-col items-center justify-center gap-2 overflow-hidden shadow-[0_0_20px_rgba(163,34,34,0.3)] hover:shadow-[0_0_30px_rgba(255,50,50,0.6)]"
           >
             <div className="absolute inset-0 bg-[url('/hearts_curse_hero_v15.png')] bg-cover bg-center opacity-20 group-hover:opacity-40 transition-opacity blur-[2px]"></div>
@@ -155,7 +214,7 @@ export default function Home() {
               Enter The Dungeon
             </span>
             <span className="text-[10px] text-[#ffaaaa]/70 font-mono relative z-10">
-              [ START SESSION SIMULATION ]
+              [ START CAMPAIGN ]
             </span>
           </button>
         </div>

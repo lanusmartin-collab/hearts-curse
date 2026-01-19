@@ -29,31 +29,49 @@ export default function AmbientController() {
 
         // Intensity calculation (0.0 to 1.0)
         let intensity = Math.min(curseLevel / 21, 1);
+        let baseFreq = 55;
+        let beatSpeed = 2;
 
-        // DUNGEON MODE OVERRIDE: Always feel slightly dangerous
-        if (ambienceMode === 'dungeon') {
-            intensity = Math.max(intensity, 0.5);
-        } else if (ambienceMode === 'combat') {
-            intensity = 1.2; // Maximum danger
+        // MODE OVERRIDES
+        switch (ambienceMode) {
+            case 'dungeon':
+                intensity = Math.max(intensity, 0.5);
+                baseFreq = 55 - (intensity * 10);
+                beatSpeed = 2 + (intensity * 6);
+                break;
+            case 'combat':
+                intensity = 1.2;
+                baseFreq = 45;
+                beatSpeed = 15;
+                break;
+            case 'boss_battle':
+                intensity = 1.5;
+                baseFreq = 40; // Very deep
+                beatSpeed = 20; // Panic inducing
+                break;
+            case 'ethereal':
+                intensity = 0.3;
+                baseFreq = 110; // Higher, floaty
+                beatSpeed = 0.5; // Very slow
+                break;
+            case 'library':
+                intensity = 0.2;
+                baseFreq = 80;
+                beatSpeed = 0.2; // Almost static
+                break;
+            case 'safe':
+            default:
+                baseFreq = 55 - (intensity * 10);
+                beatSpeed = 2 + (intensity * 6);
+                break;
         }
-
-        // Pitch Logic
-        // Safe: 55Hz (A1) -> Deep, calm
-        // Critical / Dungeon: 45Hz (F#1) -> Unsettling, deeper
-        const baseFreq = 55 - (intensity * 10);
-
-        // Beat Speed Logic
-        // Safe: 2Hz difference (Slow breathe)
-        // Critical: 8Hz difference (Fast panic)
-        // Combat: 15Hz difference (Adrenaline)
-        const beatSpeed = ambienceMode === 'combat' ? 15 : (2 + (intensity * 6));
 
         // Apply Transition
         const now = audioCtxRef.current.currentTime;
         lowDroneRef.current.frequency.linearRampToValueAtTime(baseFreq, now + 2);
         pulseRef.current.frequency.linearRampToValueAtTime(baseFreq + beatSpeed, now + 2);
 
-        // Volume Logic (Louder as it gets more cursed)
+        // Volume Logic (Louder as it gets more cursed/intense)
         const targetVol = isMuted ? 0 : (0.05 + (intensity * 0.15));
         gainRef.current.gain.linearRampToValueAtTime(targetVol, now + 1);
 

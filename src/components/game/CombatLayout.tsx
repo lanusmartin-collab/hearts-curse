@@ -12,6 +12,7 @@ interface CombatLayoutProps {
     enemySlugs: string[];
     onVictory: () => void;
     onFlee: () => void;
+    onDefeat?: () => void;
 }
 
 // Mock Party Data with Combat Stats
@@ -68,7 +69,7 @@ function resolveRoll(formula: string): number {
     return total;
 }
 
-export default function CombatLayout({ enemySlugs, onVictory, onFlee }: CombatLayoutProps) {
+export default function CombatLayout({ enemySlugs, onVictory, onFlee, onDefeat }: CombatLayoutProps) {
     const { playSfx, playAmbience } = useAudio();
     const [combatants, setCombatants] = useState<Combatant[]>([]);
     const [turnIndex, setTurnIndex] = useState(0);
@@ -141,15 +142,32 @@ export default function CombatLayout({ enemySlugs, onVictory, onFlee }: CombatLa
         setCombatants(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
     };
 
-    const handleDefeat = (enemyId: string) => {
-        handleUpdate(enemyId, { hp: 0 });
-        setLog(prev => [...prev, `> ${combatants.find(c => c.id === enemyId)?.name || 'Enemy'} defeated!`]);
+    const handleDefeat = (entityId: string) => {
+        handleUpdate(entityId, { hp: 0 });
+        const entity = combatants.find(c => c.id === entityId);
+        setLog(prev => [...prev, `> ${entity?.name || 'Unit'} defeated!`]);
 
-        const remaining = enemies.filter(e => e.id !== enemyId && e.hp > 0);
-        if (remaining.length === 0) {
-            setLog(prev => [...prev, `> VICTORY ASSURED.`]);
-            playSfx("/sfx/holy_crit.mp3");
-            setTimeout(onVictory, 3000);
+        // Check Victory (No enemies left)
+        if (entity?.type === 'monster') {
+            const remainingEnemies = combatants.filter(c => c.type === 'monster' && c.id !== entityId && c.hp > 0);
+            if (remainingEnemies.length === 0) {
+                setLog(prev => [...prev, `> VICTORY ASSURED.`]);
+                playSfx("/sfx/holy_crit.mp3");
+                setTimeout(onVictory, 3000);
+            }
+        }
+
+        // Check Defeat (No players left)
+        if (entity?.type === 'player') {
+            const remainingPlayers = combatants.filter(c => c.type === 'player' && c.id !== entityId && c.hp > 0);
+            if (remainingPlayers.length === 0) {
+                setLog(prev => [...prev, `> CRITICAL FAILURE. PARTY ELIMINATED.`]);
+                if (onDefeat) {
+                    setTimeout(onDefeat, 3000);
+                } else {
+                    setLog(prev => [...prev, `> GAME OVER.`]);
+                }
+            }
         }
     };
 
@@ -233,6 +251,14 @@ export default function CombatLayout({ enemySlugs, onVictory, onFlee }: CombatLa
                 addToLog(`> ${currentCombatant.name} attacks ${target.name} with ${attack.name}... HIT! Takes ${dmg} damage.`);
                 handleUpdate(target.id, { hp: Math.max(0, target.hp - dmg) });
                 playSfx("/sfx/glitch_crit.mp3"); // Enemy hit sound
+
+                // Check if target died from this exact hit
+                // handleUpdate is async state update so checking updated state here is tricky in this closure
+                // But we can check the calculation
+                if (Math.max(0, target.hp - dmg) === 0) {
+                    handleDefeat(target.id);
+                }
+
             } else {
                 addToLog(`> ${currentCombatant.name} attacks ${target.name}... MISS. (${totalHit})`);
             }
