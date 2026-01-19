@@ -40,12 +40,28 @@ export default function Home() {
 
   // LOCK SCREEN STATE
   const [locked, setLocked] = useState(true);
-
-  if (locked) {
-    return <LockScreen onUnlock={() => setLocked(false)} />;
-  }
+  const [showLockAuth, setShowLockAuth] = useState(false);
 
   // -- STATE HANDLERS --
+  const handleGameStart = () => {
+    if (locked) {
+      setShowLockAuth(true);
+      return;
+    }
+    setViewMode("intro_narrative");
+  };
+
+  if (showLockAuth) {
+    return (
+      <LockScreen
+        onUnlock={() => {
+          setLocked(false);
+          setShowLockAuth(false);
+          setViewMode("intro_narrative");
+        }}
+      />
+    );
+  }
 
   if (viewMode === "intro_narrative") {
     return <NarrativeIntro onComplete={() => setViewMode("main_menu")} />;
@@ -131,7 +147,7 @@ export default function Home() {
         <div className="flex gap-2 mb-2 md:mb-0">
           {/* GAME MODE TOGGLE -> Launches Intro Flow now */}
           <button
-            onClick={() => setViewMode("intro_narrative")}
+            onClick={handleGameStart}
             className="group relative px-6 py-2 bg-[#4a0a0a] border-2 border-[#ff3333] text-[#ffaaaa] font-serif uppercase text-xs tracking-widest hover:bg-[#ff3333] hover:text-white transition-all flex items-center gap-2 shrink-0 animate-pulse shadow-[0_0_15px_rgba(255,0,0,0.5)]"
           >
             <Skull className="w-5 h-5" /> <span className="font-bold">ENTER DUNGEON</span>
@@ -216,7 +232,7 @@ export default function Home() {
 
           {/* GAME MODE LAUNCHER - Updates to Intro Flow */}
           <button
-            onClick={() => setViewMode("intro_narrative")}
+            onClick={handleGameStart}
             className="group relative w-full h-32 bg-[#2a0a0a] border-2 border-[#ff3333] hover:bg-[#4a0a0a] transition-all flex flex-col items-center justify-center gap-2 overflow-hidden shadow-[0_0_20px_rgba(163,34,34,0.3)] hover:shadow-[0_0_30px_rgba(255,50,50,0.6)]"
           >
             <div className="absolute inset-0 bg-[url('/hearts_curse_hero_v15.png')] bg-cover bg-center opacity-20 group-hover:opacity-40 transition-opacity blur-[2px]"></div>
