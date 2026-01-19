@@ -62,9 +62,9 @@ export default function Home() {
           {/* GAME MODE TOGGLE */}
           <button
             onClick={() => setGameMode(true)}
-            className="group relative px-6 py-2 bg-[#2a0a0a] border border-[#a32222] text-[#ff4444] font-serif uppercase text-xs tracking-widest hover:bg-[#a32222] hover:text-white transition-all flex items-center gap-2 shrink-0 animate-pulse-slow"
+            className="group relative px-6 py-2 bg-[#4a0a0a] border-2 border-[#ff3333] text-[#ffaaaa] font-serif uppercase text-xs tracking-widest hover:bg-[#ff3333] hover:text-white transition-all flex items-center gap-2 shrink-0 animate-pulse shadow-[0_0_15px_rgba(255,0,0,0.5)]"
           >
-            <Skull className="w-4 h-4" /> <span>ENTER DUNGEON</span>
+            <Skull className="w-5 h-5" /> <span className="font-bold">ENTER DUNGEON</span>
           </button>
 
           {/* Quick Action: Open PDF Book */}
@@ -163,7 +163,7 @@ export default function Home() {
           </DashboardWidget>
 
           <footer style={{ marginTop: "auto", textAlign: "center", opacity: 0.4, fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--fg-dim)" }}>
-            HEART'S CURSE // SESSION 23
+            HEART'S CURSE // SESSION 24 (BUILD 2.0)
           </footer>
         </div>
 

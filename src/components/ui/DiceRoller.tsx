@@ -172,7 +172,7 @@ export default function DiceRoller() {
         setModifier(mod);
 
         // Clatter sound
-        // playSfx("/sfx/dice_throw.mp3");
+        playSfx("/sfx/dice_throw.mp3");
 
         const initialGroups = groups.map(g => ({
             sides: g.sides,
@@ -238,13 +238,13 @@ export default function DiceRoller() {
             document.body.classList.add('animate-shake');
             setTimeout(() => document.body.classList.remove('animate-shake'), 500);
             // Play Glitch Sound
-            // playSfx("/sfx/glitch_crit.mp3");
+            playSfx("/sfx/glitch_crit.mp3");
         } else if (hasNat20) {
             // Play Holy Sound
-            // playSfx("/sfx/holy_crit.mp3");
+            playSfx("/sfx/holy_crit.mp3");
         } else {
             // Normal settle
-            // playSfx("/sfx/dice_settle.mp3");
+            playSfx("/sfx/dice_settle.mp3");
         }
 
         if (mod !== 0) {
@@ -302,8 +302,8 @@ export default function DiceRoller() {
                         {/* RESULT VISOR */}
                         <div className="bg-black/60 border border-[var(--glass-border)] rounded p-4 text-center mb-4 relative min-h-[5rem] flex items-center justify-center">
                             <span className={`text-5xl font-serif transition-all ${rollGroups.some(g => g.results.some(r => r.isCrit)) ? 'crit-success-text' :
-                                    rollGroups.some(g => g.results.some(r => r.isCritFail)) ? 'crit-fail-text' :
-                                        'text-[var(--scarlet-accent)]'
+                                rollGroups.some(g => g.results.some(r => r.isCritFail)) ? 'crit-fail-text' :
+                                    'text-[var(--scarlet-accent)]'
                                 }`}>
                                 {visorTotal}
                             </span>
