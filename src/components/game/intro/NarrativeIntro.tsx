@@ -47,21 +47,27 @@ export default function NarrativeIntro({ onComplete }: NarrativeIntroProps) {
                     </div>
 
                     {/* Story Sections */}
-                    <div className="space-y-12 text-lg md:text-xl leading-relaxed text-[#c9bca0]/90">
+                    <div className="space-y-12 text-lg md:text-xl leading-relaxed text-[#c9bca0]/90 text-justify">
                         <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-1000 fill-mode-forwards">
-                            It began in the Year of the Ageless One. The sky over the Sword Coast turned the color of bruised iron. Birds fell silent. The Weave itself seemed to shiver.
+                            The year is 1491 DR, the Year of the Scarlet Witch. The Sword Coast, usually a bustle of trade and intrigue, has fallen into a terrified silence. It began in the high peaks of the Troll Mountains, near the ruins of Warlock's Crypt—the ancient stronghold of Larloch the Shadow King.
                         </p>
                         <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-2000 fill-mode-forwards">
-                            Larloch, the Shadow King, Lich-Lord of Warlock's Crypt, has finally moved. Not with armies of bone and steel, but with a curse. A single, silent curse that spreads like frost through the veins of the world.
+                            For centuries, the Netherese lich was content to study his dark arts in isolation, his city a tomb of forgotten magic. But something changed. The Weave itself shuddered three nights ago, and a violet fog began to roll down from the mountains. Where it touched, time simply... stopped.
                         </p>
                         <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-3000 fill-mode-forwards">
-                            Entire cities have simply... stopped. Their people frozen in the final moments of their lives, trapped in an endless loop of grey memory. Oakhaven was the first to fall. Then Daggerford. Then Waterdeep's outskirts.
+                            The town of Oakhaven was the first to vanish. Not destroyed, but frozen in a single, greyscale moment. Merchants mid-barter, birds suspended in flight, the river halted as if carved from glass. The "Heart's Curse," the sages are calling it—a stasis field that consumes the soul while preserving the body in an eternal, dreamless slumber.
                         </p>
                         <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-4000 fill-mode-forwards">
-                            You are the only one left.
+                            You were there when the fog hit Daggerford. You remember the scream of the militia captain, the cold that bit not just your skin but your very memory. You ran. You fought. But the fog was faster.
                         </p>
-                        <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-5000 fill-mode-forwards text-[#a32222] font-bold">
-                            Or so you thought.
+                        <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-5000 fill-mode-forwards">
+                            Now, you stand at the precipice of a different kind of darkness. You clearly remember dying. You remember the cold taking you. And yet, you are here. Not in the frozen ruins of Daggerford, but in a void between worlds, a place of swirling shadows and distant, mocking laughter.
+                        </p>
+                        <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-6000 fill-mode-forwards">
+                            A voice whispers to you from the dark—not the Shadow King's, but something older. Something desperate. "The Heart... find the Heart... or the silence will never end."
+                        </p>
+                        <p className="opacity-0 animate-in slide-in-from-bottom-8 fade-in duration-1000 delay-7000 fill-mode-forwards text-[#a32222] font-bold text-center mt-12">
+                            The Curse has claimed the world. But it has not yet claimed you.
                         </p>
                     </div>
 
