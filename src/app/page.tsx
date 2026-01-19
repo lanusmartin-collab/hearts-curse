@@ -20,6 +20,7 @@ import NarrativeIntro from "@/components/game/intro/NarrativeIntro";
 import MainMenu from "@/components/game/intro/MainMenu";
 import AdvancedCharacterCreation from "@/components/game/AdvancedCharacterCreation";
 import PrologueController from "@/components/game/intro/PrologueController";
+import LockScreen from "@/components/ui/LockScreen";
 import { Combatant } from "@/types/combat";
 
 export default function Home() {
@@ -36,6 +37,13 @@ export default function Home() {
   // Player State passed to GameLayout
   const [playerCharacter, setPlayerCharacter] = useState<Combatant | undefined>(undefined);
   const [startingRewards, setStartingRewards] = useState<any>(null);
+
+  // LOCK SCREEN STATE
+  const [locked, setLocked] = useState(true);
+
+  if (locked) {
+    return <LockScreen onUnlock={() => setLocked(false)} />;
+  }
 
   // -- STATE HANDLERS --
 

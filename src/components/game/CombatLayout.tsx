@@ -314,8 +314,8 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
 
             {/* Main Stage (Battlefield) */}
             <div className="flex-1 relative overflow-hidden flex items-center justify-center bg-[#151515]">
-                {/* Background Atmosphere */}
-                <div className="absolute inset-0 opacity-30 bg-[url('/hearts_curse_hero_v15.png')] bg-cover bg-center pointer-events-none blur-sm"></div>
+                {/* Background Atmosphere - Removed for visibility */}
+                {/* <div className="absolute inset-0 opacity-30 bg-[url('/hearts_curse_hero_v15.png')] bg-cover bg-center pointer-events-none blur-sm"></div> */}
 
                 {/* TACTICAL MAP */}
                 <div className="z-10 w-full h-full overflow-auto flex items-center justify-center p-8 custom-scrollbar">
@@ -332,7 +332,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
 
                 {/* INITIATIVE OVERLAY */}
                 {!combatStarted && (
-                    <div className="absolute inset-0 z-50 bg-black/90 flex flex-col items-center justify-center animate-in fade-in">
+                    <div className="absolute inset-0 z-50 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center animate-in fade-in">
                         <h1 className="text-6xl text-[#a32222] font-bold mb-8 uppercase tracking-widest drop-shadow-[0_0_20px_rgba(163,34,34,0.8)]">Battle Begins</h1>
                         <button
                             onClick={() => {

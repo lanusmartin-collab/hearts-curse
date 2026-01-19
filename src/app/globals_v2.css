@@ -58,8 +58,8 @@ body {
     max-width: 100vw;
     overflow-x: hidden;
     background-color: var(--obsidian-dark);
-    background: var(--obsidian-texture);
-    background-attachment: fixed;
+    /* background: var(--obsidian-texture); - Removed texture for clarity */
+    /* background-attachment: fixed; */
     color: var(--fg-color);
     font-family: var(--font-body);
     font-size: 16px;
@@ -108,9 +108,12 @@ a {
 
 button {
     font-family: var(--font-body);
-    background: transparent;
-    color: var(--accent-color);
-    border: 1px solid var(--accent-color);
+    background: #1a0505;
+    /* Solid dark red background */
+    color: #ffaaaa;
+    /* Light red text */
+    border: 1px solid #ff4444;
+    /* Bright border */
     padding: 0.8rem 1.5rem;
     font-size: 1rem;
     font-weight: 600;
