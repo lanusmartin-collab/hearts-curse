@@ -236,15 +236,15 @@ export default function GameLayout({ onExit }: GameLayoutProps) {
                         {/* Node Overlay */}
                         <div className="absolute inset-0">
                             {currentMap?.nodes?.map(node => {
-                                const isVisited = visitedNodes.has(node.id);
-                                if (!isVisited) return null; // Fog of War
-
                                 const isCurrent = node.id === currentNodeId;
+                                const isVisited = visitedNodes.has(node.id);
+
+                                if (!isCurrent && !isVisited) return null; // Fog of War
                                 return (
                                     <div
                                         key={node.id}
                                         className={`absolute transition-all duration-500 flex flex-col items-center justify-center
-                                            ${isCurrent ? 'z-20 scale-125' : 'z-10 opacity-70'}
+                                            ${isCurrent ? 'z-50 scale-125' : 'z-20 opacity-70'}
                                         `}
                                         style={{ left: `${node.x}%`, top: `${node.y}%`, transform: 'translate(-50%, -50%)' }}
                                     >
@@ -262,7 +262,7 @@ export default function GameLayout({ onExit }: GameLayoutProps) {
 
                                         {/* Player Icon (If Current) */}
                                         {isCurrent && (
-                                            <div className="absolute -top-6 text-2xl filter drop-shadow-[0_0_5px_rgba(0,0,0,1)] animate-bounce">
+                                            <div className="absolute -top-8 text-3xl filter drop-shadow-[0_0_10px_rgba(255,0,0,0.8)] animate-bounce z-50">
                                                 📍
                                             </div>
                                         )}
