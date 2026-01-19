@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Dice, Save, Sword, Shield, Crown, Scroll, Ghost } from "lucide-react";
+import { Dices, Save, Sword, Shield, Crown, Scroll, Ghost } from "lucide-react";
 import { Combatant } from "@/types/combat";
 import { RACES } from "@/lib/data/races";
 import { ALIGNMENTS } from "@/lib/data/alignments";
@@ -150,7 +150,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                 <div className="space-y-4">
                     <div className="flex justify-between items-center">
                         <label className="text-xs uppercase tracking-widest text-[#666]">Ability Scores (Max 20)</label>
-                        <button onClick={rollStats} className="text-[#a32222] text-xs flex items-center gap-1 hover:text-white"><Dice className="w-3 h-3" /> Roll 4d6</button>
+                        <button onClick={rollStats} className="text-[#a32222] text-xs flex items-center gap-1 hover:text-white"><Dices className="w-3 h-3" /> Roll 4d6</button>
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                         {(Object.keys(stats) as Array<keyof typeof stats>).map(key => (
