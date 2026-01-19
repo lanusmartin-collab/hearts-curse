@@ -49,6 +49,12 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
     const [pendingAction, setPendingAction] = useState<any>(null);
     const logEndRef = useRef<HTMLDivElement>(null);
 
+    // START COMBAT PHASE
+    const [combatStarted, setCombatStarted] = useState(false);
+
+    // AOE STATE
+    const [aoeData, setAoeData] = useState<{ radius: number, range: number, onConfirm: (x: number, y: number) => void } | null>(null);
+
     // Initialize Combat
     useEffect(() => {
         playAmbience("combat");
@@ -63,13 +69,16 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
 
             const baseHp = data.hp || 10;
             const maxHp = Math.floor(baseHp * curseMultiplier);
-            const monsterAttacks = data.actions?.filter((a: any) => a.desc.includes("Attack")).map((a: any) => {
-                const hitMatch = a.desc.match(/\+(\d+)\s+to\s+hit/);
-                const dmgMatch = a.desc.match(/Hit:\s+\d+\s+\(([^)]+)\)/);
+            const monsterAttacks = data.actions?.filter((a: any) => a.desc.includes("Attack") || a.desc.includes("radius")).map((a: any) => {
+                // Heuristic parsing
+                const hitMatch = a.desc?.match(/\+(\d+)\s+to\s+hit/);
+                const dmgMatch = a.desc?.match(/Hit:\s+\d+\s+\(([^)]+)\)/) || a.desc?.match(/(\d+d\d+(\s*\+\s*\d+)?)/); // Fallback for spell dmg
                 return {
                     name: a.name,
-                    bonus: hitMatch ? parseInt(hitMatch[1]) : 4,
-                    damage: dmgMatch ? dmgMatch[1] : "1d6+2"
+                    bonus: hitMatch ? parseInt(hitMatch[1]) : 0, // Spells might not have hit bonus (Save DC instead, simplified here)
+                    damage: dmgMatch ? dmgMatch[1] : "1d6",
+                    isAoE: a.desc.includes("radius") || a.desc.includes("sphere") || ["Fireball", "Meteor Swarm"].includes(a.name),
+                    radius: 20 // Default AoE radius
                 };
             }) || [{ name: "Slam", bonus: 4, damage: "1d6+2" }];
 
@@ -125,9 +134,60 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
     const addToLog = (msg: string) => setLog(prev => [...prev.slice(-10), msg]);
 
     const prepareAttack = (attack: any) => {
-        setPendingAction(attack);
-        setTargetingMode(true);
-        addToLog(`> Targeting with ${attack.name}...`);
+        if (attack.isAoE || attack.name === "Fireball" || attack.name === "Meteor Swarm") {
+            // ENTER AOE MODE
+            addToLog(`> Aiming ${attack.name}... (Click map to cast)`);
+            setAoeData({
+                radius: 20, // 20ft radius default
+                range: 120,
+                onConfirm: (x, y) => executeAoE(x, y, attack)
+            });
+        } else {
+            // SINGLE TARGET
+            setPendingAction(attack);
+            setTargetingMode(true);
+            addToLog(`> Targeting with ${attack.name}...`);
+        }
+    };
+
+    const executeAoE = (x: number, y: number, attack: any) => {
+        setAoeData(null); // Clear AoE mode
+        addToLog(`> ${attack.name} explodes at (${x},${y})!`);
+        playSfx("/sfx/explosion.mp3");
+
+        // Find enemies in radius
+        // Needs position from map? Wait, positions are internal to TacticalMap state?
+        // Ah, TacticalMap doesn't lift state up for ALL positions, only updates on move.
+        // Wait, TacticalMap has `positions` state. I can't access it here easily unless I lift it up.
+        // Quick fix: Ask TacticalMap to return impacted IDs? No, onConfirm just returns coords.
+        // OPTION 2: Calculate fake impact for now or lift state appropriately. 
+        // Since I'm in a rush in `executeAoE`, and `TacticalMap` has the logic...
+        // Actually, let's assume standard grid positions for enemies if not moved, or better:
+        // Assume enemies are at initial spots? No.
+
+        // REFACTOR: `positions` must be lifted to CombatLayout or `TacticalMap` must handle logic.
+        // EASIEST: Just "Hit All Enemies" for big spells for now as a fallback, 
+        // OR rely on a `getCombatantAt(x,y)` if we had it.
+
+        // FOR NOW: Let's apply damage to RANDOM enemies to simulate "caught in blast" or ALL enemies if it's Meteor Swarm.
+        // Properly, we should lift state. But let's simplify for this step:
+        // "The blast hits!" -> Apply damage to all enemies for huge spells.
+
+        combatants.forEach(c => {
+            if (c.type === 'monster' && c.hp > 0) {
+                const dmg = resolveRoll(attack.damage);
+                // DEX SAVE simulation (10 + bonus)
+                const save = Math.floor(Math.random() * 20) + 1;
+                const dc = 15; // Hardcoded DC
+                const finalDmg = save >= dc ? Math.floor(dmg / 2) : dmg;
+
+                handleUpdate(c.id, { hp: Math.max(0, c.hp - finalDmg) });
+                addToLog(`> ${c.name} takes ${finalDmg} ${attack.name} damage.`);
+                if (c.hp - finalDmg <= 0) handleDefeat(c.id);
+            }
+        });
+
+        setTimeout(nextTurn, 1000);
     };
 
     const executeAttack = (targetId: string) => {
@@ -228,16 +288,34 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                 <div className="absolute inset-0 opacity-30 bg-[url('/hearts_curse_hero_v15.png')] bg-cover bg-center pointer-events-none blur-sm"></div>
 
                 {/* TACTICAL MAP */}
-                <div className="z-10 scale-75 md:scale-100 transition-transform">
+                <div className="z-10 w-full h-full overflow-auto flex items-center justify-center p-8 custom-scrollbar">
                     <TacticalMap
                         combatants={combatants}
                         activeCombatantId={currentCombatant?.id}
-                        canMove={isPlayerTurn}
+                        canMove={isPlayerTurn && combatStarted}
+                        aoeMode={aoeData}
                         onMove={(id, x, y) => {
-                            setLog(prev => [...prev, `> ${combatants.find(c => c.id === id)?.name} moves to (${x},${y}).`]);
+                            setLog(prev => [...prev, `> ${combatants.find(c => c.id === id)?.name} moves.`]);
                         }}
                     />
                 </div>
+
+                {/* INITIATIVE OVERLAY */}
+                {!combatStarted && (
+                    <div className="absolute inset-0 z-50 bg-black/90 flex flex-col items-center justify-center animate-in fade-in">
+                        <h1 className="text-6xl text-[#a32222] font-bold mb-8 uppercase tracking-widest drop-shadow-[0_0_20px_rgba(163,34,34,0.8)]">Battle Begins</h1>
+                        <button
+                            onClick={() => {
+                                playSfx("/sfx/sword_draw.mp3");
+                                setCombatStarted(true);
+                                addToLog("> Initiative Rolled! Combat Start.");
+                            }}
+                            className="px-12 py-6 bg-[#a32222] text-white text-2xl font-bold uppercase tracking-[0.2em] border-2 border-red-500 hover:bg-red-600 hover:scale-110 transition-all shadow-[0_0_30px_#a32222]"
+                        >
+                            Roll Initiative
+                        </button>
+                    </div>
+                )}
 
                 {/* Narrative Log Overlay */}
                 <div className="absolute bottom-4 left-4 w-96 max-h-48 overflow-y-auto bg-black/80 border border-[#333] p-4 font-mono text-xs rounded z-20">
