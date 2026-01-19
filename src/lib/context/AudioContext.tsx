@@ -46,16 +46,16 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     }, [volume]);
 
     // Quick SFX player (fire and forget)
-    const playSfx = (src: string) => {
+    const playSfx = React.useCallback((src: string) => {
         if (!isInitialized || isMuted) return;
         if (!sfxRef.current[src]) {
             sfxRef.current[src] = new Howl({ src: [src], volume: 0.8 });
         }
         sfxRef.current[src].play();
-    };
+    }, [isInitialized, isMuted]);
 
     // Music Player with Crossfade
-    const playMusic = (src: string) => {
+    const playMusic = React.useCallback((src: string) => {
         if (!isInitialized) return;
         if (currentMusicSrc.current === src) return; // Already playing
 
@@ -70,8 +70,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         }
 
         // Start new
-        // Check if it's a placeholder or real file. If real file doesn't exist, this might error. 
-        // For now we assume these are valid paths or we handle error.
         const newMusic = new Howl({
             src: [src],
             html5: true, // Streaming for larger files
@@ -84,11 +82,11 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
         musicRef.current = newMusic;
         currentMusicSrc.current = src;
-    };
+    }, [isInitialized, volume]);
 
-    const playAmbience = (mode: "safe" | "dungeon" | "combat" | "boss_battle" | "ethereal" | "library") => {
+    const playAmbience = React.useCallback((mode: "safe" | "dungeon" | "combat" | "boss_battle" | "ethereal" | "library") => {
         setAmbienceMode(mode);
-    };
+    }, []);
 
     return (
         <AudioContext.Provider value={{ isMuted, volume, toggleMute: () => setIsMuted(!isMuted), setVolume, playSfx, playMusic, initializeAudio, isInitialized, ambienceMode, playAmbience }}>
