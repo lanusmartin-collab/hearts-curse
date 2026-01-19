@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowRight, Sword, Shield, Zap, Skull, Heart, Ghost, Timer, Swords, User, ShieldAlert } from 'lucide-react';
+import { ArrowRight, Sword, Shield, Zap, Skull, Heart, Ghost, Timer, Swords, User, ShieldAlert, BookOpen, Footprints } from 'lucide-react';
 import TacticalMap from './combat/TacticalMap';
 import CombatantCard from "@/components/ui/CombatantCard";
 import { Combatant } from "@/types/combat";
 import monstersData from "@/lib/data/monsters_custom.json";
+import { ALL_SPELLS } from "@/lib/data/spells";
 import { useAudio } from "@/lib/context/AudioContext";
 import DiceRoller from "@/components/ui/DiceRoller";
 
@@ -17,11 +18,14 @@ interface CombatLayoutProps {
     onDefeat?: () => void;
 }
 
-// Fallback if no character passed (e.g. testing)
 const MOCK_PLAYER: Combatant = {
     id: "p1", name: "Unknown Hero", type: "player", hp: 20, maxHp: 20, ac: 14, initiative: 12, conditions: [],
     stats: { str: 14, dex: 14, con: 14, int: 10, wis: 10, cha: 10 },
-    attacks: [{ name: "Rusty Blade", bonus: 4, damage: "1d6+2" }]
+    attacks: [{ name: "Rusty Blade", bonus: 4, damage: "1d6+2" }],
+    // Mock 5e data for fallback
+    resources: { action: true, bonusAction: true, movement: 30, reaction: true },
+    spellSlots: { 1: { max: 2, current: 2 } },
+    preparedSpells: ["Magic Missile"]
 };
 
 function resolveRoll(formula: string): number {
@@ -45,20 +49,19 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
     const [combatants, setCombatants] = useState<Combatant[]>([]);
     const [turnIndex, setTurnIndex] = useState(0);
     const [log, setLog] = useState<string[]>(["> Combat initiated.", "> Roll for initiative!"]);
+
+    // UI STATES
     const [targetingMode, setTargetingMode] = useState(false);
-    const [pendingAction, setPendingAction] = useState<any>(null);
-    const logEndRef = useRef<HTMLDivElement>(null);
-
-    // START COMBAT PHASE
+    const [spellMenuOpen, setSpellMenuOpen] = useState(false);
+    const [pendingAction, setPendingAction] = useState<any>(null); // Attack or Spell object
     const [combatStarted, setCombatStarted] = useState(false);
-
-    // AOE STATE
     const [aoeData, setAoeData] = useState<{ radius: number, range: number, onConfirm: (x: number, y: number) => void } | null>(null);
 
-    // Initialize Combat
+    const logEndRef = useRef<HTMLDivElement>(null);
+
+    // Initial Load
     useEffect(() => {
         playAmbience("combat");
-
         const savedDays = typeof window !== 'undefined' ? parseInt(localStorage.getItem('curse_days') || '0', 10) : 0;
         let curseMultiplier = 1;
         if (savedDays >= 7) curseMultiplier = 1.1;
@@ -69,18 +72,18 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
 
             const baseHp = data.hp || 10;
             const maxHp = Math.floor(baseHp * curseMultiplier);
-            const monsterAttacks = data.actions?.filter((a: any) => a.desc.includes("Attack") || a.desc.includes("radius")).map((a: any) => {
-                // Heuristic parsing
+            const monsterAttacks = data.actions?.map((a: any) => {
                 const hitMatch = a.desc?.match(/\+(\d+)\s+to\s+hit/);
-                const dmgMatch = a.desc?.match(/Hit:\s+\d+\s+\(([^)]+)\)/) || a.desc?.match(/(\d+d\d+(\s*\+\s*\d+)?)/); // Fallback for spell dmg
+                const dmgMatch = a.desc?.match(/Hit:\s+\d+\s+\(([^)]+)\)/);
                 return {
                     name: a.name,
-                    bonus: hitMatch ? parseInt(hitMatch[1]) : 0, // Spells might not have hit bonus (Save DC instead, simplified here)
-                    damage: dmgMatch ? dmgMatch[1] : "1d6",
-                    isAoE: a.desc.includes("radius") || a.desc.includes("sphere") || ["Fireball", "Meteor Swarm"].includes(a.name),
-                    radius: 20 // Default AoE radius
+                    bonus: hitMatch ? parseInt(hitMatch[1]) : 5,
+                    damage: dmgMatch ? dmgMatch[1] : "1d6+2",
+                    type: "melee", // Simplified for monsters
+                    isAoE: a.desc.includes("radius") || a.desc.includes("cone"),
+                    radius: 20
                 };
-            }) || [{ name: "Slam", bonus: 4, damage: "1d6+2" }];
+            }) || [];
 
             return {
                 id: `e-${i}-${slug}`,
@@ -89,372 +92,301 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                 hp: maxHp,
                 maxHp: maxHp,
                 ac: data.ac || 10,
-                initiative: Math.floor(Math.random() * 20) + 1,
+                initiative: Math.floor(Math.random() * 20),
                 conditions: [],
                 statblock: data,
-                attacks: monsterAttacks
+                attacks: monsterAttacks,
+                resources: { action: true, bonusAction: true, movement: data.speed?.includes("fly") ? 50 : 30, reaction: true }
             };
         }).filter(Boolean) as Combatant[];
 
-        const hero = playerCharacter ? { ...playerCharacter, initiative: Math.floor(Math.random() * 20) + (playerCharacter.stats?.dex || 0) } : MOCK_PLAYER;
+        const hero = playerCharacter ? {
+            ...playerCharacter,
+            initiative: Math.floor(Math.random() * 20) + (playerCharacter.stats?.dex || 0),
+            // Ensure resources exist
+            resources: { action: true, bonusAction: true, movement: 30, reaction: true }
+        } : MOCK_PLAYER;
 
-        // Optionally add a narrative ally for the Intro fight? Keeping it solo for dragging effect
         const all = [hero, ...enemies].sort((a, b) => b.initiative - a.initiative);
         setCombatants(all);
-        setLog([`> ${hero.name} draws their weapon.`, `> ${enemies.length} enemies engaging.`]);
-
     }, [enemySlugs, playAmbience, playerCharacter]);
 
     const currentCombatant = combatants[turnIndex];
     const isPlayerTurn = currentCombatant?.type === "player";
     const enemies = combatants.filter(c => c.type === "monster");
 
+    // LOGGING
+    const addToLog = (msg: string) => setLog(prev => [...prev.slice(-10), msg]);
+
+    // UPDATE HELPER
     const handleUpdate = (id: string, updates: Partial<Combatant>) => {
         setCombatants(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+    };
+
+    // CONSUME RESOURCE HELPER
+    const consumeResource = (type: 'action' | 'bonus' | 'movement', amount: number = 1) => {
+        if (!currentCombatant) return;
+        const res = { ...currentCombatant.resources! };
+
+        if (type === 'action') res.action = false;
+        if (type === 'bonus') res.bonusAction = false;
+        if (type === 'movement') res.movement = Math.max(0, res.movement - amount);
+
+        handleUpdate(currentCombatant.id, { resources: res });
+    };
+
+    // TURN MGMT
+    const nextTurn = () => {
+        // Reset resources for current before leaving? No, reset for NEXT person
+        setTurnIndex(prev => {
+            const nextIndex = (prev + 1) % combatants.length;
+            const nextCombatant = combatants[nextIndex];
+
+            // Refill Resources for specific combatant
+            handleUpdate(nextCombatant.id, {
+                resources: { action: true, bonusAction: true, movement: 30, reaction: true }
+            });
+
+            return nextIndex;
+        });
+        setPendingAction(null);
+        setTargetingMode(false);
+        setSpellMenuOpen(false);
     };
 
     const handleDefeat = (entityId: string) => {
         handleUpdate(entityId, { hp: 0 });
         const entity = combatants.find(c => c.id === entityId);
-        setLog(prev => [...prev, `> ${entity?.name} defeats.`]);
+        addToLog(`> ${entity?.name} falls!`);
 
         if (entity?.type === 'monster') {
-            const rem = combatants.filter(c => c.type === 'monster' && c.id !== entityId && c.hp > 0);
-            if (rem.length === 0) setTimeout(onVictory, 2000);
-        }
-        if (entity?.type === 'player') {
-            // For Prologue, defeat triggers narrative progression
-            const rem = combatants.filter(c => c.type === 'player' && c.id !== entityId && c.hp > 0);
-            if (rem.length === 0) {
-                if (onDefeat) setTimeout(onDefeat, 2000);
+            if (combatants.filter(c => c.type === 'monster' && c.id !== entityId && c.hp > 0).length === 0) {
+                setTimeout(onVictory, 2000);
             }
+        } else if (entity?.type === 'player') {
+            onDefeat?.();
         }
     };
 
-    const addToLog = (msg: string) => setLog(prev => [...prev.slice(-10), msg]);
+    // ACTIONS
+    const selectAction = (action: any, type: 'attack' | 'spell') => {
+        // Check Economy
+        const isBonus = action.castingTime?.includes("Bonus") || action.name === "Healing Word"; // Heuristic
+        const resourceType = isBonus ? 'bonus' : 'action';
 
-    const prepareAttack = (attack: any) => {
-        if (attack.isAoE || attack.name === "Fireball" || attack.name === "Meteor Swarm") {
-            // ENTER AOE MODE
-            addToLog(`> Aiming ${attack.name}... (Click map to cast)`);
-            setPendingAction(attack); // Set pending action for UI feedback
+        if ((resourceType === 'action' && !currentCombatant.resources?.action) ||
+            (resourceType === 'bonus' && !currentCombatant.resources?.bonusAction)) {
+            addToLog(`! No ${resourceType} remaining.`);
+            playSfx("/sfx/ui_error.mp3");
+            return;
+        }
+
+        action._resource = resourceType; // Tag it
+        setPendingAction(action);
+
+        // Mode Check
+        const isAoE = action.isAoE || action.range?.includes("Radius") || action.name === "Fireball";
+        if (isAoE) {
+            addToLog(`> Aiming ${action.name}...`);
             setAoeData({
-                radius: 20, // 20ft radius default
+                radius: 20,
                 range: 120,
-                onConfirm: (x, y) => executeAoE(x, y, attack)
+                onConfirm: (x, y) => executeAction(null, { x, y })
             });
+        } else if (action.target === "Self") {
+            executeAction(currentCombatant.id);
         } else {
-            // SINGLE TARGET
-            setPendingAction(attack);
+            addToLog(`> Select target for ${action.name}.`);
             setTargetingMode(true);
-            addToLog(`> Targeting with ${attack.name}...`);
         }
+        setSpellMenuOpen(false);
     };
 
-    const executeAoE = (x: number, y: number, attack: any) => {
-        setAoeData(null); // Clear AoE mode
-        addToLog(`> ${attack.name} explodes at (${x},${y})!`);
-        playSfx("/sfx/explosion.mp3");
+    const executeAction = (targetId: string | null, loc?: { x: number, y: number }) => {
+        if (!pendingAction) return;
 
-        // Find enemies in radius
-        // Needs position from map? Wait, positions are internal to TacticalMap state?
-        // Ah, TacticalMap doesn't lift state up for ALL positions, only updates on move.
-        // Wait, TacticalMap has `positions` state. I can't access it here easily unless I lift it up.
-        // Quick fix: Ask TacticalMap to return impacted IDs? No, onConfirm just returns coords.
-        // OPTION 2: Calculate fake impact for now or lift state appropriately. 
-        // Since I'm in a rush in `executeAoE`, and `TacticalMap` has the logic...
-        // Actually, let's assume standard grid positions for enemies if not moved, or better:
-        // Assume enemies are at initial spots? No.
+        // Deduct Resource
+        if (pendingAction._resource === 'action') consumeResource('action');
+        if (pendingAction._resource === 'bonus') consumeResource('bonus');
 
-        // REFACTOR: `positions` must be lifted to CombatLayout or `TacticalMap` must handle logic.
-        // EASIEST: Just "Hit All Enemies" for big spells for now as a fallback, 
-        // OR rely on a `getCombatantAt(x,y)` if we had it.
+        // AOE LOGIC
+        if (loc) {
+            addToLog(`> ${pendingAction.name} blasts area!`);
+            playSfx("/sfx/explosion.mp3");
+            // Hit all enemies (simplification)
+            enemies.forEach(e => {
+                const dmg = resolveRoll(pendingAction.damage || "2d6");
+                handleUpdate(e.id, { hp: Math.max(0, e.hp - dmg) });
+                addToLog(`> ${e.name} takes ${dmg}.`);
+                if (e.hp <= dmg) handleDefeat(e.id);
+            });
+        }
+        // TARGET LOGIC
+        else if (targetId) {
+            const target = combatants.find(c => c.id === targetId);
+            if (!target) return;
 
-        // FOR NOW: Let's apply damage to RANDOM enemies to simulate "caught in blast" or ALL enemies if it's Meteor Swarm.
-        // Properly, we should lift state. But let's simplify for this step:
-        // "The blast hits!" -> Apply damage to all enemies for huge spells.
+            const hitBonus = pendingAction.bonus || 5;
+            const roll = Math.floor(Math.random() * 20) + 1;
+            const total = roll + hitBonus;
 
-        combatants.forEach(c => {
-            if (c.type === 'monster' && c.hp > 0) {
-                const dmg = resolveRoll(attack.damage);
-                // DEX SAVE simulation (10 + bonus)
-                const save = Math.floor(Math.random() * 20) + 1;
-                const dc = 15; // Hardcoded DC
-                const finalDmg = save >= dc ? Math.floor(dmg / 2) : dmg;
-
-                handleUpdate(c.id, { hp: Math.max(0, c.hp - finalDmg) });
-                addToLog(`> ${c.name} takes ${finalDmg} ${attack.name} damage.`);
-                if (c.hp - finalDmg <= 0) handleDefeat(c.id);
+            if (total >= target.ac) {
+                const dmg = resolveRoll(pendingAction.damage || "1d8");
+                handleUpdate(targetId, { hp: Math.max(0, target.hp - dmg) });
+                addToLog(`> ${pendingAction.name} HITS ${target.name} for ${dmg}!`);
+                playSfx("/sfx/hit.mp3");
+                if (target.hp <= dmg) handleDefeat(targetId);
+            } else {
+                addToLog(`> ${pendingAction.name} MISSES (${total} vs AC${target.ac})`);
+                playSfx("/sfx/miss.mp3");
             }
-        });
-
-        setTimeout(nextTurn, 1000);
-    };
-
-    const executeAttack = (targetId: string) => {
-        if (!currentCombatant || !pendingAction) return;
-
-        setTargetingMode(false);
-        const target = combatants.find(c => c.id === targetId);
-        if (!target) return;
-
-        // Animation / Sound hook
-        playSfx("/sfx/dice_throw.mp3");
-
-        const d20 = Math.floor(Math.random() * 20) + 1;
-        const totalHit = d20 + pendingAction.bonus;
-        const isMiss = totalHit < target.ac;
-
-        if (isMiss) {
-            addToLog(`> ${pendingAction.name} MISS (${totalHit} vs AC${target.ac})`);
-            playSfx("/sfx/dice_settle.mp3");
-        } else {
-            const dmg = resolveRoll(pendingAction.damage);
-            const newHp = Math.max(0, target.hp - dmg);
-            addToLog(`> HIT! ${target.name} takes ${dmg} damage.`);
-            playSfx("/sfx/glitch_crit.mp3"); // placeholder hit sound
-            handleUpdate(targetId, { hp: newHp });
-            if (newHp === 0) handleDefeat(targetId);
         }
 
         setPendingAction(null);
-        setTimeout(nextTurn, 1000);
+        setAoeData(null);
+        setTargetingMode(false);
     };
 
-    // Enemy AI (Deep Logic)
+    // AI TURN
     useEffect(() => {
-        if (!isPlayerTurn && currentCombatant && currentCombatant.hp > 0 && combatStarted) {
-            const timer = setTimeout(() => {
+        if (!isPlayerTurn && combatStarted && currentCombatant && currentCombatant.hp > 0) {
+            const t = setTimeout(() => {
                 const players = combatants.filter(c => c.type === 'player' && c.hp > 0);
-                const target = players[0]; // Primary target
-
-                if (target && currentCombatant.attacks && currentCombatant.attacks.length > 0) {
-                    // 1. Pick Random Action
-                    const atk = currentCombatant.attacks[Math.floor(Math.random() * currentCombatant.attacks.length)];
-
-                    // 2. Check AoE
-                    const isAoE = atk.isAoE || atk.name.includes("Breath") || atk.name.includes("Swarm") || atk.name.includes("Circle");
-
-                    if (isAoE) {
-                        addToLog(`> ${currentCombatant.name} unleashes ${atk.name}!`);
-                        playSfx("/sfx/explosion.mp3"); // Generic big sound
-
-                        // Hit all players
-                        players.forEach(p => {
+                if (players.length > 0) {
+                    const atk = currentCombatant.attacks?.[0]; // Default attack
+                    if (atk) {
+                        const target = players[0];
+                        const roll = Math.floor(Math.random() * 20) + 1 + (atk.bonus || 5);
+                        if (roll >= target.ac) {
                             const dmg = resolveRoll(atk.damage);
-                            // Sim Save
-                            const dex = p.stats?.dex || 10;
-                            const saveRoll = Math.floor(Math.random() * 20) + (dex - 10); // Rough Dex Save
-                            const dc = 18; // Default High DC
-                            const taken = saveRoll >= dc ? Math.floor(dmg / 2) : dmg;
-
-                            addToLog(`> ${p.name} takes ${taken} damage.`);
-                            handleUpdate(p.id, { hp: Math.max(0, p.hp - taken) });
-                            if (p.hp - taken <= 0) handleDefeat(p.id);
-                        });
-
-                    } else {
-                        // Single Target Attack
-                        // Parsing Bonus
-                        const hitBonus = atk.bonus || 10;
-                        const d20 = Math.floor(Math.random() * 20) + 1;
-
-                        if (d20 + hitBonus >= target.ac) {
-                            const dmg = resolveRoll(atk.damage);
-                            addToLog(`> ${currentCombatant.name} uses ${atk.name} on ${target.name} for ${dmg} dmg!`);
-                            playSfx("/sfx/glitch_crit.mp3");
-                            const newHp = Math.max(0, target.hp - dmg);
-                            handleUpdate(target.id, { hp: newHp });
-                            if (newHp === 0) handleDefeat(target.id);
+                            addToLog(`> ${currentCombatant.name} hits ${target.name} for ${dmg}.`);
+                            handleUpdate(target.id, { hp: Math.max(0, target.hp - dmg) });
+                            if (target.hp <= dmg) handleDefeat(target.id);
                         } else {
-                            addToLog(`> ${currentCombatant.name} uses ${atk.name} but misses.`);
-                            playSfx("/sfx/dice_settle.mp3");
+                            addToLog(`> ${currentCombatant.name} misses ${target.name}.`);
                         }
+                    } else {
+                        addToLog(`> ${currentCombatant.name} glare menacingly.`);
                     }
                 }
                 nextTurn();
-            }, 1500); // Slower AI for dramatic effect
-            return () => clearTimeout(timer);
+            }, 1000);
+            return () => clearTimeout(t);
         }
-    }, [turnIndex, combatants, combatStarted]);
-
-    const nextTurn = () => {
-        setTurnIndex(prev => (prev + 1) % combatants.length);
-    };
+    }, [turnIndex, combatStarted]);
 
     return (
         <div className="fixed inset-0 z-[2000] bg-[#0a0a0c] text-[#d4c391] font-serif flex flex-col">
 
-            {/* Top HUD: Initiative & Status */}
-            <div className="h-20 bg-[#111] border-b border-[#333] flex items-center px-6 gap-6 overflow-x-auto custom-scrollbar shadow-lg z-20">
-                <div className="flex items-center gap-2 text-[#a32222] font-bold uppercase tracking-widest border-r border-[#333] pr-6">
-                    <Swords className="w-5 h-5 animate-pulse" />
-                    <span>Battle</span>
-                </div>
+            {/* HUD */}
+            <div className="h-16 bg-[#111] border-b border-[#333] flex items-center px-6 gap-4">
+                <Swords className="text-[#a32222]" />
+                <span className="font-bold uppercase tracking-widest text-[#a32222]">Turn Order</span>
                 {combatants.map((c, i) => (
-                    <div
-                        key={c.id}
-                        className={`
-                            relative min-w-[140px] h-12 flex items-center gap-3 px-4 border transition-all duration-300
-                            ${i === turnIndex ? 'bg-[#a32222] border-[#ff4444] text-white scale-105 shadow-md' : 'bg-[#0a0a0c] border-[#333] text-[#666]'}
-                            ${c.hp <= 0 && 'opacity-40 grayscale'}
-                        `}
-                    >
-                        {c.type === 'player' ? <User className="w-4 h-4" /> : <Skull className="w-4 h-4" />}
-                        <div className="flex flex-col leading-none">
-                            <span className="text-sm font-bold truncate w-20">{c.name}</span>
-                            <span className="text-[10px] font-mono opacity-80">HP: {c.hp}/{c.maxHp}</span>
-                        </div>
-                        {i === turnIndex && (
-                            <div className="absolute top-0 right-0 w-2 h-2 bg-white rounded-full animate-ping"></div>
-                        )}
+                    <div key={c.id} className={`px-3 py-1 flex flex-col items-center ${i === turnIndex ? 'bg-[#a32222] text-white' : 'opacity-50'}`}>
+                        <span className="text-xs font-bold">{c.name}</span>
+                        <span className="text-[10px]">{c.hp} HP</span>
                     </div>
                 ))}
+                <div className="ml-auto flex gap-4 text-xs font-mono">
+                    <span className={currentCombatant?.resources?.action ? "text-green-500" : "text-gray-600"}>ACTION</span>
+                    <span className={currentCombatant?.resources?.bonusAction ? "text-orange-500" : "text-gray-600"}>BONUS</span>
+                    <span className="text-blue-500">{currentCombatant?.resources?.movement} FT</span>
+                </div>
             </div>
 
-            {/* Main Stage (Battlefield) */}
-            <div className="flex-1 relative overflow-hidden flex items-center justify-center bg-[#151515]">
-                {/* Background Atmosphere - Removed for visibility */}
-                {/* <div className="absolute inset-0 opacity-30 bg-[url('/hearts_curse_hero_v15.png')] bg-cover bg-center pointer-events-none blur-sm"></div> */}
+            {/* MAIN AREA */}
+            <div className="flex-1 relative bg-[#151515] flex items-center justify-center overflow-hidden">
+                <TacticalMap
+                    combatants={combatants}
+                    activeCombatantId={currentCombatant?.id}
+                    canMove={isPlayerTurn && combatStarted && (currentCombatant?.resources?.movement || 0) > 0}
+                    aoeMode={aoeData}
+                    onMove={(id, x, y) => {
+                        // Deduct movement (Assume 5ft per step, TacMap handles path, simplified here to 5ft per move event)
+                        // In reality TacMap calculates distance.
+                        consumeResource('movement', 5);
+                    }}
+                />
 
-                {/* TACTICAL MAP */}
-                <div className="z-10 w-full h-full overflow-auto flex items-center justify-center p-8 custom-scrollbar">
-                    <TacticalMap
-                        combatants={combatants}
-                        activeCombatantId={currentCombatant?.id}
-                        canMove={isPlayerTurn && combatStarted}
-                        aoeMode={aoeData}
-                        onMove={(id, x, y) => {
-                            setLog(prev => [...prev, `> ${combatants.find(c => c.id === id)?.name} moves.`]);
-                        }}
-                    />
-                </div>
-
-                {/* INITIATIVE OVERLAY */}
+                {/* INIT OVERLAY */}
                 {!combatStarted && (
-                    <div className="absolute inset-0 z-50 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center animate-in fade-in">
-                        <h1 className="text-6xl text-[#a32222] font-bold mb-8 uppercase tracking-widest drop-shadow-[0_0_20px_rgba(163,34,34,0.8)]">Battle Begins</h1>
-                        <button
-                            onClick={() => {
-                                playSfx("/sfx/sword_draw.mp3");
-                                setCombatStarted(true);
-                                addToLog("> Initiative Rolled! Combat Start.");
-                            }}
-                            className="px-12 py-6 bg-[#a32222] text-white text-2xl font-bold uppercase tracking-[0.2em] border-2 border-red-500 hover:bg-red-600 hover:scale-110 transition-all shadow-[0_0_30px_#a32222]"
-                        >
+                    <div className="absolute inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                        <button onClick={() => setCombatStarted(true)} className="px-12 py-6 bg-[#a32222] text-white text-3xl font-bold uppercase tracking-widest border border-red-500 hover:scale-110 transition-transform shadow-[0_0_50px_red]">
                             Roll Initiative
                         </button>
                     </div>
                 )}
-
-                {/* Narrative Log Overlay */}
-                <div className="absolute bottom-4 left-4 w-96 max-h-48 overflow-y-auto bg-black/80 border border-[#333] p-4 font-mono text-xs rounded z-20">
-                    {log.map((l, i) => <div key={i} className="mb-1 text-gray-400">{l}</div>)}
-                    <div ref={logEndRef} />
-                </div>
             </div>
 
-            {/* Central Action Area */}
-            <div className="relative z-10 w-full max-w-4xl flex flex-col items-center">
-
-                {/* Status Message */}
-                <div className="mb-12 h-16 flex items-center justify-center">
-                    {isPlayerTurn ? (
-                        <h2 className="text-4xl text-[#d4c391] font-bold uppercase tracking-[0.2em] drop-shadow-md animate-slide-up">
-                            Your Turn
-                        </h2>
-                    ) : (
-                        <h2 className="text-4xl text-[#a32222] font-bold uppercase tracking-[0.2em] drop-shadow-md animate-pulse">
-                            Enemy Turn
-                        </h2>
-                    )}
-                </div>
-
-                {/* Action Interface (Only visible on Player Turn) */}
-                {isPlayerTurn && (
-                    <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        {aoeData ? (
-                            <div className="text-center bg-black/80 p-6 border border-cyan-500 shadow-[0_0_20px_cyan]">
-                                <p className="text-cyan-400 font-bold animate-pulse mb-4 uppercase tracking-widest text-xl">
-                                    <Zap className="w-6 h-6 inline-block mr-2" />
-                                    Cast {pendingAction?.name || "Spell"}
-                                </p>
-                                <p className="text-[#ccc] mb-6">Click any tile on the map to center the blast.</p>
-                                <button
-                                    onClick={() => { setAoeData(null); setPendingAction(null); }}
-                                    className="px-8 py-2 border border-red-500 text-red-400 hover:bg-red-900/30 transition-colors uppercase font-bold"
-                                >
-                                    Cancel Casting
-                                </button>
-                            </div>
-                        ) : targetingMode ? (
-                            <div className="text-center">
-                                <p className="text-[#a32222] font-bold animate-pulse mb-6 uppercase tracking-widest">Select Target Enemy</p>
-                                <div className="flex justify-center gap-6">
-                                    {enemies.map(e => (
-                                        <button
-                                            key={e.id}
-                                            onClick={() => executeAttack(e.id)}
-                                            className="group relative w-48 h-64 bg-[#1a0505] border border-[#a32222] hover:bg-[#2a0a0a] hover:border-[#ff4444] transition-all flex flex-col items-center justify-center gap-4 disabled:opacity-50"
-                                            disabled={e.hp <= 0}
-                                        >
-                                            <Skull className="w-12 h-12 text-[#a32222] group-hover:scale-110 transition-transform" />
-                                            <div className="text-xl font-bold uppercase text-[#d4c391]">{e.name}</div>
-                                            <div className="flex items-center gap-2 text-xs font-mono text-red-400">
-                                                <Heart className="w-3 h-3 fill-current" /> {e.hp}/{e.maxHp}
-                                            </div>
-                                            {e.hp <= 0 && <span className="absolute inset-0 flex items-center justify-center bg-black/80 font-bold text-red-600 rotate-12 text-2xl uppercase border-4 border-red-600">Defeated</span>}
-                                        </button>
-                                    ))}
-                                </div>
-                                <button onClick={() => { setTargetingMode(false); setPendingAction(null); }} className="mt-8 text-sm text-[#555] hover:text-[#bbb] uppercase underline decoration-1 underline-offset-4">
-                                    Cancel Action
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                {currentCombatant.attacks?.map((atk, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => prepareAttack(atk)}
-                                        className="group relative h-40 bg-[#111] border border-[#333] hover:border-[#d4c391] hover:bg-[#1a1a1a] transition-all flex flex-col items-center justify-center p-4"
-                                    >
-                                        <Zap className="w-6 h-6 text-[#666] group-hover:text-[#d4c391] mb-2 transition-colors" />
-                                        <span className="text-sm font-bold uppercase tracking-widest text-[#bbb] group-hover:text-white mb-1">{atk.name}</span>
-                                        <span className="text-[10px] font-mono text-[#555] group-hover:text-[#888]">
-                                            {atk.damage} DMG • +{atk.bonus} HIT
-                                        </span>
-                                        <div className="absolute inset-x-2 bottom-0 h-1 bg-[#a32222] scale-x-0 group-hover:scale-x-100 transition-transform"></div>
-                                    </button>
-                                ))}
-
-                                <button
-                                    className="h-40 bg-[#080808] border border-[#222] flex flex-col items-center justify-center p-4 opacity-50 cursor-not-allowed group"
-                                    title="Coming soon"
-                                >
-                                    <ShieldAlert className="w-6 h-6 text-[#333] mb-2" />
-                                    <span className="text-xs font-bold uppercase text-[#444]">Defend</span>
-                                </button>
-
-                                <button
-                                    onClick={onFlee}
-                                    className="h-40 bg-[#080808] border border-[#a32222]/30 hover:border-[#a32222] hover:bg-[#1a0505] transition-all flex flex-col items-center justify-center p-4 group"
-                                >
-                                    <span className="text-xs font-bold uppercase text-[#a32222] group-hover:text-red-400">Flee Combat</span>
-                                </button>
-                            </div>
-                        )}
+            {/* PLAYER CONTROLS */}
+            {isPlayerTurn && (
+                <div className="h-64 bg-[#0a0a0c] border-t border-[#333] grid grid-cols-[1fr_2fr_1fr] gap-4 p-4 z-20">
+                    {/* INFO */}
+                    <div className="space-y-2">
+                        <h3 className="text-xl font-bold text-[#d4c391]">{currentCombatant.name}</h3>
+                        <div className="flex flex-col gap-1 text-xs text-[#888]">
+                            <div>HP: <span className="text-white">{currentCombatant.hp} / {currentCombatant.maxHp}</span></div>
+                            <div>AC: <span className="text-white">{currentCombatant.ac}</span></div>
+                            <div>Movement: <span className="text-blue-400">{currentCombatant.resources?.movement} ft</span></div>
+                        </div>
                     </div>
-                )}
-            </div>
 
-            {/* Combat Log */}
-            <div className="h-48 bg-[#050505] border-t border-[#222] p-4 text-xs font-mono text-[#666] overflow-y-auto custom-scrollbar">
-                {log.map((l, i) => <div key={i} className="mb-1">{l}</div>)}
-                <div ref={(el) => el?.scrollIntoView({ behavior: 'smooth' })} />
-            </div>
+                    {/* ACTIONS */}
+                    <div className="flex gap-4 justify-center items-center">
+                        {/* ATTACK BUTTON */}
+                        <div className="flex flex-col gap-2">
+                            {currentCombatant.attacks?.map((atk, i) => (
+                                <button key={i} onClick={() => selectAction(atk, 'attack')} className="px-6 py-3 bg-[#111] border border-[#333] hover:border-[#a32222] hover:bg-[#1a0505] flex items-center gap-2 transition-all">
+                                    <Sword className="w-4 h-4 text-[#a32222]" />
+                                    <span className="font-bold text-sm uppercase">{atk.name}</span>
+                                </button>
+                            ))}
+                        </div>
 
-            <DiceRoller />
-        </div >
+                        {/* SPELL MENU BUTTON */}
+                        <div className="relative">
+                            <button onClick={() => setSpellMenuOpen(!spellMenuOpen)} className="w-32 h-32 bg-[#050505] border border-cyan-900 hover:border-cyan-500 flex flex-col items-center justify-center gap-2 group transition-all">
+                                <BookOpen className="w-8 h-8 text-cyan-700 group-hover:text-cyan-400" />
+                                <span className="text-xs font-bold uppercase text-cyan-700 group-hover:text-cyan-400">Grimoire</span>
+                            </button>
+
+                            {/* SPELLS DROPDOWN - FETCHING FROM CHAR PREPARED */}
+                            {spellMenuOpen && (
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-64 max-h-64 bg-[#0a0a0c] border border-cyan-800 p-2 overflow-y-auto custom-scrollbar shadow-2xl z-50">
+                                    {currentCombatant.preparedSpells?.map(spellName => {
+                                        const spellData = ALL_SPELLS.find(s => s.name === spellName);
+                                        return (
+                                            <button
+                                                key={spellName}
+                                                onClick={() => selectAction({ ...spellData, damage: "2d8" }, 'spell')} // Mock damage if missing
+                                                className="w-full text-left p-2 hover:bg-cyan-900/30 text-xs text-cyan-200 border-b border-cyan-900/30"
+                                            >
+                                                <div className="font-bold">{spellName}</div>
+                                                <div className="text-[10px] text-cyan-500 max-w-full truncate">{spellData?.school} • {spellData?.castingTime}</div>
+                                            </button>
+                                        );
+                                    })}
+                                    {(!currentCombatant.preparedSpells || currentCombatant.preparedSpells.length === 0) && (
+                                        <div className="text-center text-xs text-gray-500 italic p-4">No spells prepared.</div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* END TURN */}
+                    <div className="flex flex-col justify-end">
+                        <button onClick={nextTurn} className="w-full py-4 bg-[#a32222] text-white font-bold uppercase tracking-widest hover:bg-[#c42828] transition-all border border-red-900">
+                            End Turn
+                        </button>
+                    </div>
+                </div>
+            )}
+            {/* LOG */}
+            <div className="absolute top-20 right-4 w-64 h-32 bg-black/50 border border-[#333] p-2 text-[10px] font-mono text-[#888] overflow-y-auto pointer-events-none">
+                {log.map((l, i) => <div key={i}>{l}</div>)}
+            </div>
+        </div>
     );
 }

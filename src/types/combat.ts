@@ -15,8 +15,23 @@ export interface Combatant {
     // New Combat Properties
     level?: number;
     race?: string;
+    class?: string;
+    background?: string;
     alignment?: string;
     equipment?: string[];
+
+    // Action Economy State (Reset each turn)
+    resources?: {
+        action: boolean;      // true if available
+        bonusAction: boolean; // true if available
+        movement: number;     // Remaining feet
+        reaction: boolean;
+    };
+
+    spellSlots?: {
+        [level: number]: { max: number, current: number };
+    };
+    preparedSpells?: string[]; // Names of spells ready to cast
 
     stats?: {
         str: number;
@@ -30,8 +45,11 @@ export interface Combatant {
         name: string;
         bonus: number;
         damage: string; // e.g. "1d8+3"
+        range?: string;
+        type?: "melee" | "ranged" | "spell";
         isAoE?: boolean;
         radius?: number;
+        effect?: string; // For special effects logic
     }[];
 }
 

@@ -1,44 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
-import { Dices, Save, Sword, Shield, Crown, Scroll, Ghost, User, BookOpen, Hammer, Heart, Zap } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Dices, Save, Sword, Shield, Crown, Scroll, Ghost, User, BookOpen, Hammer, Heart, Zap, Sparkles } from "lucide-react";
 import { Combatant } from "@/types/combat";
 import { RACES } from "@/lib/data/races";
 import { ALIGNMENTS } from "@/lib/data/alignments";
 import { STARTING_EQUIPMENT } from "@/lib/data/equipment";
+import { CLASSES } from "@/lib/data/classes";
+import { BACKGROUNDS } from "@/lib/data/backgrounds";
+import { ALL_SPELLS } from "@/lib/data/spells";
 
 interface AdvancedCharacterCreationProps {
     onComplete: (character: Combatant) => void;
 }
-
-// EXPANDED DATA MOCKS
-const CLASSES = [
-    {
-        id: 'paladin', name: 'Paladin', hp: 10, ac: 18,
-        traits: ['Divine Sense', 'Lay on Hands', 'Fighting Style', 'Divine Smite', 'Extra Attack', 'Aura of Protection'],
-        spells: ['Bless', 'Command', 'Cure Wounds', 'Shield of Faith', 'Find Steed', 'Zone of Truth']
-    },
-    {
-        id: 'wizard', name: 'Wizard', hp: 6, ac: 12,
-        traits: ['Arcane Recovery', 'Spellcasting', 'Arcane Tradition', 'Spell Mastery', 'Signature Spells'],
-        spells: ['Magic Missile', 'Shield', 'Mage Armor', 'Fireball', 'Counterspell', 'Wish', 'Meteor Swarm']
-    },
-    {
-        id: 'rogue', name: 'Rogue', hp: 8, ac: 15,
-        traits: ['Sneak Attack', 'Cunning Action', 'Uncanny Dodge', 'Evasion', 'Reliable Talent', 'Elusive'],
-        spells: []
-    },
-    {
-        id: 'cleric', name: 'Cleric', hp: 8, ac: 16,
-        traits: ['Spellcasting', 'Divine Domain', 'Channel Divinity', 'Destroy Undead', 'Divine Intervention'],
-        spells: ['Cure Wounds', 'Guiding Bolt', 'Spiritual Weapon', 'Spirit Guardians', 'Heal', 'True Resurrection']
-    },
-    {
-        id: 'fighter', name: 'Fighter', hp: 10, ac: 17,
-        traits: ['Fighting Style', 'Second Wind', 'Action Surge', 'Extra Attack (3)', 'Indomitable'],
-        spells: []
-    },
-];
 
 const RACIAL_TRAITS: Record<string, string[]> = {
     human: ["+1 to All Stats", "Extra Language"],
@@ -49,18 +23,23 @@ const RACIAL_TRAITS: Record<string, string[]> = {
 
 export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharacterCreationProps) {
     // TABS
-    const [activeTab, setActiveTab] = useState<'identity' | 'stats' | 'gear'>('identity');
+    const [activeTab, setActiveTab] = useState<'identity' | 'stats' | 'spells' | 'gear'>('identity');
 
     // IDENTITY
     const [name, setName] = useState("Hero");
     const [raceId, setRaceId] = useState("human");
     const [classId, setClassId] = useState("paladin");
+    const [backgroundId, setBackgroundId] = useState("noble");
     const [alignment, setAlignment] = useState(ALIGNMENTS[0]);
 
     // STATS
     const [stats, setStats] = useState({ str: 15, dex: 10, con: 14, int: 10, wis: 12, cha: 14 });
     const [hpMode, setHpMode] = useState<'max' | 'rolled'>('max');
     const [rolledHp, setRolledHp] = useState<number | null>(null);
+
+    // SPELLS
+    const [knownSpells, setKnownSpells] = useState<Set<string>>(new Set()); // For Known Casters & Cantrips
+    const [preparedSpells, setPreparedSpells] = useState<Set<string>>(new Set()); // For Prepared Casters
 
     // GEAR
     const [equipment, setEquipment] = useState<Set<string>>(new Set());
@@ -74,8 +53,10 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
 
     const selectedRace = RACES.find(r => r.id === raceId);
     const selectedClass = CLASSES.find(c => c.id === classId);
+    const selectedBackground = BACKGROUNDS.find(b => b.id === backgroundId);
 
-    // LOGIC
+    // -- LOGIC --
+
     const handleStatChange = (stat: keyof typeof stats, val: string) => {
         const num = parseInt(val) || 0;
         setStats(prev => ({ ...prev, [stat]: Math.min(20, Math.max(0, num)) }));
@@ -97,15 +78,22 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
         const hitDie = selectedClass?.hp || 10;
 
         if (hpMode === 'max') {
-            // Level 1: Max + Mod. Levels 2-20: Avg + Mod.
-            // Actually user asked for "Max HP if he wants", implying full max for all levels?
-            // "set it up to max if he wants". I'll treat this as MAX POSSIBLE HP.
-            // Lvl 1: HitDie + Mod. Lvl 2-20: HitDie + Mod.
             return (hitDie + conMod) * 20;
         } else {
             if (rolledHp) return rolledHp;
-            return (hitDie + conMod) + ((hitDie / 2 + 1 + conMod) * 19); // Fallback to Average if not rolled
+            return (hitDie + conMod) + ((hitDie / 2 + 1 + conMod) * 19);
         }
+    };
+
+    const rollHp = () => {
+        const conMod = Math.floor((stats.con - 10) / 2);
+        const hitDie = selectedClass?.hp || 10;
+        let total = hitDie + conMod;
+        for (let i = 2; i <= 20; i++) {
+            total += Math.ceil(Math.random() * hitDie) + conMod;
+        }
+        setRolledHp(total);
+        setHpMode('rolled');
     };
 
     const handleToggleEquip = (itemId: string) => {
@@ -115,17 +103,6 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
             else next.add(itemId);
             return next;
         });
-    };
-
-    const rollHp = () => {
-        const conMod = Math.floor((stats.con - 10) / 2);
-        const hitDie = selectedClass?.hp || 10;
-        let total = hitDie + conMod; // Lvl 1 is always max
-        for (let i = 2; i <= 20; i++) {
-            total += Math.ceil(Math.random() * hitDie) + conMod;
-        }
-        setRolledHp(total);
-        setHpMode('rolled');
     };
 
     const createCustomItem = () => {
@@ -143,11 +120,34 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
         setNewItemStats("");
     };
 
+    // SPELL LOGIC
+    const toggleSpell = (spellName: string, isCantrip: boolean) => {
+        if (!selectedClass?.spellcasting) return;
+
+        const targetSet = isCantrip ? knownSpells : (selectedClass.spellcasting.type === 'known' ? knownSpells : preparedSpells);
+        const setFunction = isCantrip ? setKnownSpells : (selectedClass.spellcasting.type === 'known' ? setKnownSpells : setPreparedSpells);
+
+        // Limits
+        // This is a simplified check. Real app would checking against Max Known
+
+        setFunction(prev => {
+            const next = new Set(prev);
+            if (next.has(spellName)) next.delete(spellName);
+            else next.add(spellName);
+            return next;
+        });
+    };
+
+    const availableSpells = useMemo(() => {
+        if (!selectedClass?.spellcasting) return [];
+        // Filter spells by class list match
+        return ALL_SPELLS.filter(s => Array.isArray(s.classes) ? s.classes.includes(selectedClass.name) : s.classes === selectedClass.name);
+    }, [selectedClass]);
+
+    // FINISH
     const createCharacterObject = (): Combatant => {
         const hp = calculateHp();
-
-        let ac = 10 + Math.floor((stats.dex - 10) / 2);
-        if (selectedClass?.ac) ac = selectedClass.ac;
+        let ac = 10 + Math.floor((stats.dex - 10) / 2); // Base AC
 
         // Merge standard and custom items
         const equippedNames = [
@@ -155,25 +155,65 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
             ...customItems.filter(i => equipment.has(i.id)).map(i => i.name)
         ].filter(Boolean) as string[];
 
-        return {
+        // Compile Spells
+        const allMySpells = [...Array.from(knownSpells), ...Array.from(preparedSpells)];
+
+        // Generate Attacks from Equipment
+        const weaponAttacks = [
+            ...Array.from(equipment).map(id => {
+                const std = STARTING_EQUIPMENT.find(i => i.id === id);
+                if (std && std.type === 'weapon') {
+                    return {
+                        name: std.name,
+                        bonus: Math.floor((stats.str - 10) / 2) + 6, // Proficiency +6 assumed
+                        damage: std.stats?.match(/\d+d\d+/)?.[0] || "1d8",
+                        type: 'melee'
+                    };
+                }
+                const cst = customItems.find(i => i.id === id);
+                if (cst && cst.type === 'weapon') {
+                    return {
+                        name: cst.name,
+                        bonus: Math.floor((stats.str - 10) / 2) + 6,
+                        damage: cst.stats?.match(/\d+d\d+/)?.[0] || "1d8",
+                        type: 'melee'
+                    };
+                }
+                return null;
+            }).filter(Boolean)
+        ];
+
+        const charObj: Combatant = {
             id: `player-${Date.now()}`,
             name,
             type: 'player',
             level: 20,
             race: raceId,
+            class: classId,
+            background: backgroundId,
             alignment,
             equipment: equippedNames,
             hp,
             maxHp: hp,
             ac,
-            initiative: 0,
+            initiative: Math.floor((stats.dex - 10) / 2),
             conditions: [],
             stats,
+            spellSlots: selectedClass?.spellcasting?.slots as any, // Initialize full slots
+            preparedSpells: allMySpells,
+            resources: {
+                action: true,
+                bonusAction: true,
+                movement: 30, // Default, modify by race later
+                reaction: true
+            },
             attacks: [
-                { name: "Main Attack", bonus: 11, damage: "2d6+5" }, // Placeholder
-                ...(selectedClass?.spells && selectedClass.spells.length > 0 ? [{ name: "Cast Spell", bonus: 0, damage: "Effect" }] : [])
+                { name: "Unarmed Strike", bonus: Math.floor((stats.str - 10) / 2) + 6, damage: `1+${Math.floor((stats.str - 10) / 2)}`, type: 'melee', range: '5 ft.' },
+                ...weaponAttacks as any[]
             ]
         };
+
+        return charObj;
     };
 
     const handleFinish = () => {
@@ -201,6 +241,11 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                 <button onClick={() => setActiveTab('stats')} className={`p-3 rounded-xl transition-all ${activeTab === 'stats' ? 'bg-[#a32222] text-white shadow-lg shadow-red-900/20' : 'text-[#444] hover:text-[#bbb]'}`}>
                     <Dices className="w-6 h-6" />
                 </button>
+                {selectedClass?.spellcasting && (
+                    <button onClick={() => setActiveTab('spells')} className={`p-3 rounded-xl transition-all ${activeTab === 'spells' ? 'bg-[#a32222] text-white shadow-lg shadow-red-900/20' : 'text-[#444] hover:text-[#bbb]'}`}>
+                        <Sparkles className="w-6 h-6" />
+                    </button>
+                )}
                 <button onClick={() => setActiveTab('gear')} className={`p-3 rounded-xl transition-all ${activeTab === 'gear' ? 'bg-[#a32222] text-white shadow-lg shadow-red-900/20' : 'text-[#444] hover:text-[#bbb]'}`}>
                     <Sword className="w-6 h-6" />
                 </button>
@@ -211,10 +256,11 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                 <h2 className="text-3xl font-bold text-[#a32222] mb-8 uppercase tracking-widest border-b border-[#333] pb-4">
                     {activeTab === 'identity' && "Identity & Origin"}
                     {activeTab === 'stats' && "Ability Scores & Class"}
+                    {activeTab === 'spells' && "Grimoire Preparation"}
                     {activeTab === 'gear' && "Arsenal & Equipment"}
                 </h2>
 
-                <div className="max-w-3xl mx-auto space-y-8 pb-32">
+                <div className="max-w-4xl mx-auto space-y-8 pb-32">
 
                     {/* IDENTITY TAB */}
                     {activeTab === 'identity' && (
@@ -227,7 +273,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                             <div className="grid grid-cols-2 gap-8">
                                 <div className="space-y-2">
                                     <label className="text-xs uppercase tracking-widest text-[#666]">Race</label>
-                                    <select value={raceId} onChange={e => setRaceId(e.target.value)} className="w-full bg-[#111] border border-[#333] p-3">
+                                    <select value={raceId} onChange={e => setRaceId(e.target.value)} className="w-full bg-[#111] border border-[#333] p-3 text-white">
                                         {RACES.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                                     </select>
                                     <div className="bg-[#111] p-4 text-sm text-[#888] border border-[#222]">
@@ -238,20 +284,34 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs uppercase tracking-widest text-[#666]">Alignment</label>
-                                    <select value={alignment} onChange={e => setAlignment(e.target.value as any)} className="w-full bg-[#111] border border-[#333] p-3">
-                                        {ALIGNMENTS.map(a => <option key={a} value={a}>{a}</option>)}
+                                    <label className="text-xs uppercase tracking-widest text-[#666]">Background</label>
+                                    <select value={backgroundId} onChange={e => setBackgroundId(e.target.value)} className="w-full bg-[#111] border border-[#333] p-3 text-white">
+                                        {BACKGROUNDS.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                                     </select>
+                                    <div className="bg-[#111] p-4 text-sm text-[#888] border border-[#222]">
+                                        <h4 className="text-[#a32222] font-bold mb-2">Feature: {selectedBackground?.feature}</h4>
+                                        <p className="italic mb-2 text-[#666]">{selectedBackground?.desc}</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {selectedBackground?.skills.map(s => <span key={s} className="px-2 py-1 bg-[#222] rounded text-xs text-[#ccc]">{s}</span>)}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             <div className="space-y-2">
+                                <label className="text-xs uppercase tracking-widest text-[#666]">Alignment</label>
+                                <select value={alignment} onChange={e => setAlignment(e.target.value as any)} className="w-full bg-[#111] border border-[#333] p-3 text-white">
+                                    {ALIGNMENTS.map(a => <option key={a} value={a}>{a}</option>)}
+                                </select>
+                            </div>
+
+                            <div className="space-y-2">
                                 <label className="text-xs uppercase tracking-widest text-[#666]">Class</label>
-                                <div className="grid grid-cols-5 gap-2">
+                                <div className="grid grid-cols-4 gap-2">
                                     {CLASSES.map(cls => (
-                                        <button key={cls.id} onClick={() => setClassId(cls.id)} className={`p-4 border transition-all flex flex-col items-center gap-2 ${classId === cls.id ? 'bg-[#a32222] border-[#ff4444] text-white' : 'bg-[#111] border-[#333] text-[#666] hover:border-[#666]'}`}>
+                                        <button key={cls.id} onClick={() => { setClassId(cls.id); setKnownSpells(new Set()); setPreparedSpells(new Set()); }} className={`p-3 border transition-all flex flex-col items-center gap-1 ${classId === cls.id ? 'bg-[#a32222] border-[#ff4444] text-white' : 'bg-[#111] border-[#333] text-[#666] hover:border-[#666]'}`}>
                                             <span className="font-bold text-sm">{cls.name}</span>
-                                            <span className="text-[10px] opacity-60">d{cls.hp} Hit Die</span>
+                                            <span className="text-[10px] opacity-60">d{cls.hp} HD</span>
                                         </button>
                                     ))}
                                 </div>
@@ -262,7 +322,6 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                     {/* STATS TAB */}
                     {activeTab === 'stats' && (
                         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4">
-
                             {/* Ability Scores */}
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center border-b border-[#222] pb-2">
@@ -285,23 +344,6 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                 </div>
                             </div>
 
-                            {/* HP Calculator */}
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center border-b border-[#222] pb-2">
-                                    <h3 className="text-lg font-bold text-[#d4c391]">Hit Points (Level 20)</h3>
-                                </div>
-                                <div className="flex items-center gap-8 bg-[#111] p-6 border border-[#333]">
-                                    <div className="flex items-center gap-6">
-                                        <button onClick={() => setHpMode('max')} className={`px-4 py-2 border ${hpMode === 'max' ? 'bg-[#222] border-[#d4c391] text-[#d4c391]' : 'border-[#333] text-[#444]'}`}>Max HP</button>
-                                        <button onClick={rollHp} className={`px-4 py-2 border ${hpMode === 'rolled' ? 'bg-[#222] border-[#d4c391] text-[#d4c391]' : 'border-[#333] text-[#444]'}`}>Roll HP</button>
-                                    </div>
-                                    <div className="text-4xl font-bold text-white flex items-center gap-2">
-                                        <Heart className="w-8 h-8 text-[#a32222] fill-current" />
-                                        {calculateHp()} <span className="text-sm text-[#444] font-normal ml-2">Total HP</span>
-                                    </div>
-                                </div>
-                            </div>
-
                             {/* Class Features */}
                             <div className="grid grid-cols-2 gap-8">
                                 <div className="bg-[#111] p-6 border border-[#333]">
@@ -311,14 +353,82 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                     </ul>
                                 </div>
                                 <div className="bg-[#111] p-6 border border-[#333]">
-                                    <h4 className="text-[#a32222] font-bold mb-4 flex items-center gap-2"><Zap className="w-4 h-4" /> Spellcasting / Abilities</h4>
-                                    {selectedClass?.spells && selectedClass.spells.length > 0 ? (
-                                        <ul className="space-y-2 text-sm text-[#ccc]">
-                                            {selectedClass.spells.map(s => <li key={s} className="italic text-cyan-100/70">{s}</li>)}
-                                        </ul>
+                                    <h4 className="text-[#a32222] font-bold mb-4 flex items-center gap-2"><Shield className="w-4 h-4" /> Proficiencies & Saves</h4>
+                                    <div className="text-sm text-[#ccc] space-y-4">
+                                        <div>
+                                            <strong className="text-[#666] text-xs uppercase block mb-1">Saving Throws</strong>
+                                            {selectedClass?.saves.join(", ")}
+                                        </div>
+                                        <div>
+                                            <strong className="text-[#666] text-xs uppercase block mb-1">Proficiencies</strong>
+                                            {selectedClass?.proficiencies.join(", ")}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* SPELLS TAB */}
+                    {activeTab === 'spells' && selectedClass?.spellcasting && (
+                        <div className="animate-in fade-in slide-in-from-bottom-4">
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="text-lg font-bold text-[#d4c391]">Prepare Incantations (Lvl 20 {selectedClass.name})</h3>
+                                <div className="text-xs text-[#666]">
+                                    <span className="mr-4">Cantrips: {knownSpells.size} / {selectedClass.spellcasting.cantripsKnown}</span>
+                                    {selectedClass.spellcasting.type === 'known' ? (
+                                        <span>Spells Known: {knownSpells.size} / {selectedClass.spellcasting.spellsKnown}</span>
                                     ) : (
-                                        <p className="text-sm text-[#444] italic">This class relies on martial prowess rather than magic.</p>
+                                        <span>Prepared: {preparedSpells.size} / {Math.floor((stats[selectedClass.spellcasting.ability] - 10) / 2) + 20}</span>
                                     )}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-8 h-[500px]">
+                                {/* AVAILABLE */}
+                                <div className="border border-[#333] bg-[#111] flex flex-col">
+                                    <div className="p-3 border-b border-[#333] bg-[#050505] font-bold text-sm text-[#888]">Available Spells</div>
+                                    <div className="overflow-y-auto flex-1 p-2">
+                                        {availableSpells.map(spell => {
+                                            const isKnown = knownSpells.has(spell.name) || preparedSpells.has(spell.name);
+                                            const isCantrip = spell.level === "0" || spell.level === "Cantrip";
+                                            return (
+                                                <div key={spell.name}
+                                                    onClick={() => toggleSpell(spell.name, isCantrip)}
+                                                    className={`p-2 flex justify-between items-center text-sm cursor-pointer hover:bg-[#222] ${isKnown ? 'opacity-50' : 'opacity-100'}`}
+                                                >
+                                                    <span className={isKnown ? "text-green-500" : "text-[#ccc]"}>{spell.name}</span>
+                                                    <span className="text-[10px] text-[#555] font-mono">{isCantrip ? "C" : spell.level}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* PREPARED */}
+                                <div className="border border-[#333] bg-[#1a0505] flex flex-col">
+                                    <div className="p-3 border-b border-[#333] bg-[#050505] font-bold text-sm text-[#a32222]">My Grimoire</div>
+                                    <div className="overflow-y-auto flex-1 p-2 space-y-1">
+                                        <div className="text-xs uppercase text-[#666] font-bold mt-2 mb-1 px-2">Cantrips</div>
+                                        {Array.from(knownSpells).filter(s => {
+                                            const spell = ALL_SPELLS.find(sp => sp.name === s);
+                                            return spell && (spell.level === "0" || spell.level === "Cantrip");
+                                        }).map(s => (
+                                            <div key={s} onClick={() => toggleSpell(s, true)} className="px-2 py-1 text-sm text-[#ccc] hover:bg-[#330000] cursor-pointer flex justify-between">
+                                                {s} <Zap className="w-3 h-3 text-yellow-600" />
+                                            </div>
+                                        ))}
+
+                                        <div className="text-xs uppercase text-[#666] font-bold mt-4 mb-1 px-2">Leveled Spells</div>
+                                        {Array.from(selectedClass.spellcasting.type === 'known' ? knownSpells : preparedSpells).filter(s => {
+                                            const spell = ALL_SPELLS.find(sp => sp.name === s);
+                                            return spell && (spell.level !== "0" && spell.level !== "Cantrip");
+                                        }).map(s => (
+                                            <div key={s} onClick={() => toggleSpell(s, false)} className="px-2 py-1 text-sm text-[#ccc] hover:bg-[#330000] cursor-pointer flex justify-between">
+                                                {s} <span className="text-[10px] font-mono border border-[#444] px-1 rounded">{ALL_SPELLS.find(sp => sp.name === s)?.level}</span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -388,7 +498,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                         <div className="text-right">
                             <h2 className="text-2xl font-bold uppercase tracking-tighter border-b-2 border-[#1a1a1a] pb-1">{name}</h2>
                             <p className="text-xs font-bold uppercase mt-1">{selectedRace?.name} {selectedClass?.name}</p>
-                            <p className="text-xs font-mono mt-1">Lvl 20 • {alignment}</p>
+                            <p className="text-xs font-mono mt-1">Lvl 20 • {alignment} • {selectedBackground?.name}</p>
                         </div>
                     </div>
 
@@ -419,6 +529,15 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                 ))}
                             </div>
                         </div>
+                        {selectedClass?.spellcasting && (
+                            <div>
+                                <h4 className="font-bold border-b border-[#1a1a1a] mb-1 text-sm">Magic</h4>
+                                <div className="text-xs">
+                                    <div className="flex justify-between"><span>DC:</span> <strong>{8 + Math.floor((stats[selectedClass.spellcasting.ability] - 10) / 2) + 6}</strong></div>
+                                    <div className="flex justify-between"><span>Atk:</span> <strong>+{Math.floor((stats[selectedClass.spellcasting.ability] - 10) / 2) + 6}</strong></div>
+                                </div>
+                            </div>
+                        )}
                         <div>
                             <h4 className="font-bold border-b border-[#1a1a1a] mb-1 text-sm">Equipment</h4>
                             <ul className="text-xs list-disc pl-4">
