@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Skull, Swords, Zap, Crosshair, User, ShieldAlert, Heart } from "lucide-react";
+import { ArrowRight, Sword, Shield, Zap, Skull, Heart, Ghost, Timer } from 'lucide-react';
+import TacticalMap from './combat/TacticalMap';
 import CombatantCard from "@/components/ui/CombatantCard";
 import { Combatant } from "@/types/combat";
 import monstersData from "@/lib/data/monsters_custom.json";
@@ -220,99 +221,118 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                 ))}
             </div>
 
-            {/* Main Stage */}
-            <div className="flex-1 relative bg-black flex items-center justify-center p-8 overflow-hidden">
-                <div className="absolute inset-0 bg-[url('/hearts_curse_hero_v15.png')] bg-cover bg-center opacity-20 pointer-events-none grayscale"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-[#0a0a0c] pointer-events-none"></div>
+            {/* Main Stage (Battlefield) */}
+            <div className="flex-1 relative overflow-hidden flex items-center justify-center bg-[#151515]">
+                {/* Background Atmosphere */}
+                <div className="absolute inset-0 opacity-30 bg-[url('/hearts_curse_hero_v15.png')] bg-cover bg-center pointer-events-none blur-sm"></div>
 
-                {/* Central Action Area */}
-                <div className="relative z-10 w-full max-w-4xl flex flex-col items-center">
+                {/* TACTICAL MAP */}
+                <div className="z-10 scale-75 md:scale-100 transition-transform">
+                    <TacticalMap
+                        combatants={combatants}
+                        activeCombatantId={currentCombatant?.id}
+                        canMove={isPlayerTurn}
+                        onMove={(id, x, y) => {
+                            setLog(prev => [...prev, `> ${combatants.find(c => c.id === id)?.name} moves to (${x},${y}).`]);
+                        }}
+                    />
+                </div>
 
-                    {/* Status Message */}
-                    <div className="mb-12 h-16 flex items-center justify-center">
-                        {isPlayerTurn ? (
-                            <h2 className="text-4xl text-[#d4c391] font-bold uppercase tracking-[0.2em] drop-shadow-md animate-slide-up">
-                                Your Turn
-                            </h2>
-                        ) : (
-                            <h2 className="text-4xl text-[#a32222] font-bold uppercase tracking-[0.2em] drop-shadow-md animate-pulse">
-                                Enemy Turn
-                            </h2>
-                        )}
-                    </div>
-
-                    {/* Action Interface (Only visible on Player Turn) */}
-                    {isPlayerTurn && (
-                        <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            {targetingMode ? (
-                                <div className="text-center">
-                                    <p className="text-[#a32222] font-bold animate-pulse mb-6 uppercase tracking-widest">Select Target</p>
-                                    <div className="flex justify-center gap-6">
-                                        {enemies.map(e => (
-                                            <button
-                                                key={e.id}
-                                                onClick={() => executeAttack(e.id)}
-                                                className="group relative w-48 h-64 bg-[#1a0505] border border-[#a32222] hover:bg-[#2a0a0a] hover:border-[#ff4444] transition-all flex flex-col items-center justify-center gap-4 disabled:opacity-50"
-                                                disabled={e.hp <= 0}
-                                            >
-                                                <Skull className="w-12 h-12 text-[#a32222] group-hover:scale-110 transition-transform" />
-                                                <div className="text-xl font-bold uppercase text-[#d4c391]">{e.name}</div>
-                                                <div className="flex items-center gap-2 text-xs font-mono text-red-400">
-                                                    <Heart className="w-3 h-3 fill-current" /> {e.hp}/{e.maxHp}
-                                                </div>
-                                                {e.hp <= 0 && <span className="absolute inset-0 flex items-center justify-center bg-black/80 font-bold text-red-600 rotate-12 text-2xl uppercase border-4 border-red-600">Defeated</span>}
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <button onClick={() => setTargetingMode(false)} className="mt-8 text-sm text-[#555] hover:text-[#bbb] uppercase underline decoration-1 underline-offset-4">
-                                        Cancel Action
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                    {currentCombatant.attacks?.map((atk, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => prepareAttack(atk)}
-                                            className="group relative h-40 bg-[#111] border border-[#333] hover:border-[#d4c391] hover:bg-[#1a1a1a] transition-all flex flex-col items-center justify-center p-4"
-                                        >
-                                            <Zap className="w-6 h-6 text-[#666] group-hover:text-[#d4c391] mb-2 transition-colors" />
-                                            <span className="text-sm font-bold uppercase tracking-widest text-[#bbb] group-hover:text-white mb-1">{atk.name}</span>
-                                            <span className="text-[10px] font-mono text-[#555] group-hover:text-[#888]">
-                                                {atk.damage} DMG • +{atk.bonus} HIT
-                                            </span>
-                                            <div className="absolute inset-x-2 bottom-0 h-1 bg-[#a32222] scale-x-0 group-hover:scale-x-100 transition-transform"></div>
-                                        </button>
-                                    ))}
-
-                                    <button
-                                        className="h-40 bg-[#080808] border border-[#222] flex flex-col items-center justify-center p-4 opacity-50 cursor-not-allowed group"
-                                        title="Coming soon"
-                                    >
-                                        <ShieldAlert className="w-6 h-6 text-[#333] mb-2" />
-                                        <span className="text-xs font-bold uppercase text-[#444]">Defend</span>
-                                    </button>
-
-                                    <button
-                                        onClick={onFlee}
-                                        className="h-40 bg-[#080808] border border-[#a32222]/30 hover:border-[#a32222] hover:bg-[#1a0505] transition-all flex flex-col items-center justify-center p-4 group"
-                                    >
-                                        <span className="text-xs font-bold uppercase text-[#a32222] group-hover:text-red-400">Flee Combat</span>
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                {/* Narrative Log Overlay */}
+                <div className="absolute bottom-4 left-4 w-96 max-h-48 overflow-y-auto bg-black/80 border border-[#333] p-4 font-mono text-xs rounded z-20">
+                    {log.map((l, i) => <div key={i} className="mb-1 text-gray-400">{l}</div>)}
+                    <div ref={logEndRef} />
                 </div>
             </div>
 
-            {/* Combat Log */}
+            {/* Central Action Area */}
+            <div className="relative z-10 w-full max-w-4xl flex flex-col items-center">
+
+                {/* Status Message */}
+                <div className="mb-12 h-16 flex items-center justify-center">
+                    {isPlayerTurn ? (
+                        <h2 className="text-4xl text-[#d4c391] font-bold uppercase tracking-[0.2em] drop-shadow-md animate-slide-up">
+                            Your Turn
+                        </h2>
+                    ) : (
+                        <h2 className="text-4xl text-[#a32222] font-bold uppercase tracking-[0.2em] drop-shadow-md animate-pulse">
+                            Enemy Turn
+                        </h2>
+                    )}
+                </div>
+
+                {/* Action Interface (Only visible on Player Turn) */}
+                {isPlayerTurn && (
+                    <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        {targetingMode ? (
+                            <div className="text-center">
+                                <p className="text-[#a32222] font-bold animate-pulse mb-6 uppercase tracking-widest">Select Target</p>
+                                <div className="flex justify-center gap-6">
+                                    {enemies.map(e => (
+                                        <button
+                                            key={e.id}
+                                            onClick={() => executeAttack(e.id)}
+                                            className="group relative w-48 h-64 bg-[#1a0505] border border-[#a32222] hover:bg-[#2a0a0a] hover:border-[#ff4444] transition-all flex flex-col items-center justify-center gap-4 disabled:opacity-50"
+                                            disabled={e.hp <= 0}
+                                        >
+                                            <Skull className="w-12 h-12 text-[#a32222] group-hover:scale-110 transition-transform" />
+                                            <div className="text-xl font-bold uppercase text-[#d4c391]">{e.name}</div>
+                                            <div className="flex items-center gap-2 text-xs font-mono text-red-400">
+                                                <Heart className="w-3 h-3 fill-current" /> {e.hp}/{e.maxHp}
+                                            </div>
+                                            {e.hp <= 0 && <span className="absolute inset-0 flex items-center justify-center bg-black/80 font-bold text-red-600 rotate-12 text-2xl uppercase border-4 border-red-600">Defeated</span>}
+                                        </button>
+                                    ))}
+                                </div>
+                                <button onClick={() => setTargetingMode(false)} className="mt-8 text-sm text-[#555] hover:text-[#bbb] uppercase underline decoration-1 underline-offset-4">
+                                    Cancel Action
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {currentCombatant.attacks?.map((atk, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => prepareAttack(atk)}
+                                        className="group relative h-40 bg-[#111] border border-[#333] hover:border-[#d4c391] hover:bg-[#1a1a1a] transition-all flex flex-col items-center justify-center p-4"
+                                    >
+                                        <Zap className="w-6 h-6 text-[#666] group-hover:text-[#d4c391] mb-2 transition-colors" />
+                                        <span className="text-sm font-bold uppercase tracking-widest text-[#bbb] group-hover:text-white mb-1">{atk.name}</span>
+                                        <span className="text-[10px] font-mono text-[#555] group-hover:text-[#888]">
+                                            {atk.damage} DMG • +{atk.bonus} HIT
+                                        </span>
+                                        <div className="absolute inset-x-2 bottom-0 h-1 bg-[#a32222] scale-x-0 group-hover:scale-x-100 transition-transform"></div>
+                                    </button>
+                                ))}
+
+                                <button
+                                    className="h-40 bg-[#080808] border border-[#222] flex flex-col items-center justify-center p-4 opacity-50 cursor-not-allowed group"
+                                    title="Coming soon"
+                                >
+                                    <ShieldAlert className="w-6 h-6 text-[#333] mb-2" />
+                                    <span className="text-xs font-bold uppercase text-[#444]">Defend</span>
+                                </button>
+
+                                <button
+                                    onClick={onFlee}
+                                    className="h-40 bg-[#080808] border border-[#a32222]/30 hover:border-[#a32222] hover:bg-[#1a0505] transition-all flex flex-col items-center justify-center p-4 group"
+                                >
+                                    <span className="text-xs font-bold uppercase text-[#a32222] group-hover:text-red-400">Flee Combat</span>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
+
+            {/* Combat Log */ }
             <div className="h-48 bg-[#050505] border-t border-[#222] p-4 text-xs font-mono text-[#666] overflow-y-auto custom-scrollbar">
                 {log.map((l, i) => <div key={i} className="mb-1">{l}</div>)}
                 <div ref={(el) => el?.scrollIntoView({ behavior: 'smooth' })} />
             </div>
 
             <DiceRoller />
-        </div>
+        </div >
     );
 }

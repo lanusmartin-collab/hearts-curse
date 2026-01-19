@@ -18,7 +18,7 @@ import GameLayout from "@/components/game/GameLayout";
 // INTRO COMPONENTS
 import NarrativeIntro from "@/components/game/intro/NarrativeIntro";
 import MainMenu from "@/components/game/intro/MainMenu";
-import CharacterCreation from "@/components/game/CharacterCreation";
+import AdvancedCharacterCreation from "@/components/game/AdvancedCharacterCreation";
 import PrologueController from "@/components/game/intro/PrologueController";
 import { Combatant } from "@/types/combat";
 
