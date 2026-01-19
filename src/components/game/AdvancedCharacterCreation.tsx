@@ -140,8 +140,16 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
 
     const availableSpells = useMemo(() => {
         if (!selectedClass?.spellcasting) return [];
-        // Filter spells by class list match
-        return ALL_SPELLS.filter(s => Array.isArray(s.classes) ? s.classes.includes(selectedClass.name) : s.classes === selectedClass.name);
+
+        const className = selectedClass.name; // e.g. "Wizard"
+
+        return ALL_SPELLS.filter(s => {
+            const classes = s.classes;
+            if (Array.isArray(classes)) {
+                return classes.some(c => c.toLowerCase() === className.toLowerCase());
+            }
+            return classes === className;
+        });
     }, [selectedClass]);
 
     // FINISH

@@ -52,7 +52,7 @@ export default function PrologueController({ playerCharacter, onComplete }: Prol
     if (stage === "combat") {
         return (
             <CombatLayout
-                enemySlugs={[LARLOCH_SLUG]}
+                enemySlugs={[LARLOCH_SLUG, "dracolich_ancient"]}
                 playerCharacter={playerCharacter} // Pass the created character
                 onVictory={() => setStage("wish_scene")}
                 onFlee={() => setStage("wish_scene")}
