@@ -35,6 +35,7 @@ export type CampaignMap = {
     category?: "Main Quest" | "Plot Twist";
     questGuide?: string;
     route?: string; // [NEW] If set, clicking this map navigates to this route instead of setting state
+    encounterTable?: string; // [NEW] Key of the encounter table to use (e.g. "mines")
 };
 
 const OAKHAVEN: CampaignMap = {

@@ -11,6 +11,7 @@ import { SHOPS, ShopItem } from "@/lib/data/shops";
 import ShopInterface from "./ShopInterface";
 import CombatLayout from "./CombatLayout";
 import { Combatant } from "@/types/combat";
+import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OAKHAVEN_MINES_TABLE, UNDERDARK_TRAVEL_TABLE, ARACH_TINILITH_TABLE, NETHERIL_RUINS_TABLE, Encounter } from "@/lib/data/encounters";
 
 // Placeholder for Party Data
 const PARTY = [
@@ -198,16 +199,48 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
     };
 
     const startCombat = () => {
-        if (!currentNode?.monsters || currentNode.monsters.length === 0) {
-            addToLog("No enemies detected here.");
+        // 1. Fixed Encounter? type="encounter" or has monsters list
+        if (currentNode?.monsters && currentNode.monsters.length > 0) {
+            setCombatEnemies(currentNode.monsters);
+            setInCombat(true);
+
+            const encounter = NarrativeEngine.encounterTrigger(currentNode.monsters);
+            addToLog(encounter.text);
+            if (encounter.details) addToLog(encounter.details);
             return;
         }
-        setCombatEnemies(currentNode.monsters);
-        setInCombat(true);
 
-        const encounter = NarrativeEngine.encounterTrigger(currentNode.monsters);
-        addToLog(encounter.text);
-        if (encounter.details) addToLog(encounter.details);
+        // 2. Random Encounter? Linked via map.encounterTable
+        if (currentMap?.encounterTable) {
+            let table: Encounter[] = [];
+            switch (currentMap.encounterTable) {
+                case "mines": table = OAKHAVEN_MINES_TABLE; break;
+                case "underdark": table = UNDERDARK_TRAVEL_TABLE; break;
+                // Add others as needed
+                default: table = TOWN_DAY_TABLE;
+            }
+
+            // Simple Roll
+            const roll = Math.floor(Math.random() * 20) + 1;
+            const event = table.find(e => roll >= e.roll[0] && roll <= e.roll[1]);
+
+            if (event) {
+                addToLog(`> Encounter Roll: ${roll} - ${event.name}`);
+                addToLog(event.description);
+                if (event.monsters && event.monsters.length > 0) {
+                    setCombatEnemies(event.monsters);
+                    setInCombat(true);
+                } else {
+                    // Flavor event
+                    playSfx("/sfx/magical_effect.mp3");
+                }
+            } else {
+                addToLog("> The shadows are quiet... for now.");
+            }
+            return;
+        }
+
+        addToLog("No enemies detected here.");
     };
 
     const handleVictory = () => {
