@@ -11,7 +11,25 @@ import { SHOPS, ShopItem } from "@/lib/data/shops";
 import ShopInterface from "./ShopInterface";
 import CombatLayout from "./CombatLayout";
 import { Combatant } from "@/types/combat";
-import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OAKHAVEN_MINES_TABLE, UNDERDARK_TRAVEL_TABLE, ARACH_TINILITH_TABLE, NETHERIL_RUINS_TABLE, Encounter } from "@/lib/data/encounters";
+import {
+    TOWN_DAY_TABLE,
+    TOWN_NIGHT_TABLE,
+    OAKHAVEN_MINES_TABLE,
+    UNDERDARK_TRAVEL_TABLE,
+    ARACH_TINILITH_TABLE,
+    NETHERIL_RUINS_TABLE,
+    SILENT_WARDS_TABLE,
+    LIBRARY_WHISPERS_TABLE,
+    CATACOMBS_DESPAIR_TABLE,
+    HEART_CHAMBER_TABLE,
+    OSSUARY_TABLE,
+    DWARVEN_RUINS_TABLE,
+    MIND_FLAYER_COLONY_TABLE,
+    BEHOLDER_LAIR_TABLE,
+    SPIRE_TABLE,
+    CASTLE_MOURNWATCH_TABLE,
+    Encounter
+} from "@/lib/data/encounters";
 
 // Placeholder for Party Data
 const PARTY = [
@@ -216,7 +234,18 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
             switch (currentMap.encounterTable) {
                 case "mines": table = OAKHAVEN_MINES_TABLE; break;
                 case "underdark": table = UNDERDARK_TRAVEL_TABLE; break;
-                // Add others as needed
+                case "arach": table = ARACH_TINILITH_TABLE; break;
+                case "netheril": table = NETHERIL_RUINS_TABLE; break;
+                case "silent_wards": table = SILENT_WARDS_TABLE; break;
+                case "library": table = LIBRARY_WHISPERS_TABLE; break;
+                case "dwarven_ruins": table = DWARVEN_RUINS_TABLE; break;
+                case "mind_flayer": table = MIND_FLAYER_COLONY_TABLE; break;
+                case "beholder": table = BEHOLDER_LAIR_TABLE; break;
+                case "spire": table = SPIRE_TABLE; break;
+                case "catacombs": table = CATACOMBS_DESPAIR_TABLE; break;
+                case "heart": table = HEART_CHAMBER_TABLE; break;
+                case "ossuary": table = OSSUARY_TABLE; break;
+                case "castle": table = CASTLE_MOURNWATCH_TABLE; break; // Added castle manually as I missed it in the list but it was in maps.ts
                 default: table = TOWN_DAY_TABLE;
             }
 

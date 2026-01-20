@@ -142,6 +142,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         category: "Main Quest",
         imagePath: "/castle_mournwatch_map.png",
         gridType: "hex",
+        encounterTable: "castle",
         mechanics: [
             "Wild Magic Surge: Casting a spell of 1st level+ triggers a d20 roll. On a 1, roll on the Wild Magic Table.",
             "Necrotic Wind: Flying creatures take 1d6 necrotic damage at start of turn.",
@@ -174,6 +175,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         category: "Main Quest",
         imagePath: "/silent_wards_map_v5.png",
         gridType: "square",
+        encounterTable: "silent_wards",
         // route removed to enable generic editor
         mechanics: [
             "Shifting Layout: On Initiative 20, the dungeon reconfigures. Roll 1d4. 1: 90° Clockwise Rotation. 2: 90° Counter-Clockwise. 3: Walls shift 10ft inward (Dex Save DC 15 or 4d10 Bludgeoning). 4: Gravity reverses for 1 round.",
@@ -209,6 +211,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         category: "Main Quest",
         imagePath: "/library_whispers_map.png",
         gridType: "square",
+        encounterTable: "library",
         // route removed to enable generic editor
         mechanics: [
             "Silence Required: The library is semi-sentient and hates noise. Casting any spell with a Verbal (V) component triggers an immediate 'Counterspell' (+7 bonus) from the environment itself. Whispering allows normal conversation.",
@@ -241,6 +244,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         category: "Main Quest",
         imagePath: "/catacombs_despair_map.png",
         gridType: "square",
+        encounterTable: "catacombs",
         mechanics: [
             "Aura of Hopelessness: DC 18 WIS save every hour. Failure: Character gains 1 level of Exhaustion.",
             "Living Darkness: Light sources only shed dim light for 10ft.",
@@ -279,6 +283,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         imagePath: "/heart_chamber_map.png",
         // route removed to enable generic editor
         gridType: "hex",
+        encounterTable: "heart",
         mechanics: [
             "Pulse of the Dead: Lair Action. DC 22 CON save or Exhaustion.",
             "Table Rule: The Synchronized Pulse. At top of the round, all players must thump the table in unison twice (Heartbeat). Failure gives the Boss Advantage on all attacks that round."
@@ -306,6 +311,7 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         category: "Main Quest",
         imagePath: "/catacombs_map.png",
         gridType: "square",
+        encounterTable: "ossuary",
         mechanics: [
             "Crushing Despair: DC 15 Wis save/hour or Disadvantage on Attacks.",
             "Calcified Air: The dust of ground bones chokes the lungs. DC 14 Con save after combat or gain 1 level of Exhaustion.",
@@ -341,6 +347,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         category: "Plot Twist",
         imagePath: "/oakhaven_mine_v9.png",
         gridType: "hex",
+        encounterTable: "mines",
         // route removed to enable generic editor
         mechanics: [
             "The Great Chasm: A single massive void cuts through all 3 layers. The Drow Silk Lift connects them.",
@@ -454,6 +461,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         category: "Plot Twist",
         imagePath: "/tieg_duran_v2.png",
         gridType: "square",
+        encounterTable: "dwarven_ruins",
         mechanics: [
             "The Military Road: The main path is magically smoothed. Stepping off it requires Dex Save DC 14 or fall Prone in rubble.",
             "Drow Patrols: Every 10 minutes, roll d6. On 1, a patrol (Elite Warrior + 2 Giant Spiders) descends from the ceiling.",
@@ -487,6 +495,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         category: "Plot Twist",
         imagePath: "/underdark_map_v2.png",
         gridType: "hex",
+        encounterTable: "underdark",
         mechanics: [
             "Webs: Difficult Terrain (Half Speed).",
             "Madness: Long Rest without shelter triggers Wisdom Save DC 12 or Short/Long Term Madness.",
@@ -516,6 +525,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         category: "Plot Twist",
         imagePath: "/mind_flayer_map.png",
         gridType: "hex",
+        encounterTable: "mind_flayer",
         mechanics: [
             "Psionic Static: -1d4 to all saving throws.",
             "Hive Mind: If one enemy sees you, all within 100ft know your location immediately.",
@@ -545,6 +555,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         category: "Plot Twist",
         imagePath: "/beholder_map.png",
         gridType: "none",
+        encounterTable: "beholder",
         mechanics: [
             "Anti-Magic Zones: Random 20ft spheres disable flight/spells.",
             "Vertical Combat: Flight is essential. Falling damage is maxed.",
@@ -575,6 +586,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         // route removed to enable generic editor
         imagePath: "/spire_map.png",
         gridType: "hex",
+        encounterTable: "spire",
         mechanics: [
             "High Altitude: Creatures without fly speed must save vs Exhaustion per hour.",
             "Wind Tunnel: Ranged attacks have Disadvantage. Flying speed is doubled tailwind, halved headwind.",
@@ -606,6 +618,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         // route removed to enable generic editor
         imagePath: "/netheril_map.png",
         gridType: "square",
+        encounterTable: "netheril",
         mechanics: [
             "Void Gravity: Jump distance is tripled.",
             "Necrotic Humming: 1d4 necrotic damage/turn to living creatures.",
@@ -635,6 +648,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         category: "Plot Twist",
         imagePath: "/arach_tinilith_map.png",
         gridType: "square",
+        encounterTable: "arach",
         mechanics: [
             "Web-Sense: Touching webs reveals location to Quenthel.",
             "Lolth's Gaze: Disadvantage on Wisdom Saves while in the Cathedral.",
