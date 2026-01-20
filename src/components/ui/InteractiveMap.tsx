@@ -2,20 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-
-export type MapNode = {
-    id: string;
-    x: number; // Percentage 0-100
-    y: number; // Percentage 0-100
-    label: string;
-    type: "quest" | "encounter" | "boss" | "loot" | "info" | "entrance" | "trap" | "event";
-    onClick?: () => void;
-    status?: "active" | "completed" | "locked";
-    description?: string;
-    link?: string;
-    monsters?: string[];
-    itemId?: string;
-};
+import { MapNode } from "@/lib/data/maps";
 
 type InteractiveMapProps = {
     src: string;
@@ -349,6 +336,7 @@ function getNodeColor(type: string): string {
         case "encounter": return "#ff4500"; // Orange
         case "trap": return "#ff00ff"; // Magenta
         case "entrance": return "#00ffff"; // Cyan
+        case "dungeon": return "#551a8b"; // Dark Purple
         case "event": return "#ffffff"; // White
         default: return "#00bfff"; // Blue
     }
@@ -362,6 +350,7 @@ function getNodeIcon(type: string): string {
         case "encounter": return "⚔️";
         case "trap": return "⚠️";
         case "entrance": return "🚪";
+        case "dungeon": return "⛓️";
         case "event": return "✦";
         default: return "i";
     }
