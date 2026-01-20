@@ -2009,5 +2009,215 @@
             }
         ],
         "source": "Custom"
+    },
+    {
+        "slug": "foreman",
+        "name": "The Patchwork Foreman",
+        "size": "Large",
+        "type": "Construct",
+        "ac": 9,
+        "hp": 93,
+        "speed": "30 ft",
+        "stats": {
+            "str": 19,
+            "dex": 9,
+            "con": 18,
+            "int": 6,
+            "wis": 10,
+            "cha": 5
+        },
+        "cr": "5",
+        "image": "/images/flesh_golem.png",
+        "traits": [
+            {
+                "name": "Berserk",
+                "desc": "On turn start, if HP < 40, roll d6. On 6, attacks nearest creature."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "Makes two slam attacks."
+            },
+            {
+                "name": "Slam",
+                "desc": "Melee: +7 to hit, 13 (2d8 + 4) bludgeoning."
+            }
+        ]
+    },
+    {
+        "slug": "bodak",
+        "name": "Bodak",
+        "size": "Medium",
+        "type": "Undead",
+        "ac": 15,
+        "hp": 58,
+        "speed": "30 ft",
+        "stats": {
+            "str": 15,
+            "dex": 16,
+            "con": 15,
+            "int": 7,
+            "wis": 12,
+            "cha": 12
+        },
+        "cr": "6",
+        "image": "https://www.aidedd.org/dnd/images/bodak.jpg",
+        "actions": [
+            {
+                "name": "Death Gaze",
+                "desc": "DC 13 Con save or drop to 0 HP if failed by 5+."
+            }
+        ]
+    },
+    {
+        "slug": "spirit_naga",
+        "name": "Spirit Naga",
+        "size": "Large",
+        "type": "Monstrosity",
+        "ac": 15,
+        "hp": 75,
+        "speed": "40 ft",
+        "stats": {
+            "str": 18,
+            "dex": 17,
+            "con": 14,
+            "int": 16,
+            "wis": 15,
+            "cha": 16
+        },
+        "cr": "8",
+        "image": "https://www.aidedd.org/dnd/images/nagaSpirit.jpg",
+        "actions": [
+            {
+                "name": "Bite",
+                "desc": "Melee: +7 to hit, 7d8 poison damage."
+            }
+        ]
+    },
+    {
+        "slug": "cloaker",
+        "name": "Cloaker",
+        "size": "Large",
+        "type": "Aberration",
+        "ac": 14,
+        "hp": 78,
+        "speed": "10 ft, fly 40 ft",
+        "stats": {
+            "str": 17,
+            "dex": 15,
+            "con": 12,
+            "int": 13,
+            "wis": 12,
+            "cha": 14
+        },
+        "cr": "8",
+        "image": "https://www.aidedd.org/dnd/images/cloaker.jpg",
+        "actions": [
+            {
+                "name": "Bite",
+                "desc": "Melee: +6 to hit, 2d6 piercing."
+            }
+        ]
+    },
+    {
+        "slug": "drider",
+        "name": "Drider",
+        "size": "Large",
+        "type": "Monstrosity",
+        "ac": 19,
+        "hp": 123,
+        "speed": "30 ft, climb 30 ft",
+        "stats": {
+            "str": 16,
+            "dex": 16,
+            "con": 18,
+            "int": 13,
+            "wis": 14,
+            "cha": 12
+        },
+        "cr": "6",
+        "image": "https://www.aidedd.org/dnd/images/drider.jpg",
+        "actions": [
+            {
+                "name": "Longsword",
+                "desc": "Melee: +6 to hit, 1d10+3 slashing."
+            }
+        ]
+    },
+    {
+        "slug": "giant_spider",
+        "name": "Giant Spider",
+        "size": "Large",
+        "type": "Beast",
+        "ac": 14,
+        "hp": 26,
+        "speed": "30 ft, climb 30 ft",
+        "stats": {
+            "str": 14,
+            "dex": 16,
+            "con": 12,
+            "int": 2,
+            "wis": 11,
+            "cha": 4
+        },
+        "cr": "1",
+        "image": "https://www.aidedd.org/dnd/images/spiderGiant.jpg",
+        "actions": [
+            {
+                "name": "Bite",
+                "desc": "Melee: +5 to hit, 1d8+3 piercing + 2d8 poison."
+            }
+        ]
+    },
+    {
+        "slug": "drow-elite-warrior",
+        "name": "Drow Elite Warrior",
+        "size": "Medium",
+        "type": "Humanoid",
+        "ac": 18,
+        "hp": 71,
+        "speed": "30 ft",
+        "stats": {
+            "str": 13,
+            "dex": 18,
+            "con": 14,
+            "int": 11,
+            "wis": 13,
+            "cha": 12
+        },
+        "cr": "5",
+        "image": "https://www.aidedd.org/dnd/images/drowElite.jpg",
+        "actions": [
+            {
+                "name": "Shortsword",
+                "desc": "Melee: +7 to hit, 1d6+4 piercing."
+            }
+        ]
+    },
+    {
+        "slug": "duergar",
+        "name": "Duergar",
+        "size": "Medium",
+        "type": "Humanoid",
+        "ac": 16,
+        "hp": 26,
+        "speed": "25 ft",
+        "stats": {
+            "str": 14,
+            "dex": 11,
+            "con": 14,
+            "int": 11,
+            "wis": 10,
+            "cha": 9
+        },
+        "cr": "1",
+        "image": "https://www.aidedd.org/dnd/images/duergar.jpg",
+        "actions": [
+            {
+                "name": "War Pick",
+                "desc": "Melee: +4 to hit, 1d8+2 piercing."
+            }
+        ]
     }
 ]
