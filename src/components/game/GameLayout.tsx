@@ -9,6 +9,7 @@ import { NarrativeEngine } from "@/lib/game/NarrativeEngine";
 import { SaveManager } from "@/lib/game/SaveManager";
 import { SHOPS, ShopItem } from "@/lib/data/shops";
 import ShopInterface from "./ShopInterface";
+import DungeonInterface from "./DungeonInterface";
 import CombatLayout from "./CombatLayout";
 import { Combatant } from "@/types/combat";
 
@@ -446,46 +447,101 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                         )}
                     </div>
 
-                    {/* ACTION GRID (Bottom of Sidebar) */}
-                    <div className="h-48 border-t-2 border-[#333] bg-[#111] p-2 grid grid-cols-3 gap-1">
-                        <button
-                            onClick={startCombat}
-                            disabled={!currentNode?.monsters}
-                            className={`game-btn bg-[#222] border border-[#444] text-[10px] uppercase font-bold text-gray-400 ${currentNode?.monsters ? 'hover:bg-[#a32222] hover:text-white border-red-900 text-red-500' : 'opacity-50 cursor-not-allowed'}`}
-                        >
-                            Attack
-                        </button>
-                        <button className="game-btn bg-[#222] border border-[#444] hover:bg-[#a32222] hover:text-white text-[10px] uppercase font-bold text-gray-400">Defend</button>
-                        <button className="game-btn bg-[#222] border border-[#444] hover:bg-blue-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Spell</button>
+                </div>
+            </div>
 
+            {/* ACTION GRID or DUNGEON INTERFACE */}
+            {currentNode?.type === 'dungeon' ? (
+                <div className="z-20 shadow-[-10px_0_20px_rgba(0,0,0,0.5)]">
+                    <DungeonInterface
+                        node={currentNode}
+                        threatLevel={currentNode.dungeonFeatures?.threatLevel || "medium"}
+                        darknessLevel={currentNode.dungeonFeatures?.darknessLevel || "dim"}
+                        onExplore={() => {
+                            // Simple logic for now: Trigger encounter
+                            startCombat();
+                        }}
+                        onSkillCheck={(skill) => {
+                            // Placeholder logic
+                            addToLog(`> Skill Check: ${skill} rolled...`);
+                            const roll = Math.floor(Math.random() * 20) + 1;
+                            addToLog(`> Result: ${roll} + MOD = ${roll + 3}`); // Mock modifier
+                            if (roll > 10) {
+                                addToLog(`SUCCESS: You navigate the hazard.`);
+                                playSfx("/sfx/retro_success.mp3");
+                            } else {
+                                addToLog(`FAILURE: The dungeon pushes back.`);
+                                playSfx("/sfx/bump.mp3");
+                            }
+                        }}
+                    />
+                </div>
+            ) : (
+                <div className="h-48 border-t-2 border-[#333] bg-[#111] p-2 grid grid-cols-3 gap-1 z-20 shadow-[-10px_0_20px_rgba(0,0,0,0.5)]">
+                    <button
+                        onClick={startCombat}
+                        disabled={!currentNode?.monsters}
+                        className={`game-btn bg-[#222] border border-[#444] text-[10px] uppercase font-bold text-gray-400 ${currentNode?.monsters ? 'hover:bg-[#a32222] hover:text-white border-red-900 text-red-500' : 'opacity-50 cursor-not-allowed'}`}
+                    >
+                        Attack
+                    </button>
+                    <button className="game-btn bg-[#222] border border-[#444] hover:bg-[#a32222] hover:text-white text-[10px] uppercase font-bold text-gray-400">Defend</button>
+                    <button className="game-btn bg-[#222] border border-[#444] hover:bg-blue-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Spell</button>
+
+                    <button
+                        onClick={() => setShowShop(true)}
+                        disabled={!currentShop}
+                        className={`game-btn bg-[#222] border border-[#444] text-[10px] uppercase font-bold text-gray-400 ${currentShop ? 'hover:bg-yellow-700 hover:text-white border-yellow-800 text-yellow-500' : 'opacity-50 cursor-not-allowed'}`}
+                    >
+                        Trade
+                    </button>
+
+                    {/* TRAVEL / MAP BUTTON */}
+                    {currentNode?.link ? (
                         <button
-                            onClick={() => setShowShop(true)}
-                            disabled={!currentShop}
-                            className={`game-btn bg-[#222] border border-[#444] text-[10px] uppercase font-bold text-gray-400 ${currentShop ? 'hover:bg-yellow-700 hover:text-white border-yellow-800 text-yellow-500' : 'opacity-50 cursor-not-allowed'}`}
+                            onClick={() => {
+                                const urlParams = new URLSearchParams(currentNode.link?.split('?')[1]);
+                                const newMapId = urlParams.get('id');
+                                if (newMapId) {
+                                    setCurrentMapId(newMapId);
+                                    // Reset to first node or specific entry point if we had one
+                                    // For now, let the effect hook handle "no node" -> "first node" logic if possible, 
+                                    // OR explicitly reset:
+                                    const newMap = CAMPAIGN_MAPS.find(m => m.id === newMapId);
+                                    if (newMap && newMap.nodes && newMap.nodes.length > 0) {
+                                        setCurrentNodeId(newMap.nodes[0].id);
+                                        addToLog(`Travelled to ${newMap.title}`);
+                                        playSfx("/sfx/door_heavy.mp3"); // Or appropriate transition sound
+                                    }
+                                }
+                            }}
+                            className="game-btn bg-[#222] border border-cyan-800 text-cyan-500 hover:bg-cyan-900 hover:text-white text-[10px] uppercase font-bold animate-pulse"
                         >
-                            Trade
+                            Enter
                         </button>
+                    ) : (
                         <button
-                            onClick={() => setShowMap(true)}
                             className={`game-btn bg-[#222] border border-[#444] hover:bg-green-900 hover:text-white text-[10px] uppercase font-bold text-gray-400 ${showMap ? 'border-green-500 text-green-500' : ''}`}
                         >
                             Map
                         </button>
-                        <button className="game-btn bg-[#222] border border-[#444] hover:bg-purple-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Rest</button>
+                    )}
+                    <button className="game-btn bg-[#222] border border-[#444] hover:bg-purple-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Rest</button>
 
-                        <div className="col-span-3 mt-1 bg-black border border-[#333] p-1 text-[10px] text-center text-gray-600 font-mono">
-                            {currentShop ? "TRADING HUB AVAILABLE" : "AWAITING COMMAND..."}
-                        </div>
+                    <div className="col-span-3 mt-1 bg-black border border-[#333] p-1 text-[10px] text-center text-gray-600 font-mono">
+                        {currentShop ? "TRADING HUB AVAILABLE" : "AWAITING COMMAND..."}
                     </div>
                 </div>
-            </div>
-
-            {/* GLOBAL CONSOLE (Bottom Strip) */}
-            <div className="h-8 bg-black border-t border-[#333] flex items-center px-4 font-mono text-xs text-green-500/80 z-20">
-                <span className="mr-2 opacity-50">$</span>
-                <span className="animate-flicker">{consoleLog[consoleLog.length - 1]}</span>
-            </div>
+            )}
         </div>
+    </div >
+
+    {/* GLOBAL CONSOLE (Bottom Strip) */ }
+    < div className = "h-8 bg-black border-t border-[#333] flex items-center px-4 font-mono text-xs text-green-500/80 z-20" >
+        <span className="mr-2 opacity-50">$</span>
+        <span className="animate-flicker">{consoleLog[consoleLog.length - 1]}</span>
+    </div >
+</div >
     );
 });
 
