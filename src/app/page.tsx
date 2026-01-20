@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import {
   BookOpen, ShoppingBag, Skull, Map,
@@ -45,6 +45,8 @@ export default function Home() {
   const [showLockAuth, setShowLockAuth] = useState(false);
 
   // -- STATE HANDLERS --
+  const gameRef = useRef<any>(null);
+
   const handleGameStart = () => {
     // Lock removed for ease of access
     setViewMode("intro_narrative");
@@ -132,9 +134,11 @@ export default function Home() {
     );
   }
 
+  // GAME MODE
   if (viewMode === "game") {
     return (
       <GameLayout
+        ref={gameRef}
         onExit={() => setViewMode("home")}
         playerCharacter={playerCharacter}
         initialMapId={selectedMapId}
@@ -143,14 +147,12 @@ export default function Home() {
     );
   }
 
-  if (viewMode === "book") {
-    return <CampaignModuleTemplate onClose={() => setViewMode("home")} />;
-  }
+  // ...
 
   return (
     <div className="retro-container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <AmbientController />
-      <CommandMenu />
+      <CommandMenu onSave={() => gameRef.current?.saveGame()} />
 
       {/* HEADER SECTION */}
       <header className="campaign-header" style={{ marginBottom: "2rem", display: "flex", flexWrap: "wrap", gap: "2rem", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid var(--glass-border)", paddingBottom: "1.5rem" }}>

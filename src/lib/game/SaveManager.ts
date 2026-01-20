@@ -1,4 +1,5 @@
 import { Combatant } from "@/types/combat";
+import { ShopItem } from "@/lib/data/shops";
 
 export interface GameSaveData {
     id: string;
@@ -9,7 +10,7 @@ export interface GameSaveData {
     currentMapId: string;
     currentNodeId: string;
     questState: Record<string, any>;
-    inventory: string[]; // IDs
+    inventory: ShopItem[];
     gold: number;
     playtime: number; // Seconds
 }
@@ -18,6 +19,7 @@ const STORAGE_KEY_PREFIX = "hearts_curse_save_";
 
 export class SaveManager {
     static saveGame(slotId: string, data: GameSaveData): boolean {
+        if (typeof window === 'undefined') return false;
         try {
             const key = `${STORAGE_KEY_PREFIX}${slotId}`;
             const serialized = JSON.stringify(data);
@@ -30,11 +32,27 @@ export class SaveManager {
     }
 
     static loadGame(slotId: string): GameSaveData | null {
+        if (typeof window === 'undefined') return null;
         try {
             const key = `${STORAGE_KEY_PREFIX}${slotId}`;
             const serialized = localStorage.getItem(key);
             if (!serialized) return null;
-            return JSON.parse(serialized) as GameSaveData;
+            const data = JSON.parse(serialized);
+
+            // Migration: Inventory string[] -> ShopItem[]
+            if (data.inventory && data.inventory.length > 0 && typeof data.inventory[0] === 'string') {
+                // Convert string IDs to placeholder objects to prevent crash
+                data.inventory = data.inventory.map((id: string) => ({
+                    id: id,
+                    name: "Unknown Item",
+                    description: "Legacy Item",
+                    cost: 0,
+                    type: "misc",
+                    stock: 1
+                }));
+            }
+
+            return data as GameSaveData;
         } catch (e) {
             console.error("Failed to load game:", e);
             return null;
@@ -42,6 +60,7 @@ export class SaveManager {
     }
 
     static getAllSaves(): GameSaveData[] {
+        if (typeof window === 'undefined') return [];
         const saves: GameSaveData[] = [];
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -49,7 +68,17 @@ export class SaveManager {
                 try {
                     const serialized = localStorage.getItem(key);
                     if (serialized) {
-                        saves.push(JSON.parse(serialized));
+                        const data = JSON.parse(serialized);
+                        // Migration Helper & Validation
+                        if (!data.playerCharacter) {
+                            console.warn(`Skipping invalid save (missing char): ${key}`);
+                            continue;
+                        }
+
+                        if (data.inventory && data.inventory.length > 0 && typeof data.inventory[0] === 'string') {
+                            data.inventory = [];
+                        }
+                        saves.push(data);
                     }
                 } catch (e) {
                     console.warn(`Corrupt save file found: ${key}`);

@@ -1120,5 +1120,94 @@ export const STATBLOCKS: Record<string, Statblock> = {
             { name: "Mage Slayer Attack", desc: "When a creature within 5ft casts a spell, Maximilian makes a melee attack against it." }
         ],
         treasure: "Null-Blade (Longsword, Rare), Ring of Spell Turning"
+    },
+    "bodak": {
+        name: "Bodak", size: "Medium", type: "Undead", alignment: "Chaotic Evil",
+        ac: 15, armorType: "Natural Armor", hp: 58, hitDice: "9d8+18", speed: "30 ft.",
+        stats: { str: 15, dex: 16, con: 15, int: 7, wis: 12, cha: 12 },
+        saves: "", skills: "Perception +4, Stealth +6",
+        immunities: "Necrotic, Poison", conditionImmunities: "Charmed, Frightened, Poisoned",
+        senses: "Darkvision 120 ft.", languages: "Abyssal, The languages it knew in life",
+        cr: "6", xp: 2300,
+        traits: [
+            { name: "Death Gaze", desc: "Start of turn, creature within 30ft DC 13 Con save. Fail by 5+: 0 HP. Fail: 3d10 necrotic." },
+            { name: "Aura of Annihilation", desc: "Start of turn within 30ft: 5 necrotic damage." },
+            { name: "Sunlight Hypersensitivity", desc: "20 radiant dmg/turn in sunlight." }
+        ],
+        actions: [
+            { name: "Fist", desc: "+5 to hit, 1d6+2 bludgeoning + 2d8 necrotic." },
+            { name: "Withering Gaze", desc: "One target within 60ft. DC 13 Con save or 4d10 necrotic." }
+        ]
+    },
+    "cloaker": {
+        name: "Cloaker", size: "Large", type: "Aberration", alignment: "Chaotic Neutral",
+        ac: 14, armorType: "Natural Armor", hp: 78, hitDice: "12d10+12", speed: "10 ft., fly 40 ft.",
+        stats: { str: 17, dex: 15, con: 12, int: 13, wis: 12, cha: 14 },
+        saves: "", skills: "Stealth +5",
+        immunities: "", conditionImmunities: "",
+        senses: "Darkvision 60 ft.", languages: "Deep Speech, Undercommon",
+        cr: "8", xp: 3900,
+        traits: [
+            { name: "Damage Transfer", desc: "While attached to creature, takes half damage (other half to creature)." },
+            { name: "False Appearance", desc: "Looks like a cloak." }
+        ],
+        actions: [
+            { name: "Multiattack", desc: "Two attacks: one bite, one tail." },
+            { name: "Bite", desc: "+6 to hit, 2d6+3 piercing. Attaches to Large or smaller creature (Blind/Restrained)." },
+            { name: "Tail", desc: "+6 to hit, reach 10ft, 1d8+3 slashing." },
+            { name: "Moan", desc: "60ft radius. DC 13 Wis save or Frightened. If failed save again, Stunned." }
+        ]
+    },
+    "spirit_naga": {
+        name: "Spirit Naga", size: "Large", type: "Monstrosity", alignment: "Chaotic Evil",
+        ac: 15, armorType: "Natural Armor", hp: 75, hitDice: "10d10+20", speed: "40 ft.",
+        stats: { str: 18, dex: 17, con: 14, int: 16, wis: 15, cha: 16 },
+        saves: "Dex +6, Con +5, Wis +5, Cha +6", skills: "",
+        immunities: "Poison", conditionImmunities: "Charmed, Poisoned",
+        senses: "Darkvision 60 ft.", languages: "Abyssal, Common",
+        cr: "8", xp: 3900,
+        traits: [
+            { name: "Rejuvenation", desc: "Returns within 1d6 days if killed." },
+            { name: "Spellcasting", desc: "10th Level Wizard. DC 14. Mage Hand, Minor Illusion, Ray of Frost, Charm Person, Detect Magic, Sleep, Detect Thoughts, Hold Person, Lightning Bolt, Water Breathing, Blight, Dimension Door, Dominate Person." }
+        ],
+        actions: [
+            { name: "Bite", desc: "+7 to hit, 1d8+4 piercing + 7d8 poison (DC 13 Con half)." }
+        ]
+    },
+    "duergar": {
+        name: "Duergar", size: "Medium", type: "Humanoid (Dwarf)", alignment: "Lawful Evil",
+        ac: 16, armorType: "Scale Mail, Shield", hp: 26, hitDice: "4d8+8", speed: "25 ft.",
+        stats: { str: 14, dex: 11, con: 14, int: 11, wis: 10, cha: 9 },
+        saves: "", skills: "",
+        immunities: "Poison", conditionImmunities: "Poisoned",
+        senses: "Darkvision 120 ft.", languages: "Dwarvish, Undercommon",
+        cr: "1", xp: 200,
+        traits: [
+            { name: "Duergar Resilience", desc: "Advantage on saves vs poison, spells, and charm/paralysis." },
+            { name: "Sunlight Sensitivity", desc: "Disadvantage in sunlight." }
+        ],
+        actions: [
+            { name: "Enlarge (Recharge 4-6)", desc: "Double size, advantage on Str checks, +1d4 weapon damage for 1 min." },
+            { name: "Invisibility (Recharge 4-6)", desc: "Turns invisible for 1 hour or until attacks." },
+            { name: "War Pick", desc: "+4 to hit, 1d8+2 piercing (or 2d8+2 enlarged)." }
+        ]
+    },
+    "giant_spider": {
+        name: "Giant Spider", size: "Large", type: "Beast", alignment: "Unaligned",
+        ac: 14, armorType: "Natural Armor", hp: 26, hitDice: "4d10+4", speed: "30 ft., climb 30 ft.",
+        stats: { str: 14, dex: 16, con: 12, int: 2, wis: 11, cha: 4 },
+        saves: "", skills: "Stealth +7",
+        immunities: "", conditionImmunities: "",
+        senses: "Blindsight 10 ft., Darkvision 60 ft.", languages: "--",
+        cr: "1", xp: 200,
+        traits: [
+            { name: "Spider Climb", desc: "Climb difficult surfaces." },
+            { name: "Web Sense", desc: "Sense web vibrations." },
+            { name: "Web Walker", desc: "Ignores movement restriction in webs." }
+        ],
+        actions: [
+            { name: "Bite", desc: "+5 to hit, 1d8+3 piercing + 2d8 poison (DC 11 Con half)." },
+            { name: "Web (Recharge 5-6)", desc: "Ranged +5. Restrained (Escape DC 12)." }
+        ]
     }
 };

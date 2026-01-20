@@ -7,6 +7,7 @@ export type MapNode = {
     type: "quest" | "encounter" | "boss" | "loot" | "info" | "entrance" | "trap" | "event";
     description?: string;
     itemId?: string; // [NEW] Link to ShopItem.name
+    shopId?: string; // [NEW] ID of the shop associated with this node (keys in shops.ts)
     link?: string; // [NEW] URL to navigate to (e.g. /shops?tab=crow)
     monsters?: string[]; // [NEW] List of monster slugs for encounter nodes
     exits?: { // [NEW] Navigation Links
@@ -57,6 +58,7 @@ const OAKHAVEN: CampaignMap = {
             type: "info",
             description: "**MARKET:** Fimble trades in 'Sentient Capital' in the **Central Square**. The air smells of ozone and old parchment. **TRINKETS:** 'Coin of Bad Luck', 'Memory in a Bottle', 'Ghost-Lantern'.",
             link: "/shops?tab=fimble",
+            shopId: "market",
             exits: { north: "crows_nest", south: "bridge", west: "tavern", east: "thay_embassy" }
         },
         {
@@ -84,6 +86,7 @@ const OAKHAVEN: CampaignMap = {
             type: "info",
             description: "**ZHENTARIM MARKET:** A black market hidden on the cliff edge. 'The Crow' sells illicit goods and poisons. **SERVICES:** Fence stolen goods, buy *Drow Poison*.",
             link: "/shops?tab=crow",
+            shopId: "crows_nest",
             exits: { south: "market" }
         },
         { id: "bridge", x: 50, y: 90, label: "The Looping Bridge", type: "entrance", description: "**THE OUTER MISTS:** A stone bridge crossing a sluggish grey river. **CURSE:** Any attempt to cross it loops the traveler back to the Town Square. The mist is impenetrable and whispers your name.", exits: { north: "market" } },
@@ -346,24 +349,24 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
 3.  **The Power (Level 3):** The spiders powering the crank are dead/gone. You must re-bind the Giant Spiders in the *Spider Engine Room* or turn the crank manually (Exhaustion checks).`,
         nodes: [
             // Level 1: The Scavenger's Den (Top Strip - Earth/Wood)
-            { id: "ent", x: 10, y: 15, label: "The Greedy Maw (Lvl 1)", type: "entrance", description: "**ENTRANCE:** Wooden gates on the far left. The town throws its garbage and 'unwanted' citizens here. **BOSS:** 'The Patchwork Foreman' (Flesh Golem) made of sewn-together miners blocks the path. Drops *Belt of Dwarvenkind*." },
+            { id: "ent", x: 10, y: 15, label: "The Greedy Maw (Lvl 1)", type: "entrance", description: "**ENTRANCE:** Wooden gates on the far left. The town throws its garbage and 'unwanted' citizens here. **BOSS:** 'The Patchwork Foreman' (Flesh Golem) made of sewn-together miners blocks the path. Drops *Belt of Dwarvenkind*.", monsters: ["foreman"] },
             { id: "shanty", x: 30, y: 20, label: "Candle-Light Shanty", type: "quest", description: "**SAFE ZONE:** Hidden in a side-cave illuminated by tallow candles. 'Old Jorum's' shop. He sells 'Canary Cages' (Detects gas) and 'Mining Picks' (+1 vs Constructs)." },
             { id: "office", x: 15, y: 30, label: "Foreman's Office", type: "loot", description: "**LOOT:** 'The Miner's Savings'. A hollowed-out boot hidden under floorboards containing 250gp in raw nuggets and a *Ring of Warmth* (covered in frost)." },
-            { id: "bunk", x: 70, y: 15, label: "Rotting Bunkhouse", type: "trap", description: "**HAZARD:** 'Silent Death'. Poisonous gas fills the room (heavier than air). **ENCOUNTER:** 3x Bodaks risen from suffocated miners. Constitution Save DC 14 or Poisoned." },
+            { id: "bunk", x: 70, y: 15, label: "Rotting Bunkhouse", type: "trap", description: "**HAZARD:** 'Silent Death'. Poisonous gas fills the room (heavier than air). **ENCOUNTER:** 3x Bodaks risen from suffocated miners. Constitution Save DC 14 or Poisoned.", monsters: ["bodak", "bodak", "bodak"] },
             { id: "lift_1", x: 50, y: 25, label: "Lift Station Alpha", type: "encounter", description: "**TRANSIT:** Wooden platform over the central shaft. The Drow Silk Lift arrives here every 1d6 rounds. Taking it alerts the Driders below." },
 
             // Level 2: The Broken Works (Middle Strip - Iron/Rust)
             { id: "repair", x: 20, y: 50, label: "Repair Bay (Lvl 2)", type: "quest", description: "**NPC:** 'Unit 734' (Damaged Shield Guardian). It is pinned under debris. Repairing it (DC 18 INT) gains a temporary ally for this map." },
-            { id: "crusher", x: 50, y: 50, label: "The Crusher Chamber", type: "boss", description: "**BOSS:** Spirit Naga coiling in the massive central pit. It guards 'The Golden Gear', a key required to manual override the elevator." },
+            { id: "crusher", x: 50, y: 50, label: "The Crusher Chamber", type: "boss", description: "**BOSS:** Spirit Naga coiling in the massive central pit. It guards 'The Golden Gear', a key required to manual override the elevator.", monsters: ["spirit_naga"] },
             { id: "pyrite", x: 80, y: 45, label: "Pyrite Maze", type: "trap", description: "**TRAP:** Explosive gold dust coats the tunnels. ANY Fire damage triggers 4d6 Fire explosion in 20ft radius." },
             { id: "fungal", x: 10, y: 55, label: "Fungal Cave", type: "loot", description: "**LOOT:** Rare 'Timmask Spores' (Confuses enemies) and 3x *Potions of Greater Healing* grown inside glowing moss pods." },
-            { id: "lift_2", x: 50, y: 40, label: "Lift Station Beta", type: "encounter", description: "**TRANSIT:** Rusted iron gantry. **THREAT:** Cloakers disguise themselves as old leather tarps near the ceiling, waiting for prey." },
+            { id: "lift_2", x: 50, y: 40, label: "Lift Station Beta", type: "encounter", description: "**TRANSIT:** Rusted iron gantry. **THREAT:** Cloakers disguise themselves as old leather tarps near the ceiling, waiting for prey.", monsters: ["cloaker", "cloaker"] },
 
             // Level 3: The Deep Road (Bottom Strip - Purple Stone)
-            { id: "blockade", x: 30, y: 80, label: "Drow Blockade (Lvl 3)", type: "encounter", description: "**COMBAT:** Drider Cavalry holding the depths. They have set up a magical barrier (Dispel Magic DC 15) to stop movement." },
-            { id: "crystal", x: 80, y: 85, label: "Crystal Grotto", type: "loot", description: "**LOOT:** *Ioun Stone (Protection)* and a Sleeping Behir (if awakened, CR 11). The crystal formation amplifies magic (+1 spell attacks while standing near)." },
+            { id: "blockade", x: 30, y: 80, label: "Drow Blockade (Lvl 3)", type: "encounter", description: "**COMBAT:** Drider Cavalry holding the depths. They have set up a magical barrier (Dispel Magic DC 15) to stop movement.", monsters: ["drider", "drow-elite-warrior"] },
+            { id: "crystal", x: 80, y: 85, label: "Crystal Grotto", type: "loot", description: "**LOOT:** *Ioun Stone (Protection)* and a Sleeping Behir (if awakened, CR 11). The crystal formation amplifies magic (+1 spell attacks while standing near).", monsters: [] },
             { id: "sump", x: 15, y: 90, label: "The Sump", type: "loot", description: "**HIDDEN:** *Dagger of Venom* found in the black, oily water. DC 16 Perception to spot the glint." },
-            { id: "lift_3", x: 50, y: 75, label: "Lift Foundation", type: "encounter", description: "**MECHANIC:** 'Spider Engine Room'. Giant mutated spiders turn the crank. Setting them free disables the lift for reinforcements." },
+            { id: "lift_3", x: 50, y: 75, label: "Lift Foundation", type: "encounter", description: "**MECHANIC:** 'Spider Engine Room'. Giant mutated spiders turn the crank. Setting them free disables the lift for reinforcements.", monsters: ["giant_spider", "giant_spider", "giant_spider"] },
             { id: "breach", x: 90, y: 90, label: "The Ancient Breach", type: "quest", description: "**EXIT:** Glowing blue crack in the wall where the Drow broke through. The air gets colder. Leads to Tieg Duran.", link: "/maps?id=dwarven_ruins" }
         ],
         description: `

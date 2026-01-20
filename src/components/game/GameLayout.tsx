@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import Image from "next/image";
 import { useAudio } from "@/lib/context/AudioContext";
 import { Typewriter } from "@/components/ui/Typewriter";
 import { CAMPAIGN_MAPS, MapNode } from "@/lib/data/maps";
 import { NarrativeEngine } from "@/lib/game/NarrativeEngine";
 import { SaveManager } from "@/lib/game/SaveManager";
+import { SHOPS, ShopItem } from "@/lib/data/shops";
+import ShopInterface from "./ShopInterface";
 import CombatLayout from "./CombatLayout";
+import { Combatant } from "@/types/combat";
 
 // Placeholder for Party Data
 const PARTY = [
@@ -17,7 +20,9 @@ const PARTY = [
     { name: "Torag", class: "Cleric", hp: 38, maxHp: 44, mana: 25, maxMana: 30, img: "/portraits/torag.png" },
 ];
 
-import { Combatant } from "@/types/combat";
+export interface GameLayoutRef {
+    saveGame: () => void;
+}
 
 interface GameLayoutProps {
     onExit: () => void;
@@ -27,7 +32,7 @@ interface GameLayoutProps {
     initialNodeId?: string;
 }
 
-export default function GameLayout({ onExit, startingRewards, playerCharacter, initialMapId = "oakhaven", initialNodeId = "market" }: GameLayoutProps) {
+const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startingRewards, playerCharacter, initialMapId = "oakhaven", initialNodeId = "market" }, ref) => {
     const { playSfx, playAmbience } = useAudio();
     // Use playerCharacter to override the first slot of the party
     const initialParty = playerCharacter
@@ -46,6 +51,8 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
         : PARTY;
 
     const [partyState, setPartyState] = useState(initialParty);
+    const [playerGold, setPlayerGold] = useState(100); // Default starting gold
+    const [inventory, setInventory] = useState<ShopItem[]>([]); // Proper inventory state
 
     const [consoleLog, setConsoleLog] = useState<string[]>([
         "> System initialized...",
@@ -74,9 +81,17 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
     const [inCombat, setInCombat] = useState(false);
     const [combatEnemies, setCombatEnemies] = useState<string[]>([]);
 
+    // Shop State
+    const [showShop, setShowShop] = useState(false);
+
     // Derived State
     const currentMap = CAMPAIGN_MAPS.find(m => m.id === currentMapId);
     const currentNode = currentMap?.nodes?.find(n => n.id === currentNodeId);
+
+    // Auto-Close Shop on Move
+    useEffect(() => {
+        setShowShop(false);
+    }, [currentNodeId, currentMapId]);
 
     // Initial Load & Persistence
     useEffect(() => {
@@ -103,6 +118,31 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
         playAmbience("dungeon");
     }, [playAmbience]);
 
+    // Expose saveGame via ref
+    useImperativeHandle(ref, () => ({
+        saveGame: () => {
+            if (playerCharacter && currentNodeId) {
+                const saveId = `manual_save_${Date.now()}`;
+                SaveManager.saveGame(saveId, {
+                    id: saveId,
+                    timestamp: Date.now(),
+                    name: `Manual Save - ${currentNode?.label || "Unknown"}`,
+                    version: "2.3",
+                    playerCharacter: playerCharacter,
+                    currentMapId: currentMapId,
+                    currentNodeId: currentNodeId,
+                    questState: {}, // TODO: Implement Quest State
+                    inventory: inventory,
+                    gold: playerGold,
+                    playtime: 0 // TODO: Track playtime
+                });
+                addToLog("Game Saved Successfully.");
+                playSfx("/sfx/retro_success.mp3"); // Assume this sfx exists or similar
+            }
+        }
+    }));
+
+
     // AUTO-SAVE on Node Change
     useEffect(() => {
         if (playerCharacter && currentNodeId) {
@@ -115,14 +155,14 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
                 currentMapId: currentMapId,
                 currentNodeId: currentNodeId,
                 questState: {}, // TODO
-                inventory: [], // TODO
-                gold: 0, // TODO
+                inventory: inventory,
+                gold: playerGold,
                 playtime: 0 // TODO: Track playtime
             });
             // Optional: Small notification or log?
             // addToLog("Game Saved."); // Maybe too spammy
         }
-    }, [currentNodeId, currentMapId, playerCharacter]);
+    }, [currentNodeId, currentMapId, playerCharacter, inventory, playerGold]);
 
     const addToLog = (msg: string) => {
         setConsoleLog(prev => [...prev.slice(-20), `> ${msg}`]); // Increased log history
@@ -187,12 +227,34 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
         if (result.details) addToLog(result.details);
     };
 
+    const handleBuyItem = (item: ShopItem) => {
+        setInventory(prev => [...prev, item]); // Add to inventory
+        addToLog(`Purchased: ${item.name} for ${item.cost}gp.`);
+        playSfx("/sfx/gain_item.mp3");
+    };
+
     if (inCombat) {
         return <CombatLayout enemySlugs={combatEnemies} playerCharacter={playerCharacter} onVictory={handleVictory} onFlee={handleFlee} />;
     }
 
+    const currentShop = currentNode?.shopId ? SHOPS[currentNode.shopId] : null;
+
     return (
         <div className="game-shell fixed inset-0 z-[1000] bg-black text-[#c9bca0] font-serif overflow-hidden flex flex-col">
+
+            {/* SHOP MODAL */}
+            {showShop && currentShop && (
+                <ShopInterface
+                    shop={currentShop}
+                    playerGold={playerGold}
+                    onClose={() => setShowShop(false)}
+                    onBuy={(item) => {
+                        handleBuyItem(item);
+                        setPlayerGold(prev => prev - item.cost);
+                    }}
+                />
+            )}
+
             {/* 1. TOP BAR (Status) */}
             <div className="h-12 bg-[#1a1515] border-b-2 border-[#5c1212] flex items-center justify-between px-4 z-20">
                 <div className="flex items-center gap-4">
@@ -201,6 +263,7 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
                     </span>
                     <span className="text-xs text-gray-600">|</span>
                     <span className="text-amber-700/80 animate-pulse text-xs">TORCH: 84%</span>
+                    <span className="text-xs text-yellow-600 ml-4">GOLD: {playerGold}gp</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <button onClick={onExit} className="text-[10px] text-[#a32222] hover:text-red-400 uppercase tracking-widest">[EXIT SIM]</button>
@@ -287,10 +350,10 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
                             {/* Exits */}
                             <div className="mt-6 flex flex-wrap gap-4 text-xs font-mono uppercase tracking-widest">
                                 <span className="text-gray-600">Exits:</span>
-                                {currentNode?.exits?.north && <span className="text-white border-b border-white/20 pb-0.5">North</span>}
-                                {currentNode?.exits?.south && <span className="text-white border-b border-white/20 pb-0.5">South</span>}
-                                {currentNode?.exits?.east && <span className="text-white border-b border-white/20 pb-0.5">East</span>}
-                                {currentNode?.exits?.west && <span className="text-white border-b border-white/20 pb-0.5">West</span>}
+                                {currentNode?.exits?.north && <button onClick={() => handleMove("north")} className="text-white border-b border-white/20 pb-0.5 hover:text-red-500 cursor-pointer">[N] North</button>}
+                                {currentNode?.exits?.south && <button onClick={() => handleMove("south")} className="text-white border-b border-white/20 pb-0.5 hover:text-red-500 cursor-pointer">[S] South</button>}
+                                {currentNode?.exits?.east && <button onClick={() => handleMove("east")} className="text-white border-b border-white/20 pb-0.5 hover:text-red-500 cursor-pointer">[E] East</button>}
+                                {currentNode?.exits?.west && <button onClick={() => handleMove("west")} className="text-white border-b border-white/20 pb-0.5 hover:text-red-500 cursor-pointer">[W] West</button>}
                             </div>
                         </div>
 
@@ -321,6 +384,12 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
                             className={`flex-1 py-3 text-xs uppercase tracking-widest ${activeTab === 'log' ? 'bg-[#2a2a2a] text-[#c9bca0]' : 'text-gray-600 hover:text-gray-400'}`}
                         >
                             Log
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("inv")}
+                            className={`flex-1 py-3 text-xs uppercase tracking-widest ${activeTab === 'inv' ? 'bg-[#2a2a2a] text-[#c9bca0]' : 'text-gray-600 hover:text-gray-400'}`}
+                        >
+                            Inv
                         </button>
                     </div>
 
@@ -360,6 +429,21 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
                                 ))}
                             </div>
                         )}
+
+                        {activeTab === 'inv' && (
+                            <div className="space-y-2">
+                                {inventory.length === 0 ? (
+                                    <div className="text-xs text-gray-500 italic text-center p-4">Empty</div>
+                                ) : (
+                                    inventory.map((item, i) => (
+                                        <div key={i} className="flex justify-between items-center text-xs border-b border-[#333] pb-1">
+                                            <span>{item.name}</span>
+                                            <span className="text-yellow-600/50 uppercase text-[10px]">{item.type}</span>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* ACTION GRID (Bottom of Sidebar) */}
@@ -374,7 +458,13 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
                         <button className="game-btn bg-[#222] border border-[#444] hover:bg-[#a32222] hover:text-white text-[10px] uppercase font-bold text-gray-400">Defend</button>
                         <button className="game-btn bg-[#222] border border-[#444] hover:bg-blue-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Spell</button>
 
-                        <button className="game-btn bg-[#222] border border-[#444] hover:bg-amber-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Item</button>
+                        <button
+                            onClick={() => setShowShop(true)}
+                            disabled={!currentShop}
+                            className={`game-btn bg-[#222] border border-[#444] text-[10px] uppercase font-bold text-gray-400 ${currentShop ? 'hover:bg-yellow-700 hover:text-white border-yellow-800 text-yellow-500' : 'opacity-50 cursor-not-allowed'}`}
+                        >
+                            Trade
+                        </button>
                         <button
                             onClick={() => setShowMap(true)}
                             className={`game-btn bg-[#222] border border-[#444] hover:bg-green-900 hover:text-white text-[10px] uppercase font-bold text-gray-400 ${showMap ? 'border-green-500 text-green-500' : ''}`}
@@ -384,7 +474,7 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
                         <button className="game-btn bg-[#222] border border-[#444] hover:bg-purple-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Rest</button>
 
                         <div className="col-span-3 mt-1 bg-black border border-[#333] p-1 text-[10px] text-center text-gray-600 font-mono">
-                            AWAITING COMMAND...
+                            {currentShop ? "TRADING HUB AVAILABLE" : "AWAITING COMMAND..."}
                         </div>
                     </div>
                 </div>
@@ -397,4 +487,8 @@ export default function GameLayout({ onExit, startingRewards, playerCharacter, i
             </div>
         </div>
     );
-}
+});
+
+GameLayout.displayName = "GameLayout";
+
+export default GameLayout;

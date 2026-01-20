@@ -342,34 +342,27 @@ export default function DiceRoller({ onRollComplete }: Props) {
     };
 
     // Calculate smart position for panel
-    const getPanelPosition = () => {
-        const panelWidth = 360;
-        const panelHeight = 500; // Estimated max height
+    const [panelPos, setPanelPos] = useState({ left: 10, top: 10 });
 
+    useEffect(() => {
+        const panelWidth = 360;
+        const panelHeight = 500;
         let left = position.x - 300;
         let top = position.y - 400;
 
-        // If off right screen, shift left
-        if (typeof window !== 'undefined') {
-            if (position.x + 100 > window.innerWidth) {
-                left = position.x - panelWidth + 50;
-            } else if (left < 10) {
-                // Check left edge
-                left = 10;
-            }
-
-            // Check top edge
-            if (top < 10) {
-                top = 10;
-            } else if (top + panelHeight > window.innerHeight) {
-                top = window.innerHeight - panelHeight - 10;
-            }
+        if (position.x + 100 > window.innerWidth) {
+            left = position.x - panelWidth + 50;
+        } else if (left < 10) {
+            left = 10;
         }
 
-        return { left, top };
-    };
-
-    const panelPos = getPanelPosition();
+        if (top < 10) {
+            top = 10;
+        } else if (top + panelHeight > window.innerHeight) {
+            top = window.innerHeight - panelHeight - 10;
+        }
+        setPanelPos({ left, top });
+    }, [position, isOpen]);
 
     return (
         <div className="no-print">
