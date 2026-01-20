@@ -9,7 +9,6 @@ import { NarrativeEngine } from "@/lib/game/NarrativeEngine";
 import { SaveManager } from "@/lib/game/SaveManager";
 import { SHOPS, ShopItem } from "@/lib/data/shops";
 import ShopInterface from "./ShopInterface";
-import DungeonInterface from "./DungeonInterface";
 import CombatLayout from "./CombatLayout";
 import { Combatant } from "@/types/combat";
 
@@ -60,6 +59,7 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
         "> Rendering Narrative Interface...",
         "> Awaiting input."
     ]);
+    const consoleEndRef = React.useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (startingRewards?.item === 'essence_djinn') {
@@ -335,213 +335,210 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                         {/* Bottom Spacer */}
                         <div className="h-4"></div>
 
-                        {/* Current Description (Newest) */}
-                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 mb-6">
-                            <span className="text-[#a32222] font-bold tracking-widest text-xs uppercase block mb-2">
-                                &gt; {currentNode?.label || "Unknown"}
-                            </span>
-                            <div className="text-xl text-[#e5e5e5] leading-relaxed font-serif min-h-[3rem]">
-                                <Typewriter
-                                    key={currentNodeId}
-                                    text={currentNode?.description?.replace(/\*\*/g, "") || "The void is silent."}
-                                    speed={15}
-                                    delay={50}
-                                />
+                        {/* MAP OVERLAY */}
+                        {showMap && (
+                            <div className="absolute inset-0 z-50 bg-black/95 flex flex-col p-4 animate-in fade-in duration-300">
+                                <div className="flex justify-between items-center mb-4 border-b border-[#333] pb-2">
+                                    <h2 className="text-xl uppercase tracking-widest text-[#a32222]">World Map</h2>
+                                    <button onClick={() => setShowMap(false)} className="text-gray-500 hover:text-white">[CLOSE]</button>
+                                </div>
+                                <div className="flex-1 overflow-auto flex justify-center items-center">
+                                    {/* Render Maps List or Region Map */}
+                                    <div className="grid grid-cols-1 gap-4 max-w-2xl w-full">
+                                        {CAMPAIGN_MAPS.map(map => (
+                                            <div key={map.id}
+                                                onClick={() => {
+                                                    if (map.route) {
+                                                        if (typeof window !== 'undefined') window.location.href = map.route;
+                                                    } else {
+                                                        setCurrentMapId(map.id);
+                                                        setCurrentNodeId(map.nodes?.[0]?.id || "ent");
+                                                        setShowMap(false);
+                                                    }
+                                                }}
+                                                className={`p-4 border border-[#333] hover:border-[#a32222] hover:bg-[#111] cursor-pointer transition-all ${currentMapId === map.id ? 'border-yellow-900 bg-[#1a1500]' : ''}`}
+                                            >
+                                                <div className="font-bold text-lg">{map.title}</div>
+                                                <div className="text-xs text-gray-500 mt-1">{map.description.slice(0, 100)}...</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
-                            {/* Exits */}
-                            <div className="mt-6 flex flex-wrap gap-4 text-xs font-mono uppercase tracking-widest">
-                                <span className="text-gray-600">Exits:</span>
-                                {currentNode?.exits?.north && <button onClick={() => handleMove("north")} className="text-white border-b border-white/20 pb-0.5 hover:text-red-500 cursor-pointer">[N] North</button>}
-                                {currentNode?.exits?.south && <button onClick={() => handleMove("south")} className="text-white border-b border-white/20 pb-0.5 hover:text-red-500 cursor-pointer">[S] South</button>}
-                                {currentNode?.exits?.east && <button onClick={() => handleMove("east")} className="text-white border-b border-white/20 pb-0.5 hover:text-red-500 cursor-pointer">[E] East</button>}
-                                {currentNode?.exits?.west && <button onClick={() => handleMove("west")} className="text-white border-b border-white/20 pb-0.5 hover:text-red-500 cursor-pointer">[W] West</button>}
+                        )}
+
+                        {/* MAIN CONTENT AREA */}
+                        <div className="flex-1 flex flex-col relative">
+
+                            {/* 1. SCENE VISUALIZER (Top Half) */}
+                            <div className="h-[50vh] relative bg-[#050505] overflow-hidden border-b border-[#333]">
+                                {/* Background Image Layer */}
+                                <div className="absolute inset-0 z-0 opacity-40">
+                                    {currentMap?.imagePath && (
+                                        <Image
+                                            src={currentMap.imagePath}
+                                            alt="Location"
+                                            fill
+                                            className="object-cover opacity-30 grayscale hover:grayscale-0 transition-all duration-[2000ms]"
+                                        />
+                                    )}
+                                    {/* Vignette */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
+                                </div>
+
+                                {/* Node Visualizer (If Hex/Square Grid) - Simplified for Text Adventure Feel */}
+                                <div className="absolute inset-0 z-10 p-4 flex flex-col justify-end pb-12 pointer-events-none">
+                                    <h1 className="text-3xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mb-2 animate-in slide-in-from-bottom-2">
+                                        {currentNode?.label || "Unknown Location"}
+                                    </h1>
+                                    <div className="max-w-2xl bg-black/60 backdrop-blur-sm p-3 border-l-2 border-[#a32222] text-sm md:text-base leading-relaxed text-gray-300 shadow-xl">
+                                        <Typewriter text={currentNode?.description || "You are in a void."} speed={15} />
+                                        {currentNode?.monsters && (
+                                            <div className="mt-2 text-red-400 text-xs uppercase font-bold tracking-wider animate-pulse">
+                                                ⚠ Threat Detected: {currentNode.monsters.length} Enemies
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Divider */}
-                        <div className="h-px bg-[#222] w-full my-8"></div>
+                            {/* 2. DASHBOARD (Bottom Half) */}
+                            <div className="flex-1 bg-[#080808] grid grid-cols-12 gap-0">
 
-                        {/* Previous History (Fadable) */}
-                        <div className="opacity-40 text-sm space-y-4 font-serif">
-                            {consoleLog.slice(0, -1).reverse().map((log, i) => (
-                                <div key={i} className="text-gray-500 pl-4 border-l border-[#333]">{log.replace("> ", "")}</div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* RIGHT: SIDEBAR (Party) */}
-                <div className="w-80 bg-[#161313] border-l-2 border-[#333] flex flex-col z-20 shadow-[-10px_0_20px_rgba(0,0,0,0.5)]">
-                    {/* TABS */}
-                    <div className="flex border-b border-[#333]">
-                        <button
-                            onClick={() => setActiveTab("party")}
-                            className={`flex-1 py-3 text-xs uppercase tracking-widest ${activeTab === 'party' ? 'bg-[#2a2a2a] text-[#c9bca0]' : 'text-gray-600 hover:text-gray-400'}`}
-                        >
-                            Party
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("log")}
-                            className={`flex-1 py-3 text-xs uppercase tracking-widest ${activeTab === 'log' ? 'bg-[#2a2a2a] text-[#c9bca0]' : 'text-gray-600 hover:text-gray-400'}`}
-                        >
-                            Log
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("inv")}
-                            className={`flex-1 py-3 text-xs uppercase tracking-widest ${activeTab === 'inv' ? 'bg-[#2a2a2a] text-[#c9bca0]' : 'text-gray-600 hover:text-gray-400'}`}
-                        >
-                            Inv
-                        </button>
-                    </div>
-
-                    {/* CONTENT */}
-                    <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                        {activeTab === 'party' && (
-                            <div className="space-y-4">
-                                {partyState.map((char, i) => (
-                                    <div key={i} className="bg-[#0a0a0c] border border-[#333] p-2 flex gap-3 group hover:border-[#a32222] transition-colors cursor-pointer">
-                                        <div className="w-12 h-12 bg-black border border-[#444] relative shrink-0">
-                                            {/* Portrait Placeholder */}
+                                {/* LEFT: STATUS & EQUIPMENT */}
+                                <div className="col-span-3 border-r border-[#333] p-2 flex flex-col gap-2">
+                                    {/* Mini Character Card */}
+                                    <div className="bg-[#111] p-2 border border-[#333]">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <div className="w-8 h-8 bg-gray-800 rounded-full overflow-hidden border border-[#555]">
+                                                {playerCharacter?.img && <Image src={playerCharacter.img} alt="PC" width={32} height={32} />}
+                                            </div>
+                                            <div>
+                                                <div className="text-[10px] uppercase font-bold text-white">{playerCharacter?.name}</div>
+                                                <div className="text-[9px] text-gray-500">{playerCharacter?.class} Lv{playerCharacter?.level || 1}</div>
+                                            </div>
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex justify-between items-baseline mb-1">
-                                                <span className="text-[#c9bca0] font-bold text-sm truncate">{char.name}</span>
-                                                <span className="text-[10px] text-gray-500 uppercase">{char.class}</span>
+                                        {/* Bars */}
+                                        <div className="space-y-1">
+                                            <div className="h-1.5 w-full bg-[#333] rounded-full overflow-hidden">
+                                                <div className="h-full bg-red-700" style={{ width: `${(playerCharacter?.hp || 0) / (playerCharacter?.maxHp || 1) * 100}%` }} />
                                             </div>
-                                            {/* BARS */}
-                                            <div className="h-1.5 bg-[#222] w-full mb-1">
-                                                <div className="h-full bg-[#8a1c1c]" style={{ width: `${(char.hp / char.maxHp) * 100}%` }}></div>
+                                            <div className="h-1.5 w-full bg-[#333] rounded-full overflow-hidden">
+                                                <div className="h-full bg-blue-700" style={{ width: `${(playerCharacter?.mana || 0) / (playerCharacter?.maxMana || 1) * 100}%` }} />
                                             </div>
-                                            {char.maxMana > 0 && (
-                                                <div className="h-1 bg-[#222] w-full">
-                                                    <div className="h-full bg-[#3b82f6]" style={{ width: `${(char.mana / char.maxMana) * 100}%` }}></div>
-                                                </div>
-                                            )}
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        )}
 
-                        {activeTab === 'log' && (
-                            <div className="font-mono text-xs text-gray-400 space-y-2">
-                                {consoleLog.map((log, i) => (
-                                    <div key={i} className={i === consoleLog.length - 1 ? "text-white animate-pulse" : "opacity-60"}>{log}</div>
-                                ))}
-                            </div>
-                        )}
+                                    {/* Quick Inventory / Loot */}
+                                    <div className="flex-1 bg-[#111] border border-[#333] p-1 overflow-auto">
+                                        <div className="text-[9px] uppercase text-gray-600 font-bold mb-1 text-center">Backpack</div>
+                                        {inventory.length === 0 ? (
+                                            <div className="text-[9px] text-gray-700 text-center italic mt-4">Empty</div>
+                                        ) : (
+                                            inventory.map((item, i) => (
+                                                <div key={i} className="flex justify-between items-center text-xs border-b border-[#333] pb-1">
+                                                    <span>{item.name}</span>
+                                                    <span className="text-yellow-600/50 uppercase text-[10px]">{item.type}</span>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
 
-                        {activeTab === 'inv' && (
-                            <div className="space-y-2">
-                                {inventory.length === 0 ? (
-                                    <div className="text-xs text-gray-500 italic text-center p-4">Empty</div>
-                                ) : (
-                                    inventory.map((item, i) => (
-                                        <div key={i} className="flex justify-between items-center text-xs border-b border-[#333] pb-1">
-                                            <span>{item.name}</span>
-                                            <span className="text-yellow-600/50 uppercase text-[10px]">{item.type}</span>
-                                        </div>
-                                    ))
-                                )}
+                                {/* CENTER: NARRATIVE LOG */}
+                                <div className="col-span-6 flex flex-col relative bg-black/50">
+                                    <div className="flex-1 overflow-y-auto p-4 font-mono text-xs text-green-500 space-y-2 scrollbar-hide">
+                                        {consoleLog.map((log, i) => (
+                                            <div key={i} className="border-l border-green-900/30 pl-2">
+                                                {log.startsWith('>') ? (
+                                                    <span className="text-gray-400">{log}</span>
+                                                ) : (
+                                                    <span>{log}</span>
+                                                )}
+                                            </div>
+                                        ))}
+                                        {/* Anchor for auto-scroll */}
+                                        <div ref={consoleEndRef} />
+                                    </div>
+                                    {/* Navigation Compass (Overlay) */}
+                                    <div className="h-12 border-t border-[#333] bg-[#111] flex items-center justify-center gap-4">
+                                        <button onClick={() => handleMove('west')} className="p-1 text-gray-500 hover:text-white hover:bg-[#333] rounded">← W</button>
+                                        <button onClick={() => handleMove('north')} className="p-1 text-gray-500 hover:text-white hover:bg-[#333] rounded">↑ N</button>
+                                        <button onClick={() => handleMove('south')} className="p-1 text-gray-500 hover:text-white hover:bg-[#333] rounded">↓ S</button>
+                                        <button onClick={() => handleMove('east')} className="p-1 text-gray-500 hover:text-white hover:bg-[#333] rounded">E →</button>
+                                    </div>
+                                </div>
+
+                                {/* RIGHT: ACTION MENU */}
+                                <div className="col-span-3 border-l border-[#333] bg-[#111] p-1 flex flex-col">
+                                    <div className="text-[9px] uppercase text-gray-600 font-bold mb-1 text-center">Actions</div>
+
+                                    <div className="grid grid-cols-2 gap-1">
+                                        <button
+                                            onClick={startCombat}
+                                            disabled={!currentNode?.monsters}
+                                            className={`game-btn bg-[#222] border border-[#444] text-[10px] uppercase font-bold text-gray-400 ${currentNode?.monsters ? 'hover:bg-[#a32222] hover:text-white border-red-900 text-red-500' : 'opacity-50 cursor-not-allowed'}`}
+                                        >
+                                            Attack
+                                        </button>
+                                        <button className="game-btn bg-[#222] border border-[#444] hover:bg-blue-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Spell</button>
+
+                                        <button
+                                            onClick={() => setShowShop(true)}
+                                            disabled={!currentShop}
+                                            className={`game-btn bg-[#222] border border-[#444] text-[10px] uppercase font-bold text-gray-400 ${currentShop ? 'hover:bg-yellow-700 hover:text-white border-yellow-800 text-yellow-500' : 'opacity-50 cursor-not-allowed'}`}
+                                        >
+                                            Trade
+                                        </button>
+
+                                        {/* TRAVEL / MAP BUTTON */}
+                                        {currentNode?.link ? (
+                                            <button
+                                                onClick={() => {
+                                                    const urlParams = new URLSearchParams(currentNode.link?.split('?')[1]);
+                                                    const newMapId = urlParams.get('id');
+                                                    if (newMapId) {
+                                                        const newMap = CAMPAIGN_MAPS.find(m => m.id === newMapId);
+                                                        if (newMap && newMap.nodes && newMap.nodes.length > 0) {
+                                                            setCurrentMapId(newMapId);
+                                                            // Reset to first node or specific entry point if we had one
+                                                            setCurrentNodeId(newMap.nodes[0].id);
+                                                            addToLog(`Travelled to ${newMap.title}`);
+                                                            playSfx("/sfx/door_heavy.mp3"); // Or appropriate transition sound
+                                                        }
+                                                    }
+                                                }}
+                                                className="game-btn bg-[#222] border border-cyan-800 text-cyan-500 hover:bg-cyan-900 hover:text-white text-[10px] uppercase font-bold animate-pulse"
+                                            >
+                                                Enter
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className={`game-btn bg-[#222] border border-[#444] hover:bg-green-900 hover:text-white text-[10px] uppercase font-bold text-gray-400 ${showMap ? 'border-green-500 text-green-500' : ''}`}
+                                            >
+                                                Map
+                                            </button>
+                                        )}
+                                        <button className="game-btn bg-[#222] border border-[#444] hover:bg-purple-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Rest</button>
+                                    </div>
+
+                                    <div className="mt-auto bg-black border border-[#333] p-1 text-[8px] text-center text-gray-600 font-mono">
+                                        {currentShop ? "TRADING HUB AVAILABLE" : "AWAITING COMMAND..."}
+                                    </div>
+                                </div>
                             </div>
-                        )}
+                        </div>
+
                     </div>
-
                 </div>
             </div>
 
-            {/* ACTION GRID or DUNGEON INTERFACE */}
-            {currentNode?.type === 'dungeon' ? (
-                <div className="z-20 shadow-[-10px_0_20px_rgba(0,0,0,0.5)]">
-                    <DungeonInterface
-                        node={currentNode}
-                        threatLevel={currentNode.dungeonFeatures?.threatLevel || "medium"}
-                        darknessLevel={currentNode.dungeonFeatures?.darknessLevel || "dim"}
-                        onExplore={() => {
-                            // Simple logic for now: Trigger encounter
-                            startCombat();
-                        }}
-                        onSkillCheck={(skill) => {
-                            // Placeholder logic
-                            addToLog(`> Skill Check: ${skill} rolled...`);
-                            const roll = Math.floor(Math.random() * 20) + 1;
-                            addToLog(`> Result: ${roll} + MOD = ${roll + 3}`); // Mock modifier
-                            if (roll > 10) {
-                                addToLog(`SUCCESS: You navigate the hazard.`);
-                                playSfx("/sfx/retro_success.mp3");
-                            } else {
-                                addToLog(`FAILURE: The dungeon pushes back.`);
-                                playSfx("/sfx/bump.mp3");
-                            }
-                        }}
-                    />
-                </div>
-            ) : (
-                <div className="h-48 border-t-2 border-[#333] bg-[#111] p-2 grid grid-cols-3 gap-1 z-20 shadow-[-10px_0_20px_rgba(0,0,0,0.5)]">
-                    <button
-                        onClick={startCombat}
-                        disabled={!currentNode?.monsters}
-                        className={`game-btn bg-[#222] border border-[#444] text-[10px] uppercase font-bold text-gray-400 ${currentNode?.monsters ? 'hover:bg-[#a32222] hover:text-white border-red-900 text-red-500' : 'opacity-50 cursor-not-allowed'}`}
-                    >
-                        Attack
-                    </button>
-                    <button className="game-btn bg-[#222] border border-[#444] hover:bg-[#a32222] hover:text-white text-[10px] uppercase font-bold text-gray-400">Defend</button>
-                    <button className="game-btn bg-[#222] border border-[#444] hover:bg-blue-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Spell</button>
-
-                    <button
-                        onClick={() => setShowShop(true)}
-                        disabled={!currentShop}
-                        className={`game-btn bg-[#222] border border-[#444] text-[10px] uppercase font-bold text-gray-400 ${currentShop ? 'hover:bg-yellow-700 hover:text-white border-yellow-800 text-yellow-500' : 'opacity-50 cursor-not-allowed'}`}
-                    >
-                        Trade
-                    </button>
-
-                    {/* TRAVEL / MAP BUTTON */}
-                    {currentNode?.link ? (
-                        <button
-                            onClick={() => {
-                                const urlParams = new URLSearchParams(currentNode.link?.split('?')[1]);
-                                const newMapId = urlParams.get('id');
-                                if (newMapId) {
-                                    setCurrentMapId(newMapId);
-                                    // Reset to first node or specific entry point if we had one
-                                    // For now, let the effect hook handle "no node" -> "first node" logic if possible, 
-                                    // OR explicitly reset:
-                                    const newMap = CAMPAIGN_MAPS.find(m => m.id === newMapId);
-                                    if (newMap && newMap.nodes && newMap.nodes.length > 0) {
-                                        setCurrentNodeId(newMap.nodes[0].id);
-                                        addToLog(`Travelled to ${newMap.title}`);
-                                        playSfx("/sfx/door_heavy.mp3"); // Or appropriate transition sound
-                                    }
-                                }
-                            }}
-                            className="game-btn bg-[#222] border border-cyan-800 text-cyan-500 hover:bg-cyan-900 hover:text-white text-[10px] uppercase font-bold animate-pulse"
-                        >
-                            Enter
-                        </button>
-                    ) : (
-                        <button
-                            className={`game-btn bg-[#222] border border-[#444] hover:bg-green-900 hover:text-white text-[10px] uppercase font-bold text-gray-400 ${showMap ? 'border-green-500 text-green-500' : ''}`}
-                        >
-                            Map
-                        </button>
-                    )}
-                    <button className="game-btn bg-[#222] border border-[#444] hover:bg-purple-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Rest</button>
-
-                    <div className="col-span-3 mt-1 bg-black border border-[#333] p-1 text-[10px] text-center text-gray-600 font-mono">
-                        {currentShop ? "TRADING HUB AVAILABLE" : "AWAITING COMMAND..."}
-                    </div>
-                </div>
-            )}
+            {/* GLOBAL CONSOLE (Bottom Strip) */}
+            <div className="h-8 bg-black border-t border-[#333] flex items-center px-4 font-mono text-xs text-green-500/80 z-20">
+                <span className="mr-2 opacity-50">$</span>
+                <span className="animate-flicker">{consoleLog[consoleLog.length - 1]}</span>
+            </div>
         </div>
-    </div >
-
-    {/* GLOBAL CONSOLE (Bottom Strip) */ }
-    < div className = "h-8 bg-black border-t border-[#333] flex items-center px-4 font-mono text-xs text-green-500/80 z-20" >
-        <span className="mr-2 opacity-50">$</span>
-        <span className="animate-flicker">{consoleLog[consoleLog.length - 1]}</span>
-    </div >
-</div >
     );
 });
 

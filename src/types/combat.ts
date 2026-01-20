@@ -11,6 +11,9 @@ export interface Combatant {
     statblock?: Statblock;
     type: 'player' | 'monster' | 'npc';
     isHidden?: boolean;
+    img?: string;
+    mana?: number;
+    maxMana?: number;
 
     // New Combat Properties
     level?: number;
