@@ -9,7 +9,8 @@ import ShopInterface from "./ShopInterface";
 import CombatLayout from "./CombatLayout";
 import { Combatant } from "@/types/combat";
 import { CAMPAIGN_MAPS } from "@/lib/data/maps";
-import DiceRoller from "@/components/ui/DiceRoller"; // Add Import
+import DiceRoller from "@/components/ui/DiceRoller";
+import QuickActionBar from "@/components/game/dm/QuickActionBar"; // Add Import
 
 const PARTY = [
     { name: "Kaelen", class: "Paladin", hp: 45, maxHp: 58, mana: 10, maxMana: 20, img: "/portraits/kaelen.png" },
@@ -44,6 +45,7 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
         currentShop,
         playerGold,
         inventory,
+        addToInventory, // Add this
         visitedNodes,
         handleMove,
         startCombat,
@@ -131,6 +133,19 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                     onBuy={handleBuyItem}
                 />
             )}
+
+            {/* DM QUICK ACTION BAR */}
+            <QuickActionBar
+                onSpawnLoot={(item) => {
+                    addToInventory(item);
+                    // playSfx("/sfx/gain_item.mp3"); (Handled in QuickActionBar toast or here?)
+                    // QuickActionBar has its own toast. GameLayout logic log via Effect?
+                    // We can manually add to log if we exposed addToLog, but useGameLogic hides it. 
+                    // Inventory update handles state.
+                }}
+                onSpawnEncounter={(enemies) => startCombat(enemies)}
+                currentLocationType={currentNode?.type || "unknown"}
+            />
 
             {/* 1. TOP BAR (Status) */}
             <div className="h-12 bg-[#1a1515] border-b-2 border-[#5c1212] flex items-center justify-between px-4 z-20">
@@ -319,7 +334,7 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
 
                                     <div className="grid grid-cols-2 gap-1">
                                         <button
-                                            onClick={startCombat}
+                                            onClick={() => startCombat()}
                                             disabled={!currentNode?.monsters}
                                             className={`game-btn bg-[#222] border border-[#444] text-[10px] uppercase font-bold text-gray-400 ${currentNode?.monsters ? 'hover:bg-[#a32222] hover:text-white border-red-900 text-red-500' : 'opacity-50 cursor-not-allowed'}`}
                                         >

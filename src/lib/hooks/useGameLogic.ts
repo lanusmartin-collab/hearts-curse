@@ -182,7 +182,16 @@ export const useGameLogic = (startingRewards?: any) => {
         }
     };
 
-    const startCombat = () => {
+    const startCombat = (overrideEnemies?: string[]) => {
+        // 0. Manual Override (Ambush)
+        if (overrideEnemies && overrideEnemies.length > 0) {
+            setCombatEnemies(overrideEnemies);
+            setInCombat(true);
+            addToLog(`> AMBUSH! ${overrideEnemies.length} enemies appear!`);
+            playSfx("/sfx/magical_effect.mp3");
+            return;
+        }
+
         // 1. Fixed Encounter
         if (currentNode?.monsters && currentNode.monsters.length > 0) {
             setCombatEnemies(currentNode.monsters);
@@ -276,6 +285,7 @@ export const useGameLogic = (startingRewards?: any) => {
         currentShop,
         playerGold,
         inventory,
+        addToInventory, // Add this
         visitedNodes,
         handleMove,
         startCombat,
