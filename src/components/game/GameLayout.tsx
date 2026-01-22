@@ -10,7 +10,8 @@ import CombatLayout from "./CombatLayout";
 import { Combatant } from "@/types/combat";
 import { CAMPAIGN_MAPS } from "@/lib/data/maps";
 import DiceRoller from "@/components/ui/DiceRoller";
-import QuickActionBar from "@/components/game/dm/QuickActionBar"; // Add Import
+import QuickActionBar from "@/components/game/dm/QuickActionBar";
+import DoomGauge from "@/components/game/dm/DoomGauge"; // Add Import
 
 const PARTY = [
     { name: "Kaelen", class: "Paladin", hp: 45, maxHp: 58, mana: 10, maxMana: 20, img: "/portraits/kaelen.png" },
@@ -154,7 +155,15 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                         {currentMap?.title || "UNKNOWN REGION"}
                     </span>
                     <span className="text-xs text-gray-600">|</span>
-                    <span className="text-amber-700/80 animate-pulse text-xs">TORCH: 84%</span>
+
+                    {/* DOOM GAUGE (Replaces/Augments Torch) */}
+                    <DoomGauge
+                        onStageChange={(stage) => {
+                            // Can propagate to global context later
+                            console.log("Doom Stage:", stage);
+                        }}
+                    />
+
                     <span className="text-xs text-yellow-600 ml-4">GOLD: {playerGold}gp</span>
                 </div>
                 <div className="flex items-center gap-2">
