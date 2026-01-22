@@ -35,6 +35,8 @@ export type Statblock = {
         attack?: number;
         spells?: string[];
     };
+    appearance?: string;
+    quirk?: string;
 };
 
 export const STATBLOCKS: Record<string, Statblock> = {

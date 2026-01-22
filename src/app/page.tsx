@@ -255,6 +255,12 @@ function GameController() {
               </div>
             </div>
           </DashboardWidget>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <PartyStatusWidget />
+          </div>
+          <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" variant="safe-haven" />
         </div>
 
         {/* MIDDLE COLUMN: Primary Navigation */}
@@ -285,6 +291,13 @@ function GameController() {
             </div>
           </DashboardWidget>
 
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <DashboardWidget title="Tools" subtitle="Foundry" icon={Hammer} href="/generators" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Architect" subtitle="Arcanist's Quill" icon={PenTool} href="/editor" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Store" subtitle="Upgrade" icon={ShoppingBag} href="/pricing" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center", border: "1px solid var(--gold-accent)" }} />
+            <DashboardWidget title="Print Lab" subtitle="Handouts" icon={FileText} href="/deliverables" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+          </div>
+
         </div>
 
         {/* RIGHT COLUMN: DM Tools & Utilities */}
@@ -303,18 +316,7 @@ function GameController() {
           <AmbienceMixer />
           <SoundboardWidget />
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-            <DashboardWidget title="Tools" subtitle="Foundry" icon={Hammer} href="/generators" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            <DashboardWidget title="Architect" subtitle="Arcanist's Quill" icon={PenTool} href="/editor" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            <PartyStatusWidget />
-            <DashboardWidget title="Store" subtitle="Upgrade" icon={ShoppingBag} href="/pricing" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center", border: "1px solid var(--gold-accent)" }} />
-          </div>
 
-          <DashboardWidget title="Print Lab" subtitle="Physical Handouts" icon={FileText} href="/deliverables" variant="safe-haven">
-            <p style={{ fontSize: "0.75rem", color: "#8a1c1c" }}>Generate print-ready assets for player handouts.</p>
-          </DashboardWidget>
 
           <footer style={{ marginTop: "auto", textAlign: "center", opacity: 0.4, fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--fg-dim)" }}>
             HEART'S CURSE // SESSION 25 (BUILD 3.1 - DM DASHBOARD)

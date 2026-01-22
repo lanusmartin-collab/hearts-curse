@@ -214,6 +214,20 @@ export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
         const mod = Math.floor((stats[s] - 10) / 2) + pb;
         return `${s.charAt(0).toUpperCase() + s.slice(1)} ${mod >= 0 ? "+" : ""}${mod}`;
     }).join(", ");
+    // Generate Personality & Appearance
+    const appearances = [
+        "Scarred and weathered face.", "Bright, piercing eyes.", "Wears heavy, rattling jewelry.",
+        "Always chewing on a toothpick.", "Missing a finger.", "Tattoos depicting sea monsters.",
+        "Impeccably groomed hair.", "Constantly nervously glancing around.", "Deep, booming voice.",
+        "Smells of sulfur and ash.", "Dressed in rags but holds a noble bearing.", "Shadows seem to cling to them."
+    ];
+    const quirks = [
+        "Speaks in third person.", "Refuses to make eye contact.", "Collects teeth.",
+        "Hates the color blue.", "Always speaks in a whisper.", "Laughs at inappropriate times.",
+        "Believes they are a god.", "Carries a pet rat everywhere.", "Constantly flips a coin.",
+        "Obsessed with fire."
+    ];
+
     return {
         name: `Random ${theme} ${race.name} ${cls.name}`,
         size: "Medium",
@@ -232,7 +246,9 @@ export function generateNPC(theme: GeneratorTheme = "Surface"): Statblock {
         cr: crVal === 0 ? "1/2" : crVal.toString(),
         xp: crVal * 200, // Approx
         traits: [...race.traits],
-        actions: actions
+        actions: actions,
+        appearance: appearances[Math.floor(Math.random() * appearances.length)],
+        quirk: quirks[Math.floor(Math.random() * quirks.length)]
     };
 }
 

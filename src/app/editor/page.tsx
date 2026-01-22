@@ -13,12 +13,15 @@ import { LootCard } from "@/components/ui/LootCard";
 import { Statblock } from "@/lib/data/statblocks";
 import { Spell } from "@/lib/data/spells";
 import { ShopItem } from "@/lib/data/items";
-import { FileText, Hammer, Save, Trash2, BookOpen, Scroll, Wand2 } from "lucide-react";
+import { FileText, Hammer, Save, Trash2, BookOpen, Scroll, Wand2, Map as MapIcon, Upload, Download } from "lucide-react";
 import PremiumGate from "@/components/auth/PremiumGate";
+import NodeEditorCanvas, { MapNode } from "@/components/editor/NodeEditorCanvas";
+import NodePropertyPanel from "@/components/editor/NodePropertyPanel";
+import { exportMap, importMap } from "@/lib/game/MapExporter";
 
 type ContentItem = {
     id: string;
-    type: "Chapter" | "NPC" | "Location" | "Statblock" | "Spell" | "Item";
+    type: "Chapter" | "NPC" | "Location" | "Statblock" | "Spell" | "Item"; // Map is separate from generic content items for now
     title: string;
     body: string; // For Statblocks/Spells/Items, this will store the JSON stringified data
     date: string;
@@ -26,7 +29,11 @@ type ContentItem = {
 
 export default function EditorPage() {
     const [items, setItems] = useState<ContentItem[]>([]);
-    const [mode, setMode] = useState<"write" | "forge" | "spell" | "item" | "view">("write"); // Expanded modes
+    const [mode, setMode] = useState<"write" | "forge" | "spell" | "item" | "map" | "view">("write"); // Expanded modes
+
+    // Map Editor State
+    const [mapNodes, setMapNodes] = useState<MapNode[]>([]);
+    const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
     // Editor State
     const [activeItem, setActiveItem] = useState<ContentItem | null>(null);
@@ -100,6 +107,33 @@ export default function EditorPage() {
         setMode("view");
     };
 
+    // --- MAP HANDLERS ---
+    const addMapNode = () => {
+        const newNode: MapNode = {
+            id: uuidv4(),
+            x: 100 + Math.random() * 50,
+            y: 100 + Math.random() * 50,
+            title: "New Location",
+            type: "safe",
+            description: "",
+            connectedTo: []
+        };
+        setMapNodes([...mapNodes, newNode]);
+        setSelectedNodeId(newNode.id);
+    };
+
+    const handleMapLoad = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            try {
+                const loaded = await importMap(e.target.files[0]);
+                setMapNodes(loaded);
+            } catch (err) {
+                alert("Failed to load map: Invalid format");
+            }
+        }
+    };
+
+
     return (
         <div className="retro-container min-h-screen bg-[#0a0a0a] text-[#d4d4d4] flex flex-col">
             <CommandBar />
@@ -151,6 +185,14 @@ export default function EditorPage() {
                                     className={`w-full text-left px-3 py-2 text-xs font-mono uppercase tracking-widest flex items-center gap-2 border border-transparent hover:border-[#333] transition ${mode === "item" ? "bg-[#1f1a0c] text-[#d4af37]" : "text-[#888]"}`}
                                 >
                                     <Scroll size={14} /> Item Forge
+                                </button>
+                            </PremiumGate>
+                            <PremiumGate feature="World Architect">
+                                <button
+                                    onClick={() => { setActiveItem(null); setMode("map"); }}
+                                    className={`w-full text-left px-3 py-2 text-xs font-mono uppercase tracking-widest flex items-center gap-2 border border-transparent hover:border-[#333] transition ${mode === "map" ? "bg-[#112211] text-[#66aa66]" : "text-[#888]"}`}
+                                >
+                                    <MapIcon size={14} /> Map Architect
                                 </button>
                             </PremiumGate>
                         </div>
@@ -248,6 +290,52 @@ export default function EditorPage() {
                                 <PremiumGate feature="Item Forge">
                                     <ItemEditor onSave={handleItemSave} />
                                 </PremiumGate>
+                            )}
+
+                            {/* MAP MODE */}
+                            {mode === "map" && (
+                                <div className="h-full flex flex-col">
+                                    {/* Map Toolbar */}
+                                    <div className="h-12 border-b border-[#333] flex items-center px-4 justify-between bg-[#111]">
+                                        <div className="flex gap-2">
+                                            <button onClick={addMapNode} className="px-3 py-1 bg-[#222] hover:bg-[#333] text-xs font-mono uppercase border border-[#444] rounded flex items-center gap-2">
+                                                <MapIcon size={12} /> Add Node
+                                            </button>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <label className="cursor-pointer px-3 py-1 bg-[#222] hover:bg-[#333] text-xs font-mono uppercase border border-[#444] rounded flex items-center gap-2">
+                                                <Upload size={12} /> Load JSON
+                                                <input type="file" accept=".json" onChange={handleMapLoad} className="hidden" />
+                                            </label>
+                                            <button onClick={() => exportMap(mapNodes)} className="px-3 py-1 bg-[#a32222] hover:bg-[#c42222] text-white text-xs font-mono uppercase border border-none rounded flex items-center gap-2">
+                                                <Download size={12} /> Export JSON
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Workspace */}
+                                    <div className="flex-1 flex overflow-hidden">
+                                        <NodeEditorCanvas
+                                            nodes={mapNodes}
+                                            onNodesChange={setMapNodes}
+                                            selectedNodeId={selectedNodeId}
+                                            onSelectNode={setSelectedNodeId}
+                                        />
+                                        <NodePropertyPanel
+                                            node={mapNodes.find(n => n.id === selectedNodeId) || null}
+                                            allNodes={mapNodes}
+                                            onUpdate={(updated) => {
+                                                setMapNodes(mapNodes.map(n => n.id === updated.id ? updated : n));
+                                            }}
+                                            onDelete={(id) => {
+                                                if (confirm("Delete this node?")) {
+                                                    setMapNodes(mapNodes.filter(n => n.id !== id));
+                                                    if (selectedNodeId === id) setSelectedNodeId(null);
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                </div>
                             )}
 
                             {/* VIEW MODE */}
