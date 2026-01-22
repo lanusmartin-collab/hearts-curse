@@ -3,9 +3,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowRight, Sword, Shield, Zap, Skull, Heart, Ghost, Timer, Swords, User, ShieldAlert, BookOpen, Footprints } from 'lucide-react';
 import TacticalMap from './combat/TacticalMap';
+import InitiativeTracker from './combat/InitiativeTracker';
 import CombatantCard from "@/components/ui/CombatantCard";
 import { Combatant } from "@/types/combat";
-import monstersData from "@/lib/data/monsters_custom.json";
+import { MonsterService } from "@/lib/services/MonsterService";
 import { ALL_SPELLS } from "@/lib/data/spells";
 import { useAudio } from "@/lib/context/AudioContext";
 import DiceRoller from "@/components/ui/DiceRoller";
@@ -63,42 +64,9 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
     useEffect(() => {
         playAmbience("combat");
         const savedDays = typeof window !== 'undefined' ? parseInt(localStorage.getItem('curse_days') || '0', 10) : 0;
-        let curseMultiplier = 1;
-        if (savedDays >= 7) curseMultiplier = 1.1;
 
-        const enemies: Combatant[] = enemySlugs.map((slug, i) => {
-            const data = (monstersData as any[]).find((m: any) => m.slug === slug);
-            if (!data) return null;
-
-            const baseHp = data.hp || 10;
-            const maxHp = Math.floor(baseHp * curseMultiplier);
-            const monsterAttacks = data.actions?.map((a: any) => {
-                const hitMatch = a.desc?.match(/\+(\d+)\s+to\s+hit/);
-                const dmgMatch = a.desc?.match(/Hit:\s+\d+\s+\(([^)]+)\)/);
-                return {
-                    name: a.name,
-                    bonus: hitMatch ? parseInt(hitMatch[1]) : 5,
-                    damage: dmgMatch ? dmgMatch[1] : "1d6+2",
-                    type: "melee", // Simplified for monsters
-                    isAoE: a.desc.includes("radius") || a.desc.includes("cone"),
-                    radius: 20
-                };
-            }) || [];
-
-            return {
-                id: `e-${i}-${slug}`,
-                name: data.name,
-                type: "monster",
-                hp: maxHp,
-                maxHp: maxHp,
-                ac: data.ac || 10,
-                initiative: Math.floor(Math.random() * 20),
-                conditions: [],
-                statblock: data,
-                attacks: monsterAttacks,
-                resources: { action: true, bonusAction: true, movement: data.speed?.includes("fly") ? 50 : 30, reaction: true }
-            };
-        }).filter(Boolean) as Combatant[];
+        // USE SERVICE TO CREATE ENEMIES
+        const enemies = MonsterService.createEncounter(enemySlugs, savedDays);
 
         const hero = playerCharacter ? {
             ...playerCharacter,
@@ -356,20 +324,13 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
         <div className="fixed inset-0 z-[2000] bg-[#0a0a0c] text-[#d4c391] font-serif flex flex-col">
 
             {/* HUD */}
-            <div className="h-16 bg-[#111] border-b border-[#333] flex items-center px-6 gap-4">
-                <Swords className="text-[#a32222]" />
-                <span className="font-bold uppercase tracking-widest text-[#a32222]">Turn Order</span>
-                {combatants.map((c, i) => (
-                    <div key={c.id} className={`px-3 py-1 flex flex-col items-center ${i === turnIndex ? 'bg-[#a32222] text-white' : 'opacity-50'}`}>
-                        <span className="text-xs font-bold">{c.name}</span>
-                        <span className="text-[10px]">{c.hp} HP</span>
-                    </div>
-                ))}
-                <div className="ml-auto flex gap-4 text-xs font-mono">
-                    <span className={currentCombatant?.resources?.action ? "text-green-500" : "text-gray-600"}>ACTION</span>
-                    <span className={currentCombatant?.resources?.bonusAction ? "text-orange-500" : "text-gray-600"}>BONUS</span>
-                    <span className="text-blue-500">{currentCombatant?.resources?.movement} FT</span>
-                </div>
+            <InitiativeTracker combatants={combatants} turnIndex={turnIndex} />
+
+            {/* Action Economy Bar (Optional kept separate or moved into tracker? Kept separate for layout balance) */}
+            <div className="h-8 bg-[#0a0a0c] border-b border-[#333] flex items-center px-6 gap-4 text-xs font-mono justify-end">
+                <span className={currentCombatant?.resources?.action ? "text-green-500" : "text-gray-600"}>ACTION</span>
+                <span className={currentCombatant?.resources?.bonusAction ? "text-orange-500" : "text-gray-600"}>BONUS</span>
+                <span className="text-blue-500">{currentCombatant?.resources?.movement} FT</span>
             </div>
 
             {/* MAIN AREA */}

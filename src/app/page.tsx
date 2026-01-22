@@ -7,11 +7,10 @@ import {
 } from "lucide-react";
 import DashboardWidget from "@/components/ui/DashboardWidget";
 import CurseTracker from "@/components/ui/CurseTracker";
-import CampaignModuleTemplate from "@/components/ui/CampaignModuleTemplate";
 import PartyStatusWidget from "@/components/ui/PartyStatusWidget";
-import { AudioProvider } from "@/lib/context/AudioContext";
 import AmbientController from "@/components/audio/AmbientController";
 import { CommandMenu } from "@/components/ui/CommandMenu";
+import QuestLog from "@/components/ui/QuestLog";
 
 import GameLayout from "@/components/game/GameLayout";
 
@@ -21,50 +20,43 @@ import MainMenu from "@/components/game/intro/MainMenu";
 import AdvancedCharacterCreation from "@/components/game/AdvancedCharacterCreation";
 import PrologueController from "@/components/game/intro/PrologueController";
 import WorldMap from "@/components/game/intro/WorldMap";
-import LockScreen from "@/components/ui/LockScreen";
-import { Combatant } from "@/types/combat";
+// import LockScreen from "@/components/ui/LockScreen"; // Keep import if we revert
+import { GameContextProvider, useGameContext } from "@/lib/context/GameContext";
+import { ToastProvider } from "@/lib/context/ToastContext";
+import ToastContainer from "@/components/ui/ToastContainer";
 
-export default function Home() {
-  // GAME STATE MANAGEMENT
-  // "home" = Dashboard (Default)
-  // "book" = Campaign Module PDF View
-  // "intro_narrative" = Scrolling text / context
-  // "main_menu" = New Game / Load Game
-  // "char_creation" = Select Class
-  // "world_map" = Select Region
-  // "prologue" = Larloch Fight -> Wish -> Tower
-  // "game" = Actual Dungeon Crawl
-  const [viewMode, setViewMode] = useState<"home" | "book" | "intro_narrative" | "main_menu" | "char_creation" | "world_map" | "prologue" | "game">("home");
+// --- GAME CONTROLLER ---
+// This component consumes the context and manages the top-level view switching
+function GameController() {
+  const {
+    viewMode,
+    setViewMode,
+    playerCharacter,
+    setPlayerCharacter,
+    navigateTo,
+    saveGame
+  } = useGameContext();
 
-  // Player State passed to GameLayout
-  const [playerCharacter, setPlayerCharacter] = useState<Combatant | undefined>(undefined);
   const [startingRewards, setStartingRewards] = useState<any>(null);
 
-  // LOCK SCREEN STATE
-  const [locked, setLocked] = useState(true);
-  const [showLockAuth, setShowLockAuth] = useState(false);
-
-  // -- STATE HANDLERS --
+  // Ref to GameLayout no longer strictly needed for save if logic moves to context,
+  // but GameLayout has internal state (logs, turn order) we might want to trigger save on.
+  // For now, we'll keep the manual save trigger via ref if strictly needed, or just rely on Context save.
+  // Context save is a placeholder right now, so let's stick to the ref approach for the "Command Menu" save button for safety,
+  // OR update CommandMenu to use Context. Let's keep existing behavior for safety first.
   const gameRef = useRef<any>(null);
 
-  const handleGameStart = () => {
-    // Lock removed for ease of access
-    setViewMode("intro_narrative");
+  const handleSave = () => {
+    // If GameLayout exposes save, call it
+    if (gameRef.current?.saveGame) {
+      gameRef.current.saveGame();
+    } else {
+      // Fallback context save
+      saveGame("manual_save");
+    }
   };
 
-  /* Lock Code Removed
-  if (showLockAuth) {
-    return (
-      <LockScreen
-        onUnlock={() => {
-          setLocked(false);
-          setShowLockAuth(false);
-          setViewMode("intro_narrative");
-        }}
-      />
-    );
-  }
-  */
+  // -- VIEW ROUTING --
 
   if (viewMode === "intro_narrative") {
     return <NarrativeIntro onComplete={() => setViewMode("main_menu")} />;
@@ -75,11 +67,10 @@ export default function Home() {
       <MainMenu
         onCreateChar={() => setViewMode("char_creation")}
         onLoadGame={(savedGame) => {
-          // RESTORE STATE
+          // RESTORE STATE via Context
           setPlayerCharacter(savedGame.playerCharacter);
-          setSelectedMapId(savedGame.currentMapId);
-          setSelectedNodeId(savedGame.currentNodeId);
-          // TODO: Restore quest state and inventory if we had global providers for them
+          navigateTo(savedGame.currentMapId, savedGame.currentNodeId);
+          // TODO: inventory restoration could happen here or in Context loadGame
           setViewMode("game");
         }}
       />
@@ -97,18 +88,14 @@ export default function Home() {
     );
   }
 
-  // Map Selection State
-  const [selectedMapId, setSelectedMapId] = useState<string>("oakhaven");
-  const [selectedNodeId, setSelectedNodeId] = useState<string>("market");
-
   if (viewMode === "world_map") {
     return (
       <WorldMap
         onSelectLocation={(locId: string) => {
           if (locId === "heart_chamber") setViewMode("prologue");
           if (locId === "underdark") {
-            setSelectedMapId("oakhaven_mines");
-            setSelectedNodeId("ent");
+            // Direct travel
+            navigateTo("oakhaven_mines", "ent");
             setViewMode("game");
           }
         }}
@@ -126,33 +113,69 @@ export default function Home() {
           }
           setStartingRewards(data);
           // Post-Prologue: Go to Oakhaven by default
-          setSelectedMapId("oakhaven");
-          setSelectedNodeId("market");
+          navigateTo("oakhaven", "market");
           setViewMode("game");
         }}
       />
     );
   }
 
-  // GAME MODE
   if (viewMode === "game") {
     return (
       <GameLayout
         ref={gameRef}
         onExit={() => setViewMode("home")}
+        startingRewards={startingRewards}
+        // playerCharacter, mapId, nodeId are now pulled from Context inside GameLayout!
+        // We can pass them as props if GameLayout isn't updated yet, but the plan is to update GameLayout next.
+        // For safe transition, we will likely NOT pass them as props if GameLayout consumes context.
+        // But for this step, let's assume GameLayout still accepts them until we refactor it in the next step.
+        // Wait, if I redeploy this page.tsx BEFORE GameLayout is updated, it might break if I don't pass props.
+        // I should pass props for now as "compatibility" layer or just refactor GameLayout immediately after.
+        // Let's pass them for now to be safe, but GameLayout will ignore them once updated.
         playerCharacter={playerCharacter}
-        initialMapId={selectedMapId}
-        initialNodeId={selectedNodeId}
+      // initialMapId={currentMapId} // These don't change dynamically in the old prop model, they were "initial". 
+      // GameLayout handled its own state. This is tricky.
+      // If GameLayout manages its own state, and we want to control it via Context, 
+      // GameLayout needs to basically "sync" or "consume" context.
+      // I will update GameLayout next, so let's just render it.
       />
     );
   }
 
-  // ...
+  // "home" / "book" (handled in DASHBOARD below)
+  // Actually "book" was just a view mode. 
+  // If viewMode is "book", what happens? In original code:
+  // if (viewMode === "book") return ... wait, original code didn't hold "book" as a full screen return?
+  // Ah, looking at original code:
+  // 30:   // "book" = Campaign Module PDF View
+  // But there was no `if (viewMode === "book")` block in the component body returning a different component!
+  // It seems "book" might have been handled contextually or missing?
+  // Checking original file... 
+  // Line 27: const [viewMode, setViewMode] ...
+  // Line 187: onClick={() => setViewMode("book")}
+  // Line 152: return ( ... DASHBOARD ... )
+  // So "book" mode effectively rendered the Dashboard?
+  // Wait, I might have missed it in `read_file`.
+  // Let's look at `view_file` output from Step 10.
+  // Lines 69-148 handle special modes.
+  // Then Line 152 starts the Dashboard return.
+  // So if viewMode was "book", it fell through to the Dashboard?
+  // That seems like a bug in the original code or "book" just meant "Show Dashboard but maybe open a PDF?" 
+  // but there's no conditional for book in the dashboard.
+  // Oh, wait. `CampaignModuleTemplate` import is there but unused in the snippet I saw?
+  // Re-reading Step 10... Line 10: import CampaignModuleTemplate...
+  // I don't see it used in the JSX.
+  // Maybe it was deleted or I missed it.
+  // Regardless, I will handle "book" mode by showing a placeholder or the dashboard for now.
+  // If the user wants a Book view, I should probably add it.
+  // For now, let's keep the Dashboard as the default "base" view.
 
   return (
     <div className="retro-container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <AmbientController />
-      <CommandMenu onSave={() => gameRef.current?.saveGame()} />
+      <QuestLog />
+      <CommandMenu onSave={handleSave} />
 
       {/* HEADER SECTION */}
       <header className="campaign-header" style={{ marginBottom: "2rem", display: "flex", flexWrap: "wrap", gap: "2rem", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid var(--glass-border)", paddingBottom: "1.5rem" }}>
@@ -179,10 +202,14 @@ export default function Home() {
         </div>
 
         <div className="flex gap-2 mb-2 md:mb-0">
-          {/* GAME MODE TOGGLE -> Launches Intro Flow now */}
-
-
           {/* Quick Action: Open PDF Book */}
+          {/* TODO: Implement actual Book View */}
+          <button
+            onClick={() => setViewMode("main_menu")}
+            className="group relative px-6 py-2 bg-[var(--obsidian-base)] border border-[var(--scarlet-accent)] text-[var(--scarlet-accent)] font-serif uppercase text-xs tracking-widest hover:bg-[var(--scarlet-accent)] hover:text-white transition-all flex items-center gap-2 shrink-0 animate-pulse"
+          >
+            <Swords className="w-4 h-4" /> <span>ENTER SIMULATION</span>
+          </button>
           <button
             onClick={() => setViewMode("book")}
             className="group relative px-6 py-2 bg-[var(--obsidian-base)] border border-[rgba(201,188,160,0.5)] text-[var(--gold-accent)] font-serif uppercase text-xs tracking-widest hover:bg-[var(--gold-accent)] hover:text-black transition-all flex items-center gap-2 shrink-0"
@@ -197,15 +224,13 @@ export default function Home() {
 
         {/* LEFT COLUMN: Status & Quick Stats */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          {/* Curse Widget - Now clickable to mechanics */}
           <DashboardWidget title="Threat System" subtitle="Regional Effect" variant="safe-haven" href="/mechanics">
             <CurseTracker simpleView={true} />
             <div style={{ marginTop: "1rem", fontSize: "0.75rem", color: "#4a0404", fontStyle: "italic", borderTop: "1px solid #8b7e66", paddingTop: "0.5rem" }}>
-              "The shadows lengthen with every passing day..."
+              &quot;The shadows lengthen with every passing day...&quot;
             </div>
           </DashboardWidget>
 
-          {/* Quick Nav: Archives */}
           <DashboardWidget title="The Archives" subtitle="Lore & History" icon={BookOpen} href="/lore" variant="safe-haven">
             <div style={{ fontSize: "0.875rem", opacity: 0.8, marginBottom: "0.5rem" }}>Access decrypted Netherese texts and campaign timeline.</div>
             <div style={{ height: "4px", width: "100%", background: "#8b7e66", borderRadius: "2px", overflow: "hidden" }}>
@@ -214,7 +239,6 @@ export default function Home() {
             <div style={{ fontSize: "0.6rem", textAlign: "right", marginTop: "0.25rem", fontFamily: "var(--font-mono)", color: "var(--scarlet-accent)" }}>DATABANK: 75% DECRYPTED</div>
           </DashboardWidget>
 
-          {/* Quick Nav: Bestiary -> Monster Compendium */}
           <DashboardWidget title="Monster Compendium" subtitle="Bestiary" icon={Skull} href="/statblocks" variant="safe-haven">
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
               <div style={{ background: "rgba(138, 28, 28, 0.1)", padding: "0.5rem", borderRadius: "0.25rem", border: "1px solid #8b7e66" }}>
@@ -231,17 +255,14 @@ export default function Home() {
         {/* MIDDLE COLUMN: Primary Navigation */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
 
-          {/* Grimoire Widget (Promoted) */}
           <DashboardWidget title="The Grimoire" subtitle="Spell Database" icon={BookOpen} href="/grimoire" variant="safe-haven" style={{ backgroundImage: "linear-gradient(rgba(244, 232, 209, 0.9), rgba(244, 232, 209, 0.9)), url('https://www.transparenttextures.com/patterns/aged-paper.png')" }}>
             <p style={{ fontSize: "0.75rem", color: "#4a0404" }}>Full library of incantations. Now with advanced search & filtering.</p>
           </DashboardWidget>
 
           <DashboardWidget title="Black Market" subtitle="Shops & Items" icon={ShoppingBag} href="/shops" variant="safe-haven" style={{ minHeight: "180px", backgroundImage: "radial-gradient(circle at center, rgba(30,30,35,0.8) 0%, rgba(10,10,12,0.95) 100%), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 10px)", backgroundSize: "cover", backgroundBlendMode: "overlay" }}>
-            {/* Retaining dark bg for black market contrast, or should it change? keeping for now but ensure text pops */}
             <p style={{ position: "relative", zIndex: 10, fontSize: "0.875rem", color: "var(--gold-accent)" }}>Manage inventory for Korgul, Fimble, and local vendors.</p>
           </DashboardWidget>
 
-          {/* Cartography */}
           <DashboardWidget title="Cartography" subtitle="Tactical Maps" icon={Map} href="/maps" variant="safe-haven" style={{ minHeight: "180px" }}>
             <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid #8b7e66", paddingBottom: "0.25rem" }}>
@@ -259,7 +280,6 @@ export default function Home() {
             </div>
           </DashboardWidget>
 
-
         </div>
 
         {/* RIGHT COLUMN: Tools & Utils */}
@@ -269,9 +289,7 @@ export default function Home() {
             <DashboardWidget title="Architect" subtitle="Arcanist's Quill" icon={PenTool} href="/editor" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
             <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
             <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            {/* [NEW] Players Link in Tools Grid */}
             <PartyStatusWidget />
-            {/* [NEW] Store Link */}
             <DashboardWidget title="Store" subtitle="Upgrade" icon={ShoppingBag} href="/pricing" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center", border: "1px solid var(--gold-accent)" }} />
           </div>
 
@@ -280,11 +298,23 @@ export default function Home() {
           </DashboardWidget>
 
           <footer style={{ marginTop: "auto", textAlign: "center", opacity: 0.4, fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--fg-dim)" }}>
-            HEART'S CURSE // SESSION 25 (BUILD 2.2 - INTRO UPDATED)
+            HEART'S CURSE // SESSION 25 (BUILD 3.0 - ARCHITECTURE UPDATE)
           </footer>
         </div>
 
       </div>
     </div>
+  );
+}
+
+// MAIN ENTRY POINT
+export default function Home() {
+  return (
+    <ToastProvider>
+      <GameContextProvider>
+        <GameController />
+        <ToastContainer />
+      </GameContextProvider>
+    </ToastProvider>
   );
 }

@@ -1,37 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import Image from "next/image";
-import { useAudio } from "@/lib/context/AudioContext";
 import { Typewriter } from "@/components/ui/Typewriter";
-import { CAMPAIGN_MAPS, MapNode } from "@/lib/data/maps";
-import { NarrativeEngine } from "@/lib/game/NarrativeEngine";
 import { SaveManager } from "@/lib/game/SaveManager";
-import { SHOPS, ShopItem } from "@/lib/data/shops";
+import { useGameLogic } from "@/lib/hooks/useGameLogic";
 import ShopInterface from "./ShopInterface";
 import CombatLayout from "./CombatLayout";
 import { Combatant } from "@/types/combat";
-import {
-    TOWN_DAY_TABLE,
-    TOWN_NIGHT_TABLE,
-    OAKHAVEN_MINES_TABLE,
-    UNDERDARK_TRAVEL_TABLE,
-    ARACH_TINILITH_TABLE,
-    NETHERIL_RUINS_TABLE,
-    SILENT_WARDS_TABLE,
-    LIBRARY_WHISPERS_TABLE,
-    CATACOMBS_DESPAIR_TABLE,
-    HEART_CHAMBER_TABLE,
-    OSSUARY_TABLE,
-    DWARVEN_RUINS_TABLE,
-    MIND_FLAYER_COLONY_TABLE,
-    BEHOLDER_LAIR_TABLE,
-    SPIRE_TABLE,
-    CASTLE_MOURNWATCH_TABLE,
-    Encounter
-} from "@/lib/data/encounters";
+import { CAMPAIGN_MAPS } from "@/lib/data/maps";
+import DiceRoller from "@/components/ui/DiceRoller"; // Add Import
 
-// Placeholder for Party Data
 const PARTY = [
     { name: "Kaelen", class: "Paladin", hp: 45, maxHp: 58, mana: 10, maxMana: 20, img: "/portraits/kaelen.png" },
     { name: "Lyra", class: "Rouge", hp: 32, maxHp: 38, mana: 0, maxMana: 0, img: "/portraits/lyra.png" },
@@ -51,259 +30,97 @@ interface GameLayoutProps {
     initialNodeId?: string;
 }
 
-const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startingRewards, playerCharacter, initialMapId = "oakhaven", initialNodeId = "market" }, ref) => {
-    const { playSfx, playAmbience } = useAudio();
-    // Use playerCharacter to override the first slot of the party
-    const initialParty = playerCharacter
-        ? [
-            {
-                name: playerCharacter.name,
-                class: (playerCharacter.stats?.str || 10) > 14 ? "Warrior" : "Adventurer", // Simple heuristic or pass class name in Combatant
-                hp: playerCharacter.hp,
-                maxHp: playerCharacter.maxHp,
-                mana: 10,
-                maxMana: 20,
-                img: "/portraits/kaelen.png" // Placeholder or dynamic based on class
-            },
-            ...PARTY.slice(1) // Keep companions for now? Or solo? Let's keep companions.
-        ]
-        : PARTY;
+const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startingRewards, playerCharacter }, ref) => {
 
-    const [partyState, setPartyState] = useState(initialParty);
-    const [playerGold, setPlayerGold] = useState(100); // Default starting gold
-    const [inventory, setInventory] = useState<ShopItem[]>([]); // Proper inventory state
+    // --- HOOK INTEGRATION ---
+    const {
+        consoleLog,
+        inCombat,
+        combatEnemies,
+        showShop,
+        setShowShop,
+        currentMap,
+        currentNode,
+        currentShop,
+        playerGold,
+        inventory,
+        visitedNodes,
+        handleMove,
+        startCombat,
+        handleVictory,
+        handleFlee,
+        handleBuyItem,
+        playSfx,
+        activeCheck,
+        resolveCheck
+    } = useGameLogic(startingRewards);
 
-    const [consoleLog, setConsoleLog] = useState<string[]>([
-        "> System initialized...",
-        "> Rendering Narrative Interface...",
-        "> Awaiting input."
-    ]);
+    // --- LOCAL UI STATE (Visuals only) ---
     const consoleEndRef = React.useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (startingRewards?.item === 'essence_djinn') {
-            setTimeout(() => {
-                setConsoleLog(prev => [...prev, "> ALERT: ANOMALOUS ARTIFACT DETECTED.", "> ACQUIRED: ESSENCE OF THE DJINN (+2 PRIM)."]);
-                playSfx("/sfx/gain_item.mp3"); // Or generic sfx
-            }, 2000);
-        }
-    }, [startingRewards]);
-
-    const [activeTab, setActiveTab] = useState("party");
-
-    // -- NAVIGATION STATE --
-    const [currentMapId, setCurrentMapId] = useState(initialMapId);
-    const [currentNodeId, setCurrentNodeId] = useState(initialNodeId);
-    const [visitedNodes, setVisitedNodes] = useState<Set<string>>(new Set(["market"]));
     const [showMap, setShowMap] = useState(false);
 
-    // Combat State
-    const [inCombat, setInCombat] = useState(false);
-    const [combatEnemies, setCombatEnemies] = useState<string[]>([]);
-
-    // Shop State
-    const [showShop, setShowShop] = useState(false);
-
-    // Derived State
-    const currentMap = CAMPAIGN_MAPS.find(m => m.id === currentMapId);
-    const currentNode = currentMap?.nodes?.find(n => n.id === currentNodeId);
-
-    // Auto-Close Shop on Move
-    useEffect(() => {
-        setShowShop(false);
-    }, [currentNodeId, currentMapId]);
-
-    // Initial Load & Persistence
-    useEffect(() => {
-        const saved = localStorage.getItem("hc_visited");
-        if (saved) {
-            setVisitedNodes(new Set(JSON.parse(saved)));
-        }
-
-        // Initial Description
-        if (currentNode) {
-            const event = NarrativeEngine.describeLocation(currentNode);
-            addToLog(event.text);
-        }
-    }, []);
-
-    // ... (Keyboard useEffect remains mostly same, just ensuring logic aligns)
-
-    // ... (Visited persisted useEffect remains same)
-
-    // ... inside component
-
-    useEffect(() => {
-        // Switch to Dungeon Ambience
-        playAmbience("dungeon");
-    }, [playAmbience]);
-
-    // Expose saveGame via ref
+    // --- SAVE LOGIC ---
     useImperativeHandle(ref, () => ({
         saveGame: () => {
-            if (playerCharacter && currentNodeId) {
+            if (playerCharacter && currentNode?.id) {
                 const saveId = `manual_save_${Date.now()}`;
                 SaveManager.saveGame(saveId, {
                     id: saveId,
                     timestamp: Date.now(),
                     name: `Manual Save - ${currentNode?.label || "Unknown"}`,
-                    version: "2.3",
+                    version: "3.0",
                     playerCharacter: playerCharacter,
-                    currentMapId: currentMapId,
-                    currentNodeId: currentNodeId,
-                    questState: {}, // TODO: Implement Quest State
+                    currentMapId: currentMap?.id || "unknown",
+                    currentNodeId: currentNode.id,
+                    questState: {},
                     inventory: inventory,
                     gold: playerGold,
-                    playtime: 0 // TODO: Track playtime
+                    playtime: 0
                 });
-                addToLog("Game Saved Successfully.");
-                playSfx("/sfx/retro_success.mp3"); // Assume this sfx exists or similar
+                playSfx("/sfx/retro_success.mp3");
             }
         }
     }));
 
+    // Scroll to bottom of log
+    React.useEffect(() => {
+        consoleEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [consoleLog]);
 
-    // AUTO-SAVE on Node Change
-    useEffect(() => {
-        if (playerCharacter && currentNodeId) {
-            SaveManager.saveGame("autosave", {
-                id: "autosave",
-                timestamp: Date.now(),
-                name: "Auto Save",
-                version: "2.3",
-                playerCharacter: playerCharacter,
-                currentMapId: currentMapId,
-                currentNodeId: currentNodeId,
-                questState: {}, // TODO
-                inventory: inventory,
-                gold: playerGold,
-                playtime: 0 // TODO: Track playtime
-            });
-            // Optional: Small notification or log?
-            // addToLog("Game Saved."); // Maybe too spammy
-        }
-    }, [currentNodeId, currentMapId, playerCharacter, inventory, playerGold]);
 
-    const addToLog = (msg: string) => {
-        setConsoleLog(prev => [...prev.slice(-20), `> ${msg}`]); // Increased log history
-    };
-
-    const handleMove = (direction: "north" | "south" | "east" | "west") => {
-        if (!currentNode?.exits) {
-            addToLog("There are no exits here.");
-            return;
-        }
-
-        const targetNodeId = currentNode.exits[direction];
-
-        if (targetNodeId) {
-            // Check if target exists
-            const targetNode = currentMap?.nodes?.find(n => n.id === targetNodeId);
-            if (targetNode) {
-                setCurrentNodeId(targetNodeId);
-
-                // Use Narrative Engine
-                const event = NarrativeEngine.describeLocation(targetNode, direction);
-                addToLog(event.text);
-
-                playSfx("/sfx/footsteps.mp3");
-            } else {
-                addToLog(NarrativeEngine.systemMessage(`Error: Path to '${targetNodeId}' blocked.`).text);
-            }
-        } else {
-            addToLog("You cannot go that way.");
-            playSfx("/sfx/bump.mp3");
-        }
-    };
-
-    const startCombat = () => {
-        // 1. Fixed Encounter? type="encounter" or has monsters list
-        if (currentNode?.monsters && currentNode.monsters.length > 0) {
-            setCombatEnemies(currentNode.monsters);
-            setInCombat(true);
-
-            const encounter = NarrativeEngine.encounterTrigger(currentNode.monsters);
-            addToLog(encounter.text);
-            if (encounter.details) addToLog(encounter.details);
-            return;
-        }
-
-        // 2. Random Encounter? Linked via map.encounterTable
-        if (currentMap?.encounterTable) {
-            let table: Encounter[] = [];
-            switch (currentMap.encounterTable) {
-                case "mines": table = OAKHAVEN_MINES_TABLE; break;
-                case "underdark": table = UNDERDARK_TRAVEL_TABLE; break;
-                case "arach": table = ARACH_TINILITH_TABLE; break;
-                case "netheril": table = NETHERIL_RUINS_TABLE; break;
-                case "silent_wards": table = SILENT_WARDS_TABLE; break;
-                case "library": table = LIBRARY_WHISPERS_TABLE; break;
-                case "dwarven_ruins": table = DWARVEN_RUINS_TABLE; break;
-                case "mind_flayer": table = MIND_FLAYER_COLONY_TABLE; break;
-                case "beholder": table = BEHOLDER_LAIR_TABLE; break;
-                case "spire": table = SPIRE_TABLE; break;
-                case "catacombs": table = CATACOMBS_DESPAIR_TABLE; break;
-                case "heart": table = HEART_CHAMBER_TABLE; break;
-                case "ossuary": table = OSSUARY_TABLE; break;
-                case "castle": table = CASTLE_MOURNWATCH_TABLE; break; // Added castle manually as I missed it in the list but it was in maps.ts
-                default: table = TOWN_DAY_TABLE;
-            }
-
-            // Simple Roll
-            const roll = Math.floor(Math.random() * 20) + 1;
-            const event = table.find(e => roll >= e.roll[0] && roll <= e.roll[1]);
-
-            if (event) {
-                addToLog(`> Encounter Roll: ${roll} - ${event.name}`);
-                addToLog(event.description);
-                if (event.monsters && event.monsters.length > 0) {
-                    setCombatEnemies(event.monsters);
-                    setInCombat(true);
-                } else {
-                    // Flavor event
-                    playSfx("/sfx/magical_effect.mp3");
-                }
-            } else {
-                addToLog("> The shadows are quiet... for now.");
-            }
-            return;
-        }
-
-        addToLog("No enemies detected here.");
-    };
-
-    const handleVictory = () => {
-        setInCombat(false);
-        playAmbience("dungeon");
-
-        const result = NarrativeEngine.combatResult('victory');
-        addToLog(result.text);
-        if (result.details) addToLog(result.details);
-    };
-
-    const handleFlee = () => {
-        setInCombat(false);
-        playAmbience("dungeon");
-
-        const result = NarrativeEngine.combatResult('flee');
-        addToLog(result.text);
-        if (result.details) addToLog(result.details);
-    };
-
-    const handleBuyItem = (item: ShopItem) => {
-        setInventory(prev => [...prev, item]); // Add to inventory
-        addToLog(`Purchased: ${item.name} for ${item.cost}gp.`);
-        playSfx("/sfx/gain_item.mp3");
-    };
+    // --- RENDER ---
 
     if (inCombat) {
         return <CombatLayout enemySlugs={combatEnemies} playerCharacter={playerCharacter} onVictory={handleVictory} onFlee={handleFlee} />;
     }
 
-    const currentShop = currentNode?.shopId ? SHOPS[currentNode.shopId] : null;
-
     return (
         <div className="game-shell fixed inset-0 z-[1000] bg-black text-[#c9bca0] font-serif overflow-hidden flex flex-col">
+
+            {/* SKILL CHECK OVERLAY */}
+            {activeCheck && (
+                <div className="absolute inset-0 z-[3000] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-8 animate-in fade-in duration-300">
+                    <h2 className="text-3xl font-bold text-[#a32222] mb-2 uppercase tracking-widest text-center">Skill Check</h2>
+                    <div className="text-xl text-[var(--gold-accent)] mb-8 font-serif italic text-center max-w-lg">
+                        "{activeCheck.details}"
+                    </div>
+
+                    <div className="bg-[#1a1515] border-2 border-[#5c1212] p-8 rounded-lg shadow-[0_0_50px_rgba(163,34,34,0.3)] flex flex-col items-center gap-6">
+                        <div className="text-sm font-mono text-gray-500 uppercase tracking-widest">
+                            {activeCheck.skill} (DC {activeCheck.dc})
+                        </div>
+
+                        <DiceRoller
+                            onRollComplete={(result) => resolveCheck(result.total, 0)}
+                        /* Modifier 0 for now or fetch from char */
+                        />
+
+                        <div className="text-xs text-gray-600 italic mt-4">
+                            Roll a D20 to attempt interaction.
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* SHOP MODAL */}
             {showShop && currentShop && (
@@ -311,10 +128,7 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                     shop={currentShop}
                     playerGold={playerGold}
                     onClose={() => setShowShop(false)}
-                    onBuy={(item) => {
-                        handleBuyItem(item);
-                        setPlayerGold(prev => prev - item.cost);
-                    }}
+                    onBuy={handleBuyItem}
                 />
             )}
 
@@ -352,7 +166,7 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                                     const isVisited = visitedNodes.has(node.id);
                                     if (!isVisited) return null;
 
-                                    const isCurrent = node.id === currentNodeId;
+                                    const isCurrent = node.id === currentNode?.id;
                                     return (
                                         <div
                                             key={node.id}
@@ -397,38 +211,6 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                         {/* Bottom Spacer */}
                         <div className="h-4"></div>
 
-                        {/* MAP OVERLAY */}
-                        {showMap && (
-                            <div className="absolute inset-0 z-50 bg-black/95 flex flex-col p-4 animate-in fade-in duration-300">
-                                <div className="flex justify-between items-center mb-4 border-b border-[#333] pb-2">
-                                    <h2 className="text-xl uppercase tracking-widest text-[#a32222]">World Map</h2>
-                                    <button onClick={() => setShowMap(false)} className="text-gray-500 hover:text-white">[CLOSE]</button>
-                                </div>
-                                <div className="flex-1 overflow-auto flex justify-center items-center">
-                                    {/* Render Maps List or Region Map */}
-                                    <div className="grid grid-cols-1 gap-4 max-w-2xl w-full">
-                                        {CAMPAIGN_MAPS.map(map => (
-                                            <div key={map.id}
-                                                onClick={() => {
-                                                    if (map.route) {
-                                                        if (typeof window !== 'undefined') window.location.href = map.route;
-                                                    } else {
-                                                        setCurrentMapId(map.id);
-                                                        setCurrentNodeId(map.nodes?.[0]?.id || "ent");
-                                                        setShowMap(false);
-                                                    }
-                                                }}
-                                                className={`p-4 border border-[#333] hover:border-[#a32222] hover:bg-[#111] cursor-pointer transition-all ${currentMapId === map.id ? 'border-yellow-900 bg-[#1a1500]' : ''}`}
-                                            >
-                                                <div className="font-bold text-lg">{map.title}</div>
-                                                <div className="text-xs text-gray-500 mt-1">{map.description.slice(0, 100)}...</div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
                         {/* MAIN CONTENT AREA */}
                         <div className="flex-1 flex flex-col relative">
 
@@ -448,7 +230,7 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                                     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
                                 </div>
 
-                                {/* Node Visualizer (If Hex/Square Grid) - Simplified for Text Adventure Feel */}
+                                {/* Node Visualizer */}
                                 <div className="absolute inset-0 z-10 p-4 flex flex-col justify-end pb-12 pointer-events-none">
                                     <h1 className="text-3xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mb-2 animate-in slide-in-from-bottom-2">
                                         {currentNode?.label || "Unknown Location"}
@@ -556,26 +338,13 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                                         {/* TRAVEL / MAP BUTTON */}
                                         {currentNode?.link ? (
                                             <button
-                                                onClick={() => {
-                                                    const urlParams = new URLSearchParams(currentNode.link?.split('?')[1]);
-                                                    const newMapId = urlParams.get('id');
-                                                    if (newMapId) {
-                                                        const newMap = CAMPAIGN_MAPS.find(m => m.id === newMapId);
-                                                        if (newMap && newMap.nodes && newMap.nodes.length > 0) {
-                                                            setCurrentMapId(newMapId);
-                                                            // Reset to first node or specific entry point if we had one
-                                                            setCurrentNodeId(newMap.nodes[0].id);
-                                                            addToLog(`Travelled to ${newMap.title}`);
-                                                            playSfx("/sfx/door_heavy.mp3"); // Or appropriate transition sound
-                                                        }
-                                                    }
-                                                }}
                                                 className="game-btn bg-[#222] border border-cyan-800 text-cyan-500 hover:bg-cyan-900 hover:text-white text-[10px] uppercase font-bold animate-pulse"
                                             >
                                                 Enter
                                             </button>
                                         ) : (
                                             <button
+                                                onClick={() => setShowMap(!showMap)}
                                                 className={`game-btn bg-[#222] border border-[#444] hover:bg-green-900 hover:text-white text-[10px] uppercase font-bold text-gray-400 ${showMap ? 'border-green-500 text-green-500' : ''}`}
                                             >
                                                 Map

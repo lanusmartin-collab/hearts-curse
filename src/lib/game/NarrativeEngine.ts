@@ -1,9 +1,16 @@
 import { MapNode } from "@/lib/data/maps";
 
 export interface NarrativeEvent {
-    type: 'move' | 'examine' | 'combat' | 'item' | 'error';
+    type: 'move' | 'examine' | 'combat' | 'item' | 'error' | 'check';
     text: string;
     details?: string;
+    check?: {
+        skill: string;
+        dc: number;
+        onPass: string;
+        onFail: string;
+        id: string;
+    };
 }
 
 export const NarrativeEngine = {
@@ -15,7 +22,7 @@ export const NarrativeEngine = {
             ? `You travel ${direction.toUpperCase()}... `
             : "You find yourself in... ";
 
-        const cleanDesc = (node.description || "The area is silent.").replace(/\*\*/g, ""); // Remove markdown bold for raw text if needed
+        const cleanDesc = (node.description || "The area is silent.").replace(/\*\*/g, "");
 
         return {
             type: "move",
@@ -29,8 +36,26 @@ export const NarrativeEngine = {
      */
     systemMessage: (msg: string): NarrativeEvent => {
         return {
-            type: "error", // Using 'error' for general system style for now, or add 'system'
+            type: "error",
             text: `SYSTEM > ${msg}`
+        };
+    },
+
+    /**
+     * Requests a Skill Check.
+     */
+    requestCheck: (skill: string, dc: number, context: string, onPass: string, onFail: string): NarrativeEvent => {
+        return {
+            type: "check",
+            text: `SKILL CHECK: ${skill.toUpperCase()} (DC ${dc})`,
+            details: context,
+            check: {
+                skill,
+                dc,
+                onPass,
+                onFail,
+                id: `check_${Date.now()}`
+            }
         };
     },
 
