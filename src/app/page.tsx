@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import {
   BookOpen, ShoppingBag, Skull, Map,
-  Zap, Swords, Hammer, PenTool, FileText
+  Zap, Swords, Hammer, PenTool, FileText, Sparkles
 } from "lucide-react";
 import DashboardWidget from "@/components/ui/DashboardWidget";
 import CurseTracker from "@/components/ui/CurseTracker";
@@ -305,6 +305,11 @@ function GameController() {
 
           {/* 1. Session Tracker */}
           <SessionTrackerWidget />
+
+          {/* 1.5. The Oracle (New) */}
+          <DashboardWidget title="The Oracle" subtitle="AI Narrative Engine" icon={Sparkles} href="/oracle" variant="safe-haven" style={{ border: "1px solid var(--gold-accent)", background: "linear-gradient(to right, #1a0b2e, #0e0e0e)" }}>
+            <p style={{ fontSize: "0.75rem", color: "#b5a685" }}>Consult the spirits for room descriptions and NPC dialogue.</p>
+          </DashboardWidget>
 
           {/* 2. Quick NPC */}
           <QuickNpcWidget />

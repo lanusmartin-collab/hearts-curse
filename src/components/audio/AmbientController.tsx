@@ -19,9 +19,62 @@ export default function AmbientController() {
     const pulseRef = useRef<OscillatorNode | null>(null);
     const gainRef = useRef<GainNode | null>(null);
 
-    // ... (useEffect for storage sync)
+    // Sync Curse Level
+    useEffect(() => {
+        const stored = localStorage.getItem("hc_curse_level");
+        if (stored) setCurseLevel(parseInt(stored));
+    }, []);
 
-    // ... (useEffect for initialization)
+    // Initialize Web Audio API for Drone
+    useEffect(() => {
+        if (!isInitialized) return;
+        if (audioCtxRef.current) return;
+
+        try {
+            const Ctx = (window.AudioContext || (window as any).webkitAudioContext);
+            const ctx = new Ctx();
+            audioCtxRef.current = ctx;
+
+            // 1. Low Drone (Sub-bass)
+            const lowOsc = ctx.createOscillator();
+            lowOsc.type = "sine";
+            lowOsc.frequency.value = 40; // Deep rumble
+
+            // 2. Pulse (Subtle interference)
+            const pulseOsc = ctx.createOscillator();
+            pulseOsc.type = "sine"; // Smooth pulse
+            pulseOsc.frequency.value = 41; // 1Hz beat
+
+            // 3. Gain Node (Volume)
+            const gainNode = ctx.createGain();
+            gainNode.gain.value = 0; // Start silent
+
+            // Connections
+            lowOsc.connect(gainNode);
+            pulseOsc.connect(gainNode);
+            gainNode.connect(ctx.destination);
+
+            // Start
+            lowOsc.start();
+            pulseOsc.start();
+
+            // Store refs
+            lowDroneRef.current = lowOsc;
+            pulseRef.current = pulseOsc;
+            gainRef.current = gainNode;
+
+            console.log("Ambient Audio Engine Online (Tuned)");
+        } catch (e) {
+            console.error("Audio Init Failed", e);
+        }
+
+        return () => {
+            if (audioCtxRef.current) {
+                audioCtxRef.current.close();
+                audioCtxRef.current = null;
+            }
+        };
+    }, [isInitialized]);
 
     // Modulate sound based on Curse Level AND Ambience Mode
     useEffect(() => {
@@ -29,40 +82,40 @@ export default function AmbientController() {
 
         // Intensity calculation (0.0 to 1.0)
         let intensity = Math.min(curseLevel / 21, 1);
-        let baseFreq = 55;
-        let beatSpeed = 2;
+        let baseFreq = 40;
+        let beatSpeed = 1;
 
         // MODE OVERRIDES
         switch (ambienceMode) {
             case 'dungeon':
                 intensity = Math.max(intensity, 0.5);
-                baseFreq = 55 - (intensity * 10);
-                beatSpeed = 2 + (intensity * 6);
+                baseFreq = 35 - (intensity * 5); // Go deeper
+                beatSpeed = 1 + (intensity * 3);
                 break;
             case 'combat':
-                intensity = 1.2;
-                baseFreq = 45;
-                beatSpeed = 15;
+                intensity = 1.0;
+                baseFreq = 50;
+                beatSpeed = 8;
                 break;
             case 'boss_battle':
-                intensity = 1.5;
-                baseFreq = 40; // Very deep
-                beatSpeed = 20; // Panic inducing
+                intensity = 1.2;
+                baseFreq = 45;
+                beatSpeed = 12;
                 break;
             case 'ethereal':
                 intensity = 0.3;
-                baseFreq = 110; // Higher, floaty
-                beatSpeed = 0.5; // Very slow
+                baseFreq = 100; // Ethereal hum
+                beatSpeed = 0.5;
                 break;
             case 'library':
-                intensity = 0.2;
-                baseFreq = 80;
-                beatSpeed = 0.2; // Almost static
+                intensity = 0.1;
+                baseFreq = 60;
+                beatSpeed = 0.2;
                 break;
             case 'safe':
             default:
-                baseFreq = 55 - (intensity * 10);
-                beatSpeed = 2 + (intensity * 6);
+                baseFreq = 40 - (intensity * 5);
+                beatSpeed = 1 + (intensity * 2);
                 break;
         }
 
@@ -71,9 +124,9 @@ export default function AmbientController() {
         lowDroneRef.current.frequency.linearRampToValueAtTime(baseFreq, now + 2);
         pulseRef.current.frequency.linearRampToValueAtTime(baseFreq + beatSpeed, now + 2);
 
-        // Volume Logic (Louder as it gets more cursed/intense)
-        // Now multiplied by the Global Ambience Volume from Mixer
-        const baseVol = 0.05 + (intensity * 0.15);
+        // Volume Logic (Significantly Reduced)
+        // Base volume lowered from 0.05 to 0.02
+        const baseVol = 0.02 + (intensity * 0.08);
         const finalVol = isMuted ? 0 : (baseVol * ambienceVolume);
 
         gainRef.current.gain.linearRampToValueAtTime(finalVol, now + 1);

@@ -9,7 +9,8 @@ export default function AmbienceMixer() {
         volume, setVolume,
         musicVolume, setMusicVolume,
         ambienceVolume, setAmbienceVolume,
-        sfxVolume, setSfxVolume
+        sfxVolume, setSfxVolume,
+        playAmbience
     } = useAudio();
 
     return (
@@ -70,6 +71,29 @@ export default function AmbienceMixer() {
                         className="w-full accent-green-500 h-1 bg-[#333] rounded-lg appearance-none cursor-pointer"
                     />
                     <span className="text-[10px] font-mono text-gray-500">{Math.round(sfxVolume * 100)}</span>
+                </div>
+
+                <div className="h-[1px] bg-[#333] w-full my-2"></div>
+
+                {/* Presets */}
+                <div className="grid grid-cols-4 gap-2">
+                    {[
+                        { id: "safe", label: "Safe", color: "text-green-500", bg: "hover:bg-green-900/20" },
+                        { id: "dungeon", label: "Dungeon", color: "text-purple-500", bg: "hover:bg-purple-900/20" },
+                        { id: "combat", label: "Combat", color: "text-red-500", bg: "hover:bg-red-900/20" },
+                        { id: "boss_battle", label: "Boss", color: "text-orange-500", bg: "hover:bg-orange-900/20" }
+                    ].map(mode => (
+                        <button
+                            key={mode.id}
+                            onClick={() => playAmbience(mode.id as any)}
+                            className={`
+                                flexflex-col items-center justify-center p-2 rounded border border-[#333] transition
+                                ${mode.bg} ${mode.color}
+                            `}
+                        >
+                            <span className="text-[10px] uppercase font-bold tracking-wider">{mode.label}</span>
+                        </button>
+                    ))}
                 </div>
 
             </div>
