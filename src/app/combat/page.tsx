@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import BattleMap, { CombatToken } from "@/components/combat/BattleMap";
-import InitiativeTracker from "@/components/combat/InitiativeTracker";
+import InitiativeTracker from "@/components/game/combat/InitiativeTracker";
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
 import { Plus, User, Search } from "lucide-react";
 
@@ -92,12 +92,23 @@ export default function CombatPage() {
                 {/* Right Sidebar: Initiative */}
                 <div className="w-80 h-full border-l border-stone-800 z-10 shadow-xl">
                     <InitiativeTracker
-                        tokens={tokens}
-                        currentTurnIndex={currentTurn}
-                        onNextTurn={handleNextTurn}
-                        onDeleteToken={handleDelete}
-                        onUpdateToken={() => { }} // TODO: Implement edit
+                        combatants={tokens.map(t => ({
+                            id: t.id,
+                            name: t.label,
+                            initiative: t.initiative || 0,
+                            hp: t.hp,
+                            maxHp: t.maxHp,
+                            ac: t.ac,
+                            conditions: t.conditions || [],
+                            type: 'player' // Default type for the tracker
+                        }))}
+                        turnIndex={currentTurn}
                     />
+
+                    {/* Controls (Temporary Placeholder) */}
+                    <div className="p-4 flex gap-2 justify-center border-t border-stone-800">
+                        <button onClick={handleNextTurn} className="retro-btn bg-stone-800 text-xs">NEXT TURN</button>
+                    </div>
                 </div>
 
                 {/* "Add Monster" Floating Modal */}
