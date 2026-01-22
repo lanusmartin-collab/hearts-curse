@@ -43,6 +43,10 @@ interface GameState {
     startQuest: (questId: string) => void;
     updateQuestStep: (questId: string, stepId: string) => void;
 
+    // Factions (New)
+    factions: Record<string, number>;
+    setFactionReputation: (factionId: string, value: number) => void;
+
     // Meta
     saveGame: (saveName: string) => void;
     loadGame: (saveData: any) => void;
@@ -66,11 +70,26 @@ export const GameContextProvider = ({ children }: { children: ReactNode }) => {
     const [playerGold, setPlayerGold] = useState<number>(100);
     const [inventory, setInventory] = useState<ShopItem[]>([]);
 
-    // Quest State
     const [quests, setQuests] = useState<QuestState>({
         activeQuests: [],
         completedQuests: []
     });
+
+    // Factions State
+    const [factions, setFactions] = useState<Record<string, number>>({
+        zhentarim: 50,
+        thay: 50,
+        coalition: 75,
+        drow: 10,
+        larloch: 0
+    });
+
+    const setFactionReputation = (factionId: string, value: number) => {
+        setFactions(prev => ({
+            ...prev,
+            [factionId]: Math.max(0, Math.min(100, value))
+        }));
+    };
 
     // -- ACTIONS --
 
@@ -209,6 +228,8 @@ export const GameContextProvider = ({ children }: { children: ReactNode }) => {
                 quests,
                 startQuest,
                 updateQuestStep,
+                factions,
+                setFactionReputation,
                 saveGame,
                 loadGame
             }}

@@ -5,9 +5,15 @@ import { Howl } from "howler";
 
 export interface AudioContextType {
     isMuted: boolean;
-    volume: number;
+    volume: number; // Master
+    musicVolume: number;
+    sfxVolume: number;
+    ambienceVolume: number;
     toggleMute: () => void;
     setVolume: (val: number) => void;
+    setMusicVolume: (val: number) => void;
+    setSfxVolume: (val: number) => void;
+    setAmbienceVolume: (val: number) => void;
     playSfx: (src: string) => void;
     playMusic: (src: string) => void;
     initializeAudio: () => void;
@@ -23,6 +29,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     const [volume, setVolume] = useState(0.5);
     const [isInitialized, setIsInitialized] = useState(false);
     const [ambienceMode, setAmbienceMode] = useState<"safe" | "dungeon" | "combat" | "boss_battle" | "ethereal" | "library">("safe");
+
+    const [musicVolume, setMusicVolume] = useState(0.5);
+    const [sfxVolume, setSfxVolume] = useState(0.8);
+    const [ambienceVolume, setAmbienceVolume] = useState(0.4);
 
     const sfxRef = useRef<{ [key: string]: Howl }>({});
     const musicRef = useRef<Howl | null>(null);
@@ -45,14 +55,24 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         Howler.volume(volume);
     }, [volume]);
 
+    // Update active music volume when channel volume changes
+    useEffect(() => {
+        if (musicRef.current) {
+            musicRef.current.volume(musicVolume);
+        }
+    }, [musicVolume]);
+
     // Quick SFX player (fire and forget)
     const playSfx = React.useCallback((src: string) => {
         if (!isInitialized || isMuted) return;
+        // Always create new instance for overlap or reuse if cached
         if (!sfxRef.current[src]) {
-            sfxRef.current[src] = new Howl({ src: [src], volume: 0.8 });
+            sfxRef.current[src] = new Howl({ src: [src] });
         }
+        // Update volume before playing
+        sfxRef.current[src].volume(sfxVolume);
         sfxRef.current[src].play();
-    }, [isInitialized, isMuted]);
+    }, [isInitialized, isMuted, sfxVolume]);
 
     // Music Player with Crossfade
     const playMusic = React.useCallback((src: string) => {
@@ -62,7 +82,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         // Fade out existing
         if (musicRef.current) {
             const oldMusic = musicRef.current;
-            oldMusic.fade(volume * 0.5, 0, 1000);
+            oldMusic.fade(musicVolume, 0, 1000);
             setTimeout(() => {
                 oldMusic.stop();
                 oldMusic.unload();
@@ -78,18 +98,35 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         });
 
         newMusic.play();
-        newMusic.fade(0, volume * 0.5, 2000);
+        newMusic.fade(0, musicVolume, 2000);
 
         musicRef.current = newMusic;
         currentMusicSrc.current = src;
-    }, [isInitialized, volume]);
+    }, [isInitialized, musicVolume]);
 
     const playAmbience = React.useCallback((mode: "safe" | "dungeon" | "combat" | "boss_battle" | "ethereal" | "library") => {
         setAmbienceMode(mode);
     }, []);
 
     return (
-        <AudioContext.Provider value={{ isMuted, volume, toggleMute: () => setIsMuted(!isMuted), setVolume, playSfx, playMusic, initializeAudio, isInitialized, ambienceMode, playAmbience }}>
+        <AudioContext.Provider value={{
+            isMuted,
+            volume, // Master
+            musicVolume,
+            sfxVolume,
+            ambienceVolume,
+            toggleMute: () => setIsMuted(!isMuted),
+            setVolume,
+            setMusicVolume,
+            setSfxVolume,
+            setAmbienceVolume,
+            playSfx,
+            playMusic,
+            initializeAudio,
+            isInitialized,
+            ambienceMode,
+            playAmbience
+        }}>
             {children}
         </AudioContext.Provider>
     );
@@ -103,8 +140,14 @@ export function useAudio() {
         return {
             isMuted: false,
             volume: 0.5,
+            musicVolume: 0.5,
+            sfxVolume: 0.8,
+            ambienceVolume: 0.4,
             toggleMute: () => { },
             setVolume: () => { },
+            setMusicVolume: () => { },
+            setSfxVolume: () => { },
+            setAmbienceVolume: () => { },
             playSfx: () => { },
             playMusic: () => { },
             initializeAudio: () => { },

@@ -10,7 +10,7 @@ import { Volume2, VolumeX } from "lucide-react";
 // }
 
 export default function AmbientController() {
-    const { isInitialized, initializeAudio, isMuted, toggleMute, ambienceMode } = useAudio();
+    const { isInitialized, initializeAudio, isMuted, toggleMute, ambienceMode, ambienceVolume } = useAudio();
     const [curseLevel, setCurseLevel] = useState(0);
     const audioCtxRef = useRef<AudioContext | null>(null);
 
@@ -72,10 +72,13 @@ export default function AmbientController() {
         pulseRef.current.frequency.linearRampToValueAtTime(baseFreq + beatSpeed, now + 2);
 
         // Volume Logic (Louder as it gets more cursed/intense)
-        const targetVol = isMuted ? 0 : (0.05 + (intensity * 0.15));
-        gainRef.current.gain.linearRampToValueAtTime(targetVol, now + 1);
+        // Now multiplied by the Global Ambience Volume from Mixer
+        const baseVol = 0.05 + (intensity * 0.15);
+        const finalVol = isMuted ? 0 : (baseVol * ambienceVolume);
 
-    }, [curseLevel, isMuted, isInitialized, ambienceMode]);
+        gainRef.current.gain.linearRampToValueAtTime(finalVol, now + 1);
+
+    }, [curseLevel, isMuted, isInitialized, ambienceMode, ambienceVolume]);
 
     if (!isInitialized) {
         return (

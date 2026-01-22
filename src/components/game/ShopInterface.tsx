@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ShopData, ShopItem } from '@/lib/data/shops';
 import { X, Coins, ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
+import { useGameContext } from '@/lib/context/GameContext'; // Add Import
 
 interface ShopInterfaceProps {
     shop: ShopData;
@@ -12,6 +13,16 @@ interface ShopInterfaceProps {
 
 export default function ShopInterface({ shop, playerGold, onClose, onBuy }: ShopInterfaceProps) {
     const [selectedItem, setSelectedItem] = useState<ShopItem | null>(null);
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+    // -- FACTION LOGIC --
+    const { factions } = useGameContext();
+    const isZhentarimControlled = shop.id === 'crows_nest' || shop.id === 'market';
+    // Default to 50 if factions undefined (handling safety)
+    const zhentRep = factions?.zhentarim ?? 50;
+
+    // Logic: < 20 Rep = 2.0x Prices. > 80 Rep = 0.8x Prices.
+    const priceMultiplier = (isZhentarimControlled && zhentRep < 20) ? 2.0 : (isZhentarimControlled && zhentRep > 80 ? 0.8 : 1.0);
 
     return (
         <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 backdrop-blur-md animate-in fade-in zoom-in-95 duration-200">
@@ -57,6 +68,10 @@ export default function ShopInterface({ shop, playerGold, onClose, onBuy }: Shop
                         <div className="flex items-center gap-2 text-[#d4c391]">
                             <ShoppingBag className="w-5 h-5" />
                             <span className="font-bold tracking-widest uppercase text-sm">Wares for Sale</span>
+
+                            {/* PRICING ALERTS */}
+                            {priceMultiplier > 1 && <span className="text-[10px] bg-red-900 text-red-100 px-2 py-0.5 rounded animate-pulse">SURGE PRICING (Zhentarim Hostile)</span>}
+                            {priceMultiplier < 1 && <span className="text-[10px] bg-green-900 text-green-100 px-2 py-0.5 rounded">ALLY DISCOUNT</span>}
                         </div>
                         <div className="flex items-center gap-2 text-yellow-500 font-mono bg-black/50 px-3 py-1 rounded border border-[#333]">
                             <Coins className="w-4 h-4" />
@@ -67,7 +82,8 @@ export default function ShopInterface({ shop, playerGold, onClose, onBuy }: Shop
                     {/* Item Grid */}
                     <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-4 content-start custom-scrollbar">
                         {shop.inventory.map((item) => {
-                            const canAfford = playerGold >= item.cost;
+                            const adjustedCost = Math.ceil(item.cost * priceMultiplier);
+                            const canAfford = playerGold >= adjustedCost;
                             const isSoldOut = item.stock <= 0;
 
                             return (
@@ -85,9 +101,11 @@ export default function ShopInterface({ shop, playerGold, onClose, onBuy }: Shop
                                         <span className={`font-bold font-serif ${isSoldOut ? 'text-gray-600 line-through' : 'text-[#e5e5e5]'}`}>
                                             {item.name}
                                         </span>
-                                        <span className={`font-mono text-xs ${canAfford ? 'text-yellow-500' : 'text-red-500'}`}>
-                                            {item.cost} gp
-                                        </span>
+                                        <div className={`flex items-center gap-1 font-mono text-xs ${canAfford ? 'text-yellow-500' : 'text-red-500'}`}>
+                                            {priceMultiplier !== 1 && <span className="text-[9px] line-through opacity-50 mr-1">{item.cost}</span>}
+                                            <Coins size={12} />
+                                            {adjustedCost} gp
+                                        </div>
                                     </div>
                                     <div className="text-xs text-[#888] line-clamp-2 h-8">{item.description}</div>
                                     <div className="mt-3 flex justify-between items-center text-[10px] uppercase tracking-wider text-[#555]">
@@ -109,16 +127,25 @@ export default function ShopInterface({ shop, playerGold, onClose, onBuy }: Shop
                             )}
                         </div>
                         <button
-                            disabled={!selectedItem || playerGold < (selectedItem?.cost || 0)}
-                            onClick={() => selectedItem && onBuy(selectedItem)}
+                            disabled={!selectedItem || playerGold < Math.ceil((selectedItem?.cost || 0) * priceMultiplier)}
+                            onClick={() => {
+                                if (selectedItem) {
+                                    // Pass original item to handler, handler handles logic? 
+                                    // Wait, if we change price visually, actual logic must dedup logic or pass modified cost. 
+                                    // useGameLogic.handleBuyItem checks item.cost. 
+                                    // We should probably modify the item passed to onBuy or handle logic in onBuy.
+                                    // Since onBuy is passed from GameLayout -> useGameLogic, let's clone item with new cost.
+                                    onBuy({ ...selectedItem, cost: Math.ceil(selectedItem.cost * priceMultiplier) });
+                                }
+                            }}
                             className={`
                                 px-6 py-3 font-bold uppercase tracking-widest text-sm transition-all
-                                ${!selectedItem || playerGold < (selectedItem?.cost || 0)
+                                ${!selectedItem || playerGold < Math.ceil((selectedItem?.cost || 0) * priceMultiplier)
                                     ? 'bg-[#222] text-[#555] cursor-not-allowed'
                                     : 'bg-[#8b7e66] hover:bg-[#a32222] text-black hover:text-white shadow-[0_0_15px_rgba(139,126,102,0.3)]'}
                             `}
                         >
-                            {selectedItem && playerGold < selectedItem.cost ? "Insufficient Gold" : "Purchase"}
+                            {selectedItem && playerGold < Math.ceil(selectedItem.cost * priceMultiplier) ? "Insufficient Gold" : "Purchase"}
                         </button>
                     </div>
                 </div>

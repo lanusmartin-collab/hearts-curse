@@ -11,6 +11,11 @@ import PartyStatusWidget from "@/components/ui/PartyStatusWidget";
 import AmbientController from "@/components/audio/AmbientController";
 import { CommandMenu } from "@/components/ui/CommandMenu";
 import QuestLog from "@/components/ui/QuestLog";
+import NotepadWidget from "@/components/ui/NotepadWidget";
+import SessionTrackerWidget from "@/components/ui/SessionTrackerWidget";
+import QuickNpcWidget from "@/components/ui/QuickNpcWidget";
+import SoundboardWidget from "@/components/audio/SoundboardWidget";
+import AmbienceMixer from "@/components/audio/AmbienceMixer";
 
 import GameLayout from "@/components/game/GameLayout";
 
@@ -282,8 +287,22 @@ function GameController() {
 
         </div>
 
-        {/* RIGHT COLUMN: Tools & Utils */}
+        {/* RIGHT COLUMN: DM Tools & Utilities */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+
+          {/* 1. Session Tracker */}
+          <SessionTrackerWidget />
+
+          {/* 2. Quick NPC */}
+          <QuickNpcWidget />
+
+          {/* 3. Notepad */}
+          <NotepadWidget />
+
+          {/* 4. Audio Engine */}
+          <AmbienceMixer />
+          <SoundboardWidget />
+
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
             <DashboardWidget title="Tools" subtitle="Foundry" icon={Hammer} href="/generators" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
             <DashboardWidget title="Architect" subtitle="Arcanist's Quill" icon={PenTool} href="/editor" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
@@ -298,7 +317,7 @@ function GameController() {
           </DashboardWidget>
 
           <footer style={{ marginTop: "auto", textAlign: "center", opacity: 0.4, fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--fg-dim)" }}>
-            HEART'S CURSE // SESSION 25 (BUILD 3.0 - ARCHITECTURE UPDATE)
+            HEART'S CURSE // SESSION 25 (BUILD 3.1 - DM DASHBOARD)
           </footer>
         </div>
 
