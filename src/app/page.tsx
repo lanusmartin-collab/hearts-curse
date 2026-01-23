@@ -25,6 +25,7 @@ import MainMenu from "@/components/game/intro/MainMenu";
 import AdvancedCharacterCreation from "@/components/game/AdvancedCharacterCreation";
 import PrologueController from "@/components/game/intro/PrologueController";
 import WorldMap from "@/components/game/intro/WorldMap";
+import CampaignReader from "@/components/campaign/CampaignReader";
 // import LockScreen from "@/components/ui/LockScreen"; // Keep import if we revert
 import { GameContextProvider, useGameContext } from "@/lib/context/GameContext";
 import { ToastProvider } from "@/lib/context/ToastContext";
@@ -146,6 +147,10 @@ function GameController() {
       // I will update GameLayout next, so let's just render it.
       />
     );
+  }
+
+  if (viewMode === "book") {
+    return <CampaignReader onClose={() => setViewMode("home")} />;
   }
 
   // "home" / "book" (handled in DASHBOARD below)
