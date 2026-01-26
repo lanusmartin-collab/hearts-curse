@@ -195,6 +195,23 @@ export default function ShadowCaster() {
                                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                                     loading="lazy"
                                 ></iframe>
+
+                                <div className="mt-2 p-2 rounded bg-white/5 border border-white/10 text-[10px] text-[#888] flex flex-col gap-1">
+                                    <div className="flex items-center justify-between">
+                                        <span>Only playing previews?</span>
+                                        <a
+                                            href="https://open.spotify.com"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="px-2 py-1 bg-[#1DB954] text-black font-bold rounded hover:bg-[#1ed760] transition-colors"
+                                        >
+                                            Login to Spotify
+                                        </a>
+                                    </div>
+                                    <p className="opacity-70">
+                                        Log in on the web player to enable full playback. Ensure third-party cookies are enabled.
+                                    </p>
+                                </div>
                             </div>
                         )}
                     </div>

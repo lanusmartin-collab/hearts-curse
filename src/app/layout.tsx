@@ -12,6 +12,11 @@ export const metadata: Metadata = {
   },
   description: "A specialized D&D 5e Campaign Manager for the Heart's Curse adventure. Manage curses, track quests, and survive the darkness.",
   manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Heart's Curse",
+  },
   openGraph: {
     title: "Heart's Curse Campaign Manager",
     description: "Survive the Curse. Manage the Heart. All in one tab.",

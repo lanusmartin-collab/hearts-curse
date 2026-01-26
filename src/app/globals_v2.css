@@ -144,6 +144,14 @@ button:active {
     padding: 2rem;
 }
 
+@media (max-width: 768px) {
+
+    .container,
+    .retro-container {
+        padding: 1rem;
+    }
+}
+
 .card,
 .retro-border {
     background: var(--obsidian-base);
@@ -470,6 +478,81 @@ select:focus {
 
 .group:hover .title-heartbeat {
     animation: heartbeat 1s infinite;
+}
+
+@keyframes talking {
+
+    0%,
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    50% {
+        transform: scale(1.05) translateY(-2px);
+        filter: brightness(1.2);
+    }
+
+    25%,
+    75% {
+        transform: scale(1.02) translateY(1px);
+    }
+}
+
+.animate-talking {
+    animation: talking 0.2s infinite alternate;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes crit-flash {
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.animate-shake {
+    animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+.animate-crit-flash {
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 9999;
+    pointer-events: none;
+    animation: crit-flash 0.5s ease-out;
 }
 
 /* DICE ROLLER STYLES (Tools Dock) */

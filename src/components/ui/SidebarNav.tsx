@@ -5,11 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
     Menu, X, BookOpen, ShoppingBag, Skull, Map,
-    Zap, Swords, Hammer, PenTool, FileText, Home, Scroll
+    Zap, Swords, Hammer, PenTool, FileText, Home, Scroll, Download
 } from "lucide-react";
 import clsx from "clsx";
 import CurseTracker from "./CurseTracker";
 import { useGrimoire } from "@/lib/game/spellContext";
+import { useEffect } from "react";
 
 const NAV_ITEMS = [
     { href: "/", label: "Sanctum", icon: Home },
@@ -27,8 +28,27 @@ const NAV_ITEMS = [
 
 export default function SidebarNav() {
     const [isOpen, setIsOpen] = useState(false);
+    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const pathname = usePathname();
     const { openGrimoire } = useGrimoire();
+
+    useEffect(() => {
+        const handler = (e: any) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+        };
+        window.addEventListener('beforeinstallprompt', handler);
+        return () => window.removeEventListener('beforeinstallprompt', handler);
+    }, []);
+
+    const handleInstall = async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            setDeferredPrompt(null);
+        }
+    };
 
     return (
         <>
@@ -185,6 +205,32 @@ export default function SidebarNav() {
                     <div style={{ marginTop: "1rem", fontSize: "0.6rem", textAlign: "center", color: "var(--fg-dim)", opacity: 0.3, fontFamily: "var(--font-mono)" }}>
                         v1.2.1 // HEART'S CURSE
                     </div>
+                    {deferredPrompt && (
+                        <button
+                            onClick={handleInstall}
+                            style={{
+                                marginTop: "1rem",
+                                width: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: "0.5rem",
+                                padding: "0.5rem",
+                                background: "rgba(138,28,28,0.2)",
+                                border: "1px solid var(--scarlet-accent)",
+                                color: "var(--scarlet-accent)",
+                                borderRadius: "0.25rem",
+                                cursor: "pointer",
+                                fontSize: "0.75rem",
+                                textTransform: "uppercase",
+                                fontFamily: "var(--font-serif)",
+                                letterSpacing: "0.05em"
+                            }}
+                        >
+                            <Download style={{ width: "16px", height: "16px" }} />
+                            Install App
+                        </button>
+                    )}
                 </div>
             </div>
         </>

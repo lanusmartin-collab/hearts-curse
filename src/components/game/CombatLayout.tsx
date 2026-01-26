@@ -58,6 +58,10 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
     const [combatStarted, setCombatStarted] = useState(false);
     const [aoeData, setAoeData] = useState<{ radius: number, range: number, onConfirm: (x: number, y: number) => void } | null>(null);
 
+    // VISUAL FX STATE
+    const [screenShake, setScreenShake] = useState(false);
+    const [critFlash, setCritFlash] = useState(false);
+
     const logEndRef = useRef<HTMLDivElement>(null);
 
     // Initial Load
@@ -197,6 +201,10 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
         if (loc) {
             addToLog(`> ${pendingAction.name} blasts area!`);
             playSfx("/sfx/explosion.mp3");
+
+            // FX: AoE always shakes
+            setScreenShake(true);
+            setTimeout(() => setScreenShake(false), 500);
             // Hit all enemies (simplification)
             enemies.forEach(e => {
                 const dmg = resolveRoll(pendingAction.damage || "2d6");
@@ -219,6 +227,17 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                 handleUpdate(targetId, { hp: Math.max(0, target.hp - dmg) });
                 addToLog(`> ${pendingAction.name} HITS ${target.name} for ${dmg}!`);
                 playSfx("/sfx/hit.mp3");
+
+                // FX: Shake on hit
+                setScreenShake(true);
+                setTimeout(() => setScreenShake(false), 400);
+
+                if (roll === 20) {
+                    addToLog(`*** CRITICAL HIT! ***`);
+                    setCritFlash(true);
+                    setTimeout(() => setCritFlash(false), 500);
+                    playSfx("/sfx/crit.mp3");
+                }
                 if (target.hp <= dmg) handleDefeat(targetId);
             } else {
                 addToLog(`> ${pendingAction.name} MISSES (${total} vs AC${target.ac})`);
@@ -321,7 +340,8 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
     }, [turnIndex, combatStarted]);
 
     return (
-        <div className="fixed inset-0 z-[2000] bg-[#0a0a0c] text-[#d4c391] font-serif flex flex-col">
+        <div className={`fixed inset-0 z-[2000] bg-[#0a0a0c] text-[#d4c391] font-serif flex flex-col ${screenShake ? 'animate-shake' : ''}`}>
+            {critFlash && <div className="animate-crit-flash" />}
 
             {/* HUD */}
             <InitiativeTracker combatants={combatants} turnIndex={turnIndex} />

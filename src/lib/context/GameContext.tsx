@@ -50,6 +50,10 @@ interface GameState {
     // Meta
     saveGame: (saveName: string) => void;
     loadGame: (saveData: any) => void;
+
+    // Streamer Mode
+    isStreamerMode: boolean;
+    setStreamerMode: (val: boolean) => void;
 }
 
 const GameContext = createContext<GameState | undefined>(undefined);
@@ -59,6 +63,7 @@ export const GameContextProvider = ({ children }: { children: ReactNode }) => {
 
     // View State
     const [viewMode, setViewMode] = useState<ViewMode>("home");
+    const [isStreamerMode, setStreamerMode] = useState(false);
 
     // World State
     const [currentMapId, setCurrentMapId] = useState<string>("oakhaven");
@@ -231,7 +236,9 @@ export const GameContextProvider = ({ children }: { children: ReactNode }) => {
                 factions,
                 setFactionReputation,
                 saveGame,
-                loadGame
+                loadGame,
+                isStreamerMode,
+                setStreamerMode
             }}
         >
             {children}

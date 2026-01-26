@@ -13,9 +13,12 @@ import {
     Home,
     ShoppingBag,
     Swords,
-    Hammer
+    Hammer,
+    Eye,
+    EyeOff
 } from "lucide-react";
 import { useAudio } from "@/lib/context/AudioContext";
+import { useGameContext } from "@/lib/context/GameContext";
 
 interface CommandMenuProps {
     onSave?: () => void;
@@ -25,6 +28,7 @@ export function CommandMenu({ onSave }: CommandMenuProps) {
     const [open, setOpen] = React.useState(false);
     const router = useRouter();
     const { playSfx } = useAudio();
+    const { isStreamerMode, setStreamerMode } = useGameContext();
 
     // Toggle with Ctrl+K
     React.useEffect(() => {
@@ -104,6 +108,10 @@ export function CommandMenu({ onSave }: CommandMenuProps) {
                         }
                     })}>
                         <span className="mr-2">💾</span> Save Game
+                    </Command.Item>
+                    <Command.Item onSelect={() => runCommand(() => setStreamerMode(!isStreamerMode))}>
+                        {isStreamerMode ? <Eye className="mr-2 h-4 w-4 text-red-500" /> : <EyeOff className="mr-2 h-4 w-4" />}
+                        {isStreamerMode ? "Disable Streamer Mode" : "Enable Streamer Mode"}
                     </Command.Item>
                 </Command.Group>
 

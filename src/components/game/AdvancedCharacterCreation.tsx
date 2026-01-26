@@ -46,6 +46,9 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
     const [equipment, setEquipment] = useState<Set<string>>(new Set());
     const [customItems, setCustomItems] = useState<{ id: string, name: string, type: 'weapon' | 'armor' | 'gear', stats: string }[]>([]);
 
+    // MOBILE UI STATE
+    const [showMobilePreview, setShowMobilePreview] = useState(false);
+
     // MODAL STATE
     const [showItemForge, setShowItemForge] = useState(false);
     const [newItemName, setNewItemName] = useState("");
@@ -240,10 +243,10 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
     };
 
     return (
-        <div className="fixed inset-0 bg-[#0a0a0c] text-[#d4c391] z-[100] font-serif overflow-hidden flex">
+        <div className="fixed inset-0 bg-[#0a0a0c] text-[#d4c391] z-[100] font-serif overflow-hidden flex flex-col md:flex-row">
 
-            {/* LEFT: Tab Navigation */}
-            <div className="w-20 bg-[#050505] border-r border-[#333] flex flex-col items-center py-8 gap-8">
+            {/* LEFT: Tab Navigation (Bottom Bar on Mobile) */}
+            <div className="w-full h-16 md:w-20 md:h-full bg-[#050505] border-t md:border-t-0 md:border-r border-[#333] flex flex-row md:flex-col justify-around md:justify-start items-center md:py-8 gap-0 md:gap-8 order-last md:order-first shrink-0 z-50">
                 <button onClick={() => setActiveTab('identity')} className={`p-3 rounded-xl transition-all ${activeTab === 'identity' ? 'bg-[#a32222] text-white shadow-lg shadow-red-900/20' : 'text-[#444] hover:text-[#bbb]'}`}>
                     <User className="w-6 h-6" />
                 </button>
@@ -258,16 +261,27 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                 <button onClick={() => setActiveTab('gear')} className={`p-3 rounded-xl transition-all ${activeTab === 'gear' ? 'bg-[#a32222] text-white shadow-lg shadow-red-900/20' : 'text-[#444] hover:text-[#bbb]'}`}>
                     <Sword className="w-6 h-6" />
                 </button>
+
+                {/* Mobile Preview Toggle (Only visible on small screens in nav) */}
+                <button onClick={() => setShowMobilePreview(!showMobilePreview)} className={`md:hidden p-3 rounded-xl transition-all ${showMobilePreview ? 'bg-[#d4c391] text-black' : 'text-[#444]'}`}>
+                    <Scroll className="w-6 h-6" />
+                </button>
             </div>
 
             {/* CENTER: Work Area */}
-            <div className="flex-1 bg-[#0a0a0c] p-8 overflow-y-auto custom-scrollbar relative">
-                <h2 className="text-3xl font-bold text-[#a32222] mb-8 uppercase tracking-widest border-b border-[#333] pb-4">
-                    {activeTab === 'identity' && "Identity & Origin"}
-                    {activeTab === 'stats' && "Ability Scores & Class"}
-                    {activeTab === 'spells' && "Grimoire Preparation"}
-                    {activeTab === 'gear' && "Arsenal & Equipment"}
-                </h2>
+            <div className="flex-1 bg-[#0a0a0c] p-4 md:p-8 overflow-y-auto custom-scrollbar relative pb-24 md:pb-8">
+                <div className="flex justify-between items-center border-b border-[#333] pb-4 mb-8">
+                    <h2 className="text-xl md:text-3xl font-bold text-[#a32222] uppercase tracking-widest">
+                        {activeTab === 'identity' && "Identity & Origin"}
+                        {activeTab === 'stats' && "Ability Scores & Class"}
+                        {activeTab === 'spells' && "Grimoire Preparation"}
+                        {activeTab === 'gear' && "Arsenal & Equipment"}
+                    </h2>
+                    {/* Mobile Preview Button Header */}
+                    <button onClick={() => setShowMobilePreview(true)} className="md:hidden text-[#d4c391] border border-[#333] p-2 rounded hover:bg-[#222]">
+                        <BookOpen className="w-5 h-5" />
+                    </button>
+                </div>
 
                 <div className="max-w-4xl mx-auto space-y-8 pb-32">
 
@@ -279,7 +293,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                 <input value={name} onChange={e => setName(e.target.value)} className="w-full bg-[#111] border border-[#333] p-4 text-xl text-white focus:border-[#a32222] outline-none" />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-2">
                                     <label className="text-xs uppercase tracking-widest text-[#666]">Race</label>
                                     <select value={raceId} onChange={e => setRaceId(e.target.value)} className="w-full bg-[#111] border border-[#333] p-3 text-white">
@@ -316,7 +330,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
 
                             <div className="space-y-2">
                                 <label className="text-xs uppercase tracking-widest text-[#666]">Class</label>
-                                <div className="grid grid-cols-4 gap-2">
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                                     {CLASSES.map(cls => (
                                         <button key={cls.id} onClick={() => { setClassId(cls.id); setSubclassIndex(0); setKnownSpells(new Set()); setPreparedSpells(new Set()); }} className={`p-3 border transition-all flex flex-col items-center gap-1 ${classId === cls.id ? 'bg-[#a32222] border-[#ff4444] text-white' : 'bg-[#111] border-[#333] text-[#666] hover:border-[#666]'}`}>
                                             <span className="font-bold text-sm">{cls.name}</span>
@@ -357,7 +371,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                     <h3 className="text-lg font-bold text-[#d4c391]">Ability Scores</h3>
                                     <button onClick={rollStats} className="text-[#a32222] text-sm hover:text-white flex items-center gap-2"><Dices className="w-4 h-4" /> Roll 4d6 (Drop Lowest)</button>
                                 </div>
-                                <div className="grid grid-cols-6 gap-4">
+                                <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
                                     {(Object.keys(stats) as Array<keyof typeof stats>).map(key => (
                                         <div key={key} className="flex flex-col items-center gap-2 p-4 bg-[#111] border border-[#333]">
                                             <span className="text-xs uppercase text-[#666] font-bold">{key}</span>
@@ -374,7 +388,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                             </div>
 
                             {/* Class Features */}
-                            <div className="grid grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="bg-[#111] p-6 border border-[#333]">
                                     <h4 className="text-[#a32222] font-bold mb-4 flex items-center gap-2"><BookOpen className="w-4 h-4" /> Class Traits</h4>
                                     <ul className="space-y-2 text-sm text-[#ccc]">
@@ -422,9 +436,9 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-8 h-[500px]">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-auto md:h-[500px]">
                                 {/* AVAILABLE */}
-                                <div className="border border-[#333] bg-[#111] flex flex-col">
+                                <div className="border border-[#333] bg-[#111] flex flex-col h-[400px] md:h-auto">
                                     <div className="p-3 border-b border-[#333] bg-[#050505] font-bold text-sm text-[#888]">Available Spells</div>
                                     <div className="overflow-y-auto flex-1 p-2 custom-scrollbar">
                                         {(() => {
@@ -466,7 +480,7 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
                                 </div>
 
                                 {/* PREPARED */}
-                                <div className="border border-[#333] bg-[#1a0505] flex flex-col">
+                                <div className="border border-[#333] bg-[#1a0505] flex flex-col h-[400px] md:h-auto">
                                     <div className="p-3 border-b border-[#333] bg-[#050505] font-bold text-sm text-[#a32222]">My Grimoire</div>
                                     <div className="overflow-y-auto flex-1 p-2 space-y-1">
                                         <div className="text-xs uppercase text-[#666] font-bold mt-2 mb-1 px-2">Cantrips</div>
@@ -559,9 +573,16 @@ export default function AdvancedCharacterCreation({ onComplete }: AdvancedCharac
 
             </div>
 
-            {/* RIGHT: Character Card Preview */}
-            <div className="w-96 bg-[url('/textures/paper_texture.jpg')] bg-cover text-[#1a1a1a] p-8 border-l-4 border-[#1a1a1a] shadow-2xl relative">
-                <div className="h-full border-2 border-[#1a1a1a] p-6 flex flex-col">
+            {/* RIGHT: Character Card Preview (Hidden on mobile unless toggled) */}
+            <div className={`
+                fixed inset-0 z-[150] bg-[#1a1a1a] overflow-y-auto transition-transform duration-300
+                md:static md:w-96 md:bg-[url('/textures/paper_texture.jpg')] md:bg-cover md:inset-auto md:translate-x-0 md:border-l-4 md:border-[#1a1a1a] md:shadow-2xl md:z-auto
+                ${showMobilePreview ? 'translate-x-0' : 'translate-x-full'}
+            `}>
+                <div className="h-full border-2 border-[#1a1a1a] p-6 flex flex-col bg-[#e6dac3] text-[#1a1a1a] min-h-screen md:min-h-0 relative">
+                    <button onClick={() => setShowMobilePreview(false)} className="md:hidden absolute top-2 right-2 p-2 bg-black/10 rounded-full">
+                        <User className="w-6 h-6" />
+                    </button>
                     <div className="flex justify-between items-start mb-6">
                         <div className="w-20 h-20 bg-[#ccc] border-2 border-[#1a1a1a] flex items-center justify-center">
                             <span className="text-4xl">?</span>
