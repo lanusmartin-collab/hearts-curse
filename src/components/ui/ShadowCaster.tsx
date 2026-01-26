@@ -200,7 +200,7 @@ export default function ShadowCaster() {
                                     <div className="flex items-center justify-between">
                                         <span>Only playing previews?</span>
                                         <a
-                                            href="https://open.spotify.com"
+                                            href="https://accounts.spotify.com/en/login?continue=https:%2F%2Fopen.spotify.com%2F"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="px-2 py-1 bg-[#1DB954] text-black font-bold rounded hover:bg-[#1ed760] transition-colors"
