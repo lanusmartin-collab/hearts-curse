@@ -10,9 +10,14 @@ export default function PremiumGate({ children, feature }: { children: ReactNode
 
     if (isLoading) return null; // Or a spinner
 
+    // MASTER KEY OVERRIDE: Always allow access
+    return <>{children}</>;
+
+    /* Original Logic for reference
     if (user?.isPro) {
         return <>{children}</>;
     }
+    */
 
     return (
         <div className="relative w-full h-full min-h-[400px] overflow-hidden rounded border border-[#333] bg-[#050505] group">

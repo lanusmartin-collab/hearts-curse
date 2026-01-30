@@ -12,7 +12,7 @@ type PlayerCharacter = {
     race: string;
     class: string;
     alignment: string;
-    stats: { str: number; dex: number; con: number; int: number; wis: number; cha: number };
+    stats: { str: number; dex: number; con: number; int: number; wis: number; cha: number; personality: number };
     ac: number;
     hp: number;
     maxHp: number;
@@ -54,7 +54,7 @@ export default function PlayersPage() {
                 race: "Human",
                 class: "Fighter 5",
                 alignment: "Neutral Good",
-                stats: { str: 16, dex: 14, con: 15, int: 10, wis: 12, cha: 13 },
+                stats: { str: 16, dex: 14, con: 15, int: 10, wis: 12, cha: 13, personality: 10 },
                 ac: 18,
                 hp: 44,
                 maxHp: 44,
@@ -89,7 +89,7 @@ export default function PlayersPage() {
             race: "Unknown",
             class: "Commoner 1",
             alignment: "Unaligned",
-            stats: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
+            stats: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10, personality: 10 },
             ac: 10,
             hp: 10,
             maxHp: 10,
@@ -392,6 +392,64 @@ export default function PlayersPage() {
                                                     );
                                                 })}
                                             </div>
+
+                                            {/* Warlock Skills Section */}
+                                            {activePlayer.class.toLowerCase().includes('warlock') && (
+                                                <div className="mb-4 bg-[#1a0a2a] border border-[#bf80ff] p-3 shadow-inner">
+                                                    <h4 className="text-[#bf80ff] font-header text-sm tracking-[0.1em] mb-3 text-center border-b border-[#bf80ff]/20 pb-1 font-bold">
+                                                        Warlock Powers
+                                                    </h4>
+
+                                                    {/* Staff/Wand Damage Bonus */}
+                                                    <div className="mb-3 p-2 bg-[#0a0515] border border-[#bf80ff]/30 rounded">
+                                                        <div className="text-[10px] uppercase tracking-wider text-[#bf80ff] mb-1 font-bold">Staff/Wand Damage</div>
+                                                        <div className="text-sm text-white font-mono">
+                                                            +{(activePlayer.stats.int || 10) + (activePlayer.stats.personality || 10)}
+                                                            <span className="text-[10px] text-[#bf80ff]/60 ml-2">(Int + Personality)</span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Skills Display */}
+                                                    <div className="space-y-2">
+                                                        {(() => {
+                                                            // Extract level from class string (e.g., "Warlock 3" -> 3)
+                                                            const levelMatch = activePlayer.class.match(/(\d+)/);
+                                                            const level = levelMatch ? parseInt(levelMatch[1]) : 1;
+                                                            const stats = {
+                                                                int: activePlayer.stats.int || 10,
+                                                                personality: activePlayer.stats.personality || 10
+                                                            };
+
+                                                            // Import skills inline for now
+                                                            const skills = [
+                                                                {
+                                                                    name: "Armor of Agathys",
+                                                                    effect: `+${level * 5} Temporary Armor`
+                                                                },
+                                                                {
+                                                                    name: "Agonizing Blast",
+                                                                    effect: `+${stats.int + stats.personality + (level - 1)} Attack Damage`
+                                                                },
+                                                                {
+                                                                    name: "Hellish Rebuke",
+                                                                    effect: `Reflect ${level === 1 ? 25 : level === 2 ? 50 : 75}% Damage`
+                                                                },
+                                                                {
+                                                                    name: "Drain Life",
+                                                                    effect: `On Kill: Heal ${level * 10}${level >= 3 ? ` + ${stats.int + stats.personality}` : ''} HP`
+                                                                }
+                                                            ];
+
+                                                            return skills.map(skill => (
+                                                                <div key={skill.name} className="p-2 bg-[#0a0515] border border-[#bf80ff]/20 rounded hover:border-[#bf80ff]/40 transition-colors">
+                                                                    <div className="text-[10px] font-bold uppercase tracking-wider text-[#bf80ff]">{skill.name}</div>
+                                                                    <div className="text-xs text-white/80 mt-0.5">{skill.effect}</div>
+                                                                </div>
+                                                            ));
+                                                        })()}
+                                                    </div>
+                                                </div>
+                                            )}
 
                                             <div className="mb-4 bg-[#e6dac3] border border-[#c9bca0] p-3 shadow-inner">
                                                 <h4 className="text-[#5d4037] font-header text-sm tracking-[0.1em] mb-3 text-center border-b border-[#c9bca0] pb-1 font-bold">

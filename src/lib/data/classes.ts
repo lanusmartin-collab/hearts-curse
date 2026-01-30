@@ -152,8 +152,8 @@ export const CLASSES: ClassData[] = [
     {
         id: "warlock", name: "Warlock", hp: 8,
         saves: ["Wisdom", "Charisma"],
-        proficiencies: ["Light Armor", "Simple Weapons"],
-        traits: ["Otherworldly Patron", "Pact Magic", "Eldritch Invocations", "Pact Boon", "Mystic Arcanum", "Eldritch Master"],
+        proficiencies: ["Light Armor", "Medium Armor", "Shields", "Simple Weapons"],
+        traits: ["Otherworldly Patron", "Pact Magic", "Armor of Agathys", "Agonizing Blast", "Hellish Rebuke", "Drain Life"],
         spellcasting: {
             ability: "cha", type: "known", cantripsKnown: 4, spellsKnown: 15,
             slots: { 5: 4 } // Pact Magic is weird, just 4 slots of 5th level (plus Mystic Arcanum handled via traits for now)

@@ -29,10 +29,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
         const savedUser = localStorage.getItem("hc_user");
         if (savedUser) {
             try {
-                setUser(JSON.parse(savedUser));
+                const parsed = JSON.parse(savedUser);
+                // MASTER KEY OVERRIDE: Always ensure Pro is true
+                setUser({ ...parsed, isPro: true });
             } catch (e) {
                 console.error("Failed to restore user", e);
             }
+        } else {
+            // Optional: auto-login as guest pro if needed, but for now just stop loading
         }
         setIsLoading(false);
     }, []);
@@ -40,18 +44,20 @@ export function UserProvider({ children }: { children: ReactNode }) {
     // Persist on Change
     useEffect(() => {
         if (user) {
-            localStorage.setItem("hc_user", JSON.stringify(user));
+            // Ensure we only save the pro version
+            const userToSave = { ...user, isPro: true };
+            localStorage.setItem("hc_user", JSON.stringify(userToSave));
         } else {
             localStorage.removeItem("hc_user");
         }
     }, [user]);
 
     const login = (name: string) => {
-        // Simulating a "Free Tier" login
+        // MASTER KEY OVERRIDE: Free Tier is now Pro Tier
         setUser({
             id: Date.now().toString(),
             name,
-            isPro: false
+            isPro: true
         });
     };
 
@@ -62,7 +68,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const upgradeToPro = () => {
         if (!user) return;
         setUser({ ...user, isPro: true });
-        alert("🎉 UPGRADE SUCCESSFUL (Simulation)!\n\nWelcome to the Inner Circle.");
+        // alert("🎉 UPGRADE SUCCESSFUL (Simulation)!\n\nWelcome to the Inner Circle.");
     };
 
     const activateLicense = async (key: string): Promise<boolean> => {
