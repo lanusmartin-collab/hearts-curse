@@ -10,6 +10,7 @@ import { MonsterService } from "@/lib/services/MonsterService";
 import { ALL_SPELLS } from "@/lib/data/spells";
 import { useAudio } from "@/lib/context/AudioContext";
 import DiceRoller from "@/components/ui/DiceRoller";
+import CombatDialogue from "./combat/CombatDialogue"; // New Import
 
 interface CombatLayoutProps {
     enemySlugs: string[];
@@ -61,6 +62,14 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
     // VISUAL FX STATE
     const [screenShake, setScreenShake] = useState(false);
     const [critFlash, setCritFlash] = useState(false);
+
+    // Cinematic State
+    const [dialogue, setDialogue] = useState<{ speaker: string, text: string, visible: boolean }>({ speaker: "", text: "", visible: false });
+
+    const triggerCinematic = (speaker: string, text: string) => {
+        setDialogue({ speaker, text, visible: true });
+        playSfx("/sfx/voice_echo.mp3");
+    };
 
     const logEndRef = useRef<HTMLDivElement>(null);
 
@@ -272,6 +281,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                     // 1. Kill Threshold
                     if (target.hp < 100 && spells.includes("Power Word Kill")) {
                         addToLog(`> ${currentCombatant.name} utters a Word of Power...`);
+                        triggerCinematic("Larloch", "Your souls are but fuel for the engine... DIE.");
                         const pwk = ALL_SPELLS.find(s => s.name === "Power Word Kill") || { name: "Power Word Kill", damage: "1000" };
                         selectAction(pwk, 'spell');
                         setTimeout(() => executeAction(target.id), 1000); // Trigger after brief delay
@@ -281,6 +291,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                     // 2. Critical Self-Preservation
                     if (currentCombatant.hp < (currentCombatant.maxHp * 0.3) && spells.includes("Time Stop")) {
                         addToLog(`> ${currentCombatant.name} bends time around himself!`);
+                        triggerCinematic("Larloch", "Time is... malleable.");
                         // Mock healing/buffing during time stop
                         handleUpdate(currentCombatant.id, { hp: currentCombatant.hp + 50 });
                         addToLog(`> ...and re-appears revitalized.`);
@@ -291,6 +302,7 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
                     // 3. AoE / Big Damage
                     if (spells.includes("Meteor Swarm") && Math.random() > 0.7) {
                         addToLog(`> ${currentCombatant.name} calls down the stars!`);
+                        triggerCinematic("Larloch", "Let the heavens fall!");
                         const meteor = ALL_SPELLS.find(s => s.name === "Meteor Swarm") || { name: "Meteor Swarm", damage: "40d6" };
                         selectAction(meteor, 'spell');
                         // Auto-confirm AoE on player location
@@ -341,6 +353,12 @@ export default function CombatLayout({ enemySlugs, playerCharacter, onVictory, o
 
     return (
         <div className={`fixed inset-0 z-[2000] bg-[#0a0a0c] text-[#d4c391] font-serif flex flex-col ${screenShake ? 'animate-shake' : ''}`}>
+            <CombatDialogue
+                speaker={dialogue.speaker}
+                text={dialogue.text}
+                isVisible={dialogue.visible}
+                onComplete={() => setDialogue(prev => ({ ...prev, visible: false }))}
+            />
             {critFlash && <div className="animate-crit-flash" />}
 
             {/* HUD */}
