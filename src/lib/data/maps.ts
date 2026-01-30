@@ -112,14 +112,25 @@ const OAKHAVEN: CampaignMap = {
 
 const PROLOGUE_MAP: CampaignMap = {
     id: "prologue_lair",
-    title: "💀 The Throne of the Shadow King",
-    imagePath: "/larloch_throne_v2.png", // Needs to be added or placeholder
-    gridType: "none",
-    description: "**PROLOGUE:** The final battle... or so you thought. You stand before Larloch, the Shadow King, broken and defeated.",
-    questGuide: "**OBJECTIVE:** Survive... somehow.",
+    title: "❤️ The Throne of the Shadow King (Heart Chamber)",
+    imagePath: "/heart_chamber_map.png",
+    gridType: "hex",
+    description: "**PROLOGUE:** The final battle... or so you thought. You stand before Larloch, the Shadow King, who uses Drakharaz as a living battery.",
+    mechanics: [
+        "Pulse of the Dead: Lair Action. DC 22 CON save or Exhaustion.",
+        "Table Rule: The Synchronized Pulse. At top of the round, all players must thump the table in unison twice (Heartbeat). Failure gives the Boss Advantage on all attacks that round."
+    ],
+    questGuide: `**OBJECTIVE:** Survive... somehow.
+**CONTEXT:** Larloch is using the dragon as a battery to fuel his ascension. He ignores you until you threaten his power.
+**SOLUTION:**
+1.  **Sever the Link:** Drakharaz regenerates 50 HP/round via the necrotic cables. Destroy them (AC 15) to make damage stick.
+2.  **The Prism:** If you found the *Prism of the Void* (Netheril Ruins), you can use it to capture Larloch's essence.
+3.  **The Fall:** Defeating Drakharaz causes the castle to fall. Run for the *Secret Hatch* to reach the Ossuary before impact.`,
     nodes: [
         { id: "throne", x: 50, y: 30, label: "Larloch's Throne", type: "boss", description: "**BOSS:** Larloch (Lich King). He hovers above you, bored. The air tastes of ash and failure.", monsters: ["larloch"] },
-        { id: "wish_trigger", x: 50, y: 70, label: "The Blue Flame", type: "event", description: "**INTERACT:** A strange blue flame flickers in the debris. It whispers: 'One more chance...'" }
+        { id: "dracolich", x: 50, y: 50, label: "Drakharaz's Corpse", type: "boss", description: "**BOSS:** Drakharaz (Ancient White Dracolich). The massive skeletal dragon acts as a living battery, attached to the castle by necrotic cables. **WEAKNESS:** Sever cables to stop regen." },
+        { id: "wish_trigger", x: 50, y: 70, label: "The Blue Flame", type: "event", description: "**INTERACT:** A strange blue flame flickers in the debris. It whispers: 'One more chance...'" },
+        { id: "catacomb_ent", x: 50, y: 90, label: "Entrance to Ossuary", type: "entrance", description: "**ESCAPE:** A hidden hatch in the floor. It smells of ozone and ancient dust. Leads down to the 'True Foundation' (The Ossuary).", link: "/maps?id=ossuary" }
     ]
 };
 
@@ -128,10 +139,16 @@ const BLACKSTAFF_MAP: CampaignMap = {
     title: "Blackstaff Tower (Sanctum)",
     imagePath: "/blackstaff_study.png",
     gridType: "square",
-    description: "**SAFE HAVEN:** The private study of Khelben 'Blackstaff' Arunsun in Waterdeep. The year is 1372 DR. You have been sent back.",
+    description: "**SAFE HAVEN:** The private study of Khelben 'Blackstaff' Arunsun in Waterdeep. The year is 1372 DR. You have been sent back to fix the timeline.",
+    mechanics: [
+        "Sanctuary: Time passes slowly here. You can Long Rest instantly.",
+        "Arcane Wards: Teleportation into the room is impossible without a tuned keystone."
+    ],
     nodes: [
-        { id: "khelben", x: 50, y: 40, label: "Archmage Khelben", type: "quest", description: "**NPC:** Khelben Arunsun. He looks concerned. 'You have returned... changed. Take this.' (Grants Djinn Essence)." },
-        { id: "circle", x: 50, y: 80, label: "Teleport Circle", type: "entrance", description: "**EXIT:** The circle is tuned to Oakhaven. 'Go. Fix the timeline.'", link: "/maps?id=oakhaven" }
+        { id: "khelben", x: 50, y: 40, label: "Archmage Khelben", type: "quest", description: "**NPC:** Khelben Arunsun. The Archmage of Waterdeep. He scans the timeline for fractures. 'You have returned... changed. Take this.' (Grants Djinn Essence)." },
+        { id: "library", x: 20, y: 40, label: "The Blackstaff's Library", type: "info", description: "**LORE:** Untold magical secrets line the shelves. Researching here grants Advantage on Arcana checks for the next session." },
+        { id: "staff", x: 80, y: 40, label: "The Blackstaff", type: "loot", description: "**ARTIFACT:** The legendary staff rests on a pedestal. It hums with power. Touching it is... unwise." },
+        { id: "circle", x: 50, y: 80, label: "Teleport Circle", type: "entrance", description: "**EXIT:** The circle is tuned to Oakhaven (The Loop). 'Go. Fix the timeline or we are all doomed.'", link: "/maps?id=oakhaven" }
     ]
 };
 
