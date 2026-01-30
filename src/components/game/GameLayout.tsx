@@ -199,7 +199,10 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                                 <div className="w-full h-full relative">
                                     {/* Simple Dot Map Render */}
                                     {currentMap?.nodes?.map(node => {
-                                        const isVisited = visitedNodes.has(node.id);
+                                        // Auto-reveal all nodes in Safe Havens (like Blackstaff Tower)
+                                        const isSafeHaven = currentMap.description.includes("SAFE HAVEN");
+                                        const isVisited = visitedNodes.has(node.id) || isSafeHaven;
+
                                         if (!isVisited) return null;
 
                                         const isCurrent = node.id === currentNode?.id;
