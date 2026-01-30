@@ -104,7 +104,7 @@ const OAKHAVEN: CampaignMap = {
         { id: "grove", x: 35, y: 10, label: "Whispering Grove", type: "trap", description: "**SKILL CHECK:** The trees lean in. **SURVIVAL DC 13:** The roots try to trip you (Prone). **ARCANA DC 15:** You hear the trees gossiping. They say 'The Library is not on this plane'." }
     ],
     description: `
-**Location:** Hub (Starting Point)
+**SAFE HAVEN:** Hub (Starting Point)
 **Narrative:**
 "The mist clings to Oakhaven like a shroud. This is a town that forgot how to die. Dozens of grey row-houses and cottages crowd the streets, their windows dark and empty like skull sockets. The people are memories, trapped in the loop of their final week, unaware that they are dead. Above it all, the Castle looms, reachable only by the treacherous cliff path."
     `
