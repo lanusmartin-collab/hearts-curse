@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const withPWA = require("@ducanh2912/next-pwa").default({
   dest: "public",
-  disable: false,
+  disable: true, // Disabled due to path error with "Heart's Curse"
   register: true,
   skipWaiting: true,
 });

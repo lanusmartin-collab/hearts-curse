@@ -179,6 +179,9 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                         <span className="text-xs text-yellow-600 ml-4">GOLD: {playerGold}gp</span>
                     </div>
                     <div className="flex items-center gap-2">
+                        <button onClick={() => setShowMap(!showMap)} className="text-[10px] text-green-600 hover:text-white uppercase tracking-widest border border-green-900 px-2 bg-black mr-2">
+                            {showMap ? "CLOSE MAP" : "OPEN MAP"}
+                        </button>
                         <button onClick={onExit} className="text-[10px] text-[#a32222] hover:text-red-400 uppercase tracking-widest">[EXIT SIM]</button>
                     </div>
                 </div>
@@ -383,21 +386,23 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                                                 Trade
                                             </button>
 
-                                            {/* TRAVEL / MAP BUTTON */}
-                                            {currentNode?.link ? (
+                                            {/* TRAVEL BUTTON */}
+                                            {currentNode?.link && (
                                                 <button
                                                     className="game-btn bg-[#222] border border-cyan-800 text-cyan-500 hover:bg-cyan-900 hover:text-white text-[10px] uppercase font-bold animate-pulse"
+                                                    onClick={() => navigateTo(currentNode.link?.split('=')[1] || "", "")} // rudimentary link handling
                                                 >
                                                     Enter
                                                 </button>
-                                            ) : (
-                                                <button
-                                                    onClick={() => setShowMap(!showMap)}
-                                                    className={`game-btn bg-[#222] border border-[#444] hover:bg-green-900 hover:text-white text-[10px] uppercase font-bold text-gray-400 ${showMap ? 'border-green-500 text-green-500' : ''}`}
-                                                >
-                                                    Map
-                                                </button>
                                             )}
+
+                                            {/* MAP BUTTON (Always Visible) */}
+                                            <button
+                                                onClick={() => setShowMap(!showMap)}
+                                                className={`game-btn bg-[#222] border border-[#444] hover:bg-green-900 hover:text-white text-[10px] uppercase font-bold text-gray-400 ${showMap ? 'border-green-500 text-green-500' : ''}`}
+                                            >
+                                                Map
+                                            </button>
                                             <button className="game-btn bg-[#222] border border-[#444] hover:bg-purple-900 hover:text-white text-[10px] uppercase font-bold text-gray-400">Rest</button>
                                         </div>
 
