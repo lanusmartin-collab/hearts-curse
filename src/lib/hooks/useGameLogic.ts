@@ -296,6 +296,7 @@ export const useGameLogic = (startingRewards?: any) => {
         playAmbience,
         saveGame,
         activeCheck,
-        resolveCheck
+        resolveCheck,
+        navigateTo // Expose for direct map travel
     };
 };

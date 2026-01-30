@@ -55,7 +55,8 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
         handleBuyItem,
         playSfx,
         activeCheck,
-        resolveCheck
+        resolveCheck,
+        navigateTo // Add this
     } = useGameLogic(startingRewards);
 
     // --- LOCAL UI STATE (Visuals only) ---
@@ -184,12 +185,18 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                                         return (
                                             <div
                                                 key={node.id}
-                                                className={`absolute w-3 h-3 rounded-full -translate-x-1/2 -translate-y-1/2 border transition-all
-                                                ${isCurrent ? 'bg-red-500 border-white shadow-[0_0_10px_red] scale-125 z-20' : 'bg-gray-800 border-gray-900 z-10'}
+                                                onClick={() => {
+                                                    navigateTo(currentMap?.id || "", node.id);
+                                                    if (node.shopId) {
+                                                        setTimeout(() => setShowShop(true), 100); // Small delay to allow state update
+                                                    }
+                                                }}
+                                                className={`absolute w-3 h-3 rounded-full -translate-x-1/2 -translate-y-1/2 border transition-all cursor-pointer hover:scale-150
+                                                ${isCurrent ? 'bg-red-500 border-white shadow-[0_0_10px_red] scale-125 z-20' : 'bg-gray-800 border-gray-900 z-10 hover:bg-white'}
                                             `}
                                                 style={{ left: `${node.x}%`, top: `${node.y}%` }}
                                             >
-                                                <span className="absolute top-4 left-1/2 -translate-x-1/2 text-[10px] whitespace-nowrap bg-black/80 px-1 text-gray-500">
+                                                <span className="absolute top-4 left-1/2 -translate-x-1/2 text-[10px] whitespace-nowrap bg-black/80 px-1 text-gray-500 pointer-events-none">
                                                     {node.label}
                                                 </span>
                                             </div>
