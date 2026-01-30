@@ -35,6 +35,7 @@ export interface Combatant {
         [level: number]: { max: number, current: number };
     };
     preparedSpells?: string[]; // Names of spells ready to cast
+    knownSpells?: string[]; // Spells in spellbook/grimoire
 
     stats?: {
         str: number;

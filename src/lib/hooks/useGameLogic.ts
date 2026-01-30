@@ -274,6 +274,37 @@ export const useGameLogic = (startingRewards?: any) => {
         }
     };
 
+    const handleLearnSpell = (spellName: string, cost: number) => {
+        if (playerGold >= cost) {
+            // Check if already known
+            if (useGameContext().playerCharacter?.knownSpells?.includes(spellName)) {
+                addToLog("You already know this spell.");
+                return;
+            }
+
+            setPlayerGold(prev => prev - cost);
+            // We need to update player character known spells. 
+            // Since playerCharacter comes from Context, we should use setPlayerCharacter from Context?
+            // BUT useGameLogic gets playerCharacter from useGameContext() at the top.
+            // Let's modify the context's player character.
+            const { playerCharacter, setPlayerCharacter } = useGameContext();
+
+            if (playerCharacter) {
+                const updated = {
+                    ...playerCharacter,
+                    knownSpells: [...(playerCharacter.knownSpells || []), spellName]
+                };
+                setPlayerCharacter(updated);
+                addToLog(`Learned Spell: ${spellName}`);
+                playSfx("/sfx/magical_effect.mp3");
+                addToast(`Learned ${spellName}`, "success");
+            }
+        } else {
+            addToLog("Insufficient gold to scribe spell.");
+            playSfx("/sfx/ui_error.mp3");
+        }
+    };
+
     return {
         consoleLog,
         inCombat,
@@ -297,6 +328,7 @@ export const useGameLogic = (startingRewards?: any) => {
         saveGame,
         activeCheck,
         resolveCheck,
-        navigateTo // Expose for direct map travel
+        navigateTo, // Expose for direct map travel
+        handleLearnSpell // New Grimoire Logic
     };
 };

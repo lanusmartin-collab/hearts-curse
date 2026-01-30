@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useState, forwardRef, useImperativeHandle } from "react";
+import React, { useState, forwardRef, useImperativeHandle, useEffect } from "react";
+
+
+
 import Image from "next/image";
 import { Typewriter } from "@/components/ui/Typewriter";
 import { SaveManager } from "@/lib/game/SaveManager";
 import { useGameLogic } from "@/lib/hooks/useGameLogic";
 import ShopInterface from "./ShopInterface";
+import GrimoireInterface from "./GrimoireInterface"; // New Import
 import CombatLayout from "./CombatLayout";
 import { Combatant } from "@/types/combat";
 import { CAMPAIGN_MAPS } from "@/lib/data/maps";
@@ -56,12 +60,19 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
         playSfx,
         activeCheck,
         resolveCheck,
-        navigateTo // Add this
+        navigateTo, // Add this
+        handleLearnSpell // Add this
     } = useGameLogic(startingRewards);
 
     // --- LOCAL UI STATE (Visuals only) ---
     const consoleEndRef = React.useRef<HTMLDivElement>(null);
     const [showMap, setShowMap] = useState(false);
+    const [showGrimoire, setShowGrimoire] = useState(false); // New State
+
+    // Auto-close Grimoire on move
+    React.useEffect(() => {
+        setShowGrimoire(false);
+    }, [currentNode?.id]);
 
     // --- SAVE LOGIC ---
     useImperativeHandle(ref, () => ({
@@ -139,6 +150,16 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                     />
                 )}
 
+                {/* GRIMOIRE MODAL */}
+                {showGrimoire && (
+                    <GrimoireInterface
+                        onClose={() => setShowGrimoire(false)}
+                        onLearn={handleLearnSpell}
+                        playerGold={playerGold}
+                        knownSpells={playerCharacter?.knownSpells || []}
+                    />
+                )}
+
                 {/* 1. TOP BAR (Status) */}
                 <div className="h-12 bg-[#1a1515] border-b-2 border-[#5c1212] flex items-center justify-between px-4 z-20">
                     <div className="flex items-center gap-4">
@@ -188,7 +209,10 @@ const GameLayout = forwardRef<GameLayoutRef, GameLayoutProps>(({ onExit, startin
                                                 onClick={() => {
                                                     navigateTo(currentMap?.id || "", node.id);
                                                     if (node.shopId) {
-                                                        setTimeout(() => setShowShop(true), 100); // Small delay to allow state update
+                                                        setTimeout(() => setShowShop(true), 100);
+                                                    }
+                                                    if (node.id === "library" && currentMap?.id === "blackstaff_tower") {
+                                                        setTimeout(() => setShowGrimoire(true), 100);
                                                     }
                                                 }}
                                                 className={`absolute w-3 h-3 rounded-full -translate-x-1/2 -translate-y-1/2 border transition-all cursor-pointer hover:scale-150
