@@ -104,6 +104,10 @@ function GameController() {
             navigateTo("oakhaven_mines", "ent");
             setViewMode("game");
           }
+          if (locId === "blackstaff_tower") {
+            navigateTo("blackstaff_tower", "khelben");
+            setViewMode("game");
+          }
         }}
       />
     );

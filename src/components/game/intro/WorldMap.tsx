@@ -21,15 +21,13 @@ interface MapLocation {
 const LOCATIONS: MapLocation[] = [
     {
         id: "heart_chamber",
-        name: "Castle Mournwatch (Summit)",
+        name: "Throne of the Shadow King",
         description: "Larloch's inner sanctum. Facing the Shadow King himself.",
         top: "45%",
         left: "52%",
         icon: <Skull className="w-6 h-6 text-red-500 animate-pulse" />,
         difficulty: "Deadly"
-    }
-    /* HIDDEN FOR PROLOGUE CONTEXT
-    ,
+    },
     {
         id: "underdark",
         name: "Upper Underdark",
@@ -40,16 +38,15 @@ const LOCATIONS: MapLocation[] = [
         difficulty: "High"
     },
     {
-        id: "khelben_tower",
+        id: "blackstaff_tower", // Updated ID to match maps.ts
         name: "Blackstaff Tower",
-        description: "Home of Khelben Arunsun. (Coming Soon)",
+        description: "Home of Khelben Arunsun. Sanctuary.",
         top: "20%",
         left: "40%",
         icon: <Info className="w-6 h-6 text-blue-400" />,
         difficulty: "Low",
-        locked: true
+        locked: false // Unlocked
     }
-    */
 ];
 
 export default function WorldMap({ onSelectLocation }: WorldMapProps) {
