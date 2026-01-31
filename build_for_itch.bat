@@ -16,14 +16,26 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b %ERRORLEVEL%
 )
 
+
+echo Step 3: Creating ZIP file for Itch.io...
 echo.
-echo ===================================================
-echo   SUCCESS! Build complete.
-echo ===================================================
+if exist hearts_curse_itch.zip del hearts_curse_itch.zip
+powershell -command "Compress-Archive -Path '.\out\*' -DestinationPath '.\hearts_curse_itch.zip' -Force"
+
 echo.
-echo You can now find the "out" folder in:
-echo %CD%\out
-echo.
-echo Next Step: Right-click the "out" folder -> Send to -> Compressed (zipped) folder.
-echo.
+if exist hearts_curse_itch.zip (
+    echo ===================================================
+    echo   SUCCESS! Build complete.
+    echo ===================================================
+    echo.
+    echo The file you need to upload to Itch.io is ready:
+    echo "%CD%\hearts_curse_itch.zip"
+    echo.
+    echo IMPORTANT: Upload THIS .zip file. Do not upload .rar files.
+) else (
+    echo [ERROR] Failed to create zip file.
+    pause
+    exit /b 1
+)
+
 pause

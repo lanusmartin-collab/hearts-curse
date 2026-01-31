@@ -21,6 +21,7 @@
     "skills": "Perception +4, Stealth +10",
     "languages": "Elvish, Undercommon",
     "cr": "5",
+    "senses": "Darkvision 120 ft., Passive Perception 14",
     "traits": [
       {
         "name": "Fey Ancestry",
@@ -28,7 +29,7 @@
       },
       {
         "name": "Innate Spellcasting",
-        "desc": "The drow's spellcasting ability is Charisma (spell save DC 12). It can innately cast the following spells, requiring no material components:"
+        "desc": "The drow's spellcasting ability is Charisma (spell save DC 12). It can innately cast the following spells, requiring no material components:\nAt will: dancing lights\n1/day each: darkness, faerie fire, levitate (self only)"
       },
       {
         "name": "Sunlight Sensitivity",
@@ -47,6 +48,12 @@
       {
         "name": "Hand Crossbow",
         "desc": "Ranged Weapon Attack: +7 to hit, range 30/120 ft., one target. Hit: 7 (1d6 + 4) piercing damage, and the target must succeed on a DC 13 Constitution saving throw or be poisoned for 1 hour. If the saving throw fails by 5 or more, the target is also unconscious while poisoned in this way. The target wakes up if it takes damage or if another creature takes an action to shake it awake."
+      }
+    ],
+    "bonus_actions": [
+      {
+        "name": "Hand Crossbow Attack",
+        "desc": "The drow makes one attack with its hand crossbow."
       }
     ],
     "legendary": [],
@@ -78,6 +85,7 @@
     "skills": "Arcana +6, Deception +5, Perception +4, Stealth +5",
     "languages": "Elvish, Undercommon",
     "cr": "7",
+    "senses": "Darkvision 120 ft., Passive Perception 14",
     "traits": [
       {
         "name": "Fey Ancestry",
@@ -85,11 +93,11 @@
       },
       {
         "name": "Innate Spellcasting",
-        "desc": "The drow's innate spellcasting ability is Charisma (spell save DC 12). It can innately cast the following spells, requiring no material components:"
+        "desc": "The drow's innate spellcasting ability is Charisma (spell save DC 12). It can innately cast the following spells, requiring no material components:\nAt will: dancing lights\n1/day each: darkness, faerie fire, levitate (self only)"
       },
       {
         "name": "Spellcasting",
-        "desc": "The drow is a 10th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 14, +6 to hit with spell attacks). The drow has the following wizard spells prepared:"
+        "desc": "The drow is a 10th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 14, +6 to hit with spell attacks). The drow has the following wizard spells prepared:\nCantrips (at will): mage hand, minor illusion, poison spray, ray of frost\n1st level (4 slots): mage armor, magic missile, shield, witch bolt\n2nd level (3 slots): alter self, misty step, web\n3rd level (3 slots): fly, lightning bolt\n4th level (3 slots): evard's black tentacles, greater invisibility\n5th level (2 slots): cloudkill"
       },
       {
         "name": "Sunlight Sensitivity",
@@ -131,6 +139,7 @@
     "skills": "Insight +6, Perception +6, Religion +4, Stealth +5",
     "languages": "Elvish, Undercommon",
     "cr": "8",
+    "senses": "Darkvision 120 ft., Passive Perception 16",
     "traits": [
       {
         "name": "Fey Ancestry",
@@ -138,11 +147,11 @@
       },
       {
         "name": "Innate Spellcasting",
-        "desc": "The drow's innate spellcasting ability is Charisma (spell save DC 15). She can innately cast the following spells, requiring no material components:"
+        "desc": "The drow's innate spellcasting ability is Charisma (spell save DC 15). She can innately cast the following spells, requiring no material components:\nAt will: dancing lights\n1/day each: darkness, faerie fire, levitate (self only)"
       },
       {
         "name": "Spellcasting",
-        "desc": "The drow is a 10th-level spellcaster. Her spellcasting ability is Wisdom (save DC 14, +6 to hit with spell attacks). The drow has the following cleric spells prepared:"
+        "desc": "The drow is a 10th-level spellcaster. Her spellcasting ability is Wisdom (save DC 14, +6 to hit with spell attacks). The drow has the following cleric spells prepared:\nCantrips (at will): guidance, poison spray, resistance, spare the dying, thaumaturgy\n1st level (4 slots): cure wounds, detect poison and disease, ray of sickness\n2nd level (3 slots): lesser restoration, protection from poison, web\n3rd level (3 slots): dispel magic, floating disk\n4th level (3 slots): divination, freedom of movement\n5th level (2 slots): insect plague, mass cure wounds"
       },
       {
         "name": "Sunlight Sensitivity",
