@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals_v2.css";
 import DiceRoller from "@/components/ui/DiceRoller";
 
@@ -56,21 +57,23 @@ export default function RootLayout({
         {/* NOTE: If we wanted strict 'Stranger Things' we'd try to find a Benguiat substitute, but Merriweather 900 is a decent 'Classic Serif' fallback freely available */}
       </head>
       <body>
-        <UserProvider>
-          <AudioProvider>
-            <SpellProvider>
-              <MusicProvider>
-                <CurseOverlay />
-                <div className="noise-overlay"></div>
-                <SidebarNav />
-                <main>{children}</main>
-                <ShadowCaster />
-                <DiceRoller />
-                {/* GrimoireModal removed - migrated to /grimoire */}
-              </MusicProvider>
-            </SpellProvider>
-          </AudioProvider>
-        </UserProvider>
+        <Suspense fallback={<div style={{ color: "white", padding: "20px" }}>Loading System...</div>}>
+          <UserProvider>
+            <AudioProvider>
+              <SpellProvider>
+                <MusicProvider>
+                  <CurseOverlay />
+                  <div className="noise-overlay"></div>
+                  <SidebarNav />
+                  <main>{children}</main>
+                  <ShadowCaster />
+                  <DiceRoller />
+                  {/* GrimoireModal removed - migrated to /grimoire */}
+                </MusicProvider>
+              </SpellProvider>
+            </AudioProvider>
+          </UserProvider>
+        </Suspense>
       </body>
     </html>
   );

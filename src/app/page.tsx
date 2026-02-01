@@ -197,11 +197,20 @@ function GameController() {
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.5rem", flexWrap: "wrap" }}>
             <div className="relative w-full max-w-[24rem] aspect-square" style={{ position: "relative", width: "24rem", height: "24rem" }}>
               <div className="animate-pulse-hero absolute inset-0 border border-[var(--scarlet-accent)] rounded-full opacity-50 blur-md"></div>
-              <Image
-                src="/hearts_curse_hero_v15.png"
+              <img
+                src="./hearts_curse_hero_v15.png"
                 alt="Logo"
-                fill
                 className="object-contain drop-shadow-[0_0_10px_rgba(163,34,34,0.5)]"
+                style={{
+                  position: "absolute",
+                  height: "100%",
+                  width: "100%",
+                  left: 0,
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  objectFit: "contain"
+                }}
               />
             </div>
             <div className="flex flex-col">

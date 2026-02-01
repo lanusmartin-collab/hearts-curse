@@ -1,12 +1,5 @@
 import type { NextConfig } from "next";
 
-const withPWA = require("@ducanh2912/next-pwa").default({
-  dest: "public",
-  disable: true, // Disabled due to path error with "Heart's Curse"
-  register: true,
-  skipWaiting: true,
-});
-
 const nextConfig: NextConfig = {
   output: "export",
   assetPrefix: "./",
@@ -23,4 +16,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withPWA(nextConfig);
+export default nextConfig;

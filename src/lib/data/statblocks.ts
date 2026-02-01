@@ -40,6 +40,43 @@ export type Statblock = {
 };
 
 export const STATBLOCKS: Record<string, Statblock> = {
+    "mage": {
+        name: "Mage",
+        size: "Medium", type: "Humanoid (Any Race)", alignment: "Any Alignment",
+        ac: 12, armorType: "15 with Mage Armor", hp: 40, hitDice: "9d8", speed: "30 ft.",
+        stats: { str: 9, dex: 14, con: 11, int: 17, wis: 12, cha: 11 },
+        saves: "Int +6, Wis +4", skills: "Arcana +6, History +6",
+        immunities: "", languages: "Any four languages",
+        cr: "6", xp: 2300,
+        traits: [
+            { name: "Spellcasting", desc: "The mage is a 9th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 14, +6 to hit with spell attacks). The mage has the following wizard spells prepared:\nCantrips (at will): fire bolt, light, mage hand, prestidigitation\n1st level (4 slots): detect magic, mage armor, magic missile, shield\n2nd level (3 slots): misty step, suggestion\n3rd level (3 slots): counterspell, fireball, fly\n4th level (3 slots): greater invisibility, ice storm\n5th level (1 slot): cone of cold" }
+        ],
+        actions: [
+            { name: "Dagger", desc: "Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d4 + 2) piercing damage." }
+        ]
+    },
+    "drow-elite-warrior": {
+        name: "Drow Elite Warrior",
+        size: "Medium", type: "Humanoid (Elf)", alignment: "Neutral Evil",
+        ac: 18, armorType: "Studded Leather, Shield", hp: 71, hitDice: "11d8 + 22", speed: "30 ft.",
+        stats: { str: 13, dex: 18, con: 14, int: 11, wis: 13, cha: 12 },
+        saves: "Dex +7, Con +5, Wis +4", skills: "Perception +4, Stealth +10",
+        immunities: "", languages: "Elvish, Undercommon",
+        cr: "5", xp: 1800,
+        traits: [
+            { name: "Fey Ancestry", desc: "Advantage on saves vs charm; magic can't put Drow to sleep." },
+            { name: "Sunlight Sensitivity", desc: "Disadvantage on attack rolls and Perception checks in direct sunlight." },
+            { name: "Innate Spellcasting", desc: "Charisma (DC 12). At will: Dancing Lights. 1/day: Darkness, Faerie Fire, Levitate (self)." }
+        ],
+        actions: [
+            { name: "Multiattack", desc: "The drow makes two shortsword attacks." },
+            { name: "Shortsword", desc: "+7 to hit, reach 5 ft. Hit: 7 (1d6+4) piercing + 10 (3d6) poison." },
+            { name: "Hand Crossbow", desc: "+7 to hit, range 30/120. Hit: 7 (1d6+4) piercing + target succeeds DC 13 Con save or poisoned for 1 hr. Fail by 5+: Unconscious." }
+        ],
+        reactions: [
+            { name: "Parry", desc: "Adds 3 to AC against one melee attack that would hit it. Must see attacker and wield melee weapon." }
+        ]
+    },
     "larloch_shadow_king": {
         name: "Larloch the Shadow King",
         size: "Medium", type: "Undead (Lich)", alignment: "Lawful Evil",
