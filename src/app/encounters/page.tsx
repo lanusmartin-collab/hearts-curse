@@ -215,11 +215,14 @@ function GrimoireInterface() {
 
                 </div>
 
-                {/* Footer Links (Renamed) */}
                 <div className="p-4 bg-[#080808] border-t border-[#222] flex justify-around relative z-10">
                     <Link href="/" className="flex flex-col items-center group gap-1">
                         <Home size={16} className="text-[#444] group-hover:text-[#e0e0e0] transition-colors" />
                         <span className="text-[9px] font-bold text-[#444] group-hover:text-[#e0e0e0] uppercase tracking-widest transition-colors">Home</span>
+                    </Link>
+                    <Link href="/statblocks" className="flex flex-col items-center group gap-1">
+                        <Skull size={16} className="text-[#444] group-hover:text-[#e0e0e0] transition-colors" />
+                        <span className="text-[9px] font-bold text-[#444] group-hover:text-[#e0e0e0] uppercase tracking-widest transition-colors">Compendium</span>
                     </Link>
                     <Link href="/maps" className="flex flex-col items-center group gap-1">
                         <MapIcon size={16} className="text-[#444] group-hover:text-[#e0e0e0] transition-colors" />
