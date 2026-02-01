@@ -50,11 +50,10 @@ export default function SidebarNav() {
         }
     };
 
-    // HACK: Hide global nav on Encounters page to prevent overlap with Grimoire UI
-    if (pathname === '/encounters') return null;
+    const isEncounters = pathname === '/encounters';
 
     return (
-        <>
+        <div style={{ display: isEncounters ? 'none' : 'block' }}>
             {/* Mobile/Global Trigger Button */}
             <button
                 onClick={() => setIsOpen(true)}
@@ -236,6 +235,6 @@ export default function SidebarNav() {
                     )}
                 </div>
             </div>
-        </>
+        </div>
     );
 }
