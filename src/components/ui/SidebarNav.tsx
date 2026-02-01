@@ -50,7 +50,11 @@ export default function SidebarNav() {
         }
     };
 
-    const isEncounters = pathname === '/encounters';
+    const [isEncounters, setIsEncounters] = useState(false);
+
+    useEffect(() => {
+        setIsEncounters(pathname === '/encounters');
+    }, [pathname]);
 
     return (
         <div style={{ display: isEncounters ? 'none' : 'block' }}>

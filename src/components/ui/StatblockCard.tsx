@@ -112,7 +112,7 @@ export default function StatblockCard({ data }: { data: Statblock }) {
         }}>
 
             {/* Image (Floating Right) */}
-            {data.image && !imgError && !data.image.includes("googleapis") && !data.image.includes("storage.cloud") && !data.image.includes("error") && (
+            {data.image && !imgError && !data.image.includes("googleapis") && !data.image.includes("storage.cloud") && !data.image.includes("error") && !data.image.includes("aidedd") && (
                 <div style={{ float: "right", marginLeft: "1.5rem", marginBottom: "1rem", maxWidth: "180px", border: "4px solid #2c1a1a" }}>
                     <Image
                         src={data.image}
