@@ -58,26 +58,44 @@ export default function SidebarNav() {
 
     return (
         <div style={{ display: isEncounters ? 'none' : 'block' }}>
-            {/* Mobile/Global Trigger Button */}
-            <button
-                onClick={() => setIsOpen(true)}
+            {/* Mobile Header Bar (Only visible < 1024px ideally, but here we cover Global Trigger) */}
+            <div
+                className="lg:hidden"
                 style={{
                     position: "fixed",
-                    top: "1rem",
-                    left: "1rem",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "4rem",
                     zIndex: 50,
-                    padding: "0.75rem",
                     background: "var(--obsidian-base)",
-                    border: "1px solid var(--glass-border)",
-                    borderRadius: "50%",
-                    boxShadow: "0 0 15px var(--glass-border)",
-                    cursor: "pointer",
-                    color: "var(--fg-color)"
+                    borderBottom: "1px solid var(--glass-border)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "0 1rem"
                 }}
-                aria-label="Open Menu"
             >
-                <Menu style={{ width: "24px", height: "24px" }} />
-            </button>
+                <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                    <button
+                        onClick={() => setIsOpen(true)}
+                        style={{
+                            background: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                            color: "var(--fg-color)"
+                        }}
+                        aria-label="Open Menu"
+                    >
+                        <Menu style={{ width: "28px", height: "28px" }} />
+                    </button>
+                    <span style={{ fontFamily: "var(--font-header)", color: "var(--scarlet-accent)", letterSpacing: "0.1em", fontSize: "1.1rem" }}>
+                        HEART'S CURSE
+                    </span>
+                </div>
+                {/* Space for future mobile header actions if needed */}
+                <div id="mobile-header-actions"></div>
+            </div>
 
             {/* Backdrop */}
             <div
@@ -209,7 +227,7 @@ export default function SidebarNav() {
                         <CurseTracker simpleView={true} />
                     </div>
                     <div style={{ marginTop: "1rem", fontSize: "0.6rem", textAlign: "center", color: "var(--fg-dim)", opacity: 0.3, fontFamily: "var(--font-mono)" }}>
-                        v1.2.2 // HEART'S CURSE
+                        v1.2.3 // HEART'S CURSE
                     </div>
                     {deferredPrompt && (
                         <button

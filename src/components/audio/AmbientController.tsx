@@ -137,7 +137,7 @@ export default function AmbientController() {
         return (
             <button
                 onClick={initializeAudio}
-                className="fixed bottom-4 right-4 z-50 px-4 py-2 bg-[var(--scarlet-accent)] text-white font-mono text-xs animate-pulse border border-white"
+                className="fixed top-4 right-4 lg:top-auto lg:bottom-4 lg:right-4 z-50 px-2 py-1 lg:px-4 lg:py-2 bg-[var(--scarlet-accent)] text-white font-mono text-[0.6rem] lg:text-xs animate-pulse border border-white"
             >
                 [INITIALIZE AUDIO SYSTEMS]
             </button>
@@ -147,7 +147,7 @@ export default function AmbientController() {
     return (
         <button
             onClick={toggleMute}
-            className="fixed bottom-4 right-4 z-50 p-2 bg-[var(--obsidian-base)] border border-[var(--gold-accent)] text-[var(--gold-accent)] hover:bg-[var(--gold-accent)] hover:text-black transition-colors"
+            className="fixed top-4 right-4 lg:top-auto lg:bottom-4 lg:right-4 z-50 p-2 bg-[var(--obsidian-base)] border border-[var(--gold-accent)] text-[var(--gold-accent)] hover:bg-[var(--gold-accent)] hover:text-black transition-colors"
             title={isMuted ? "Unmute Ambience" : "Mute Ambience"}
         >
             {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}

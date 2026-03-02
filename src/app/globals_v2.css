@@ -142,6 +142,8 @@ button:active {
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 2rem;
+    position: relative;
+    /* Anchors absolute children securely inside the fluid container */
 }
 
 @media (max-width: 768px) {
@@ -585,12 +587,21 @@ select:focus {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* UTILITIES */
 .fixed-bottom-right {
     position: fixed;
     bottom: 1.5rem;
     right: 1.5rem;
     z-index: 9999;
+}
+
+@media (min-width: 1600px) {
+
+    /* Bind absolute positions to the center container on ultrawide instead of viewport edges */
+    .dice-trigger,
+    .dice-panel,
+    .fixed-bottom-right {
+        right: calc((100vw - 1600px) / 2 + 1.5rem);
+    }
 }
 
 .glass-panel {
@@ -633,6 +644,7 @@ select:focus {
     grid-template-columns: 1fr;
     gap: 2rem;
     max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
     position: relative;
     z-index: 10;

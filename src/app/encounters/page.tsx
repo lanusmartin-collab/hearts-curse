@@ -120,16 +120,16 @@ function GrimoireInterface() {
     const { flavor, mechanic } = currentEncounter ? parseDescription(currentEncounter.description) : { flavor: "", mechanic: null };
 
     return (
-        <div className="h-screen w-screen flex bg-[#050505] overflow-hidden font-serif">
+        <div className="encounters-page min-h-[100dvh] lg:h-screen w-full flex flex-col lg:flex-row bg-[#050505] lg:overflow-hidden font-serif">
 
             {/* LEFT SIDEBAR: THE SPINE (Controls) */}
-            <div className="w-[360px] h-full flex flex-col shrink-0 relative z-40 bg-[#111] border-r border-[#333] shadow-2xl">
+            <div className="w-full lg:w-[360px] h-auto lg:h-full flex flex-col shrink-0 relative z-40 bg-[#111] border-b lg:border-r border-[#333] lg:shadow-2xl">
                 {/* Book Spine Texture */}
                 <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: "url('/textures/leather_dark.png')", backgroundSize: 'cover' }}></div>
 
-                {/* Header (Increased Padding to fix overlap) */}
-                <div className="p-8 pt-32 pb-6 border-b border-[#3a0b0b] bg-gradient-to-b from-[#1a0505] to-transparent relative z-10">
-                    <h1 className="text-3xl font-header text-[#e0e0e0] tracking-[0.1em] text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] border-b-2 border-[#8a1c1c] pb-2 mb-2">
+                {/* Header (Adjusted padding for mobile) */}
+                <div className="p-4 lg:p-8 pt-8 lg:pt-32 pb-4 lg:pb-6 border-b border-[#3a0b0b] bg-gradient-to-b from-[#1a0505] to-transparent relative z-10">
+                    <h1 className="text-2xl lg:text-3xl font-header text-[#e0e0e0] tracking-[0.1em] text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] border-b-2 border-[#8a1c1c] pb-2 mb-2">
                         COMPENDIUM
                     </h1>
                     <div className="text-center text-[10px] font-mono text-[#888] tracking-[0.4em] uppercase">
@@ -137,7 +137,7 @@ function GrimoireInterface() {
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-10 relative z-10">
+                <div className="flex-1 overflow-visible lg:overflow-y-auto custom-scrollbar p-4 lg:p-6 space-y-6 lg:space-y-10 relative z-10">
 
                     {/* Region Select */}
                     <div className="space-y-2">
@@ -215,24 +215,24 @@ function GrimoireInterface() {
 
                 </div>
 
-                <div className="p-4 bg-[#080808] border-t border-[#222] flex justify-around relative z-10">
-                    <Link href="/" className="flex flex-col items-center group gap-1">
+                <div className="p-4 bg-[#080808] border-t border-[#222] grid grid-cols-3 gap-2 text-center relative z-10">
+                    <Link href="/" className="flex flex-col items-center justify-center group gap-1">
                         <Home size={16} className="text-[#444] group-hover:text-[#e0e0e0] transition-colors" />
-                        <span className="text-[9px] font-bold text-[#444] group-hover:text-[#e0e0e0] uppercase tracking-widest transition-colors">Home</span>
+                        <span className="text-[8px] lg:text-[9px] font-bold text-[#444] group-hover:text-[#e0e0e0] uppercase tracking-widest transition-colors truncate w-full">Home</span>
                     </Link>
-                    <Link href="/statblocks" className="flex flex-col items-center group gap-1">
+                    <Link href="/statblocks" className="flex flex-col items-center justify-center group gap-1">
                         <Skull size={16} className="text-[#444] group-hover:text-[#e0e0e0] transition-colors" />
-                        <span className="text-[9px] font-bold text-[#444] group-hover:text-[#e0e0e0] uppercase tracking-widest transition-colors">Compendium</span>
+                        <span className="text-[8px] lg:text-[9px] font-bold text-[#444] group-hover:text-[#e0e0e0] uppercase tracking-widest transition-colors truncate w-full">Compendium</span>
                     </Link>
-                    <Link href="/maps" className="flex flex-col items-center group gap-1">
+                    <Link href="/maps" className="flex flex-col items-center justify-center group gap-1">
                         <MapIcon size={16} className="text-[#444] group-hover:text-[#e0e0e0] transition-colors" />
-                        <span className="text-[9px] font-bold text-[#444] group-hover:text-[#e0e0e0] uppercase tracking-widest transition-colors">Maps</span>
+                        <span className="text-[8px] lg:text-[9px] font-bold text-[#444] group-hover:text-[#e0e0e0] uppercase tracking-widest transition-colors truncate w-full">Maps</span>
                     </Link>
                 </div>
             </div>
 
             {/* RIGHT AREA: THE PAGE (Content) */}
-            <div className="flex-1 bg-[#1a1a1c] relative overflow-hidden flex flex-col items-center justify-center p-4 lg:p-12">
+            <div className="flex-1 bg-[#1a1a1c] relative lg:overflow-hidden flex flex-col items-center justify-start lg:justify-center p-2 lg:p-12 min-h-[50vh]">
                 {/* Wood/Desk Texture */}
                 <div className="absolute inset-0 pointer-events-none opacity-30" style={{ backgroundImage: "url('/textures/wood_table_dark.jpg')", backgroundSize: 'cover' }}></div>
 
@@ -244,18 +244,18 @@ function GrimoireInterface() {
 
                     {/* Content Header */}
                     {currentEncounter && (
-                        <div className="p-8 pb-4 border-b-2 border-[#2c1a1a] border-double flex justify-between items-start shrink-0 bg-[#dcc9a3]/30 relative z-10">
+                        <div className="p-4 lg:p-8 pb-4 border-b-2 border-[#2c1a1a] border-double flex justify-between items-start shrink-0 bg-[#dcc9a3]/30 relative z-10">
                             <div>
-                                <h2 className="text-4xl lg:text-5xl font-header font-bold text-[#2c1a1a] drop-shadow-sm leading-none mb-2">
+                                <h2 className="text-2xl lg:text-5xl font-header font-bold text-[#2c1a1a] drop-shadow-sm leading-none mb-2">
                                     {currentEncounter.name}
                                 </h2>
-                                <div className="text-[#8a1c1c] font-serif italic text-sm tracking-wide">
+                                <div className="text-[#8a1c1c] font-serif italic text-xs lg:text-sm tracking-wide">
                                     {REGIONS.find(r => r.id === selectedRegionId)?.name} — {activeTableObj?.name}
                                 </div>
                             </div>
 
-                            <div className="hidden md:flex flex-col items-end">
-                                <span className="text-xs font-bold text-[#555] uppercase tracking-widest mb-1">Encounter Roll</span>
+                            <div className="hidden lg:flex flex-col items-end">
+                                <span className="text-xs font-bold text-[#555] uppercase tracking-widest mb-1">Encounter</span>
                                 <div className="w-12 h-12 rounded-full border-2 border-[#2c1a1a] flex items-center justify-center font-mono text-xl font-bold text-[#2c1a1a]">
                                     {currentEncounter.roll[0]}
                                 </div>
@@ -264,7 +264,7 @@ function GrimoireInterface() {
                     )}
 
                     {/* Scrollable Body */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-8 lg:p-12 space-y-10 relative z-10">
+                    <div className="flex-1 lg:overflow-y-auto custom-scrollbar p-4 lg:p-12 space-y-6 lg:space-y-10 relative z-10">
                         {currentEncounter ? (
                             <>
                                 {/* NARRATIVE BLOCK (Flavor) */}

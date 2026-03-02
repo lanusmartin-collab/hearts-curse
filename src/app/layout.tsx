@@ -65,7 +65,7 @@ export default function RootLayout({
                   <CurseOverlay />
                   <div className="noise-overlay"></div>
                   <SidebarNav />
-                  <main>{children}</main>
+                  <main className="pt-16 lg:pt-0">{children}</main>
                   <ShadowCaster />
                   <DiceRoller />
                   {/* GrimoireModal removed - migrated to /grimoire */}
