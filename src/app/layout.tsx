@@ -38,6 +38,11 @@ import { SpellProvider } from "@/lib/game/spellContext";
 import ShadowCaster from "@/components/ui/ShadowCaster";
 
 import { UserProvider } from "@/lib/auth/userContext";
+import { GameContextProvider } from "@/lib/context/GameContext";
+import { ToastProvider } from "@/lib/context/ToastContext";
+import ToastContainer from "@/components/ui/ToastContainer";
+import { CommandMenu } from "@/components/ui/CommandMenu";
+import QuickDock from "@/components/ui/QuickDock";
 
 export default function RootLayout({
   children,
@@ -59,19 +64,26 @@ export default function RootLayout({
       <body>
         <Suspense fallback={<div style={{ color: "white", padding: "20px" }}>Loading System...</div>}>
           <UserProvider>
-            <AudioProvider>
-              <SpellProvider>
-                <MusicProvider>
-                  <CurseOverlay />
-                  <div className="noise-overlay"></div>
-                  <SidebarNav />
-                  <main className="pt-16 lg:pt-0">{children}</main>
-                  <ShadowCaster />
-                  <DiceRoller />
-                  {/* GrimoireModal removed - migrated to /grimoire */}
-                </MusicProvider>
-              </SpellProvider>
-            </AudioProvider>
+            <ToastProvider>
+              <GameContextProvider>
+                <AudioProvider>
+                  <SpellProvider>
+                    <MusicProvider>
+                      <CurseOverlay />
+                      <div className="noise-overlay"></div>
+                      <SidebarNav />
+                      <main className="pt-16 pb-20 lg:pt-0">{children}</main>
+                      <ShadowCaster />
+                      <DiceRoller />
+                      <CommandMenu />
+                      <QuickDock />
+                      <ToastContainer />
+                      {/* GrimoireModal removed - migrated to /grimoire */}
+                    </MusicProvider>
+                  </SpellProvider>
+                </AudioProvider>
+              </GameContextProvider>
+            </ToastProvider>
           </UserProvider>
         </Suspense>
       </body>

@@ -27,9 +27,7 @@ import PrologueController from "@/components/game/intro/PrologueController";
 import WorldMap from "@/components/game/intro/WorldMap";
 import CampaignReader from "@/components/campaign/CampaignReader";
 // import LockScreen from "@/components/ui/LockScreen"; // Keep import if we revert
-import { GameContextProvider, useGameContext } from "@/lib/context/GameContext";
-import { ToastProvider } from "@/lib/context/ToastContext";
-import ToastContainer from "@/components/ui/ToastContainer";
+import { useGameContext } from "@/lib/context/GameContext";
 
 // --- GAME CONTROLLER ---
 // This component consumes the context and manages the top-level view switching
@@ -189,7 +187,6 @@ function GameController() {
     <div className="retro-container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <AmbientController />
       <QuestLog />
-      <CommandMenu onSave={handleSave} />
 
       {/* HEADER SECTION */}
       <header className="campaign-header" style={{ marginBottom: "2rem", display: "flex", flexWrap: "wrap", gap: "2rem", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid var(--glass-border)", paddingBottom: "1.5rem" }}>
@@ -245,14 +242,67 @@ function GameController() {
       {/* DASHBOARD GRID */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem", flex: 1 }}>
 
-        {/* LEFT COLUMN: Status & Quick Stats */}
+        {/* COLUMN 1: Active Session Tools */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <h2 className="text-[#a32222] font-header text-xl uppercase tracking-[0.2em] border-b border-[#a32222]/30 pb-2 mb-2 flex items-center gap-2">
+            <Zap size={18} /> LIVE SESSION
+          </h2>
+
+          <SessionTrackerWidget />
+          <DashboardWidget title="The Oracle" subtitle="AI Narrative Engine" icon={Sparkles} href="/oracle" variant="safe-haven" style={{ border: "1px solid var(--gold-accent)", background: "linear-gradient(to right, #1a0b2e, #0e0e0e)" }}>
+            <p style={{ fontSize: "0.75rem", color: "#b5a685" }}>Consult the spirits for room descriptions and NPC dialogue.</p>
+          </DashboardWidget>
+          <QuickNpcWidget />
+          <NotepadWidget />
+          <AmbienceMixer />
+          <SoundboardWidget />
+        </div>
+
+        {/* COLUMN 2: Campaign World & Combat */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <h2 className="text-[#e8dcc5] font-header text-xl uppercase tracking-[0.2em] border-b border-[#e8dcc5]/30 pb-2 mb-2 flex items-center gap-2">
+            <Map size={18} /> WORLD & COMBAT
+          </h2>
+
+          <DashboardWidget title="Cartography" subtitle="Tactical Maps" icon={Map} href="/maps" variant="safe-haven" style={{ minHeight: "180px" }}>
+            <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid #8b7e66", paddingBottom: "0.25rem" }}>
+                <span>SILENT WARDS</span>
+                <span style={{ color: "var(--scarlet-accent)", fontWeight: "bold" }}>ACTIVE</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid #8b7e66", paddingBottom: "0.25rem", opacity: 0.8 }}>
+                <span>BEHOLDER LAIR</span>
+                <span>MAPPED</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", opacity: 0.6 }}>
+                <span>HEART CHAMBER</span>
+                <span>UNKNOWN</span>
+              </div>
+            </div>
+          </DashboardWidget>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <PartyStatusWidget />
+          </div>
+
           <DashboardWidget title="Threat System" subtitle="Regional Effect" variant="safe-haven" href="/mechanics">
             <CurseTracker simpleView={true} />
             <div style={{ marginTop: "1rem", fontSize: "0.75rem", color: "#4a0404", fontStyle: "italic", borderTop: "1px solid #8b7e66", paddingTop: "0.5rem" }}>
-              &quot;The shadows lengthen with every passing day...&quot;
+              "The shadows lengthen with every passing day..."
             </div>
           </DashboardWidget>
+
+          <DashboardWidget title="Black Market" subtitle="Shops & Items" icon={ShoppingBag} href="/shops" variant="safe-haven" style={{ minHeight: "180px", backgroundImage: "radial-gradient(circle at center, rgba(30,30,35,0.8) 0%, rgba(10,10,12,0.95) 100%), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 10px)", backgroundSize: "cover", backgroundBlendMode: "overlay" }}>
+            <p style={{ position: "relative", zIndex: 10, fontSize: "0.875rem", color: "var(--gold-accent)" }}>Manage inventory for Korgul, Fimble, and local vendors.</p>
+          </DashboardWidget>
+        </div>
+
+        {/* COLUMN 3: Lore & Reference */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <h2 className="text-[#a32222] font-header text-xl uppercase tracking-[0.2em] border-b border-[#a32222]/30 pb-2 mb-2 flex items-center gap-2">
+            <BookOpen size={18} /> LORE & DATABASE
+          </h2>
 
           <DashboardWidget title="The Archives" subtitle="Lore & History" icon={BookOpen} href="/lore" variant="safe-haven">
             <div style={{ fontSize: "0.875rem", opacity: 0.8, marginBottom: "0.5rem" }}>Access decrypted Netherese texts and campaign timeline.</div>
@@ -274,73 +324,19 @@ function GameController() {
             </div>
           </DashboardWidget>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-            <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            <PartyStatusWidget />
-          </div>
-          <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" variant="safe-haven" />
-        </div>
-
-        {/* MIDDLE COLUMN: Primary Navigation */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-
           <DashboardWidget title="The Grimoire" subtitle="Spell Database" icon={BookOpen} href="/grimoire" variant="safe-haven" style={{ backgroundImage: "linear-gradient(rgba(244, 232, 209, 0.9), rgba(244, 232, 209, 0.9)), url('https://www.transparenttextures.com/patterns/aged-paper.png')" }}>
             <p style={{ fontSize: "0.75rem", color: "#4a0404" }}>Full library of incantations. Now with advanced search & filtering.</p>
           </DashboardWidget>
 
-          <DashboardWidget title="Black Market" subtitle="Shops & Items" icon={ShoppingBag} href="/shops" variant="safe-haven" style={{ minHeight: "180px", backgroundImage: "radial-gradient(circle at center, rgba(30,30,35,0.8) 0%, rgba(10,10,12,0.95) 100%), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 10px)", backgroundSize: "cover", backgroundBlendMode: "overlay" }}>
-            <p style={{ position: "relative", zIndex: 10, fontSize: "0.875rem", color: "var(--gold-accent)" }}>Manage inventory for Korgul, Fimble, and local vendors.</p>
-          </DashboardWidget>
-
-          <DashboardWidget title="Cartography" subtitle="Tactical Maps" icon={Map} href="/maps" variant="safe-haven" style={{ minHeight: "180px" }}>
-            <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid #8b7e66", paddingBottom: "0.25rem" }}>
-                <span>SILENT WARDS</span>
-                <span style={{ color: "var(--scarlet-accent)", fontWeight: "bold" }}>ACTIVE</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", borderBottom: "1px solid #8b7e66", paddingBottom: "0.25rem", opacity: 0.8 }}>
-                <span>BEHOLDER LAIR</span>
-                <span>MAPPED</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", opacity: 0.6 }}>
-                <span>HEART CHAMBER</span>
-                <span>UNKNOWN</span>
-              </div>
-            </div>
-          </DashboardWidget>
+          <DashboardWidget title="Rules" subtitle="Mechanics" icon={Zap} href="/mechanics" variant="safe-haven" />
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
             <DashboardWidget title="Tools" subtitle="Foundry" icon={Hammer} href="/generators" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            <DashboardWidget title="Architect" subtitle="Arcanist's Quill" icon={PenTool} href="/editor" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            <DashboardWidget title="Print Lab" subtitle="Handouts" icon={FileText} href="/deliverables" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Architect" subtitle="Editor" icon={PenTool} href="/editor" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
+            <DashboardWidget title="Print Lab" subtitle="Handouts" icon={FileText} href="/deliverables" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center", gridColumn: "span 2" }} />
           </div>
 
-        </div>
-
-        {/* RIGHT COLUMN: DM Tools & Utilities */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-
-          {/* 1. Session Tracker */}
-          <SessionTrackerWidget />
-
-          {/* 1.5. The Oracle (New) */}
-          <DashboardWidget title="The Oracle" subtitle="AI Narrative Engine" icon={Sparkles} href="/oracle" variant="safe-haven" style={{ border: "1px solid var(--gold-accent)", background: "linear-gradient(to right, #1a0b2e, #0e0e0e)" }}>
-            <p style={{ fontSize: "0.75rem", color: "#b5a685" }}>Consult the spirits for room descriptions and NPC dialogue.</p>
-          </DashboardWidget>
-
-          {/* 2. Quick NPC */}
-          <QuickNpcWidget />
-
-          {/* 3. Notepad */}
-          <NotepadWidget />
-
-          {/* 4. Audio Engine */}
-          <AmbienceMixer />
-          <SoundboardWidget />
-
-
-
-          <footer style={{ marginTop: "auto", textAlign: "center", opacity: 0.4, fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--fg-dim)" }}>
+          <footer style={{ marginTop: "auto", textAlign: "center", opacity: 0.4, fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--fg-dim)", paddingTop: "2rem" }}>
             HEART'S CURSE // SESSION 25 (BUILD 3.1 - DM DASHBOARD)
           </footer>
         </div>
@@ -352,12 +348,5 @@ function GameController() {
 
 // MAIN ENTRY POINT
 export default function Home() {
-  return (
-    <ToastProvider>
-      <GameContextProvider>
-        <GameController />
-        <ToastContainer />
-      </GameContextProvider>
-    </ToastProvider>
-  );
+  return <GameController />;
 }

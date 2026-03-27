@@ -13,6 +13,7 @@ type InteractiveMapProps = {
     isEditing?: boolean;
     onNodeMove?: (id: string, x: number, y: number) => void;
     onMapClick?: (x: number, y: number) => void;
+    partyLocationId?: string | null;
 };
 
 export default function InteractiveMap({
@@ -23,7 +24,8 @@ export default function InteractiveMap({
     gridType = "hex",
     isEditing = false,
     onNodeMove,
-    onMapClick
+    onMapClick,
+    partyLocationId
 }: InteractiveMapProps) {
     const [scale, setScale] = useState(1);
     const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -245,14 +247,32 @@ export default function InteractiveMap({
                                 cursor: isEditing ? "grab" : "pointer"
                             }}
                         >
-                            {/* Pulse Effect */}
-                            <div className="pulse-ring" style={{
-                                position: "absolute",
-                                width: "100%", height: "100%",
-                                borderRadius: "50%",
-                                border: `2px solid ${getNodeColor(node.type)}`,
-                                animation: isEditing ? 'none' : "pulseRed 2s infinite"
-                            }} />
+                            {/* Pulse Effect (Only for Boss/Encounter) */}
+                            {(!isEditing && (node.type === "boss" || node.type === "encounter")) && (
+                                <div className="pulse-ring" style={{
+                                    position: "absolute",
+                                    width: "100%", height: "100%",
+                                    borderRadius: "50%",
+                                    border: `2px solid ${getNodeColor(node.type)}`,
+                                    animation: "pulseRed 2s infinite"
+                                }} />
+                            )}
+
+                            {/* Party Token Indicator */}
+                            {partyLocationId === node.id && (
+                                <div style={{
+                                    position: "absolute",
+                                    top: "-15px", left: "50%",
+                                    transform: "translateX(-50%)",
+                                    width: "0", height: "0",
+                                    borderLeft: "8px solid transparent",
+                                    borderRight: "8px solid transparent",
+                                    borderTop: "12px solid #3b82f6", // Blue marker
+                                    filter: "drop-shadow(0 0 5px #3b82f6)",
+                                    animation: "bounceToken 1.5s infinite",
+                                    zIndex: 50
+                                }} />
+                            )}
 
                             {/* Icon/Marker */}
                             <div style={{
@@ -322,6 +342,10 @@ export default function InteractiveMap({
                 @keyframes pulseRed {
                     0% { transform: scale(1); opacity: 1; }
                     100% { transform: scale(2.5); opacity: 0; }
+                }
+                @keyframes bounceToken {
+                    0%, 100% { transform: translate(-50%, 0); }
+                    50% { transform: translate(-50%, -5px); }
                 }
             `}</style>
         </div>

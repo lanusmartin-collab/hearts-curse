@@ -41,6 +41,7 @@ export default function MapsClient() {
     const [editingNode, setEditingNode] = useState<MapNode | null>(null);
     const [defaultNodeType, setDefaultNodeType] = useState<"info" | "encounter" | "boss" | "loot" | "quest" | "entrance" | "trap">("info");
     const [viewingStatblock, setViewingStatblock] = useState<string | null>(null); // Slug or ID
+    const [partyLocationId, setPartyLocationId] = useState<string | null>(null);
 
     // Force Map to re-mount when map changes to reset state
     const mapKey = selectedMap.id;
@@ -56,6 +57,10 @@ export default function MapsClient() {
     // Initialize nodes when map changes (Load from LocalStorage if available)
     useEffect(() => {
         const savedNodes = localStorage.getItem(`map_nodes_${selectedMapId}`);
+        const savedParty = localStorage.getItem(`party_loc_${selectedMapId}`);
+        if (savedParty) setPartyLocationId(savedParty);
+        else setPartyLocationId(null);
+
         if (savedNodes) {
             try {
                 setMapNodes(JSON.parse(savedNodes));
@@ -73,7 +78,10 @@ export default function MapsClient() {
         if (mapNodes.length > 0) {
             localStorage.setItem(`map_nodes_${selectedMapId}`, JSON.stringify(mapNodes));
         }
-    }, [mapNodes, selectedMapId]);
+        if (partyLocationId) {
+            localStorage.setItem(`party_loc_${selectedMapId}`, partyLocationId);
+        }
+    }, [mapNodes, partyLocationId, selectedMapId]);
 
     const handleResetMap = () => {
         if (confirm("Reset this map to its default state? All custom changes will be lost.")) {
@@ -301,6 +309,7 @@ export default function MapsClient() {
                                     isEditing={isEditing}
                                     onNodeMove={handleNodeMove}
                                     onMapClick={handleMapClick}
+                                    partyLocationId={partyLocationId}
                                 />
 
                                 {/* Editor Modal (If Editing Node) */}
@@ -426,6 +435,20 @@ export default function MapsClient() {
                                             </div>
                                         </div>
                                     )}
+
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-2 mt-6 pt-4 border-t border-gray-700">
+                                        <button
+                                            onClick={() => setPartyLocationId(selectedNode.id)}
+                                            className="flex-1 bg-blue-900 border border-blue-600 hover:bg-blue-800 text-white p-2 flex items-center justify-center gap-2 rounded text-xs font-bold transition-colors">
+                                            MOVE PARTY HERE
+                                        </button>
+                                        <button
+                                            onClick={handleRollEncounter}
+                                            className="flex-1 bg-orange-900 border border-orange-600 hover:bg-orange-800 text-white p-2 flex items-center justify-center gap-2 rounded text-xs font-bold transition-colors">
+                                            <Swords size={12} /> ROLL ENCOUNTER
+                                        </button>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="h-full flex flex-col items-center justify-center text-gray-600 space-y-4">

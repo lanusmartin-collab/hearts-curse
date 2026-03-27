@@ -6,7 +6,8 @@ import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
 import { Statblock } from "@/lib/data/statblocks";
 import StatblockCard from "@/components/ui/StatblockCard";
 import Link from "next/link";
-import { Dices, Map as MapIcon, ChevronDown, Activity, Search, ShieldAlert, Skull, BookOpen, Scroll, ArrowRight, Home } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Dices, Map as MapIcon, ChevronDown, Activity, Search, ShieldAlert, Skull, BookOpen, Scroll, ArrowRight, Home, Sparkles, Swords } from "lucide-react";
 
 // --- Navigation Data ---
 const REGIONS = [
@@ -77,6 +78,7 @@ function GrimoireInterface() {
     const [currentEncounter, setCurrentEncounter] = useState<Encounter | null>(null);
     const [isRolling, setIsRolling] = useState(false);
     const [allStatblocks, setAllStatblocks] = useState<Record<string, Statblock>>(MONSTERS_2024);
+    const router = useRouter();
 
     // Derived
     const currentTables = TABLES_BY_REGION[selectedRegionId] || [];
@@ -249,8 +251,20 @@ function GrimoireInterface() {
                                 <h2 className="text-2xl lg:text-5xl font-header font-bold text-[#2c1a1a] drop-shadow-sm leading-none mb-2">
                                     {currentEncounter.name}
                                 </h2>
-                                <div className="text-[#8a1c1c] font-serif italic text-xs lg:text-sm tracking-wide">
-                                    {REGIONS.find(r => r.id === selectedRegionId)?.name} — {activeTableObj?.name}
+                                <div className="text-[#8a1c1c] font-serif italic text-xs lg:text-sm tracking-wide flex items-center gap-3">
+                                    <span>{REGIONS.find(r => r.id === selectedRegionId)?.name} — {activeTableObj?.name}</span>
+                                    <button
+                                        onClick={() => {
+                                            // Simple heuristic jump to maps
+                                            let mapId = 'oakhaven';
+                                            if (selectedRegionId === 'sector-01-5') mapId = 'castle';
+                                            if (selectedRegionId === 'sector-02') mapId = 'underdark';
+                                            router.push(`/maps?id=${mapId}`);
+                                        }}
+                                        className="flex items-center gap-1 bg-[#8a1c1c]/10 hover:bg-[#8a1c1c]/20 px-2 py-1 rounded border border-[#8a1c1c]/30 transition-colors pointer-events-auto cursor-pointer"
+                                    >
+                                        <MapIcon size={12} /> View on Map
+                                    </button>
                                 </div>
                             </div>
 
@@ -273,6 +287,15 @@ function GrimoireInterface() {
                                     <p className="text-2xl lg:text-3xl text-[#1a1a1a] font-serif leading-relaxed drop-shadow-sm">
                                         “{flavor}”
                                     </p>
+                                    <button
+                                        onClick={() => {
+                                            const params = new URLSearchParams({ context: flavor });
+                                            router.push(`/oracle?${params.toString()}`);
+                                        }}
+                                        className="mt-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#8a1c1c] hover:text-[#ff3333] transition-colors"
+                                    >
+                                        <Sparkles size={14} /> Consult Oracle
+                                    </button>
                                 </div>
 
                                 {/* MECHANICS BLOCK (DM Info) */}
@@ -290,9 +313,23 @@ function GrimoireInterface() {
                                 {/* STATBLOCKS GRID */}
                                 {currentEncounter.monsters && currentEncounter.monsters.length > 0 && (
                                     <div className="pt-6 border-t border-[#2c1a1a]/20">
-                                        <h3 className="text-[#2c1a1a] font-header text-xl font-bold uppercase tracking-widest mb-6 flex items-center gap-2">
-                                            <Skull size={20} className="text-[#8a1c1c]" /> Bestiary
-                                        </h3>
+                                        <div className="flex justify-between items-end mb-6">
+                                            <h3 className="text-[#2c1a1a] font-header text-xl font-bold uppercase tracking-widest m-0 flex items-center gap-2">
+                                                <Skull size={20} className="text-[#8a1c1c]" /> Bestiary
+                                            </h3>
+                                            <button
+                                                onClick={() => {
+                                                    const currentMonsters = Array.from(new Set(currentEncounter.monsters));
+                                                    const existing = JSON.parse(localStorage.getItem('combat_tracker_queue') || '[]');
+                                                    const toAdd = currentMonsters.map(m => ({ slug: m, hp: allStatblocks[m]?.hp || 10, init: 0 }));
+                                                    localStorage.setItem('combat_tracker_queue', JSON.stringify([...existing, ...toAdd]));
+                                                    alert("Added to Combat Tracker!");
+                                                }}
+                                                className="bg-[#2c1a1a] text-[#e8dcc5] hover:bg-[#8a1c1c] text-xs font-bold uppercase px-3 py-1 rounded shadow transition-colors flex items-center gap-2"
+                                            >
+                                                <Swords size={14} /> Send to Tracker
+                                            </button>
+                                        </div>
                                         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                                             {Array.from(new Set(currentEncounter.monsters)).map(slug => {
                                                 const data = allStatblocks[slug];
