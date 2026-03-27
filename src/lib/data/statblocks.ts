@@ -790,31 +790,45 @@ export const STATBLOCKS: Record<string, Statblock> = {
         treasure: "Scepter of the Void (Unstable Artifact), Robe of the Archmagi"
     },
     "zoltus": {
-        name: "Zoltus (Broken Arcanist)",
+        name: "Zoltus (Red Wizard Envoy)",
         size: "Medium",
         type: "Humanoid (High Elf)",
-        alignment: "Chaotic Neutral",
-        ac: 15,
+        alignment: "Lawful Evil",
+        ac: 16,
         armorType: "Mage Armor",
-        hp: 198,
-        hitDice: "18d8 + 54",
+        hp: 220,
+        hitDice: "20d8 + 60",
         speed: "30 ft.",
-        stats: { str: 10, dex: 14, con: 16, int: 20, wis: 14, cha: 12 },
-        saves: "Int +9, Wis +6",
-        skills: "Arcana +13, Perception +6",
+        stats: { str: 10, dex: 16, con: 16, int: 22, wis: 16, cha: 14 },
+        saves: "Int +12, Wis +9, Cha +8",
+        skills: "Arcana +18, Perception +9, Deception +8",
         immunities: "None",
-        senses: "Passive Perception 16",
-        languages: "Common, Elvish, Draconic",
-        cr: "14",
-        xp: 11500,
+        resistances: "Damage from spells; Nonmagical bludgeoning, piercing, and slashing (from pre-cast Stoneskin)",
+        senses: "Passive Perception 19",
+        languages: "Common, Elvish, Draconic, Thayan",
+        cr: "17",
+        xp: 18000,
         traits: [
-            { name: "Retributive Strike", desc: "If Zoltus drops to 0 HP, the Staff of Power releases unleashed energy (DC 17 Dex save, 8d6 force damage)." },
-            { name: "Spellcasting", desc: "14th-level spellcaster. Int is spellcasting ability (DC 17, +9 to hit). Known: Magic Missile, Lightning Bolt, Wall of Fire, Cone of Cold." }
+            { name: "Retributive Strike", desc: "If Zoltus drops to 0 HP, the Staff of Power releases unleashed energy (DC 20 Dex save, 8d6 force damage)." },
+            { name: "Legendary Resistance (3/Day)", desc: "If Zoltus fails a saving throw, he can choose to succeed instead." },
+            { name: "Magic Resistance", desc: "Zoltus has advantage on saving throws against spells and other magical effects." },
+            { name: "Spellcasting", desc: "19th-level spellcaster. Int is spellcasting ability (DC 20, +12 to hit). Prepared Spells:\nCantrips (at will): Fire Bolt, Mage Hand, Prestidigitation, Ray of Frost\n1st (4 slots): Shield, Magic Missile, Detect Magic\n2nd (3 slots): Misty Step, Mirror Image\n3rd (3 slots): Counterspell, Dispel Magic, Fireball\n4th (3 slots): Banishment, Stoneskin\n5th (3 slots): Cone of Cold, Wall of Force, Cloudkill\n6th (2 slots): Chain Lightning, Disintegrate\n7th (1 slot): Finger of Death, Teleport\n8th (1 slot): Maze\n9th (1 slot): Meteor Swarm" }
         ],
         actions: [
-            { name: "Staff of Power", desc: "Melee: +8 to hit, 1d6+2 blugeoning + 1d6 force. Spell attack +9. Spells (Charges): Cone of Cold, Fireball, Globe of Invulnerability, Hold Monster, Levitate, Lightning Bolt, Magic Missile, Ray of Enfeeblement, Wall of Force." }
+            { name: "Multiattack", desc: "Zoltus makes two attacks with his Staff of Power or casts one spell and uses his Blood Siphon." },
+            { name: "Staff of Power", desc: "Melee: +11 to hit, reach 5 ft. Hit: 1d6+5 bludgeoning + 1d6 force damage. Spells (Charges): Cone of Cold, Fireball, Globe of Invulnerability, Hold Monster, Levitate, Lightning Bolt, Magic Missile, Ray of Enfeeblement, Wall of Force." },
+            { name: "Blood Siphon", desc: "Target one creature within 60 ft. Target must make a DC 20 Constitution saving throw, taking 4d6 necrotic damage on a failed save, or half as much on a successful one. Zoltus regains HP equal to the necrotic damage dealt." }
         ],
-        treasure: "Staff of Power (Very Rare), Spellbook"
+        reactions: [
+            { name: "Blood Ward", desc: "When hit by an attack, Zoltus can drain 10 HP from a willing ally within 30 ft to gain +5 to AC against the triggering attack." }
+        ],
+        legendary: [
+            { name: "Cantrip", desc: "Zoltus casts a cantrip." },
+            { name: "Staff Strike", desc: "Zoltus makes one attack with the Staff of Power." },
+            { name: "Cast Spell (Costs 2 Actions)", desc: "Casts a spell of 3rd level or lower." },
+            { name: "Arcane Eruption (Costs 3 Actions)", desc: "Zoltus releases a burst of raw magic. Each creature within 20 ft of him must make a DC 20 Dexterity saving throw, taking 6d8 force damage and being pushed 10 ft away on a failed save, or half damage on a success." }
+        ],
+        treasure: "Staff of Power (Very Rare), Spellbook, Red Wizard Robes"
     },
 
     "elias": {
