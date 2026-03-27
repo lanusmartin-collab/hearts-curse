@@ -225,12 +225,6 @@ function GameController() {
           {/* Quick Action: Open PDF Book */}
           {/* TODO: Implement actual Book View */}
           <button
-            onClick={() => setViewMode("main_menu")}
-            className="group relative px-6 py-2 bg-[var(--obsidian-base)] border border-[var(--scarlet-accent)] text-[var(--scarlet-accent)] font-serif uppercase text-xs tracking-widest hover:bg-[var(--scarlet-accent)] hover:text-white transition-all flex items-center gap-2 shrink-0 animate-pulse"
-          >
-            <Swords className="w-4 h-4" /> <span>ENTER SIMULATION</span>
-          </button>
-          <button
             onClick={() => setViewMode("book")}
             className="group relative px-6 py-2 bg-[var(--obsidian-base)] border border-[rgba(201,188,160,0.5)] text-[var(--gold-accent)] font-serif uppercase text-xs tracking-widest hover:bg-[var(--gold-accent)] hover:text-black transition-all flex items-center gap-2 shrink-0"
           >
