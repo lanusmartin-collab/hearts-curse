@@ -44,5 +44,19 @@ export const SHOPS: Record<string, ShopData> = {
             { id: "venom_blade", name: "Dagger of Venom", description: "+1 Dagger. Once per day deal extra 2d10 poison.", cost: 2000, type: "weapon", stock: 1 },
             { id: "thieves_tools", name: "Masterwork Thieves' Tools", description: "+2 to Sleight of Hand checks.", cost: 1500, type: "misc", stock: 1 }
         ]
+    },
+    "iron": { // The Iron Knot
+        id: "iron",
+        name: "The Iron Knot",
+        description: "Kaelen Muldar's forge. The ghost of a master smith works here, offering services rather than physical goods.",
+        keeper: "Kaelen Muldar",
+        image: "/shops/iron_shop.png",
+        currency: "gp",
+        inventory: [
+            { id: "ghost_weapon_oil", name: "Ghost-Touch Weapon Oil", description: "Makes the steel bite the spirit. Good against the misty ones. Cost: 1 Bottled Lightning", cost: 0, type: "potion", stock: 99 },
+            { id: "ghost_armor_polish", name: "Ghost-Touch Armor Polish", description: "+2 AC vs Incorporeal. Can grapple ghosts. Cost: 1 Bottled Lightning", cost: 0, type: "potion", stock: 99 },
+            { id: "item_restoration", name: "Item Restoration", description: "Repair drained items. Cost: 1 Bottled Lightning + Sacrifice of Effort", cost: 0, type: "misc", stock: 99 },
+            { id: "masterwork_upgrade", name: "Masterwork Upgrade", description: "Upgrade +1 to +2, or add property. Cost: 3 Bottled Lightning + Rare Material + Moment of Peace", cost: 0, type: "misc", stock: 99 }
+        ]
     }
 };

@@ -278,7 +278,7 @@ export const SPIRE_TABLE: Encounter[] = [
     { roll: [3, 4], name: "Aarakocra Scouts", description: "SCENE: 3 Bird-men dive from the clouds. \nCOMBAT: They use Hit-and-Run tactics with javelins. They try to grapple and drop foes.", monsters: ["aarakocra"] },
     { roll: [5, 6], name: "Air Elemental", description: "SCENE: A cloud takes form. \nCOMBAT: It uses *Whirlwind* to fling players off the ledge.", monsters: ["air-elemental"] },
     { roll: [7, 8], name: "Invisible Stalker", description: "SCENE: You feel a presence but see nothing. \nAMBUSH: It tracks the party member who killed the last elemental.", monsters: ["invisible-stalker"] },
-    { roll: [9, 10], name: "Thundercloud", description: "SCENE: Static charge builds up. \nHAZARD: Lightning strikes a metal armor wearer. 3d10 Lightning damage (Dex save half).", monsters: [] },
+    { roll: [9, 10], name: "Thundercloud", description: "SCENE: Static charge builds up. \nHAZARD: Lightning strikes a metal armor wearer. 3d10 Lightning damage (Dex save half). \nLOOT: Players can use an action and a skill check (Arcana/Sleight of Hand) during the strike to capture 'Bottled Lightning'.", monsters: [] },
     { roll: [11, 12], name: "Griffon Nest", description: "SCENE: A ledge with eggs. \nANIMAL: 2 Griffons defend their nest. They are hungry but protective.", monsters: ["griffon"] },
     { roll: [13, 14], name: "Cloud Giant's Footprint", description: "SCENE: A massive footprint in the snow. \nLOOT: A frozen 'Giant's Toe' (Alchemy ingredient) and a dropped gold ring (Ring of Feather Fall).", monsters: [] },
     { roll: [15, 16], name: "Sky-Pirate Wreck", description: "SCENE: A crashed Halruaan Skyship. \nLOOT: 1d4 Potions of Flying found in the wreckage.", monsters: [] },

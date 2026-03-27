@@ -99,7 +99,7 @@ const OAKHAVEN: CampaignMap = {
         { id: "bridge", x: 50, y: 90, label: "The Looping Bridge", type: "entrance", description: "**THE OUTER MISTS:** A stone bridge crossing a sluggish grey river. **CURSE:** Any attempt to cross it loops the traveler back to the Town Square. The mist is impenetrable and whispers your name.", exits: { north: "market" }, link: "/maps?id=oakhaven_mines" },
         { id: "forge", x: 15, y: 20, label: "The Artisan's Row", type: "encounter", description: "**THE IRON KNOT:** Kaelen Muldar's forge (Top-Left) is cold, covered in grey ash. **HAUNT:** The sound of a ghostly hammer rings eternally. **LOOT:** *Adamantine Ingot* found in the cold coals, still warm to the touch.", link: "/shops?tab=iron", monsters: ["specter"] },
         { id: "cliff", x: 85, y: 20, label: "The Cliffside Ascent", type: "encounter", description: "**PATH TO CASTLE:** A steep, winding path (Top-Right) leads to Mournwatch. **ENCOUNTER:** 'The Night Shard'. 3 Assassins (Zhentarim & Cultist alliance) ambush the party from the shadows. They drop a *Dagger of Venom*.", link: "/maps?id=castle", exits: { south: "thay_embassy" }, monsters: ["arcanum-wraith", "arcanum-wraith"] },
-        { id: "shrine", x: 10, y: 40, label: "Ancient Shrine (Lore)", type: "info", description: "**LORE:** A crumbled statue of Mystra. Reading the inscription (DC 14 Religion) reveals: 'When the Heart stops, the Weave unravels.' You feel a moment of peace here (+1d4 Temp HP)." },
+        { id: "shrine", x: 10, y: 40, label: "Ancient Shrine (Lore)", type: "quest", description: "**LORE:** A crumbled statue of Mystra. Reading the inscription (DC 14 Religion) reveals: 'When the Heart stops, the Weave unravels.' **REWARD:** Meditating here produces a 'Moment of Peace' crystal.", itemId: "Moment of Peace" },
         { id: "outpost", x: 90, y: 35, label: "Abandoned Outpost", type: "encounter", description: "**COMBAT:** An old watchtower. **THREAT:** 4 Ghouls wearing tattered town guard uniforms. They are eating a horse carcass. **LOOT:** *Potion of Vitality* in a saddlebag.", monsters: ["specter", "specter", "specter", "specter"] },
         { id: "grove", x: 35, y: 10, label: "Whispering Grove", type: "trap", description: "**SKILL CHECK:** The trees lean in. **SURVIVAL DC 13:** The roots try to trip you (Prone). **ARCANA DC 15:** You hear the trees gossiping. They say 'The Library is not on this plane'." }
     ],
@@ -650,7 +650,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
         nodes: [
             { id: "1", x: 50, y: 90, label: "Base of the Spire", type: "info", description: "The wind howls like a dying god. Visibility is 30ft due to clouds." },
             { id: "2", x: 30, y: 70, label: "The Gale-Gate", type: "encounter", description: "Encounter: 2 Air Elementals + 4 Aarakocra Skirmishers. Lair Action: Gust (DC 15 Str save or pushed 20ft)." },
-            { id: "3", x: 70, y: 50, label: "The Whispering Terrace", type: "quest", description: "Puzzle: Align the wind chimes to the Song of Aerdrie Faenya to reveal the stairs." },
+            { id: "3", x: 70, y: 50, label: "The Whispering Terrace", type: "quest", description: "Puzzle: Align the wind chimes to the Song of Aerdrie Faenya to reveal the stairs. **REWARD:** The chimes focus the storm into a vial, producing 'Bottled Lightning'.", itemId: "Bottled Lightning" },
             { id: "4", x: 50, y: 30, label: "Eye of the Storm", type: "boss", description: "BOSS: Aerisi (Air Prophet) mounted on an Invisible Stalker. Loot: 'Fan of Gales'." },
             { id: "5", x: 50, y: 15, label: "The Apex", type: "loot", description: "Treasure: Scroll of Control Weather & Elemental Gem (Blue)." }
         ],
@@ -680,7 +680,7 @@ const PLOT_TWIST_MAPS: CampaignMap[] = [
 2.  **The Gate:** Opening the gate without the password triggers the *Ignis-Void* boss fight immediately.
 3.  **The Prize:** The *Prism of the Void* is here, essential for the good ending of the campaign.`,
         nodes: [
-            { id: "gate", x: 50, y: 85, label: "The Shattered Gate", type: "encounter", description: "**SCENE:** Ancient obsidian rubble floating in zero-g. **ENCOUNTER:** Guarded by 2 Netherese Specters who demand a password in High Draconic." },
+            { id: "gate", x: 50, y: 85, label: "The Shattered Gate", type: "encounter", description: "**SCENE:** Ancient obsidian rubble floating in zero-g. **ENCOUNTER:** Guarded by 2 Netherese Specters who demand a password in High Draconic. **LOOT:** A heavy chunk of 'Star-metal Ore' drifts in the debris.", itemId: "Star-metal Ore" },
             { id: "mirror", x: 50, y: 60, label: "Hall of Mirrors", type: "trap", description: "**MECHANIC:** 'Simulacrum Breach'. Reflections step out and attack. They have 1/2 HP of players but deal full damage." },
             { id: "altar", x: 50, y: 25, label: "The Void Altar", type: "boss", description: "**BOSS:** Ignis-Void (Balor) bound to the altar by cold chains. He cannot leave the room but rains fire and void-bolts." },
             { id: "loot", x: 50, y: 5, label: "The Treasury", type: "loot", description: "**LOOT:** *Prism of the Void* (Quest Item), *Ioun Stone of Sustenance* (No food/water needed). The treasury has no air.", itemId: "Prism of the Void" }

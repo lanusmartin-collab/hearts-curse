@@ -61,6 +61,11 @@ export const ZHENTARIM_SPECIAL_STOCK: ShopItem[] = [
 ];
 
 export const CAMPAIGN_UNIQUE_ITEMS: ShopItem[] = [
+    // Masterwork Upgrade Components
+    { name: "Bottled Lightning", type: "Material", rarity: "Rare", cost: "Gathered", effect: "A literal storm caught in a glass vial. Crackles with energy.", npcQuote: "Careful, it bites." },
+    { name: "Star-metal Ore", type: "Material", rarity: "Very Rare", cost: "Gathered", effect: "A heavy, glowing ore that fell from the void. Used to forge legendary weapons.", npcQuote: "The Netherese killed for this stuff." },
+    { name: "Moment of Peace", type: "Material", rarity: "Legendary", cost: "Quest", effect: "A crystallized emotion, warm to the touch. Needed for the Masterwork Upgrade.", npcQuote: "It feels like... finally going home." },
+
     // Oakhaven & Mines
     { name: "Adamantine Ingot", type: "Material", rarity: "Uncommon", cost: "Loot", effect: "Can be used to craft/upgrade Armor to negate crits.", npcQuote: "Cold, heavy, and unbreakable. Like a dwarf's grudge." },
     { name: "Dagger of Venom", type: "Weapon", rarity: "Rare", cost: "Loot", effect: "+1 Dagger. Action: Coat blade in black poison (DC 15 CON or 2d10 Poison + Poisoned).", npcQuote: "It drips malice even when dry.", properties: ["Finesse", "Light"] },
