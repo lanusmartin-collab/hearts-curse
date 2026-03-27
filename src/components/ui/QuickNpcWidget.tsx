@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { User, Copy, RefreshCw } from "lucide-react";
+import { User, Copy, RefreshCw, Eye, X } from "lucide-react";
 import DashboardWidget from "./DashboardWidget";
+import StatblockCard from "./StatblockCard";
 import { generateNPC } from "@/lib/generators"; // Assumes index export or specific file
 
 export default function QuickNpcWidget() {
     // We'll store just one current quick NPC
     const [npc, setNpc] = useState<any>(null);
+    const [showStats, setShowStats] = useState(false);
 
     const handleGenerate = () => {
         // Generate a random 'Surface' or mixed NPC
@@ -33,9 +35,14 @@ export default function QuickNpcWidget() {
                                 <div className="font-header text-lg text-[var(--scarlet-accent)]">{npc.name}</div>
                                 <div className="text-xs text-gray-500 font-mono uppercase">{npc.race} {npc.class}</div>
                             </div>
-                            <button onClick={copyToClipboard} className="text-gray-600 hover:text-[var(--gold-accent)]">
-                                <Copy size={14} />
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button onClick={() => setShowStats(true)} className="text-gray-600 hover:text-[var(--gold-accent)]" title="View Full Statblock">
+                                    <Eye size={14} />
+                                </button>
+                                <button onClick={copyToClipboard} className="text-gray-600 hover:text-[var(--gold-accent)]" title="Copy Description">
+                                    <Copy size={14} />
+                                </button>
+                            </div>
                         </div>
                         <div className="text-sm text-gray-300 italic">
                             "{npc.appearance}"
@@ -57,6 +64,18 @@ export default function QuickNpcWidget() {
                     <RefreshCw size={14} /> Roll NPC
                 </button>
             </div>
+
+            {/* FULL STATBLOCK OVERLAY */}
+            {showStats && npc && (
+                <div className="fixed inset-0 z-50 flex flex-col items-center justify-start p-4 md:p-12 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in cursor-pointer" onClick={() => setShowStats(false)}>
+                    <div className="relative w-full max-w-2xl mt-8 mb-8 cursor-default rounded border border-[#333] shadow-[0_0_50px_rgba(0,0,0,0.8)]" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => setShowStats(false)} className="absolute -top-4 -right-4 z-50 p-2 bg-black text-[#ccc] border border-[#333] hover:text-[var(--scarlet-accent)] hover:border-[var(--scarlet-accent)] rounded-full transition-colors font-bold shadow-lg">
+                            <X size={20} />
+                        </button>
+                        <StatblockCard data={npc} />
+                    </div>
+                </div>
+            )}
         </DashboardWidget>
     );
 }
