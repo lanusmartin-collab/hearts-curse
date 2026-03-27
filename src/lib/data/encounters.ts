@@ -189,6 +189,20 @@ export const SHOP_AMBUSH_TABLE: Encounter[] = [
     }
 ];
 
+export const CASTLE_EXTERIOR_TABLE: Encounter[] = [
+    { roll: [1, 2], name: "Skeletal Sentries", description: "SCENE: Decalcified skeletons standing guard at the ruined battlements. \nAMBUSH: 4 Skeletons burst from the mud. They are armed with rusted pikes.", monsters: ["skeleton"] },
+    { roll: [3, 4], name: "Vrock Screech", description: "SCENE: A shadow falls over the party. \nCOMBAT: A Vrock plunges from the sky. It uses its Spores attack on landing.", monsters: ["vrock"] },
+    { roll: [5, 6], name: "Necrotic Mud", description: "SCENE: The ground squelches. \nHAZARD: DC 15 Dex save or sink 2 feet into the mud. Taking 2d6 Necrotic damage per turn while stuck.", monsters: [] },
+    { roll: [7, 8], name: "Thayan Infiltrators", description: "SCENE: A pair of Red Wizards trying to break through a minor ward. \nSOCIAL: They might ignore the party or try to hire them as fodder.", monsters: ["mage"] },
+    { roll: [9, 10], name: "Moat Tentacles", description: "SCENE: The dark waters ripple. \nTHREAT: 3 Giant Octopus tentacles drag PCs into the blood moat. Treat as Grapple + Drowning.", monsters: ["giant-octopus"] },
+    { roll: [11, 12], name: "Gargoyle Perch", description: "SCENE: Demonic statues line the high wall. \nCOMBAT: 3 Gargoyles animate when someone passes underneath.", monsters: ["gargoyle"] },
+    { roll: [13, 14], name: "The Hanging Cages", description: "SCENE: Iron gibbets sway in the wind. \nLOOT: A corpse in a cage holds a rusted key and 50gp. Climbing up requires DC 14 Athletics.", monsters: [] },
+    { roll: [15, 16], name: "Deathless Archer", description: "SCENE: A lone sniper on a high tower. \nTHREAT: A Wight with a longbow takes shots from 100ft. Pinned down.", monsters: ["wight"] },
+    { roll: [17, 18], name: "Zhentarim Corpse", description: "SCENE: A dead mercenary pinned to a tree with a black arrow. \nINVESTIGATION: He carries a map showing a hidden sewer entrance to the keep.", monsters: [] },
+    { roll: [19, 19], name: "Echo of Larloch", description: "SCENE: A booming voice echoes across the exterior. \nEFFECT: All enemies in a 1-mile radius gain Advantage on their next attack.", monsters: [] },
+    { roll: [20, 20], name: "The Siege Engine", description: "SCENE: An abandoned, massive ballista that fires chaotic energy. \nBOON: DC 18 Arcana to fire it once. Deals 10d10 Force damage to anything it hits.", monsters: [] }
+];
+
 export const CASTLE_MOURNWATCH_TABLE: Encounter[] = [
     { roll: [1, 2], name: "Wild Magic Surge", description: "SCENE: A stray spell hits the courtyard. \nEFFECT: Roll on the Wild Magic Table. Gravity might reverse (Dex save DC 15) or everyone turns blue.", monsters: [] },
     { roll: [3, 4], name: "Red Wizard Patrol", description: "SCENE: Thayan Wizards levitating over the ramparts. \nCOMBAT: 1 Mage and 2 Thugs (Guards). They spot anyone not disguised.", monsters: ["mage", "thug"] },

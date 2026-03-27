@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE, SHOP_AMBUSH_TABLE, SILENT_WARDS_TABLE, LIBRARY_WHISPERS_TABLE, HEART_CHAMBER_TABLE, UNDERDARK_TRAVEL_TABLE, OAKHAVEN_MINES_TABLE, NETHERIL_RUINS_TABLE, OSSUARY_TABLE, ARACH_TINILITH_TABLE, CASTLE_MOURNWATCH_TABLE, CATACOMBS_DESPAIR_TABLE, DWARVEN_RUINS_TABLE, MIND_FLAYER_COLONY_TABLE, BEHOLDER_LAIR_TABLE, Encounter } from "@/lib/data/encounters";
+import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE, SHOP_AMBUSH_TABLE, SILENT_WARDS_TABLE, LIBRARY_WHISPERS_TABLE, HEART_CHAMBER_TABLE, UNDERDARK_TRAVEL_TABLE, OAKHAVEN_MINES_TABLE, NETHERIL_RUINS_TABLE, OSSUARY_TABLE, ARACH_TINILITH_TABLE, CASTLE_MOURNWATCH_TABLE, CASTLE_EXTERIOR_TABLE, CATACOMBS_DESPAIR_TABLE, DWARVEN_RUINS_TABLE, MIND_FLAYER_COLONY_TABLE, BEHOLDER_LAIR_TABLE, Encounter } from "@/lib/data/encounters";
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
 import { Statblock } from "@/lib/data/statblocks";
 import StatblockCard from "@/components/ui/StatblockCard";
@@ -24,6 +24,7 @@ const TABLES_BY_REGION: Record<string, { id: string, name: string, table: Encoun
         { id: "ambush", name: "Shop Ambush", table: SHOP_AMBUSH_TABLE },
     ],
     "sector-01-5": [
+        { id: "castle_exterior", name: "Castle Exterior", table: CASTLE_EXTERIOR_TABLE },
         { id: "castle", name: "Castle Mournwatch", table: CASTLE_MOURNWATCH_TABLE },
         { id: "heart", name: "Heart Chamber", table: HEART_CHAMBER_TABLE },
         { id: "silent", name: "Silent Wards", table: SILENT_WARDS_TABLE },
