@@ -791,6 +791,7 @@ export const STATBLOCKS: Record<string, Statblock> = {
     },
     "zoltus": {
         name: "Zoltus (Red Wizard Envoy)",
+        initiative: 15,
         size: "Medium",
         type: "Humanoid (High Elf)",
         alignment: "Lawful Evil",
