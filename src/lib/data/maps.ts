@@ -81,10 +81,10 @@ const OAKHAVEN: CampaignMap = {
             id: "thay_embassy",
             x: 75, y: 70,
             label: "Red Wizards Enclave",
-            type: "encounter",
+            type: "entrance",
             description: "**ENCOUNTER:** 'The Red Ultimatum'. Zoltus (Red Wizard) has barricaded the **Fortified Embassy** (Bottom-Right). He demands the *Prism of the Void*. **OFFER:** Retrieve it, and he grants a *Thayan Writ of Passage*.",
             exits: { west: "market", north: "cliff" },
-            monsters: ["zhentarim-champion"]
+            link: "/maps?id=thay_embassy"
         },
         {
             id: "crows_nest",
@@ -357,7 +357,39 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
     }
 ];
 
+const THAY_EMBASSY_MAP: CampaignMap = {
+    id: "thay_embassy",
+    title: "The Scarlet Consulate (Red Wizard Enclave)",
+    category: "Main Quest",
+    imagePath: "/thay_embassy_map.png",
+    gridType: "square",
+    encounterTable: "thay_embassy",
+    mechanics: [
+        "Blood Wards: Zoltus can drain 5 HP from any Thayan Apprentice or Blood Golem within 60ft as a reaction to gain +5 AC against one attack.",
+        "Necromancy Zone: Necrotic damage rolls treat any 1 or 2 as a 3 within the Embassy.",
+        "Table Rule: The Thayan Ultimatum. Whenever negotiating with Zoltus, characters must address him as 'Your Eminence'. Failure incurs disadvantage on Persuasion."
+    ],
+    questGuide: `**OBJECTIVE:** Deal with the Thayan Delegation.
+**CONTEXT:** Zoltus seeks the *Prism of the Void* to siphon the curse's energy back to Thay. He has fortified this section of town.
+**SOLUTION:** Diplomacy or Violence.
+1.  **Diplomacy:** Bring Zoltus the Prism. He grants a *Thayan Writ of Passage* and rare spell scrolls.
+2.  **Infiltration/War:** Break through the front gate (Zhentarim guards), survive the Blood Golem, and defeat Zoltus to steal his research.`,
+    nodes: [
+        { id: "gate", x: 50, y: 90, label: "The Blood-Iron Gates", type: "entrance", description: "**ENTRANCE:** Guarded by Zhentarim mercenaries hired by Thay. They demand a toll or an invitation to enter.", exits: { south: "oakhaven_market" }, monsters: ["zhentarim_champion", "veteran"] },
+        { id: "courtyard", x: 50, y: 65, label: "The Crimson Courtyard", type: "encounter", description: "**TRAP:** A *Blood Golem* stands dormant here like a gruesome statue. It awakens if combat starts or an intruder bleeds.", monsters: ["blood-golem"] },
+        { id: "quarters", x: 20, y: 40, label: "Apprentices' Quarters", type: "encounter", description: "**SCENE:** Two Thayan Apprentices analyzing a Duergar corpse. **LOOT:** Arcane focus and *Scrolls of Ray of Sickness*.", monsters: ["thayan-apprentice", "thayan-apprentice"], itemId: "Scroll of Ray of Sickness" },
+        { id: "study", x: 80, y: 30, label: "Zoltus's Study", type: "boss", description: "**BOSS:** Zoltus, Leader of the Enclave. He offers a pact if peaceful, or unleashes devastating magic if attacked. **MECHANIC:** He has prepared *Counterspell*.", monsters: ["zoltus"] },
+        { id: "vault", x: 80, y: 10, label: "The Thayan Vault", type: "loot", description: "**LOOT:** Hidden behind Zoltus's desk. Contains 1,000gp (Thayan minted), an *Amulet of Health*, and the *Thayan Writ of Passage*.", itemId: "Amulet of Health" }
+    ],
+    description: `
+**Location:** Fortified building in Oakhaven's Rest
+**Narrative:**
+"The Embassy is an unwelcome blot on Oakhaven. Red banners hang over reinforced iron doors. Inside, the scent of copper and incense fails to mask the cold, calculating cruelty of Thay."
+    `
+};
+
 const PLOT_TWIST_MAPS: CampaignMap[] = [
+    THAY_EMBASSY_MAP,
     {
         id: "oakhaven_mines",
         title: "⛏️ Oakhaven Mine (The Complex Labyrinth)",

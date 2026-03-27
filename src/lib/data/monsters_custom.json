@@ -2219,5 +2219,88 @@
                 "desc": "Melee: +4 to hit, 1d8+2 piercing."
             }
         ]
+    },
+    {
+        "slug": "thayan-apprentice",
+        "name": "Thayan Apprentice",
+        "size": "Medium",
+        "type": "Humanoid (Human, Thayan)",
+        "alignment": "Lawful Evil",
+        "ac": 12,
+        "hp": 22,
+        "speed": "30 ft.",
+        "stats": {
+            "str": 10,
+            "dex": 14,
+            "con": 12,
+            "int": 16,
+            "wis": 10,
+            "cha": 11
+        },
+        "skills": "Arcana +5, History +5",
+        "cr": "2",
+        "traits": [
+            {
+                "name": "Spellcasting",
+                "desc": "The apprentice is a 3rd-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 13, +5 to hit with spell attacks). It has the following wizard spells prepared:\nCantrips (at will): fire bolt, light, mage hand, prestidigitation\n1st level (4 slots): burning hands, mage armor, shield\n2nd level (2 slots): scorching ray"
+            }
+        ],
+        "actions": [
+            {
+                "name": "Dagger",
+                "desc": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d4 + 2) piercing damage."
+            }
+        ],
+        "source": "Custom"
+    },
+    {
+        "slug": "blood-golem",
+        "name": "Blood Golem",
+        "size": "Large",
+        "type": "Construct",
+        "alignment": "Unaligned",
+        "ac": 14,
+        "hp": 95,
+        "speed": "30 ft.",
+        "stats": {
+            "str": 18,
+            "dex": 12,
+            "con": 18,
+            "int": 3,
+            "wis": 10,
+            "cha": 1
+        },
+        "immunities": "Poison; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks",
+        "conditionImmunities": "Charmed, Exhaustion, Frightened, Paralyzed, Petrified, Poisoned",
+        "cr": "5",
+        "traits": [
+            {
+                "name": "Immutable Form",
+                "desc": "The golem is immune to any spell or effect that would alter its form."
+            },
+            {
+                "name": "Magic Resistance",
+                "desc": "The golem has advantage on saving throws against spells and other magical effects."
+            },
+            {
+                "name": "Magic Weapons",
+                "desc": "The golem's weapon attacks are magical."
+            },
+            {
+                "name": "Blood Scent",
+                "desc": "The Blood Golem can smell a bleeding creature up to 1 mile away and moves toward it. It regenerates 10 HP at the start of its turn if it is within 30 ft of a creature without all of its HP."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Multiattack",
+                "desc": "The golem makes two slam attacks."
+            },
+            {
+                "name": "Slam",
+                "desc": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage plus 4 (1d8) necrotic damage."
+            }
+        ],
+        "source": "Custom"
     }
 ]
