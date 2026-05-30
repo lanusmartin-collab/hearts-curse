@@ -17,6 +17,14 @@ export default function StatblocksPage() {
     // Filters
     const [filterType, setFilterType] = useState("All");
 
+    const handleAddMonsterToCombat = (monster: Statblock) => {
+        const slug = monster.slug || monster.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const existing = JSON.parse(localStorage.getItem("combat_tracker_queue") || "[]");
+        const toAdd = { slug, hp: monster.hp || 10, init: 0 };
+        localStorage.setItem("combat_tracker_queue", JSON.stringify([...existing, toAdd]));
+        alert(`Sent ${monster.name} to Combat Tracker!`);
+    };
+
     useEffect(() => {
         const saved = localStorage.getItem("custom_statblocks");
         if (saved) {
@@ -209,11 +217,35 @@ export default function StatblocksPage() {
                                 fontFamily: "var(--adnd-font-body)",
                                 fontSize: "0.9rem",
                                 display: "flex",
-                                justifyContent: "space-between"
+                                justifyContent: "space-between",
+                                alignItems: "center"
                             }}
                         >
                             <span>{s.name}</span>
-                            <span style={{ fontSize: "0.8em", opacity: 0.6 }}>{s.cr}</span>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }} className="no-print">
+                                <span style={{ fontSize: "0.8em", opacity: 0.6 }}>CR {s.cr}</span>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleAddMonsterToCombat(s);
+                                    }}
+                                    style={{
+                                        background: "var(--scarlet-accent)",
+                                        color: "white",
+                                        border: "1px solid var(--gold-accent)",
+                                        borderRadius: "3px",
+                                        padding: "1px 6px",
+                                        fontSize: "0.7rem",
+                                        cursor: "pointer",
+                                        fontWeight: "bold",
+                                        textTransform: "uppercase"
+                                    }}
+                                    title="Add to Combat Board"
+                                >
+                                    + Combat
+                                </button>
+                            </div>
+                            <span style={{ fontSize: "0.8em", opacity: 0.6 }} className="print-only">CR {s.cr}</span>
                         </div>
                     ))}
                 </div>
@@ -229,6 +261,25 @@ export default function StatblocksPage() {
                 }}>
                     {selectedCreature ? (
                         <div style={{ maxWidth: "800px", width: "100%", transition: "all 0.3s ease", paddingBottom: "5rem" }}>
+                            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }} className="no-print">
+                                <button
+                                    onClick={() => handleAddMonsterToCombat(selectedCreature)}
+                                    style={{
+                                        background: "var(--scarlet-accent)",
+                                        color: "#fff",
+                                        border: "1px solid var(--gold-accent)",
+                                        padding: "0.5rem 1rem",
+                                        fontSize: "0.85rem",
+                                        textTransform: "uppercase",
+                                        letterSpacing: "1px",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                        boxShadow: "0 4px 6px rgba(0,0,0,0.3)"
+                                    }}
+                                >
+                                    ⚔️ Add to Combat Tracker
+                                </button>
+                            </div>
                             <StatblockCard data={selectedCreature} />
                         </div>
                     ) : (
