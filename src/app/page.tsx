@@ -25,7 +25,7 @@ import MainMenu from "@/components/game/intro/MainMenu";
 import AdvancedCharacterCreation from "@/components/game/AdvancedCharacterCreation";
 import PrologueController from "@/components/game/intro/PrologueController";
 import WorldMap from "@/components/game/intro/WorldMap";
-import CampaignReader from "@/components/campaign/CampaignReader";
+import CampaignModuleTemplate from "@/components/ui/CampaignModuleTemplate";
 // import LockScreen from "@/components/ui/LockScreen"; // Keep import if we revert
 import { useGameContext } from "@/lib/context/GameContext";
 
@@ -152,7 +152,7 @@ function GameController() {
   }
 
   if (viewMode === "book") {
-    return <CampaignReader onClose={() => setViewMode("home")} />;
+    return <CampaignModuleTemplate onClose={() => setViewMode("home")} />;
   }
 
   // "home" / "book" (handled in DASHBOARD below)

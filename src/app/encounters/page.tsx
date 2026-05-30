@@ -1,12 +1,11 @@
 "use client";
-
 import { useState, useEffect, Suspense } from "react";
-import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE, SHOP_AMBUSH_TABLE, SILENT_WARDS_TABLE, LIBRARY_WHISPERS_TABLE, HEART_CHAMBER_TABLE, UNDERDARK_TRAVEL_TABLE, OAKHAVEN_MINES_TABLE, NETHERIL_RUINS_TABLE, OSSUARY_TABLE, ARACH_TINILITH_TABLE, CASTLE_MOURNWATCH_TABLE, CASTLE_EXTERIOR_TABLE, CATACOMBS_DESPAIR_TABLE, DWARVEN_RUINS_TABLE, MIND_FLAYER_COLONY_TABLE, BEHOLDER_LAIR_TABLE, THAY_EMBASSY_TABLE, Encounter } from "@/lib/data/encounters";
+import { TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE, SHOP_AMBUSH_TABLE, SILENT_WARDS_TABLE, LIBRARY_WHISPERS_TABLE, HEART_CHAMBER_TABLE, UNDERDARK_TRAVEL_TABLE, OAKHAVEN_MINES_TABLE, NETHERIL_RUINS_TABLE, OSSUARY_TABLE, ARACH_TINILITH_TABLE, CASTLE_MOURNWATCH_TABLE, CASTLE_EXTERIOR_TABLE, CATACOMBS_DESPAIR_TABLE, DWARVEN_RUINS_TABLE, MIND_FLAYER_COLONY_TABLE, BEHOLDER_LAIR_TABLE, THAY_EMBASSY_TABLE, SPIRE_TABLE, Encounter } from "@/lib/data/encounters";
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
 import { Statblock } from "@/lib/data/statblocks";
 import StatblockCard from "@/components/ui/StatblockCard";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Dices, Map as MapIcon, ChevronDown, Activity, Search, ShieldAlert, Skull, BookOpen, Scroll, ArrowRight, Home, Sparkles, Swords } from "lucide-react";
 
 // --- Navigation Data ---
@@ -22,7 +21,7 @@ const TABLES_BY_REGION: Record<string, { id: string, name: string, table: Encoun
         { id: "town_night", name: "Oakhaven (Night)", table: TOWN_NIGHT_TABLE },
         { id: "outskirts", name: "The Outskirts", table: OUTSKIRTS_TABLE },
         { id: "ambush", name: "Shop Ambush", table: SHOP_AMBUSH_TABLE },
-        { id: "thay_embassy", name: "Thay Embassy", table: THAY_EMBASSY_TABLE },
+        { id: "thay_embassy", name: "Red Wizard Embassy", table: THAY_EMBASSY_TABLE },
     ],
     "sector-01-5": [
         { id: "castle_exterior", name: "Castle Exterior", table: CASTLE_EXTERIOR_TABLE },
@@ -33,6 +32,7 @@ const TABLES_BY_REGION: Record<string, { id: string, name: string, table: Encoun
         { id: "library", name: "Library of Whispers", table: LIBRARY_WHISPERS_TABLE },
         { id: "catacombs", name: "Catacombs", table: CATACOMBS_DESPAIR_TABLE },
         { id: "ossuary", name: "The Ossuary", table: OSSUARY_TABLE },
+        { id: "spire", name: "Screaming Gales Spire", table: SPIRE_TABLE },
     ],
     "sector-02": [
         { id: "mines", name: "Oakhaven Mines", table: OAKHAVEN_MINES_TABLE },
@@ -46,22 +46,15 @@ const TABLES_BY_REGION: Record<string, { id: string, name: string, table: Encoun
 
 // Helper to split description into Flavor (Narrative) and Mechanics
 const parseDescription = (desc: string) => {
-    // Check for "SCENE:" and "MECHANIC:" or "COMBAT:" markers
     if (!desc) return { flavor: "No description available.", mechanic: null };
-
-    // Simple regex-like split if formatted
-    // Fixed: Removed /s flag, used [\s\S] for multiline match for compatibility
     const sceneMatch = desc.match(/SCENE:\s*([\s\S]*?)(?=\s*(MECHANIC:|COMBAT:|TACTIC:|INTERACTION:|REVEAL:|$))/);
     const detailMatch = desc.match(/(MECHANIC:|COMBAT:|TACTIC:|INTERACTION:|REVEAL:)([\s\S]*)/);
-
     if (sceneMatch) {
         return {
             flavor: sceneMatch[1].trim(),
             mechanic: detailMatch ? detailMatch[0].trim() : null
         };
     }
-
-    // Default Fallback
     return { flavor: desc, mechanic: null };
 };
 
@@ -74,6 +67,8 @@ export default function EncountersPage() {
 }
 
 function GrimoireInterface() {
+    const searchParams = useSearchParams();
+
     // --- State ---
     const [selectedRegionId, setSelectedRegionId] = useState("sector-01");
     const [selectedTableId, setSelectedTableId] = useState("town_day");
@@ -81,6 +76,52 @@ function GrimoireInterface() {
     const [isRolling, setIsRolling] = useState(false);
     const [allStatblocks, setAllStatblocks] = useState<Record<string, Statblock>>(MONSTERS_2024);
     const router = useRouter();
+
+    // Handle search params / redirect rolls
+    useEffect(() => {
+        const tableId = searchParams.get('tableId');
+        const rollStr = searchParams.get('roll');
+        const name = searchParams.get('name');
+        const desc = searchParams.get('desc');
+        const monstersStr = searchParams.get('monsters');
+
+        if (tableId && rollStr) {
+            const roll = parseInt(rollStr);
+            let foundRegionId = "";
+            let foundTableObj = null;
+            for (const regionId in TABLES_BY_REGION) {
+                const tableObj = TABLES_BY_REGION[regionId].find(t => t.id === tableId);
+                if (tableObj) {
+                    foundRegionId = regionId;
+                    foundTableObj = tableObj;
+                    break;
+                }
+            }
+
+            if (foundRegionId && foundTableObj) {
+                setSelectedRegionId(foundRegionId);
+                setSelectedTableId(tableId);
+                const match = foundTableObj.table.find(enc => roll >= enc.roll[0] && roll <= enc.roll[1]);
+                if (match) {
+                    setCurrentEncounter(match);
+                }
+            }
+        } else if (rollStr && name && desc) {
+            const roll = parseInt(rollStr);
+            let monsters: string[] = [];
+            try {
+                if (monstersStr) monsters = JSON.parse(monstersStr);
+            } catch (e) {
+                console.error(e);
+            }
+            setCurrentEncounter({
+                roll: [roll, roll],
+                name,
+                description: desc,
+                monsters
+            });
+        }
+    }, [searchParams]);
 
     // Derived
     const currentTables = TABLES_BY_REGION[selectedRegionId] || [];

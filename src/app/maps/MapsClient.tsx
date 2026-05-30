@@ -92,25 +92,69 @@ export default function MapsClient() {
 
     const handleRollEncounter = () => {
         let table = null;
+        let tableId = selectedMapId;
+
         switch (selectedMapId) {
-            case 'oakhaven': table = TOWN_DAY_TABLE; break;
-            case 'mines': table = OAKHAVEN_MINES_TABLE; break;
-            case 'underdark': table = UNDERDARK_TRAVEL_TABLE; break;
-            case 'netheril': table = NETHERIL_RUINS_TABLE; break;
-            case 'library': table = LIBRARY_WHISPERS_TABLE; break;
-            case 'arach': table = ARACH_TINILITH_TABLE; break;
-            case 'heart_chamber': table = HEART_CHAMBER_TABLE; break;
-            case 'ossuary': table = OSSUARY_TABLE; break;
-            case 'catacombs_despair': table = CATACOMBS_DESPAIR_TABLE; break;
-            case 'castle': table = CASTLE_MOURNWATCH_TABLE; break;
-            case 'spire': table = SPIRE_TABLE; break;
-            case 'silent_wards': table = SILENT_WARDS_TABLE; break;
-            case 'outskirts': table = OUTSKIRTS_TABLE; break;
-            case 'dwarven_ruins': table = DWARVEN_RUINS_TABLE; break;
-            case 'mind_flayer': table = MIND_FLAYER_COLONY_TABLE; break;
-            case 'beholder': table = BEHOLDER_LAIR_TABLE; break;
-            case 'thay_embassy': table = THAY_EMBASSY_TABLE; break;
-            default: table = null;
+            case 'oakhaven':
+                table = TOWN_DAY_TABLE;
+                tableId = 'town_day';
+                break;
+            case 'mines':
+                table = OAKHAVEN_MINES_TABLE;
+                break;
+            case 'underdark':
+                table = UNDERDARK_TRAVEL_TABLE;
+                break;
+            case 'netheril':
+                table = NETHERIL_RUINS_TABLE;
+                break;
+            case 'library':
+                table = LIBRARY_WHISPERS_TABLE;
+                break;
+            case 'arach':
+                table = ARACH_TINILITH_TABLE;
+                tableId = 'drow';
+                break;
+            case 'heart_chamber':
+                table = HEART_CHAMBER_TABLE;
+                tableId = 'heart';
+                break;
+            case 'ossuary':
+                table = OSSUARY_TABLE;
+                break;
+            case 'catacombs_despair':
+                table = CATACOMBS_DESPAIR_TABLE;
+                tableId = 'catacombs';
+                break;
+            case 'castle':
+                table = CASTLE_MOURNWATCH_TABLE;
+                break;
+            case 'spire':
+                table = SPIRE_TABLE;
+                break;
+            case 'silent_wards':
+                table = SILENT_WARDS_TABLE;
+                tableId = 'silent';
+                break;
+            case 'outskirts':
+                table = OUTSKIRTS_TABLE;
+                break;
+            case 'dwarven_ruins':
+                table = DWARVEN_RUINS_TABLE;
+                tableId = 'dwarven';
+                break;
+            case 'mind_flayer':
+                table = MIND_FLAYER_COLONY_TABLE;
+                tableId = 'mindflayer';
+                break;
+            case 'beholder':
+                table = BEHOLDER_LAIR_TABLE;
+                break;
+            case 'thay_embassy':
+                table = THAY_EMBASSY_TABLE;
+                break;
+            default:
+                table = null;
         }
 
         if (!table) {
@@ -124,6 +168,7 @@ export default function MapsClient() {
         if (encounter) {
             // Encode data for URL
             const params = new URLSearchParams({
+                tableId,
                 roll: roll.toString(),
                 name: encounter.name,
                 desc: encounter.description,

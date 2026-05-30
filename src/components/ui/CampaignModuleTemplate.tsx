@@ -17,7 +17,7 @@ import {
     TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE,
     OAKHAVEN_MINES_TABLE, UNDERDARK_TRAVEL_TABLE, ARACH_TINILITH_TABLE,
     SILENT_WARDS_TABLE, NETHERIL_RUINS_TABLE, LIBRARY_WHISPERS_TABLE,
-    HEART_CHAMBER_TABLE, OSSUARY_TABLE, THAY_EMBASSY_TABLE
+    HEART_CHAMBER_TABLE, OSSUARY_TABLE, THAY_EMBASSY_TABLE, SPIRE_TABLE
 } from '@/lib/data/encounters';
 
 type CampaignModuleTemplateProps = {
@@ -56,7 +56,8 @@ export default function CampaignModuleTemplate({ onClose }: CampaignModuleTempla
         { title: "Arach-Tinilith (Drow City)", table: ARACH_TINILITH_TABLE },
         { title: "The Heart Chamber", table: HEART_CHAMBER_TABLE },
         { title: "The Ossuary", table: OSSUARY_TABLE },
-        { title: "Thay Embassy (Enclave)", table: THAY_EMBASSY_TABLE },
+        { title: "Red Wizard Embassy", table: THAY_EMBASSY_TABLE },
+        { title: "Spire of Screaming Gales", table: SPIRE_TABLE },
     ];
 
     return (
