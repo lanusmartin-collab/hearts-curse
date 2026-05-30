@@ -4,7 +4,6 @@ import "./globals_v2.css";
 import DiceRoller from "@/components/ui/DiceRoller";
 
 import SidebarNav from "@/components/ui/SidebarNav";
-import GlobalDrawers from "@/components/ui/GlobalDrawers";
 import CurseOverlay from "@/components/ui/CurseOverlay";
 
 export const metadata: Metadata = {
@@ -73,7 +72,6 @@ export default function RootLayout({
                       <CurseOverlay />
                       <div className="noise-overlay"></div>
                       <SidebarNav />
-                      <GlobalDrawers />
                       <main className="main-content">{children}</main>
                       <ShadowCaster />
                       <DiceRoller />

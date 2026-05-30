@@ -42,6 +42,23 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         setAmbienceMode(mode);
     };
 
+    useEffect(() => {
+        const handleInteraction = () => {
+            setIsInitialized(true);
+            window.removeEventListener("click", handleInteraction);
+            window.removeEventListener("keydown", handleInteraction);
+            window.removeEventListener("touchstart", handleInteraction);
+        };
+        window.addEventListener("click", handleInteraction);
+        window.addEventListener("keydown", handleInteraction);
+        window.addEventListener("touchstart", handleInteraction);
+        return () => {
+            window.removeEventListener("click", handleInteraction);
+            window.removeEventListener("keydown", handleInteraction);
+            window.removeEventListener("touchstart", handleInteraction);
+        };
+    }, []);
+
     return (
         <AudioContext.Provider value={{
             isMuted,

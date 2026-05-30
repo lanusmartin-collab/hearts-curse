@@ -133,20 +133,12 @@ export default function AmbientController() {
 
     }, [curseLevel, isMuted, isInitialized, ambienceMode, ambienceVolume]);
 
-    if (!isInitialized) {
-        return (
-            <button
-                onClick={initializeAudio}
-                className="fixed top-4 right-4 lg:top-auto lg:bottom-4 lg:right-4 z-50 px-2 py-1 lg:px-4 lg:py-2 bg-[var(--scarlet-accent)] text-white font-mono text-[0.6rem] lg:text-xs animate-pulse border border-white"
-            >
-                [INITIALIZE AUDIO SYSTEMS]
-            </button>
-        );
-    }
-
     return (
         <button
-            onClick={toggleMute}
+            onClick={() => {
+                if (!isInitialized) initializeAudio();
+                toggleMute();
+            }}
             className="fixed top-4 right-4 lg:top-auto lg:bottom-4 lg:right-4 z-50 p-2 bg-[var(--obsidian-base)] border border-[var(--gold-accent)] text-[var(--gold-accent)] hover:bg-[var(--gold-accent)] hover:text-black transition-colors"
             title={isMuted ? "Unmute Ambience" : "Mute Ambience"}
         >

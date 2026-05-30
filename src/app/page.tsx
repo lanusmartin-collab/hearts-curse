@@ -9,8 +9,6 @@ import DashboardWidget from "@/components/ui/DashboardWidget";
 import CurseTracker from "@/components/ui/CurseTracker";
 import PartyStatusWidget from "@/components/ui/PartyStatusWidget";
 import AmbientController from "@/components/audio/AmbientController";
-import { CommandMenu } from "@/components/ui/CommandMenu";
-import QuestLog from "@/components/ui/QuestLog";
 import NotepadWidget from "@/components/ui/NotepadWidget";
 import SessionTrackerWidget from "@/components/ui/SessionTrackerWidget";
 import QuickNpcWidget from "@/components/ui/QuickNpcWidget";
@@ -184,7 +182,6 @@ function GameController() {
   return (
     <div className="retro-container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <AmbientController />
-      <QuestLog />
 
       {/* HEADER SECTION */}
       <header className="campaign-header" style={{ marginBottom: "2rem", display: "flex", flexWrap: "wrap", gap: "2rem", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid var(--glass-border)", paddingBottom: "1.5rem" }}>
