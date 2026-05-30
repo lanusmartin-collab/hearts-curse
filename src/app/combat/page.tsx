@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BattleMap, { CombatToken } from "@/components/combat/BattleMap";
 import InitiativeTracker from "@/components/game/combat/InitiativeTracker";
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
-import { Plus, User, Search } from "lucide-react";
+import { Plus, User, Search, Swords } from "lucide-react";
 
 export default function CombatPage() {
     const [tokens, setTokens] = useState<CombatToken[]>([
@@ -15,6 +15,170 @@ export default function CombatPage() {
     const [currentTurn, setCurrentTurn] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
     const [isAdding, setIsAdding] = useState(false);
+    const [queue, setQueue] = useState<any[]>([]);
+
+    // Helper to resolve monster by slug
+    const getMonsterBySlug = (slug: string): any => {
+        if (MONSTERS_2024[slug]) return MONSTERS_2024[slug];
+        try {
+            const saved = localStorage.getItem("custom_statblocks");
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                const found = parsed.find((m: any) => {
+                    let key = m.slug;
+                    if (!key && m.name) {
+                        key = m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                    }
+                    return key === slug || m.slug === slug;
+                });
+                if (found) return found;
+            }
+        } catch (e) {
+            console.error("Failed to parse custom statblocks in combat page", e);
+        }
+        return null;
+    };
+
+    // Load queue from localStorage on mount
+    useEffect(() => {
+        const savedQueue = localStorage.getItem("combat_tracker_queue");
+        if (savedQueue) {
+            try {
+                setQueue(JSON.parse(savedQueue));
+            } catch (e) {
+                console.error("Failed to load combat tracker queue", e);
+            }
+        }
+    }, []);
+
+    // Listen for direct monster additions from GlobalDrawers
+    useEffect(() => {
+        const handleDirectAdd = (e: Event) => {
+            const customEvent = e as CustomEvent;
+            const { monster, slug } = customEvent.detail;
+            if (monster) {
+                setTokens(prev => {
+                    // Find free coordinates starting at x: 5, y: 5
+                    let targetX = 5;
+                    let targetY = 5;
+                    let foundSpot = false;
+
+                    for (let r = 1; r < 15; r++) {
+                        for (let c = 1; c < 20; c++) {
+                            const isOccupied = prev.some(t => t.x === c && t.y === r);
+                            if (!isOccupied) {
+                                targetX = c;
+                                targetY = r;
+                                foundSpot = true;
+                                break;
+                            }
+                        }
+                        if (foundSpot) break;
+                    }
+
+                    const size = monster.size === "Large" ? 2 : monster.size === "Huge" ? 3 : monster.size === "Gargantuan" ? 4 : 1;
+                    const dex = monster.stats?.dex || 10;
+                    const dexMod = Math.floor((dex - 10) / 2);
+                    const initRoll = Math.floor(Math.random() * 20) + 1 + dexMod;
+
+                    const baseName = monster.name;
+                    const existingCount = prev.filter(t => t.label.startsWith(baseName)).length;
+                    const label = existingCount > 0 ? `${baseName} ${existingCount + 1}` : baseName;
+
+                    const newToken: CombatToken = {
+                        id: `${slug}-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+                        label,
+                        x: targetX,
+                        y: targetY,
+                        color: "#ef4444",
+                        size,
+                        image: monster.image,
+                        hp: monster.hp || 10,
+                        maxHp: monster.hp || 10,
+                        ac: monster.ac || 10,
+                        initiative: initRoll
+                    };
+
+                    return [...prev, newToken];
+                });
+
+                // Clear the popped item from local storage queue
+                try {
+                    const existing = JSON.parse(localStorage.getItem("combat_tracker_queue") || "[]");
+                    if (existing.length > 0) {
+                        existing.pop();
+                        localStorage.setItem("combat_tracker_queue", JSON.stringify(existing));
+                    }
+                } catch (err) {
+                    console.error("Failed to update queue on direct add", err);
+                }
+            }
+        };
+
+        window.addEventListener("add-token-direct", handleDirectAdd);
+        return () => window.removeEventListener("add-token-direct", handleDirectAdd);
+    }, []);
+
+    // Load queued encounter onto the grid
+    const loadQueuedEncounter = () => {
+        const newTokens: CombatToken[] = [];
+        
+        queue.forEach((item, idx) => {
+            const monster = getMonsterBySlug(item.slug);
+            if (!monster) return;
+
+            let targetX = 5;
+            let targetY = 5;
+            let foundSpot = false;
+
+            // Search for unoccupied coordinates
+            for (let r = 1; r < 15; r++) {
+                for (let c = 1; c < 20; c++) {
+                    const isOccupied = tokens.some(t => t.x === c && t.y === r) || 
+                                       newTokens.some(t => t.x === c && t.y === r);
+                    if (!isOccupied) {
+                        targetX = c;
+                        targetY = r;
+                        foundSpot = true;
+                        break;
+                    }
+                }
+                if (foundSpot) break;
+            }
+
+            const size = monster.size === "Large" ? 2 : monster.size === "Huge" ? 3 : monster.size === "Gargantuan" ? 4 : 1;
+            const dex = monster.stats?.dex || 10;
+            const dexMod = Math.floor((dex - 10) / 2);
+            const initRoll = Math.floor(Math.random() * 20) + 1 + dexMod;
+
+            const baseName = monster.name;
+            const existingCount = tokens.filter(t => t.label.startsWith(baseName)).length +
+                                  newTokens.filter(t => t.label.startsWith(baseName)).length;
+            const label = existingCount > 0 ? `${baseName} ${existingCount + 1}` : baseName;
+
+            newTokens.push({
+                id: `${item.slug}-${Date.now()}-${idx}-${Math.random().toString(36).substr(2, 5)}`,
+                label,
+                x: targetX,
+                y: targetY,
+                color: "#ef4444",
+                size,
+                image: monster.image,
+                hp: monster.hp || 10,
+                maxHp: monster.hp || 10,
+                ac: monster.ac || 10,
+                initiative: initRoll
+            });
+        });
+
+        if (newTokens.length > 0) {
+            setTokens(prev => [...prev, ...newTokens]);
+        }
+
+        // Wipe queue
+        localStorage.removeItem("combat_tracker_queue");
+        setQueue([]);
+    };
 
     // Helpers
     const handleMove = (id: string, newX: number, newY: number) => {
@@ -30,21 +194,30 @@ export default function CombatPage() {
     };
 
     const addMonster = (slug: string) => {
-        const monster = MONSTERS_2024[slug];
+        const monster = getMonsterBySlug(slug);
         if (!monster) return;
+
+        const size = monster.size === "Large" ? 2 : monster.size === "Huge" ? 3 : monster.size === "Gargantuan" ? 4 : 1;
+        const dex = monster.stats?.dex || 10;
+        const dexMod = Math.floor((dex - 10) / 2);
+        const initiative = Math.floor(Math.random() * 20) + 1 + dexMod;
+
+        const baseName = monster.name;
+        const existingCount = tokens.filter(t => t.label.startsWith(baseName)).length;
+        const label = existingCount > 0 ? `${baseName} ${existingCount + 1}` : baseName;
 
         const newToken: CombatToken = {
             id: `${slug}-${Date.now()}`,
-            label: monster.name,
+            label,
             x: 5,
             y: 5,
             color: "#ef4444", // Enemy Red
-            size: monster.size === "Large" ? 2 : monster.size === "Huge" ? 3 : monster.size === "Gargantuan" ? 4 : 1,
+            size,
             image: monster.image,
-            hp: monster.hp,
-            maxHp: monster.hp,
-            ac: monster.ac,
-            initiative: Math.floor(Math.random() * 20) + 1 + (monster.stats.dex - 10) / 2 // Simple init roll
+            hp: monster.hp || 10,
+            maxHp: monster.hp || 10,
+            ac: monster.ac || 10,
+            initiative
         };
 
         setTokens(prev => [...prev, newToken]);
@@ -72,7 +245,6 @@ export default function CombatPage() {
                     >
                         <Plus size={14} /> ADD COMBATANT
                     </button>
-                    {/* Placeholder for future tools like 'Clear Board' or 'Load Encounter' */}
                 </div>
             </header>
 
@@ -90,24 +262,26 @@ export default function CombatPage() {
                 </div>
 
                 {/* Right Sidebar: Initiative */}
-                <div className="w-80 h-full border-l border-stone-800 z-10 shadow-xl">
-                    <InitiativeTracker
-                        combatants={tokens.map(t => ({
-                            id: t.id,
-                            name: t.label,
-                            initiative: t.initiative || 0,
-                            hp: t.hp,
-                            maxHp: t.maxHp,
-                            ac: t.ac,
-                            conditions: t.conditions || [],
-                            type: 'player' // Default type for the tracker
-                        }))}
-                        turnIndex={currentTurn}
-                    />
+                <div className="w-80 h-full border-l border-stone-800 z-10 shadow-xl bg-stone-950 flex flex-col">
+                    <div className="flex-1 overflow-y-auto">
+                        <InitiativeTracker
+                            combatants={tokens.map(t => ({
+                                id: t.id,
+                                name: t.label,
+                                initiative: t.initiative || 0,
+                                hp: t.hp,
+                                maxHp: t.maxHp,
+                                ac: t.ac,
+                                conditions: t.conditions || [],
+                                type: t.id.startsWith("p") ? "player" : "monster"
+                            }))}
+                            turnIndex={currentTurn}
+                        />
+                    </div>
 
                     {/* Controls (Temporary Placeholder) */}
                     <div className="p-4 flex gap-2 justify-center border-t border-stone-800">
-                        <button onClick={handleNextTurn} className="retro-btn bg-stone-800 text-xs">NEXT TURN</button>
+                        <button onClick={handleNextTurn} className="retro-btn bg-stone-800 text-xs w-full py-2 hover:bg-stone-700 transition-colors">NEXT TURN</button>
                     </div>
                 </div>
 
@@ -156,6 +330,36 @@ export default function CombatPage() {
                                     <span className="text-xs text-stone-500">CR {m.cr}</span>
                                 </button>
                             ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Queue prompt modal */}
+                {queue.length > 0 && (
+                    <div className="absolute bottom-4 left-4 bg-[#141416] border-2 border-amber-600/80 p-4 rounded-md shadow-2xl max-w-sm z-[100] animate-pulse-slow">
+                        <div className="flex items-center gap-2 mb-2 text-amber-500">
+                            <Swords size={18} />
+                            <h4 className="font-header text-xs uppercase tracking-wider font-bold">Queued Encounter Ready</h4>
+                        </div>
+                        <p className="text-xs text-stone-400 mb-4 line-clamp-3">
+                            Monsters: {queue.map(item => getMonsterBySlug(item.slug)?.name || item.slug).join(", ")}
+                        </p>
+                        <div className="flex gap-2 justify-end">
+                            <button
+                                onClick={() => {
+                                    localStorage.removeItem("combat_tracker_queue");
+                                    setQueue([]);
+                                }}
+                                className="text-[10px] font-mono uppercase px-2 py-1 border border-stone-800 text-stone-500 hover:text-white rounded hover:bg-stone-900 transition-colors cursor-pointer"
+                            >
+                                Dismiss
+                            </button>
+                            <button
+                                onClick={loadQueuedEncounter}
+                                className="bg-amber-600 hover:bg-amber-500 text-black font-bold text-[10px] font-mono uppercase px-3 py-1 rounded transition-colors cursor-pointer"
+                            >
+                                Load to Grid
+                            </button>
                         </div>
                     </div>
                 )}

@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import {
   BookOpen, ShoppingBag, Skull, Map,
-  Zap, Swords, Hammer, PenTool, FileText, Sparkles
+  Zap, Swords, Hammer, PenTool, FileText, Sparkles, Activity
 } from "lucide-react";
 import DashboardWidget from "@/components/ui/DashboardWidget";
 import CurseTracker from "@/components/ui/CurseTracker";
@@ -277,8 +277,9 @@ function GameController() {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
             <DashboardWidget title="Fight" subtitle="Encounter" icon={Swords} href="/encounters" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
-            <PartyStatusWidget />
+            <DashboardWidget title="Arena" subtitle="Battlemap" icon={Activity} href="/combat" variant="safe-haven" style={{ aspectRatio: "1/1", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }} />
           </div>
+          <PartyStatusWidget />
 
           <DashboardWidget title="Threat System" subtitle="Regional Effect" variant="safe-haven" href="/mechanics">
             <CurseTracker simpleView={true} />

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
     Menu, X, BookOpen, ShoppingBag, Skull, Map,
-    Zap, Swords, Hammer, PenTool, FileText, Home, Scroll, Download
+    Zap, Swords, Hammer, PenTool, FileText, Home, Scroll, Download, Activity
 } from "lucide-react";
 import clsx from "clsx";
 import CurseTracker from "./CurseTracker";
@@ -14,6 +14,7 @@ import { useEffect } from "react";
 
 const NAV_ITEMS = [
     { href: "/", label: "Sanctum", icon: Home },
+    { href: "/combat", label: "Battlemap", icon: Activity },
     { href: "/lore", label: "Archives", icon: BookOpen },
     { href: "/grimoire", label: "The Grimoire", icon: Scroll },
     { href: "/shops", label: "The Market", icon: ShoppingBag },
@@ -99,6 +100,7 @@ export default function SidebarNav() {
 
             {/* Backdrop */}
             <div
+                className="lg:hidden"
                 style={{
                     position: "fixed",
                     inset: 0,
@@ -114,20 +116,13 @@ export default function SidebarNav() {
 
             {/* Sidebar Drawer */}
             <div
+                className={clsx(
+                    "fixed top-0 left-0 h-full w-[288px] z-[90] flex flex-col transition-transform duration-300 ease-out lg:translate-x-0 lg:shadow-none shadow-[10px_0_30px_rgba(0,0,0,0.8)]",
+                    isOpen ? "translate-x-0" : "-translate-x-full"
+                )}
                 style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    height: "100%",
-                    width: "300px",
-                    zIndex: 100,
                     background: "var(--obsidian-base)",
-                    borderRight: "1px solid var(--glass-border)",
-                    display: "flex",
-                    flexDirection: "column",
-                    transform: isOpen ? "translateX(0)" : "translateX(-100%)",
-                    transition: "transform 0.3s ease-out",
-                    boxShadow: "10px 0 30px rgba(0,0,0,0.8)"
+                    borderRight: "1px solid var(--glass-border)"
                 }}
             >
                 {/* Header */}
@@ -150,6 +145,7 @@ export default function SidebarNav() {
                     </h2>
                     <button
                         onClick={() => setIsOpen(false)}
+                        className="lg:hidden"
                         style={{ border: "none", padding: "0.25rem", color: "inherit", background: "transparent", cursor: "pointer" }}
                     >
                         <X style={{ width: "24px", height: "24px" }} />
