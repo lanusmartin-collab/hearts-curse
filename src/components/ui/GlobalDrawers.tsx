@@ -164,79 +164,65 @@ export default function GlobalDrawers() {
     return (
         <>
             {/* FLOATING ACTION TABS ON RIGHT EDGE */}
-            <div className="fixed right-0 top-1/4 z-[99] flex flex-col gap-2 no-print">
+            <div className="drawer-tab-dock no-print">
                 <button
                     onClick={() => handleTabClick("bestiary")}
-                    className={clsx(
-                        "drawer-tab-btn flex flex-col items-center justify-center gap-1 p-3 w-16 rounded-l-md border-y border-l bg-[#0f0f10] border-amber-600/30 text-[#b5a685] hover:text-white hover:bg-[#1a1111] hover:border-amber-500/60 shadow-xl transition-all cursor-pointer",
-                        activeTab === "bestiary" && "text-[var(--scarlet-accent)] bg-[#1c0c0c] border-[#a32222]/80 translate-x-[-4px]"
-                    )}
+                    className={clsx("drawer-tab-btn", activeTab === "bestiary" && "active")}
                     title="Bestiary Drawer"
                 >
-                    <Skull size={20} />
-                    <span className="text-[9px] uppercase tracking-wider font-mono">Bestiary</span>
+                    <Skull size={18} />
+                    <span style={{ fontSize: "8px" }}>Bestiary</span>
                 </button>
                 
                 <button
                     onClick={() => handleTabClick("grimoire")}
-                    className={clsx(
-                        "drawer-tab-btn flex flex-col items-center justify-center gap-1 p-3 w-16 rounded-l-md border-y border-l bg-[#0f0f10] border-amber-600/30 text-[#b5a685] hover:text-white hover:bg-[#1a1111] hover:border-amber-500/60 shadow-xl transition-all cursor-pointer",
-                        activeTab === "grimoire" && "text-[var(--scarlet-accent)] bg-[#1c0c0c] border-[#a32222]/80 translate-x-[-4px]"
-                    )}
+                    className={clsx("drawer-tab-btn", activeTab === "grimoire" && "active")}
                     title="Spell Grimoire"
                 >
-                    <Scroll size={20} />
-                    <span className="text-[9px] uppercase tracking-wider font-mono">Spells</span>
+                    <Scroll size={18} />
+                    <span style={{ fontSize: "8px" }}>Spells</span>
                 </button>
 
                 <button
                     onClick={() => handleTabClick("oracle")}
-                    className={clsx(
-                        "drawer-tab-btn flex flex-col items-center justify-center gap-1 p-3 w-16 rounded-l-md border-y border-l bg-[#0f0f10] border-amber-600/30 text-[#b5a685] hover:text-white hover:bg-[#1a1111] hover:border-amber-500/60 shadow-xl transition-all cursor-pointer",
-                        activeTab === "oracle" && "text-[var(--scarlet-accent)] bg-[#1c0c0c] border-[#a32222]/80 translate-x-[-4px]"
-                    )}
+                    className={clsx("drawer-tab-btn", activeTab === "oracle" && "active")}
                     title="The Oracle AI"
                 >
-                    <Sparkles size={20} />
-                    <span className="text-[9px] uppercase tracking-wider font-mono">Oracle</span>
+                    <Sparkles size={18} />
+                    <span style={{ fontSize: "8px" }}>Oracle</span>
                 </button>
 
                 <button
                     onClick={() => handleTabClick("notepad")}
-                    className={clsx(
-                        "drawer-tab-btn flex flex-col items-center justify-center gap-1 p-3 w-16 rounded-l-md border-y border-l bg-[#0f0f10] border-amber-600/30 text-[#b5a685] hover:text-white hover:bg-[#1a1111] hover:border-amber-500/60 shadow-xl transition-all cursor-pointer",
-                        activeTab === "notepad" && "text-[var(--scarlet-accent)] bg-[#1c0c0c] border-[#a32222]/80 translate-x-[-4px]"
-                    )}
+                    className={clsx("drawer-tab-btn", activeTab === "notepad" && "active")}
                     title="Scratchpad"
                 >
-                    <PenTool size={20} />
-                    <span className="text-[9px] uppercase tracking-wider font-mono">Notes</span>
+                    <PenTool size={18} />
+                    <span style={{ fontSize: "8px" }}>Notes</span>
                 </button>
             </div>
 
             {/* BACKDROP */}
             <div
-                className={clsx(
-                    "fixed inset-0 bg-black/50 backdrop-blur-[2px] z-[90] transition-opacity duration-300 pointer-events-none no-print",
-                    activeTab ? "opacity-100 pointer-events-auto" : "opacity-0"
-                )}
+                className={clsx("drawer-backdrop no-print", activeTab && "open")}
                 onClick={() => setActiveTab(null)}
             />
 
             {/* SIDE SLIDE-OUT PANEL */}
             <div
                 ref={drawerRef}
-                className={clsx(
-                    "fixed right-0 top-0 h-full w-[460px] max-w-full z-[95] flex flex-col bg-[#0b0b0c] border-l border-[#a32222]/30 shadow-2xl transition-transform duration-300 ease-in-out no-print",
-                    activeTab ? "translate-x-0" : "translate-x-full"
-                )}
-                style={{
-                    boxShadow: activeTab ? "-10px 0 30px rgba(0,0,0,0.8)" : "none"
-                }}
+                className={clsx("drawer-panel no-print", activeTab && "open")}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-[#222] bg-[#101012]">
-                    <div className="flex items-center gap-2">
+                <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "1rem",
+                    borderBottom: "1px solid #222",
+                    background: "#101012"
+                }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                         {activeTab === "bestiary" && (
                             <>
                                 <Skull className="text-[#a32222]" size={18} />
@@ -265,7 +251,15 @@ export default function GlobalDrawers() {
                     
                     <button
                         onClick={() => setActiveTab(null)}
-                        className="text-[#666] hover:text-white p-1 rounded hover:bg-[#222] transition-colors cursor-pointer"
+                        style={{
+                            background: "transparent",
+                            border: "none",
+                            padding: "0.25rem",
+                            color: "#666",
+                            cursor: "pointer"
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
+                        onMouseLeave={(e) => e.currentTarget.style.color = "#666"}
                         title="Close Drawer"
                     >
                         <X size={18} />
@@ -273,29 +267,50 @@ export default function GlobalDrawers() {
                 </div>
 
                 {/* Content Container */}
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-4 min-h-0 bg-[#070708]">
+                <div style={{
+                    flex: 1,
+                    overflowY: "auto",
+                    padding: "1rem",
+                    background: "#070708",
+                    display: "flex",
+                    flexDirection: "column",
+                    minHeight: 0
+                }} className="custom-scrollbar">
                     
                     {/* BESTIARY TAB */}
                     {activeTab === "bestiary" && (
                         <div className="flex flex-col h-full gap-3">
                             {selectedMonster ? (
                                 <div className="flex flex-col gap-3 h-full">
-                                    <div className="flex justify-between items-center bg-[#101012] p-2 border border-[#222] rounded">
+                                    <div style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        background: "#101012",
+                                        padding: "0.5rem",
+                                        border: "1px solid #222",
+                                        borderRadius: "4px"
+                                    }}>
                                         <button
                                             onClick={() => setSelectedMonster(null)}
-                                            className="text-xs flex items-center gap-1 text-[#b5a685] hover:text-white uppercase font-mono tracking-wider cursor-pointer"
+                                            className="compact-btn cursor-pointer"
                                         >
                                             <ArrowLeft size={14} /> Back to Index
                                         </button>
                                         
                                         <button
                                             onClick={() => handleAddMonsterToCombat(selectedMonster)}
-                                            className="bg-[#8a1c1c] hover:bg-[#a32222] text-white text-[10px] font-bold uppercase px-2 py-1 rounded transition-colors flex items-center gap-1 cursor-pointer"
+                                            className="retro-btn cursor-pointer"
                                         >
                                             <Plus size={12} /> Add to Board
                                         </button>
                                     </div>
-                                    <div className="flex-1 overflow-y-auto custom-scrollbar border border-[#2c1a1a]/30 rounded">
+                                    <div style={{
+                                        flex: 1,
+                                        overflowY: "auto",
+                                        border: "1px solid rgba(44, 26, 26, 0.3)",
+                                        borderRadius: "4px"
+                                    }} className="custom-scrollbar">
                                         <div className="mix-blend-normal rounded bg-[#fdf1dc]">
                                             <StatblockCard data={selectedMonster} />
                                         </div>
@@ -304,7 +319,15 @@ export default function GlobalDrawers() {
                             ) : (
                                 <div className="flex flex-col h-full gap-3">
                                     {/* Search / Filters */}
-                                    <div className="flex flex-col gap-2 bg-[#101012] p-3 border border-[#222] rounded">
+                                    <div style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "0.5rem",
+                                        background: "#101012",
+                                        padding: "0.75rem",
+                                        border: "1px solid #222",
+                                        borderRadius: "4px"
+                                    }}>
                                         <div className="relative">
                                             <Search className="absolute left-3 top-2 text-[#555]" size={14} />
                                             <input
@@ -327,7 +350,13 @@ export default function GlobalDrawers() {
                                     </div>
 
                                     {/* List */}
-                                    <div className="flex-1 overflow-y-auto custom-scrollbar border border-[#222] rounded bg-[#0a0a0c]">
+                                    <div style={{
+                                        flex: 1,
+                                        overflowY: "auto",
+                                        border: "1px solid #222",
+                                        borderRadius: "4px",
+                                        background: "#0a0a0c"
+                                    }} className="custom-scrollbar">
                                         {filteredMonsters.length === 0 ? (
                                             <div className="p-8 text-center text-[#555] text-xs italic">
                                                 No monsters match your filter...
@@ -352,10 +381,16 @@ export default function GlobalDrawers() {
                                                                 e.stopPropagation();
                                                                 handleAddMonsterToCombat(monster);
                                                             }}
-                                                            className="opacity-0 group-hover:opacity-100 p-1 bg-[#8a1c1c] text-white rounded hover:bg-[#a32222] transition-all cursor-pointer"
+                                                            style={{
+                                                                background: "transparent",
+                                                                border: "none",
+                                                                padding: "0.25rem",
+                                                                color: "#ffaaaa"
+                                                            }}
+                                                            className="opacity-0 group-hover:opacity-100 hover:text-white cursor-pointer"
                                                             title="Add directly to battlemap"
                                                         >
-                                                            <Plus size={12} />
+                                                            <Plus size={14} />
                                                         </button>
                                                     </div>
                                                 </div>
@@ -375,15 +410,25 @@ export default function GlobalDrawers() {
                         <div className="flex flex-col h-full gap-3">
                             {selectedSpell ? (
                                 <div className="flex flex-col gap-3 h-full">
-                                    <div className="bg-[#101012] p-2 border border-[#222] rounded">
+                                    <div style={{
+                                        background: "#101012",
+                                        padding: "0.5rem",
+                                        border: "1px solid #222",
+                                        borderRadius: "4px"
+                                    }}>
                                         <button
                                             onClick={() => setSelectedSpell(null)}
-                                            className="text-xs flex items-center gap-1 text-[#b5a685] hover:text-white uppercase font-mono tracking-wider cursor-pointer"
+                                            className="compact-btn cursor-pointer"
                                         >
                                             <ArrowLeft size={14} /> Back to Spells
                                         </button>
                                     </div>
-                                    <div className="flex-1 overflow-y-auto custom-scrollbar border border-[#a39480]/30 rounded">
+                                    <div style={{
+                                        flex: 1,
+                                        overflowY: "auto",
+                                        border: "1px solid rgba(163, 148, 128, 0.3)",
+                                        borderRadius: "4px"
+                                    }} className="custom-scrollbar">
                                         <div className="w-full min-h-full bg-[#fdf1dc] p-6 relative rounded-sm border border-[#5c4033] text-[#1a1a1a]">
                                             <div className="border-b-2 border-[#8a1c1c] pb-2 mb-3">
                                                 <h2 className="text-xl font-header font-bold text-[#1a0f0f] uppercase leading-none">{selectedSpell.name}</h2>
@@ -415,7 +460,15 @@ export default function GlobalDrawers() {
                             ) : (
                                 <div className="flex flex-col h-full gap-3">
                                     {/* Search & Filters */}
-                                    <div className="flex flex-col gap-2 bg-[#101012] p-3 border border-[#222] rounded">
+                                    <div style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "0.5rem",
+                                        background: "#101012",
+                                        padding: "0.75rem",
+                                        border: "1px solid #222",
+                                        borderRadius: "4px"
+                                    }}>
                                         <div className="relative">
                                             <Search className="absolute left-3 top-2 text-[#555]" size={14} />
                                             <input
@@ -445,7 +498,13 @@ export default function GlobalDrawers() {
                                     </div>
 
                                     {/* List */}
-                                    <div className="flex-1 overflow-y-auto custom-scrollbar border border-[#222] rounded bg-[#0a0a0c]">
+                                    <div style={{
+                                        flex: 1,
+                                        overflowY: "auto",
+                                        border: "1px solid #222",
+                                        borderRadius: "4px",
+                                        background: "#0a0a0c"
+                                    }} className="custom-scrollbar">
                                         {filteredSpells.length === 0 ? (
                                             <div className="p-8 text-center text-[#555] text-xs italic">
                                                 No spells found...
@@ -482,6 +541,7 @@ export default function GlobalDrawers() {
                             <div className="flex bg-[#101012] border border-[#222] rounded p-1">
                                 <button
                                     onClick={() => setOracleMode("scene")}
+                                    style={{ border: "none" }}
                                     className={clsx(
                                         "flex-1 py-1 text-xs font-mono uppercase tracking-wider rounded transition-colors cursor-pointer",
                                         oracleMode === "scene" ? "bg-[var(--gold-accent)] text-black font-bold" : "text-[#b5a685] hover:text-white"
@@ -491,6 +551,7 @@ export default function GlobalDrawers() {
                                 </button>
                                 <button
                                     onClick={() => setOracleMode("chat")}
+                                    style={{ border: "none" }}
                                     className={clsx(
                                         "flex-1 py-1 text-xs font-mono uppercase tracking-wider rounded transition-colors cursor-pointer",
                                         oracleMode === "chat" ? "bg-[var(--gold-accent)] text-black font-bold" : "text-[#b5a685] hover:text-white"
@@ -529,7 +590,7 @@ export default function GlobalDrawers() {
                                             setNotepadSavedTime(new Date().toLocaleTimeString());
                                         }
                                     }}
-                                    className="text-[10px] text-red-500 hover:text-red-400 font-mono uppercase tracking-wider cursor-pointer"
+                                    className="compact-btn"
                                 >
                                     Clear Notepad
                                 </button>
