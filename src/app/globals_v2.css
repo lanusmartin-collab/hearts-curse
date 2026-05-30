@@ -590,7 +590,7 @@ select:focus {
 .fixed-bottom-right {
     position: fixed;
     bottom: 1.5rem;
-    right: 1.5rem;
+    right: 4.5rem;
     z-index: 9999;
 }
 
@@ -600,7 +600,7 @@ select:focus {
     .dice-trigger,
     .dice-panel,
     .fixed-bottom-right {
-        right: calc((100vw - 1600px) / 2 + 1.5rem);
+        right: calc((100vw - 1600px) / 2 + 4.5rem);
     }
 }
 
