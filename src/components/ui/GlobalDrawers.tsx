@@ -11,13 +11,57 @@ import clsx from "clsx";
 import { ALL_SPELLS, Spell } from "@/lib/data/spells";
 import { ALL_MONSTERS, MONSTERS_2024 } from "@/lib/data/monsters_2024";
 import { Statblock } from "@/lib/data/statblocks";
+import {
+    TOWN_DAY_TABLE, TOWN_NIGHT_TABLE, OUTSKIRTS_TABLE, SHOP_AMBUSH_TABLE,
+    SILENT_WARDS_TABLE, LIBRARY_WHISPERS_TABLE, HEART_CHAMBER_TABLE,
+    UNDERDARK_TRAVEL_TABLE, OAKHAVEN_MINES_TABLE, NETHERIL_RUINS_TABLE,
+    OSSUARY_TABLE, ARACH_TINILITH_TABLE, CASTLE_MOURNWATCH_TABLE,
+    CASTLE_EXTERIOR_TABLE, CATACOMBS_DESPAIR_TABLE, DWARVEN_RUINS_TABLE,
+    MIND_FLAYER_COLONY_TABLE, BEHOLDER_LAIR_TABLE, THAY_EMBASSY_TABLE,
+    SPIRE_TABLE
+} from "@/lib/data/encounters";
 
 // Component Imports
 import StatblockCard from "@/components/ui/StatblockCard";
 import NarrativeGenerator from "@/components/oracle/NarrativeGenerator";
 import NpcChat from "@/components/oracle/NpcChat";
 
-type DrawerTab = "bestiary" | "grimoire" | "oracle" | "notepad" | null;
+type DrawerTab = "bestiary" | "grimoire" | "oracle" | "notepad" | "encounters" | null;
+
+const REGIONS = [
+    { id: "sector-01", name: "Sector 01: Oakhaven" },
+    { id: "sector-01-5", name: "Sector 01.5: Mournwatch" },
+    { id: "sector-02", name: "Sector 02: The Depths" },
+];
+
+const TABLES_BY_REGION: Record<string, { id: string, name: string, table: any[] }[]> = {
+    "sector-01": [
+        { id: "town_day", name: "Oakhaven (Day)", table: TOWN_DAY_TABLE },
+        { id: "town_night", name: "Oakhaven (Night)", table: TOWN_NIGHT_TABLE },
+        { id: "outskirts", name: "The Outskirts", table: OUTSKIRTS_TABLE },
+        { id: "ambush", name: "Shop Ambush", table: SHOP_AMBUSH_TABLE },
+        { id: "thay_embassy", name: "Red Wizard Embassy", table: THAY_EMBASSY_TABLE },
+    ],
+    "sector-01-5": [
+        { id: "castle_exterior", name: "Castle Exterior", table: CASTLE_EXTERIOR_TABLE },
+        { id: "castle", name: "Castle Mournwatch", table: CASTLE_MOURNWATCH_TABLE },
+        { id: "heart", name: "Heart Chamber", table: HEART_CHAMBER_TABLE },
+        { id: "silent", name: "Silent Wards", table: SILENT_WARDS_TABLE },
+        { id: "netheril", name: "Netheril Void", table: NETHERIL_RUINS_TABLE },
+        { id: "library", name: "Library of Whispers", table: LIBRARY_WHISPERS_TABLE },
+        { id: "catacombs", name: "Catacombs", table: CATACOMBS_DESPAIR_TABLE },
+        { id: "ossuary", name: "The Ossuary", table: OSSUARY_TABLE },
+        { id: "spire", name: "Screaming Gales Spire", table: SPIRE_TABLE },
+    ],
+    "sector-02": [
+        { id: "mines", name: "Oakhaven Mines", table: OAKHAVEN_MINES_TABLE },
+        { id: "dwarven", name: "Dwarven Ruins", table: DWARVEN_RUINS_TABLE },
+        { id: "underdark", name: "Deep Travel", table: UNDERDARK_TRAVEL_TABLE },
+        { id: "mindflayer", name: "Synaptic Deep", table: MIND_FLAYER_COLONY_TABLE },
+        { id: "beholder", name: "Eye's Domain", table: BEHOLDER_LAIR_TABLE },
+        { id: "drow", name: "Arach Tinilith", table: ARACH_TINILITH_TABLE },
+    ],
+};
 
 export default function GlobalDrawers() {
     const pathname = usePathname();
@@ -42,7 +86,53 @@ export default function GlobalDrawers() {
     const [note, setNote] = useState("");
     const [notepadSavedTime, setNotepadSavedTime] = useState<string | null>(null);
 
+    // Encounters Drawer States
+    const [selectedRegionId, setSelectedRegionId] = useState("sector-01");
+    const [selectedTableId, setSelectedTableId] = useState("town_day");
+    const [currentEncounter, setCurrentEncounter] = useState<any | null>(null);
+    const [isRolling, setIsRolling] = useState(false);
+
     const drawerRef = useRef<HTMLDivElement>(null);
+
+    // Global Link Click Interceptor & Custom Window Event Listener to Open Drawers
+    useEffect(() => {
+        const handleGlobalLinkClick = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            const anchor = target.closest("a");
+            if (!anchor) return;
+
+            const href = anchor.getAttribute("href");
+            if (!href) return;
+
+            const drawerTabs: Record<string, DrawerTab> = {
+                "/statblocks": "bestiary",
+                "/grimoire": "grimoire",
+                "/editor": "notepad",
+                "/encounters": "encounters",
+                "/oracle": "oracle"
+            };
+
+            const tab = drawerTabs[href];
+            if (tab) {
+                e.preventDefault();
+                setActiveTab(tab);
+            }
+        };
+
+        const handleOpenDrawer = (e: Event) => {
+            const customEvent = e as CustomEvent<{ tab: DrawerTab }>;
+            if (customEvent.detail && customEvent.detail.tab) {
+                setActiveTab(customEvent.detail.tab);
+            }
+        };
+
+        document.addEventListener("click", handleGlobalLinkClick);
+        window.addEventListener("open-campaign-drawer", handleOpenDrawer);
+        return () => {
+            document.removeEventListener("click", handleGlobalLinkClick);
+            window.removeEventListener("open-campaign-drawer", handleOpenDrawer);
+        };
+    }, []);
 
     // Load custom monsters and notepad on mount
     useEffect(() => {
@@ -161,47 +251,32 @@ export default function GlobalDrawers() {
         alert(`Sent ${monster.name} to Combat Tracker!`);
     };
 
+    const handleRoll = () => {
+        setIsRolling(true);
+        setCurrentEncounter(null);
+        let count = 0;
+        const interval = setInterval(() => {
+            const table = TABLES_BY_REGION[selectedRegionId]?.find(t => t.id === selectedTableId)?.table || [];
+            if (table.length > 0) {
+                const tempVal = table[Math.floor(Math.random() * table.length)];
+                setCurrentEncounter(tempVal);
+            }
+            count++;
+            if (count > 10) {
+                clearInterval(interval);
+                const table = TABLES_BY_REGION[selectedRegionId]?.find(t => t.id === selectedTableId)?.table || [];
+                if (table.length > 0) {
+                    const rollVal = Math.floor(Math.random() * 20) + 1;
+                    const finalEncounter = table.find(e => e.roll.includes(rollVal));
+                    setCurrentEncounter(finalEncounter || table[0]);
+                }
+                setIsRolling(false);
+            }
+        }, 80);
+    };
+
     return (
         <>
-            {/* FLOATING ACTION TABS ON RIGHT EDGE */}
-            <div className="drawer-tab-dock no-print">
-                <button
-                    onClick={() => handleTabClick("bestiary")}
-                    className={clsx("drawer-tab-btn", activeTab === "bestiary" && "active")}
-                    title="Bestiary Drawer"
-                >
-                    <Skull size={18} />
-                    <span style={{ fontSize: "8px" }}>Bestiary</span>
-                </button>
-                
-                <button
-                    onClick={() => handleTabClick("grimoire")}
-                    className={clsx("drawer-tab-btn", activeTab === "grimoire" && "active")}
-                    title="Spell Grimoire"
-                >
-                    <Scroll size={18} />
-                    <span style={{ fontSize: "8px" }}>Spells</span>
-                </button>
-
-                <button
-                    onClick={() => handleTabClick("oracle")}
-                    className={clsx("drawer-tab-btn", activeTab === "oracle" && "active")}
-                    title="The Oracle AI"
-                >
-                    <Sparkles size={18} />
-                    <span style={{ fontSize: "8px" }}>Oracle</span>
-                </button>
-
-                <button
-                    onClick={() => handleTabClick("notepad")}
-                    className={clsx("drawer-tab-btn", activeTab === "notepad" && "active")}
-                    title="Scratchpad"
-                >
-                    <PenTool size={18} />
-                    <span style={{ fontSize: "8px" }}>Notes</span>
-                </button>
-            </div>
-
             {/* BACKDROP */}
             <div
                 className={clsx("drawer-backdrop no-print", activeTab && "open")}
@@ -245,6 +320,12 @@ export default function GlobalDrawers() {
                             <>
                                 <PenTool className="text-[#b5a685]" size={18} />
                                 <span className="font-header text-[var(--gold-accent)] uppercase tracking-wider text-sm">DM Scratchpad</span>
+                            </>
+                        )}
+                        {activeTab === "encounters" && (
+                            <>
+                                <Swords className="text-[#a32222]" size={18} />
+                                <span className="font-header text-[var(--gold-accent)] uppercase tracking-wider text-sm">Encounter Generator</span>
                             </>
                         )}
                     </div>
@@ -603,6 +684,120 @@ export default function GlobalDrawers() {
                                 onChange={handleNotepadChange}
                                 style={{ minHeight: "450px" }}
                             />
+                        </div>
+                    )}
+
+                    {/* ENCOUNTERS TAB */}
+                    {activeTab === "encounters" && (
+                        <div className="flex flex-col h-full gap-3">
+                            <div style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "0.5rem",
+                                background: "#101012",
+                                padding: "0.75rem",
+                                border: "1px solid #222",
+                                borderRadius: "4px"
+                            }}>
+                                <label style={{ fontSize: "10px", color: "#666", textTransform: "uppercase" }}>Select Region</label>
+                                <select
+                                    className="w-full bg-[#050505] border border-[#333] p-1.5 text-xs text-[#ccc] rounded focus:border-[#a32222] cursor-pointer"
+                                    value={selectedRegionId}
+                                    onChange={(e) => {
+                                        const regId = e.target.value;
+                                        setSelectedRegionId(regId);
+                                        setSelectedTableId(TABLES_BY_REGION[regId][0].id);
+                                        setCurrentEncounter(null);
+                                    }}
+                                >
+                                    {REGIONS.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                                </select>
+
+                                <label style={{ fontSize: "10px", color: "#666", textTransform: "uppercase", marginTop: "0.25rem" }}>Select Table</label>
+                                <select
+                                    className="w-full bg-[#050505] border border-[#333] p-1.5 text-xs text-[#ccc] rounded focus:border-[#a32222] cursor-pointer"
+                                    value={selectedTableId}
+                                    onChange={(e) => {
+                                        setSelectedTableId(e.target.value);
+                                        setCurrentEncounter(null);
+                                    }}
+                                >
+                                    {TABLES_BY_REGION[selectedRegionId].map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                                </select>
+                            </div>
+
+                            <button
+                                onClick={handleRoll}
+                                disabled={isRolling}
+                                style={{
+                                    width: "100%",
+                                    padding: "0.75rem",
+                                    fontSize: "0.85rem",
+                                    fontWeight: "bold",
+                                    background: isRolling ? "#4a0b0b" : "var(--scarlet-accent)",
+                                    border: "1px solid var(--gold-accent)",
+                                    color: "white",
+                                    cursor: "pointer",
+                                    textTransform: "uppercase",
+                                    letterSpacing: "1px"
+                                }}
+                            >
+                                {isRolling ? "Rolling d20..." : "🎲 Roll Encounter"}
+                            </button>
+
+                            {currentEncounter && (
+                                <div style={{
+                                    flex: 1,
+                                    background: "#111",
+                                    border: "1px solid #222",
+                                    padding: "1rem",
+                                    borderRadius: "4px",
+                                    overflowY: "auto",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "0.5rem"
+                                }} className="custom-scrollbar">
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(163,34,34,0.3)", paddingBottom: "0.5rem" }}>
+                                        <span style={{ fontSize: "0.95rem", fontFamily: "var(--font-header)", color: "var(--gold-accent)" }}>{currentEncounter.name}</span>
+                                        <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", background: "rgba(138,28,28,0.2)", padding: "2px 6px", border: "1px solid var(--scarlet-accent)", borderRadius: "3px", color: "var(--scarlet-accent)" }}>
+                                            Roll: {currentEncounter.roll.join("-")}
+                                        </span>
+                                    </div>
+                                    <p style={{ fontSize: "0.8rem", color: "#ccc", whiteSpace: "pre-wrap", lineHeight: "1.4" }}>
+                                        {currentEncounter.description}
+                                    </p>
+                                    {currentEncounter.monsters && currentEncounter.monsters.length > 0 && (
+                                        <div style={{ marginTop: "1rem", borderTop: "1px solid #222", paddingTop: "0.5rem" }}>
+                                            <div style={{ fontSize: "10px", color: "#666", textTransform: "uppercase", marginBottom: "0.5rem" }}>Encounter Monsters</div>
+                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                                                {currentEncounter.monsters.map((monsterSlug: string) => {
+                                                    const name = monsterSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                                                    return (
+                                                        <button
+                                                            key={monsterSlug}
+                                                            onClick={() => {
+                                                                const foundMonster = ALL_MONSTERS.find(m => m.slug === monsterSlug) || ({ name, slug: monsterSlug, hp: 10 } as any as Statblock);
+                                                                handleAddMonsterToCombat(foundMonster);
+                                                            }}
+                                                            style={{
+                                                                background: "#1a0505",
+                                                                border: "1px solid #ff4444",
+                                                                color: "#ffaaaa",
+                                                                fontSize: "0.7rem",
+                                                                padding: "2px 6px",
+                                                                borderRadius: "3px",
+                                                                cursor: "pointer"
+                                                            }}
+                                                        >
+                                                            + Add {name} to Board
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
 

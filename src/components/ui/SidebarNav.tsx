@@ -220,7 +220,20 @@ export default function SidebarNav() {
                                 <Link
                                     key={item.label}
                                     href={item.href}
-                                    onClick={() => setIsOpen(false)}
+                                    onClick={(e) => {
+                                        setIsOpen(false);
+                                        const drawerTabs: Record<string, string> = {
+                                            "/statblocks": "bestiary",
+                                            "/grimoire": "grimoire",
+                                            "/editor": "notepad",
+                                            "/encounters": "encounters"
+                                        };
+                                        const tab = drawerTabs[item.href];
+                                        if (tab) {
+                                            e.preventDefault();
+                                            window.dispatchEvent(new CustomEvent("open-campaign-drawer", { detail: { tab } }));
+                                        }
+                                    }}
                                     style={{
                                         display: "flex",
                                         alignItems: "center",
