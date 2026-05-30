@@ -1316,3 +1316,77 @@ select:focus {
     border-color: #ff0000 !important;
     background: rgba(50, 0, 0, 0.9) !important;
 }
+
+/* =========================================
+   TRIPLE-ZONE DESKTOP SHELL LAYOUT STYLES
+   ========================================= */
+
+/* Sidebar Container */
+.sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 288px;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    background: var(--obsidian-base);
+    border-right: 1px solid var(--glass-border);
+    transition: transform 0.3s ease-out;
+}
+
+/* Main Content Workspace */
+.main-content {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    transition: padding-left 0.3s ease-out;
+}
+
+/* Sidebar Backdrop Overlay on Mobile */
+.sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(4px);
+    z-index: 85;
+    transition: opacity 0.3s;
+}
+
+/* Mobile Close Button */
+.mobile-close-btn {
+    display: block;
+}
+
+/* On Desktop (width >= 1024px) */
+@media (min-width: 1024px) {
+    .sidebar-container {
+        transform: translateX(0) !important;
+        box-shadow: none !important;
+    }
+    .main-content {
+        padding-left: 288px !important;
+        padding-top: 0 !important;
+    }
+    .mobile-header-bar {
+        display: none !important;
+    }
+    .sidebar-backdrop {
+        display: none !important;
+    }
+    .mobile-close-btn {
+        display: none !important;
+    }
+}
+
+/* On Mobile/Tablet (width < 1024px) */
+@media (max-width: 1023px) {
+    .main-content {
+        padding-top: 4rem !important;
+        padding-left: 0 !important;
+    }
+    .mobile-header-bar {
+        display: flex !important;
+    }
+}

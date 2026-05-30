@@ -13,6 +13,7 @@ import RegionalMechanicsWidget from "@/components/ui/RegionalMechanicsWidget";
 import PremiumGate from "@/components/auth/PremiumGate";
 import { rollWildMagic } from "@/lib/game/curseLogic";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useAudio } from "@/lib/context/AudioContext";
 import {
     TOWN_DAY_TABLE, OAKHAVEN_MINES_TABLE, UNDERDARK_TRAVEL_TABLE,
     NETHERIL_RUINS_TABLE, SILENT_WARDS_TABLE, OUTSKIRTS_TABLE,
@@ -26,6 +27,7 @@ import MapNodeEditor from "@/components/ui/MapNodeEditor";
 
 export default function MapsClient() {
     const searchParams = useSearchParams();
+    const { playAmbience } = useAudio();
     const initialMapId = searchParams.get('id') || CAMPAIGN_MAPS[0].id;
     const [selectedMapId, setSelectedMapId] = useState<string>(initialMapId);
     const [viewMode, setViewMode] = useState<"interactive" | "book">("interactive");
@@ -82,6 +84,36 @@ export default function MapsClient() {
             localStorage.setItem(`party_loc_${selectedMapId}`, partyLocationId);
         }
     }, [mapNodes, partyLocationId, selectedMapId]);
+
+    // Trigger Ambient Audio Mode based on Party Location / Map Node type
+    useEffect(() => {
+        if (!partyLocationId) {
+            // Default based on map ID
+            if (selectedMapId === 'oakhaven') {
+                playAmbience('safe');
+            } else if (selectedMapId === 'library') {
+                playAmbience('library');
+            } else {
+                playAmbience('dungeon');
+            }
+            return;
+        }
+
+        const currentNode = mapNodes.find(n => n.id === partyLocationId);
+        if (currentNode) {
+            if (currentNode.type === 'boss') {
+                playAmbience('boss_battle');
+            } else if (currentNode.type === 'encounter' || currentNode.type === 'trap') {
+                playAmbience('combat');
+            } else if (selectedMapId === 'oakhaven') {
+                playAmbience('safe');
+            } else if (selectedMapId === 'library') {
+                playAmbience('library');
+            } else {
+                playAmbience('dungeon');
+            }
+        }
+    }, [partyLocationId, selectedMapId, mapNodes, playAmbience]);
 
     const handleResetMap = () => {
         if (confirm("Reset this map to its default state? All custom changes will be lost.")) {

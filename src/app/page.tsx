@@ -14,8 +14,6 @@ import QuestLog from "@/components/ui/QuestLog";
 import NotepadWidget from "@/components/ui/NotepadWidget";
 import SessionTrackerWidget from "@/components/ui/SessionTrackerWidget";
 import QuickNpcWidget from "@/components/ui/QuickNpcWidget";
-import SoundboardWidget from "@/components/audio/SoundboardWidget";
-import AmbienceMixer from "@/components/audio/AmbienceMixer";
 
 import GameLayout from "@/components/game/GameLayout";
 
@@ -248,8 +246,6 @@ function GameController() {
           </DashboardWidget>
           <QuickNpcWidget />
           <NotepadWidget />
-          <AmbienceMixer />
-          <SoundboardWidget />
         </div>
 
         {/* COLUMN 2: Campaign World & Combat */}

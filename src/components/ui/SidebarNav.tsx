@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -10,7 +10,6 @@ import {
 import clsx from "clsx";
 import CurseTracker from "./CurseTracker";
 import { useGrimoire } from "@/lib/game/spellContext";
-import { useEffect } from "react";
 
 const NAV_ITEMS = [
     { href: "/", label: "Sanctum", icon: Home },
@@ -32,6 +31,76 @@ export default function SidebarNav() {
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const pathname = usePathname();
     const { openGrimoire } = useGrimoire();
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const exportCampaignBackup = () => {
+        const backup: Record<string, string> = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && (
+                key.startsWith("heart_") ||
+                key.startsWith("hc_") ||
+                key.startsWith("custom_") ||
+                key.startsWith("shop_") ||
+                key.startsWith("map_nodes_") ||
+                key.startsWith("party_loc_") ||
+                key.startsWith("campaign_") ||
+                key.startsWith("curse_") ||
+                key === "dm_content" ||
+                key === "foundry_registry"
+            )) {
+                const val = localStorage.getItem(key);
+                if (val !== null) backup[key] = val;
+            }
+        }
+        
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `hearts_curse_backup_${new Date().toISOString().split('T')[0]}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    };
+
+    const importCampaignBackup = (file: File) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target?.result as string);
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (
+                        key.startsWith("heart_") ||
+                        key.startsWith("hc_") ||
+                        key.startsWith("custom_") ||
+                        key.startsWith("shop_") ||
+                        key.startsWith("map_nodes_") ||
+                        key.startsWith("party_loc_") ||
+                        key.startsWith("campaign_") ||
+                        key.startsWith("curse_") ||
+                        key === "dm_content" ||
+                        key === "foundry_registry"
+                    )) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(k => localStorage.removeItem(k));
+
+                Object.entries(data).forEach(([key, val]) => {
+                    localStorage.setItem(key, val as string);
+                });
+
+                alert("Campaign successfully restored! Reloading...");
+                window.location.reload();
+            } catch (err) {
+                alert("Failed to parse backup file. Make sure it is a valid JSON campaign package.");
+            }
+        };
+        reader.readAsText(file);
+    };
 
     useEffect(() => {
         const handler = (e: any) => {
@@ -59,9 +128,9 @@ export default function SidebarNav() {
 
     return (
         <div style={{ display: isEncounters ? 'none' : 'block' }}>
-            {/* Mobile Header Bar (Only visible < 1024px ideally, but here we cover Global Trigger) */}
+            {/* Mobile Header Bar */}
             <div
-                className="lg:hidden"
+                className="mobile-header-bar"
                 style={{
                     position: "fixed",
                     top: 0,
@@ -100,29 +169,19 @@ export default function SidebarNav() {
 
             {/* Backdrop */}
             <div
-                className="lg:hidden"
+                className="sidebar-backdrop"
                 style={{
-                    position: "fixed",
-                    inset: 0,
-                    background: "rgba(0,0,0,0.8)",
-                    backdropFilter: "blur(4px)",
-                    zIndex: 90,
                     opacity: isOpen ? 1 : 0,
-                    pointerEvents: isOpen ? "auto" : "none",
-                    transition: "opacity 0.3s"
+                    pointerEvents: isOpen ? "auto" : "none"
                 }}
                 onClick={() => setIsOpen(false)}
             />
 
             {/* Sidebar Drawer */}
             <div
-                className={clsx(
-                    "fixed top-0 left-0 h-full w-[288px] z-[90] flex flex-col transition-transform duration-300 ease-out lg:translate-x-0 lg:shadow-none shadow-[10px_0_30px_rgba(0,0,0,0.8)]",
-                    isOpen ? "translate-x-0" : "-translate-x-full"
-                )}
+                className="sidebar-container"
                 style={{
-                    background: "var(--obsidian-base)",
-                    borderRight: "1px solid var(--glass-border)"
+                    transform: isOpen ? "translateX(0)" : "translateX(-100%)"
                 }}
             >
                 {/* Header */}
@@ -145,7 +204,7 @@ export default function SidebarNav() {
                     </h2>
                     <button
                         onClick={() => setIsOpen(false)}
-                        className="lg:hidden"
+                        className="mobile-close-btn"
                         style={{ border: "none", padding: "0.25rem", color: "inherit", background: "transparent", cursor: "pointer" }}
                     >
                         <X style={{ width: "24px", height: "24px" }} />
@@ -222,6 +281,78 @@ export default function SidebarNav() {
                     }}>
                         <CurseTracker simpleView={true} />
                     </div>
+                    {/* Backup & Restore System */}
+                    <div style={{
+                        marginTop: "1.5rem",
+                        display: "flex",
+                        gap: "0.5rem",
+                    }}>
+                        <button
+                            onClick={exportCampaignBackup}
+                            style={{
+                                flex: 1,
+                                padding: "0.45rem",
+                                background: "rgba(201,188,160,0.05)",
+                                border: "1px solid rgba(201,188,160,0.3)",
+                                color: "var(--gold-accent)",
+                                borderRadius: "0.25rem",
+                                cursor: "pointer",
+                                fontSize: "0.65rem",
+                                textTransform: "uppercase",
+                                fontFamily: "var(--font-serif)",
+                                letterSpacing: "0.05em",
+                                transition: "all 0.2s"
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = "rgba(201,188,160,0.15)";
+                                e.currentTarget.style.borderColor = "var(--gold-accent)";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = "rgba(201,188,160,0.05)";
+                                e.currentTarget.style.borderColor = "rgba(201,188,160,0.3)";
+                            }}
+                        >
+                            Backup
+                        </button>
+                        <button
+                            onClick={() => fileInputRef.current?.click()}
+                            style={{
+                                flex: 1,
+                                padding: "0.45rem",
+                                background: "rgba(201,188,160,0.05)",
+                                border: "1px solid rgba(201,188,160,0.3)",
+                                color: "var(--gold-accent)",
+                                borderRadius: "0.25rem",
+                                cursor: "pointer",
+                                fontSize: "0.65rem",
+                                textTransform: "uppercase",
+                                fontFamily: "var(--font-serif)",
+                                letterSpacing: "0.05em",
+                                transition: "all 0.2s"
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = "rgba(201,188,160,0.15)";
+                                e.currentTarget.style.borderColor = "var(--gold-accent)";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = "rgba(201,188,160,0.05)";
+                                e.currentTarget.style.borderColor = "rgba(201,188,160,0.3)";
+                            }}
+                        >
+                            Restore
+                        </button>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) importCampaignBackup(file);
+                            }}
+                            style={{ display: "none" }}
+                            accept=".json"
+                        />
+                    </div>
+
                     <div style={{ marginTop: "1rem", fontSize: "0.6rem", textAlign: "center", color: "var(--fg-dim)", opacity: 0.3, fontFamily: "var(--font-mono)" }}>
                         v1.2.3 // HEART'S CURSE
                     </div>

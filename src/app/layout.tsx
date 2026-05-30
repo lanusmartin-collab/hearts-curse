@@ -74,7 +74,7 @@ export default function RootLayout({
                       <div className="noise-overlay"></div>
                       <SidebarNav />
                       <GlobalDrawers />
-                      <main className="pt-16 pb-20 lg:pt-0 lg:pl-72">{children}</main>
+                      <main className="main-content">{children}</main>
                       <ShadowCaster />
                       <DiceRoller />
                       <CommandMenu />

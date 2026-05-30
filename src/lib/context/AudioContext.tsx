@@ -26,25 +26,21 @@ const AudioContext = createContext<AudioContextType | undefined>(undefined);
 
 // MOCKED AUDIO CONTEXT (Audio Disabled by Request)
 export function AudioProvider({ children }: { children: React.ReactNode }) {
-    // No-op state
-    const isMuted = true;
-    const volume = 0;
-    const musicVolume = 0;
-    const sfxVolume = 0;
-    const ambienceVolume = 0;
-    const isInitialized = false;
-    const ambienceMode = "safe";
+    const [isMuted, setIsMuted] = useState(false);
+    const [volume, setVolume] = useState(0.5);
+    const [musicVolume, setMusicVolume] = useState(0.5);
+    const [sfxVolume, setSfxVolume] = useState(0.8);
+    const [ambienceVolume, setAmbienceVolume] = useState(0.4);
+    const [isInitialized, setIsInitialized] = useState(false);
+    const [ambienceMode, setAmbienceMode] = useState<"safe" | "dungeon" | "combat" | "boss_battle" | "ethereal" | "library">("safe");
 
-    // No-op functions
-    const toggleMute = () => { };
-    const setVolume = () => { };
-    const setMusicVolume = () => { };
-    const setSfxVolume = () => { };
-    const setAmbienceVolume = () => { };
-    const playSfx = () => { };
-    const playMusic = () => { };
-    const initializeAudio = () => { };
-    const playAmbience = () => { };
+    const toggleMute = () => setIsMuted(prev => !prev);
+    const playSfx = (src: string) => { console.log("SFX Play:", src); };
+    const playMusic = (src: string) => { console.log("Music Play:", src); };
+    const initializeAudio = () => setIsInitialized(true);
+    const playAmbience = (mode: "safe" | "dungeon" | "combat" | "boss_battle" | "ethereal" | "library") => {
+        setAmbienceMode(mode);
+    };
 
     return (
         <AudioContext.Provider value={{
