@@ -367,7 +367,7 @@ export default function SidebarNav() {
                     </div>
 
                     <div style={{ marginTop: "1rem", fontSize: "0.6rem", textAlign: "center", color: "var(--fg-dim)", opacity: 0.3, fontFamily: "var(--font-mono)" }}>
-                        v1.2.3 // HEART'S CURSE
+                        v1.2.5 // HEART'S CURSE
                     </div>
                     {deferredPrompt && (
                         <button
