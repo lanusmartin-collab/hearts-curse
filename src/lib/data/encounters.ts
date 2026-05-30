@@ -286,3 +286,72 @@ export const SPIRE_TABLE: Encounter[] = [
     { roll: [19, 19], name: "Aerisi's Messenger", description: "SCENE: A projection of the Prophet. \nTHREAT: warning: 'Turn back, groundlings.' Summons a Dust Devil.", monsters: ["dust-devil"] },
     { roll: [20, 20], name: "The Djinni's Boon", description: "SCENE: A Noble Djinni appears in a whirlwind. \nSOCIAL: He is amused by your struggle. Offers a 'Wind Ride' (Teleport to Apex) for a story.", monsters: ["djinni"] }
 ];
+
+export const THAY_EMBASSY_TABLE: Encounter[] = [
+    {
+        roll: [1, 2],
+        name: "The Sanguine Alarm",
+        description: "SCENE: A hidden crimson glyph triggers, filling the corridor with boiling, necrotic blood that coagulates into floating blades. \nMECHANIC: DC 20 Dex save or take 10d6 Slashing + 10d6 Necrotic damage (half on success). The blood then coalesces into 2 Blood Golems.",
+        monsters: ["blood-golem", "blood-golem"]
+    },
+    {
+        roll: [3, 4],
+        name: "Thayan Ritual of Soul-Binding",
+        description: "SCENE: A Thayan Mage and two apprentices channel necrotic energy to bind a captured Zhentarim spy's soul into a black crystal. \nTACTIC: The Mage casts Wall of Force to isolate the party while the apprentices attempt to complete the ritual. Interrupting them saves the spy and secures Zhentarim secrets.",
+        monsters: ["mage", "thayan-apprentice", "thayan-apprentice"]
+    },
+    {
+        roll: [5, 6],
+        name: "The Crimson Inquisition",
+        description: "SCENE: A robed Red Wizard patrol accompanied by a hound-like construct of steel and psychic hunger. \nCOMBAT: The Steel Predator targets the party's primary spellcaster while the Mage supports it with high-level evocation spells.",
+        monsters: ["mage", "steel-predator"]
+    },
+    {
+        roll: [7, 8],
+        name: "Alchemical Spillage",
+        description: "SCENE: A shelf of volatile Thayan reagents shatters, creating a highly corrosive cloud. \nHAZARD: The area is heavily obscured. Any creature starting its turn in the cloud takes 6d6 Acid damage. The magical fumes animate into an Ink Elemental.",
+        monsters: ["water-elemental"]
+    },
+    {
+        roll: [9, 10],
+        name: "Shadows of Thay",
+        description: "SCENE: The ambient light dims as dark shadows detach from the crimson tapestries. \nAMBUSH: 4 Arcanum Wraiths emerge. Their cold touch drains the target's highest spell slots first.",
+        monsters: ["arcanum-wraith", "arcanum-wraith", "arcanum-wraith", "arcanum-wraith"]
+    },
+    {
+        roll: [11, 12],
+        name: "The Red Knight's Challenge",
+        description: "SCENE: An imposing Thayan Knight in obsidian plate armor blocks the hallway, flanked by two elite veterans. \nSOCIAL: The Knight demands a duel to first blood or death. Refusing or interfering triggers a full combat.",
+        monsters: ["zhentarim-juggernaut", "zhentarim-veteran", "zhentarim-veteran"]
+    },
+    {
+        roll: [13, 14],
+        name: "Fiendish Bodyguards",
+        description: "SCENE: A sulfurous rift opens as a Thayan conjurer summons a bound demon of the Abyss. \nCOMBAT: The summoner maintains concentration on the Balor. If the Mage is defeated or incapacitated, the Balor goes wild, attacking friend and foe alike.",
+        monsters: ["deep-balor", "mage"]
+    },
+    {
+        roll: [15, 16],
+        name: "The Living Death",
+        description: "SCENE: The doors of a locked crypt burst open, releasing cold dread. \nCOMBAT: 3 Bodaks step out, seeking to wither the souls of the living with their deadly gazes. The narrow corridor makes it impossible to look away.",
+        monsters: ["bodak", "bodak", "bodak"]
+    },
+    {
+        roll: [17, 18],
+        name: "Arcane Null-Field",
+        description: "SCENE: A humming iron obelisk in the center of the room generates a field of dead magic. \nMECHANIC: 40ft radius Anti-Magic Field. 2 Flesh Golems (immune to the field's effects) patrol the room, attacking anyone who enters.",
+        monsters: ["flesh-golem", "flesh-golem"]
+    },
+    {
+        roll: [19, 19],
+        name: "Zoltus's Projection",
+        description: "SCENE: Zoltus's spectral projection appears, flanked by a massive juggernaut. \nMECHANIC: Zoltus casts spells as a projection and cannot be damaged directly. The party must destroy three glowing runes (AC 15, 20 HP each) to dispel him.",
+        monsters: ["zhentarim-juggernaut", "mage"]
+    },
+    {
+        roll: [20, 20],
+        name: "The Lich's Pact",
+        description: "SCENE: An emissary of Szass Tam, a skeletal figure in opulent silks, watches from the shadows. \nOFFER: He offers the party a dark deal: eliminate Zoltus, and he will reward them with an ancient spell scroll. If attacked, he disappears, leaving a Death Tyrant.",
+        monsters: ["death-tyrant"]
+    }
+];

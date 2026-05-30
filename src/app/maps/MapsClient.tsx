@@ -18,7 +18,7 @@ import {
     NETHERIL_RUINS_TABLE, SILENT_WARDS_TABLE, OUTSKIRTS_TABLE,
     LIBRARY_WHISPERS_TABLE, ARACH_TINILITH_TABLE, HEART_CHAMBER_TABLE, OSSUARY_TABLE,
     SPIRE_TABLE, DWARVEN_RUINS_TABLE, MIND_FLAYER_COLONY_TABLE, BEHOLDER_LAIR_TABLE,
-    CATACOMBS_DESPAIR_TABLE, CASTLE_MOURNWATCH_TABLE
+    CATACOMBS_DESPAIR_TABLE, CASTLE_MOURNWATCH_TABLE, THAY_EMBASSY_TABLE
 } from "@/lib/data/encounters";
 
 import QuestJournal from "@/components/ui/QuestJournal";
@@ -109,6 +109,7 @@ export default function MapsClient() {
             case 'dwarven_ruins': table = DWARVEN_RUINS_TABLE; break;
             case 'mind_flayer': table = MIND_FLAYER_COLONY_TABLE; break;
             case 'beholder': table = BEHOLDER_LAIR_TABLE; break;
+            case 'thay_embassy': table = THAY_EMBASSY_TABLE; break;
             default: table = null;
         }
 

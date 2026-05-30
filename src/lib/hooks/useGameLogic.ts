@@ -20,6 +20,7 @@ import {
     BEHOLDER_LAIR_TABLE,
     SPIRE_TABLE,
     CASTLE_MOURNWATCH_TABLE,
+    THAY_EMBASSY_TABLE,
     Encounter
 } from "@/lib/data/encounters";
 import { useAudio } from "@/lib/context/AudioContext";
@@ -221,6 +222,7 @@ export const useGameLogic = (startingRewards?: any) => {
                 case "heart": table = HEART_CHAMBER_TABLE; break;
                 case "ossuary": table = OSSUARY_TABLE; break;
                 case "castle": table = CASTLE_MOURNWATCH_TABLE; break;
+                case "thay_embassy": table = THAY_EMBASSY_TABLE; break;
                 default: table = TOWN_DAY_TABLE;
             }
 
