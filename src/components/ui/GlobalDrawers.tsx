@@ -134,6 +134,18 @@ export default function GlobalDrawers() {
         };
     }, []);
 
+    // Toggle body class 'drawer-open' for desktop shifting
+    useEffect(() => {
+        if (activeTab) {
+            document.body.classList.add("drawer-open");
+        } else {
+            document.body.classList.remove("drawer-open");
+        }
+        return () => {
+            document.body.classList.remove("drawer-open");
+        };
+    }, [activeTab]);
+
     // Load custom monsters and notepad on mount
     useEffect(() => {
         const savedCustom = localStorage.getItem("custom_statblocks");
@@ -802,6 +814,50 @@ export default function GlobalDrawers() {
                     )}
 
                 </div>
+            </div>
+
+            {/* FLOATING TAB DOCK ON RIGHT EDGE */}
+            <div className="drawer-tab-dock no-print">
+                <button
+                    className={clsx("drawer-tab-btn", activeTab === "bestiary" && "active")}
+                    onClick={() => handleTabClick("bestiary")}
+                    title="Bestiary Codex"
+                >
+                    <Skull size={18} />
+                    <span>Bestiary</span>
+                </button>
+                <button
+                    className={clsx("drawer-tab-btn", activeTab === "grimoire" && "active")}
+                    onClick={() => handleTabClick("grimoire")}
+                    title="Spells Grimoire"
+                >
+                    <Scroll size={18} />
+                    <span>Spells</span>
+                </button>
+                <button
+                    className={clsx("drawer-tab-btn", activeTab === "encounters" && "active")}
+                    onClick={() => handleTabClick("encounters")}
+                    title="Encounter Generator"
+                >
+                    <Swords size={18} />
+                    <span>Encounters</span>
+                </button>
+                <button
+                    className={clsx("drawer-tab-btn", activeTab === "notepad" && "active")}
+                    onClick={() => handleTabClick("notepad")}
+                    title="DM Scratchpad"
+                >
+                    <PenTool size={18} />
+                    <span>Notes</span>
+                </button>
+                <button
+                    className={clsx("drawer-tab-btn", activeTab === "oracle" && "active")}
+                    onClick={() => handleTabClick("oracle")}
+                    title="AI Oracle"
+                >
+                    <Sparkles size={18} />
+                    <span>Oracle</span>
+                </button>
             </div>
         </>
     );

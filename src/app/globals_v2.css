@@ -1341,7 +1341,13 @@ select:focus {
     position: relative;
     width: 100%;
     min-height: 100vh;
-    transition: padding-left 0.3s ease-out;
+    transition: padding-left 0.3s ease-out, transform 0.3s ease-in-out;
+}
+
+@media (min-width: 1024px) {
+    body.drawer-open .main-content {
+        transform: translateX(-200px);
+    }
 }
 
 /* Sidebar Backdrop Overlay on Mobile */
