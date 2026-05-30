@@ -1412,6 +1412,19 @@ select:focus {
     align-items: flex-end;
     gap: 8px;
     width: 64px;
+    transition: transform 0.3s ease-in-out;
+}
+
+@media (min-width: 1024px) {
+    body.drawer-open .drawer-tab-dock {
+        transform: translateX(-460px);
+    }
+}
+
+@media (max-width: 1023px) {
+    body.drawer-open .drawer-tab-dock {
+        display: none !important;
+    }
 }
 
 /* Individual Tab Button */
