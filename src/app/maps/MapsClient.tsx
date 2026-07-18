@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Save, Trash2, Crosshair, Edit, Move, Upload, FolderUp, Swords, Skull, Shield, ArrowLeft } from "lucide-react";
+import { Plus, Save, Trash2, Crosshair, Edit, Move, Upload, FolderUp, Swords, Skull, Shield, ArrowLeft, BookOpen } from "lucide-react";
 import StatblockCard from "@/components/ui/StatblockCard";
 import { STATBLOCKS } from "@/lib/data/statblocks";
 import { MONSTERS_2024 } from "@/lib/data/monsters_2024";
@@ -32,6 +32,7 @@ export default function MapsClient() {
     const [selectedMapId, setSelectedMapId] = useState<string>(initialMapId);
     const [viewMode, setViewMode] = useState<"interactive" | "book">("interactive");
     const [showJournal, setShowJournal] = useState(false);
+    const [showGuideOverlay, setShowGuideOverlay] = useState(false);
     const router = useRouter();
 
     // Map Data State (For Editing)
@@ -317,6 +318,9 @@ export default function MapsClient() {
                         <button onClick={() => setShowJournal(!showJournal)} className="retro-btn text-xs flex gap-2 items-center">
                             <FolderUp size={14} /> JOURNAL
                         </button>
+                        <button onClick={() => setShowGuideOverlay(!showGuideOverlay)} className={`retro-btn text-xs flex gap-2 items-center transition-colors ${showGuideOverlay ? 'border-red-500 text-red-400 bg-red-950/20' : ''}`}>
+                            <BookOpen size={14} /> MAP GUIDE
+                        </button>
                     </div>
                 </header>
 
@@ -409,6 +413,26 @@ export default function MapsClient() {
                                         onClose={() => setEditingNode(null)}
                                         onDelete={handleNodeDelete}
                                     />
+                                )}
+
+                                {/* Map Guide Overlay Panel */}
+                                {showGuideOverlay && selectedMap.questGuide && (
+                                    <div className="absolute left-4 top-16 bottom-4 w-[350px] z-30 bg-stone-950/95 border border-red-900/50 rounded-lg p-4 flex flex-col backdrop-blur-md shadow-2xl animate-in slide-in-from-left duration-300">
+                                        <div className="flex justify-between items-center border-b border-red-900/40 pb-2 mb-3">
+                                            <h3 className="text-xs uppercase font-bold text-red-500 font-mono tracking-widest flex items-center gap-2">
+                                                <BookOpen size={14} /> Dungeon Secrets
+                                            </h3>
+                                            <button
+                                                onClick={() => setShowGuideOverlay(false)}
+                                                className="text-gray-500 hover:text-white transition-colors p-1"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                        <div className="flex-1 overflow-y-auto pr-1 text-xs text-gray-300 font-sans space-y-3 whitespace-pre-line leading-relaxed custom-scrollbar">
+                                            {selectedMap.questGuide}
+                                        </div>
+                                    </div>
                                 )}
                             </div>
                         ) : (
