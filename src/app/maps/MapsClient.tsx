@@ -66,10 +66,11 @@ export default function MapsClient() {
         if (savedNodes) {
             try {
                 const parsed = JSON.parse(savedNodes);
-                // MIGRATION: Check if silent_wards is missing the Sapphire Keystone quest node
+                // MIGRATION: Check if silent_wards is missing the detailed mechanics descriptions
                 if (selectedMapId === 'silent_wards') {
                     const mirrorsNode = parsed.find((n: any) => n.id === 'mirrors');
-                    if (mirrorsNode && mirrorsNode.type !== 'quest') {
+                    const hasDetails = mirrorsNode?.description?.includes('HOW TO OBTAIN');
+                    if (!hasDetails) {
                         setMapNodes(selectedMap.nodes || []);
                         localStorage.setItem(`map_nodes_${selectedMapId}`, JSON.stringify(selectedMap.nodes));
                         return;
@@ -470,7 +471,7 @@ export default function MapsClient() {
                                     </div>
 
                                     <div className="prose prose-invert prose-sm">
-                                        <p>{selectedNode.description || "No description provided."}</p>
+                                        <p style={{ whiteSpace: 'pre-line' }}>{selectedNode.description || "No description provided."}</p>
                                     </div>
 
                                     {/* Link Button */}
