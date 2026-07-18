@@ -65,7 +65,17 @@ export default function MapsClient() {
 
         if (savedNodes) {
             try {
-                setMapNodes(JSON.parse(savedNodes));
+                const parsed = JSON.parse(savedNodes);
+                // MIGRATION: Check if silent_wards is missing the Sapphire Keystone quest node
+                if (selectedMapId === 'silent_wards') {
+                    const mirrorsNode = parsed.find((n: any) => n.id === 'mirrors');
+                    if (mirrorsNode && mirrorsNode.type !== 'quest') {
+                        setMapNodes(selectedMap.nodes || []);
+                        localStorage.setItem(`map_nodes_${selectedMapId}`, JSON.stringify(selectedMap.nodes));
+                        return;
+                    }
+                }
+                setMapNodes(parsed);
             } catch (e) {
                 console.error("Failed to parse saved map nodes", e);
                 setMapNodes(selectedMap.nodes || []);
@@ -529,11 +539,28 @@ export default function MapsClient() {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="h-full flex flex-col items-center justify-center text-gray-600 space-y-4">
-                                    <div className="p-4 rounded-full bg-gray-800/50">
-                                        <Crosshair size={48} className="text-gray-700" />
-                                    </div>
-                                    <p className="font-mono text-sm">SELECT_SECTOR_TO_ANALYZE</p>
+                                <div className="h-full flex flex-col min-h-0">
+                                    {selectedMap.questGuide ? (
+                                        <div className="flex-grow flex flex-col min-h-0">
+                                            <div className="border-b border-gray-800 pb-2 mb-3">
+                                                <h3 className="text-xs uppercase font-bold text-red-500 tracking-wider font-mono">Dungeon Objectives & Guide</h3>
+                                            </div>
+                                            <div className="flex-1 overflow-y-auto pr-1 text-xs text-gray-400 font-sans space-y-3 whitespace-pre-line leading-relaxed custom-scrollbar">
+                                                {selectedMap.questGuide}
+                                            </div>
+                                            <div className="mt-4 pt-3 border-t border-gray-800 flex flex-col items-center justify-center text-gray-600 text-[10px] uppercase font-mono tracking-wider">
+                                                <Crosshair size={14} className="mb-1 text-gray-700" />
+                                                <span>Select a node to inspect</span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="h-full flex flex-col items-center justify-center text-gray-600 space-y-4">
+                                            <div className="p-4 rounded-full bg-gray-800/50">
+                                                <Crosshair size={48} className="text-gray-700" />
+                                            </div>
+                                            <p className="font-mono text-sm">SELECT_SECTOR_TO_ANALYZE</p>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
