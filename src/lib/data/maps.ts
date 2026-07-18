@@ -201,14 +201,39 @@ const MAIN_QUEST_MAPS: CampaignMap[] = [
         ],
         questGuide: `**OBJECTIVE:** Navigate the Shifting Labyrinth.
 **CONTEXT:** The dungeon is a living puzzle. The goal is to reach the exit before being crushed or lost.
-**SOLUTION:** Map the Shifts.
-1.  **Observation:** Pay attention to the shift patterns. They are not entirely random.
-2.  **Keystones:** The exit requires 3 Keystones (Ruby, Sapphire, Emerald) found in specific rooms.
-3.  **Timing:** Use the 'Silence' mechanic to your advantage for stealth, but be wary of the shifting walls.`,
+**SOLUTION:** Obtain the 3 Keystones (Ruby, Sapphire, Emerald) to unlock the Stairs to the Library.
+
+**🔑 KEYSTONE MECHANICS & DM RUNNING GUIDE (CAMPAIGN RUNTIME):**
+
+1. 🔴 **THE RUBY KEYSTONE (Furnace Room - Bottom-Left)**
+   * **The Trap (The Core-Fire Crucible):** The Ruby Keystone rests at the bottom of a 10-ft-deep basin of bubbling molten mithral/lava.
+   * **Environmental Hazard:** Merely standing in the room deals 1d6 fire damage at the end of each creature's turn due to searing heat.
+   * **How to Obtain:**
+     * *Brute Force:* A character can reach in or dive. Reaching in deals 4d10 fire damage; submerging fully deals 10d10 fire damage.
+     * *Mechanical Puzzle:* There are two rusted levers on the back wall. Operating them requires a DC 16 Strength (Athletics) check. Operating both levers channels cooling gas into the crucible, solidifying the top layer of lava (forming a crust) and raising the stone pedestal holding the key safely.
+     * *Magic Workaround:* Casting Mage Hand or Telekinesis can pull the key out. WARNING: The entire layer is under a permanent Silence spell. Verbal spells cannot be cast unless characters are inside a Tiny Hut (cast beforehand) or use the Subtle Spell metamagic.
+     * *Loot:* A glass case containing 2x Potion of Fire Resistance sits on a wall, locked (DC 15 Thieves' Tools or DC 15 STR check to break).
+
+2. 🟢 **THE EMERALD KEYSTONE (Void Vault - Bottom-Right)**
+   * **The Trap (Zero-Gravity & Void Ward):** The vault is a hollow sphere open to a starry void. There is no gravity here.
+   * **Zero-G Navigation:** Characters must make a DC 15 Dexterity (Acrobatics) check to push off debris or walls to navigate. Failing means they float aimlessly.
+   * **The Hazard (Void Sensor):** A floating obsidian orb scans the room. Any creature that moves more than 10 ft in a single turn triggers a Void Bolt (+7 to hit, 3d10 force damage).
+   * **How to Obtain:**
+     * *Disabling the Sensor:* A character can drift to the control console on the ceiling and succeed on a DC 18 Intelligence (Arcana) or Thieves' Tools check to disable the scanner.
+     * *Combat:* The sensor can be destroyed (AC 16, 40 HP, immune to force/psychic/poison).
+     * *Stealth:* Using the floating debris as total cover allows characters to drift slowly (10 ft per turn or less) without triggering the scanner to grab the Keystone floating at the center.
+
+3. 🔵 **THE SAPPHIRE KEYSTONE (Hall of Mirrors - Top-Right)**
+   * **The Trap (Mirror of Sapphire Truth):** A grand, blue-rimmed mirror stands in the center, flanked by reflections. The Sapphire Keystone is seen hanging around the neck of the leader's reflection.
+   * **The Hazard (Simulacrum Breach):** Smashing any mirror triggers a Shattered Visage burst (2d6 Psychic damage to the attacker) and summons a Doppelganger of a party member.
+   * **How to Obtain:**
+     * *The Mirror Puzzle:* The reflection mirrors all movements exactly, blocking any attempt to reach through the glass. To bypass it, a character must do something that a reflection cannot replicate.
+     * *Solution A (Blind Grab):* If a character closes their eyes, binds themselves, or extinguishes all light in the room, the mirror cannot reflect them. In absolute darkness or with closed eyes, they can reach into the mirror's glass (which turns into liquid mercury) and pull the Sapphire Keystone out.
+     * *Solution B (Doppelganger Combat):* If players smash the central mirror, 3 Doppelgangers step out to attack. Defeating them causes the doppelgangers to dissolve into blue dust, leaving the real Sapphire Keystone on the floor.`,
         nodes: [
             { id: "start", x: 50, y: 50, label: "Central Hub", type: "encounter", description: "**SCENE:** A Zhentarim raiding party (4 Veterans, 1 Mage) is trapped, arguing over a map. **LOOT:** 200gp and a map of Layer 1 (User gets minimap reveal)." },
             { id: "gears", x: 20, y: 20, label: "The Gear Chamber (Top-Left)", type: "encounter", description: "**SCENE:** Giant mithral cogs grind the walls. **MECHANIC:** 'The Conveyor'. DC 16 STR save or be pulled into the crushers (4d10 Bludgeoning). **ENCOUNTER:** 2x Mithral Golems protecting the machinery." },
-            { id: "mirrors", x: 80, y: 20, label: "Hall of Mirrors (Top-Right)", type: "trap", description: "**SCENE:** Infinite reflections. **MECHANIC:** 'Shattered Visage'. Smashing a mirror deals 2d6 Psychic damage to the attacker. **ENCOUNTER:** 3x Doppelgangers hiding as 'reflections' of the party members." },
+            { id: "mirrors", x: 80, y: 20, label: "Hall of Mirrors (Top-Right)", type: "quest", description: "**SCENE:** Infinite reflections. **MECHANIC:** 'Mirror of Sapphire Truth'. The Sapphire Keystone is locked inside the reflection of the central mirror. **ENCOUNTER:** 3x Doppelgangers hiding as reflections. **LOOT:** The **Sapphire Keystone** (drops when Doppelgangers are defeated, or obtained via the Mirror Puzzle)." },
             { id: "garden", x: 80, y: 50, label: "Metal Garden (East Wing)", type: "quest", description: "**SCENE:** Clockwork flowers and steel vines. **LOOT:** *Bag of Tricks (Rust)* - summons mechanical animals. It is currently held by a 'Steel Predator' (Construct) acting as the gardener.", itemId: "Bag of Tricks (Rust)" },
             { id: "furnace", x: 20, y: 80, label: "Furnace Room (Bottom-Left)", type: "quest", description: "**SCENE:** Lava pools illuminate the room with angry red light. **LOOT:** *Potion of Fire Resistance* (x2) and the **Ruby Keystone** resting in the flames." },
             { id: "vault", x: 80, y: 80, label: "Void Vault (Bottom-Right)", type: "quest", description: "**SCENE:** A floating platform over a starry void. **MECHANIC:** Zero Gravity. **LOOT:** *Driftglobe* (Essential for the dark layers below) and the **Emerald Keystone**.", itemId: "Driftglobe" },

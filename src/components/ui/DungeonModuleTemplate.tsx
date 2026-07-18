@@ -64,7 +64,7 @@ export default function DungeonModuleTemplate({ mapData, onClose }: DungeonModul
                     {mapData.questGuide && (
                         <div className="break-inside-avoid mb-6 bg-yellow-50 border border-yellow-200 p-4">
                             <h3 className="font-bold uppercase border-b-2 border-yellow-400 mb-2 text-lg text-yellow-900">Quest Guide & Secrets</h3>
-                            <p className="italic text-gray-800">{mapData.questGuide.replace(/\*\*/g, '')}</p>
+                            <p className="italic text-gray-800" style={{ whiteSpace: 'pre-line' }}>{mapData.questGuide.replace(/\*\*/g, '')}</p>
                         </div>
                     )}
 
