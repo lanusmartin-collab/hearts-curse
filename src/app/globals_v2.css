@@ -1365,8 +1365,34 @@ select:focus {
     display: block;
 }
 
-/* On Desktop (width >= 1024px) */
-@media (min-width: 1024px) {
+/* =========================================
+   GLOBAL SLIDE-OUT DRAWER LAYOUT STYLES
+   ========================================= */
+
+/* Tab Dock on Right Edge */
+.drawer-tab-dock {
+    position: fixed;
+    right: 0;
+    top: 22%;
+    z-index: 99;
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    width: auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+.drawer-tab-buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* On Large Desktop Screens (width >= 1366px) */
+@media (min-width: 1366px) {
     .sidebar-container {
         transform: translateX(0) !important;
         box-shadow: none !important;
@@ -1384,47 +1410,6 @@ select:focus {
     .mobile-close-btn {
         display: none !important;
     }
-}
-
-/* On Mobile/Tablet (width < 1024px) */
-@media (max-width: 1023px) {
-    .main-content {
-        padding-top: 4rem !important;
-        padding-left: 0 !important;
-    }
-    .mobile-header-bar {
-        display: flex !important;
-    }
-}
-
-/* =========================================
-   GLOBAL SLIDE-OUT DRAWER LAYOUT STYLES
-   ========================================= */
-
-/* Tab Dock on Right Edge */
-.drawer-tab-dock {
-    position: fixed;
-    right: 0;
-    top: 22%;
-    z-index: 99;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-    width: auto;
-    transition: transform 0.3s ease-in-out;
-}
-
-.drawer-tab-buttons-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-    transition: all 0.3s ease-in-out;
-}
-
-/* On Desktop (width >= 1200px): buttons always visible */
-@media (min-width: 1200px) {
     .drawer-dock-toggle-btn {
         display: none !important;
     }
@@ -1436,8 +1421,18 @@ select:focus {
     }
 }
 
-/* On Mobile & Tablet (< 1200px): toggle handle is visible, buttons collapse/expand on tap */
-@media (max-width: 1199px) {
+/* On Tablets (both Portrait & Landscape) and Mobile (width < 1366px) */
+@media (max-width: 1365px) {
+    .main-content {
+        padding-top: 4rem !important;
+        padding-left: 0 !important;
+    }
+    .mobile-header-bar {
+        display: flex !important;
+    }
+    .mobile-close-btn {
+        display: block !important;
+    }
     .drawer-dock-toggle-btn {
         display: flex !important;
     }
