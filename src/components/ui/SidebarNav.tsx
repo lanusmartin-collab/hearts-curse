@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
     Menu, X, BookOpen, ShoppingBag, Skull, Map,
-    Zap, Swords, Hammer, PenTool, FileText, Home, Scroll, Download, Activity, Sparkles
+    Zap, Swords, Hammer, PenTool, FileText, Home, Scroll, Download, Activity, Sparkles, ChevronLeft
 } from "lucide-react";
 import clsx from "clsx";
 import CurseTracker from "./CurseTracker";
@@ -310,10 +310,25 @@ export default function SidebarNav() {
                     </h2>
                     <button
                         onClick={() => setIsOpen(false)}
-                        className="mobile-close-btn"
-                        style={{ border: "none", padding: "0.25rem", color: "inherit", background: "transparent", cursor: "pointer" }}
+                        className="sidebar-collapse-btn"
+                        style={{
+                            border: "1px solid rgba(201, 188, 160, 0.3)",
+                            borderRadius: "4px",
+                            padding: "0.35rem 0.6rem",
+                            color: "var(--gold-accent)",
+                            background: "rgba(201, 188, 160, 0.1)",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.25rem",
+                            fontSize: "0.75rem",
+                            fontFamily: "var(--font-mono)",
+                            textTransform: "uppercase"
+                        }}
+                        title="Collapse Sidebar"
                     >
-                        <X style={{ width: "24px", height: "24px" }} />
+                        <ChevronLeft style={{ width: "18px", height: "18px" }} />
+                        <span>Collapse</span>
                     </button>
                 </div>
 
