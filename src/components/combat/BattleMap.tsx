@@ -77,12 +77,13 @@ export default function BattleMap({ tokens, onTokenMove, rows = 15, cols = 20, c
         <div
             ref={containerRef}
             className="relative border-4 border-stone-800 bg-stone-900 shadow-2xl overflow-hidden cursor-crosshair select-none"
-            style={{ width, height }}
+            style={{ width, height, touchAction: "none" }}
             onMouseMove={handleMove}
             onMouseUp={handleEnd}
             onMouseLeave={handleEnd}
             onTouchMove={handleMove}
             onTouchEnd={handleEnd}
+            onTouchCancel={handleEnd}
         >
             {/* 1. Grid Layer */}
             <svg width="100%" height="100%" className="absolute inset-0 pointer-events-none opacity-20">

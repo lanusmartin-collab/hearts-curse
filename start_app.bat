@@ -2,12 +2,15 @@
 setlocal
 cd /d "%~dp0"
 
-echo Starting Heart's Curse App...
-echo Directory: %CD%
-echo.
 echo ===================================================
-echo  Access locally: http://localhost:3000
-echo  Access from network: http://YOUR_PC_IP:3000
+echo   HEART'S CURSE CAMPAIGN MANAGER - TABLET SERVER
+echo ===================================================
+echo.
+echo Local URL:   http://localhost:3000
+echo.
+echo Tablet Access (connect your iPad / Tablet to the same Wi-Fi):
+powershell -NoProfile -Command "Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notmatch 'Loopback|vEthernet|Virtual' -and $_.IPAddress -notlike '169.254*' } | ForEach-Object { Write-Host ('  - http://' + $_.IPAddress + ':3000') -ForegroundColor Green }"
+echo.
 echo ===================================================
 echo.
 

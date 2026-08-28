@@ -32,6 +32,10 @@ export default function InteractiveMap({
     const [isDraggingMap, setIsDraggingMap] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
+    // Touch & Pinch State
+    const pinchState = useRef<{ initialDistance: number; initialScale: number } | null>(null);
+    const touchStartPos = useRef<{ x: number; y: number; time: number } | null>(null);
+
     // Node Dragging State
     const [draggingNodeId, setDraggingNodeId] = useState<string | null>(null);
 
@@ -57,11 +61,9 @@ export default function InteractiveMap({
         // [EDIT MODE] Handle Node Dragging
         if (isEditing && draggingNodeId && mapImageRef.current) {
             const rect = mapImageRef.current.getBoundingClientRect();
-            // Calculate relative position within the image
             const rawX = e.clientX - rect.left;
             const rawY = e.clientY - rect.top;
 
-            // Convert to percentage (0-100)
             const percentX = Math.max(0, Math.min(100, (rawX / rect.width) * 100));
             const percentY = Math.max(0, Math.min(100, (rawY / rect.height) * 100));
 
@@ -77,27 +79,21 @@ export default function InteractiveMap({
     };
 
     const handleMouseUp = (e: React.MouseEvent) => {
-        // [EDIT MODE] Drop Node
         if (isEditing && draggingNodeId) {
             setDraggingNodeId(null);
             return;
         }
 
-        // [EDIT MODE] Add New Node (Click on empty space)
         if (isEditing && !draggingNodeId) {
-            // Check if we clicked on an existing node (bubble up)
             if ((e.target as HTMLElement).closest(".map-node")) return;
 
-            // Check if it was a drag operation
             const wasDrag = Math.abs((e.clientX - pos.x) - dragStart.x) > 5 || Math.abs((e.clientY - pos.y) - dragStart.y) > 5;
 
-            // If it wasn't a drag, and we have the map image ref for context
             if (!wasDrag && onMapClick && mapImageRef.current) {
                 const rect = mapImageRef.current.getBoundingClientRect();
                 const rawX = e.clientX - rect.left;
                 const rawY = e.clientY - rect.top;
 
-                // Only allow clicks roughly within the image bounds
                 if (rawX >= 0 && rawX <= rect.width && rawY >= 0 && rawY <= rect.height) {
                     const percentX = Math.max(0, Math.min(100, (rawX / rect.width) * 100));
                     const percentY = Math.max(0, Math.min(100, (rawY / rect.height) * 100));
@@ -109,13 +105,87 @@ export default function InteractiveMap({
         setIsDraggingMap(false);
     };
 
-    // Touch handlers omitted for brevity/safety in Edit Mode (Mouse preferred for editing)
-    // But keeping basic Pan capability for mobile viewers
+    // Touch Handlers for Tablets & Mobile
+    const handleTouchStart = (e: React.TouchEvent) => {
+        if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            touchStartPos.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+
+            if ((e.target as HTMLElement).closest(".map-node")) return;
+
+            setIsDraggingMap(true);
+            setDragStart({ x: touch.clientX - pos.x, y: touch.clientY - pos.y });
+        } else if (e.touches.length === 2) {
+            // Two finger pinch start
+            setIsDraggingMap(false);
+            const dist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            pinchState.current = { initialDistance: dist, initialScale: scale };
+        }
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (e.touches.length === 1) {
+            const touch = e.touches[0];
+
+            // Node dragging in edit mode
+            if (isEditing && draggingNodeId && mapImageRef.current) {
+                const rect = mapImageRef.current.getBoundingClientRect();
+                const rawX = touch.clientX - rect.left;
+                const rawY = touch.clientY - rect.top;
+
+                const percentX = Math.max(0, Math.min(100, (rawX / rect.width) * 100));
+                const percentY = Math.max(0, Math.min(100, (rawY / rect.height) * 100));
+
+                if (onNodeMove) {
+                    onNodeMove(draggingNodeId, percentX, percentY);
+                }
+                return;
+            }
+
+            // Map panning
+            if (isDraggingMap) {
+                setPos({ x: touch.clientX - dragStart.x, y: touch.clientY - dragStart.y });
+            }
+        } else if (e.touches.length === 2 && pinchState.current) {
+            // Pinch-to-zoom
+            const dist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            const newScale = Math.max(
+                0.8,
+                Math.min(4, pinchState.current.initialScale * (dist / pinchState.current.initialDistance))
+            );
+            setScale(newScale);
+        }
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (isEditing && draggingNodeId) {
+            setDraggingNodeId(null);
+        }
+
+        if (e.touches.length === 0) {
+            pinchState.current = null;
+            setIsDraggingMap(false);
+        } else if (e.touches.length === 1) {
+            pinchState.current = null;
+            const touch = e.touches[0];
+            setIsDraggingMap(true);
+            setDragStart({ x: touch.clientX - pos.x, y: touch.clientY - pos.y });
+        }
+    };
 
     const resetView = () => {
         setScale(1);
         setPos({ x: 0, y: 0 });
     };
+
+    const zoomIn = () => setScale(s => Math.min(4, Math.round((s + 0.25) * 100) / 100));
+    const zoomOut = () => setScale(s => Math.max(0.8, Math.round((s - 0.25) * 100) / 100));
 
     return (
         <div
@@ -129,6 +199,9 @@ export default function InteractiveMap({
                 backgroundColor: "#050505",
                 touchAction: "none"
             }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
         >
             {/* UI Overlay */}
             <div
@@ -137,26 +210,45 @@ export default function InteractiveMap({
                     top: "10px",
                     left: "10px",
                     zIndex: 20,
-                    background: "rgba(0, 0, 0, 0.8)",
-                    padding: "0.5rem 1rem",
+                    background: "rgba(0, 0, 0, 0.85)",
+                    padding: "0.5rem 0.75rem",
                     border: "1px solid var(--accent-color)",
                     borderRadius: "4px",
                     color: "var(--fg-color)",
-                    boxShadow: "0 0 10px rgba(255, 9, 9, 0.2)"
+                    boxShadow: "0 0 10px rgba(255, 9, 9, 0.2)",
+                    backdropFilter: "blur(4px)"
                 }}
             >
                 <div className="flex items-center gap-2">
                     <strong style={{ color: "var(--accent-color)", textTransform: "uppercase", letterSpacing: "1px" }}>{title}</strong>
                     {isEditing && <span className="bg-amber-600 text-black text-[10px] px-1 font-bold rounded animate-pulse">EDIT MODE</span>}
                 </div>
-                <div style={{ fontSize: "0.7em", opacity: 0.8 }}>Scroll to Zoom • Drag to Pan {isEditing && "• Drag Nodes to Move"}</div>
-                <button
-                    onClick={resetView}
-                    className="hover:text-red-500 transition-colors"
-                    style={{ marginTop: "0.5rem", fontSize: "0.7em", border: "1px solid #333", padding: "2px 6px", background: "#111" }}
-                >
-                    RESET VIEW
-                </button>
+                <div style={{ fontSize: "0.7em", opacity: 0.8 }}>Pinch or Scroll to Zoom • Touch or Drag to Pan</div>
+                <div className="flex items-center gap-1.5 mt-2">
+                    <button
+                        onClick={zoomIn}
+                        title="Zoom In"
+                        className="hover:text-amber-400 active:scale-95 transition-all text-xs font-mono font-bold"
+                        style={{ border: "1px solid #444", padding: "4px 10px", background: "#111", minWidth: "32px", minHeight: "32px", borderRadius: "3px" }}
+                    >
+                        +
+                    </button>
+                    <button
+                        onClick={zoomOut}
+                        title="Zoom Out"
+                        className="hover:text-amber-400 active:scale-95 transition-all text-xs font-mono font-bold"
+                        style={{ border: "1px solid #444", padding: "4px 10px", background: "#111", minWidth: "32px", minHeight: "32px", borderRadius: "3px" }}
+                    >
+                        -
+                    </button>
+                    <button
+                        onClick={resetView}
+                        className="hover:text-red-400 active:scale-95 transition-all text-[11px] font-mono uppercase"
+                        style={{ border: "1px solid #444", padding: "4px 8px", background: "#111", minHeight: "32px", borderRadius: "3px" }}
+                    >
+                        Reset ({Math.round(scale * 100)}%)
+                    </button>
+                </div>
             </div>
 
             {/* Scanline Effect Overlay (Disable in Edit Mode to see better) */}
@@ -233,10 +325,15 @@ export default function InteractiveMap({
                                     setDraggingNodeId(node.id);
                                 }
                             }}
+                            onTouchStart={(e) => {
+                                if (isEditing) {
+                                    e.stopPropagation();
+                                    setDraggingNodeId(node.id);
+                                }
+                            }}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                if (!isEditing && onNodeClick) onNodeClick(node);
-                                if (isEditing && onNodeClick) onNodeClick(node); // In edit mode, clicking opens editor
+                                if (onNodeClick) onNodeClick(node);
                             }}
                             style={{
                                 position: "absolute",
@@ -244,7 +341,8 @@ export default function InteractiveMap({
                                 top: `${node.y}%`,
                                 transform: "translate(-50%, -50%)",
                                 zIndex: draggingNodeId === node.id ? 100 : 10,
-                                cursor: isEditing ? "grab" : "pointer"
+                                cursor: isEditing ? "grab" : "pointer",
+                                padding: "6px"
                             }}
                         >
                             {/* Pulse Effect (Only for Boss/Encounter) */}

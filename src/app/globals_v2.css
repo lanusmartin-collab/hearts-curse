@@ -1551,3 +1551,82 @@ select:focus {
     color: #fff !important;
     border-color: #c9bca0 !important;
 }
+
+/* =========================================
+   TABLET & TOUCHSCREEN OPTIMIZATIONS
+   ========================================= */
+
+/* Custom Smooth Touch Scrollbar */
+.custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* Touch-friendly drawer panel sizing */
+@media (max-width: 1023px) {
+    .drawer-panel {
+        width: min(440px, 92vw) !important;
+    }
+}
+
+/* AD&D Binder Compendium Responsive Grid for Tablets & Mobile */
+.adnd-binder-grid {
+    display: grid;
+    grid-template-columns: 200px 300px 1fr;
+    height: calc(100vh - 100px);
+    overflow: hidden;
+    background: var(--parchment-dim, #e6dace);
+    border: 3px solid #3e2723;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 1024px) {
+    .adnd-binder-grid {
+        display: flex;
+        flex-direction: column;
+        height: auto !important;
+        min-height: calc(100vh - 120px);
+        overflow: visible !important;
+    }
+
+    .adnd-binder-sidebar {
+        flex-direction: row !important;
+        overflow-x: auto;
+        border-right: none !important;
+        border-bottom: 2px solid #1a0f0f;
+        white-space: nowrap;
+        padding-bottom: 0.25rem;
+        min-height: 52px;
+        flex-shrink: 0;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .adnd-binder-sidebar button {
+        padding: 0.6rem 1rem !important;
+        min-height: 44px !important;
+    }
+
+    .adnd-binder-list {
+        max-height: 260px;
+        border-right: none !important;
+        border-bottom: 1px solid #c9bca0;
+        overflow-y: auto;
+        flex-shrink: 0;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .adnd-binder-preview {
+        overflow: visible !important;
+        height: auto !important;
+        min-height: 480px;
+        padding: 1rem !important;
+    }
+}
+
+/* Ensure minimum touch target on interactive elements */
+@media (pointer: coarse) {
+    button, a, select, input {
+        touch-action: manipulation;
+    }
+}

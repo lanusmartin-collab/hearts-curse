@@ -100,25 +100,24 @@ export default function DiceRoller({ onRollComplete }: Props) {
         }
     }, []);
 
-    const handleMouseDown = (e: React.MouseEvent) => {
-        e.preventDefault();
+    const hasDraggedRef = useRef(false);
+
+    const startDrag = (clientX: number, clientY: number) => {
         setIsDragging(true);
-        // Correct offset calculation: distance from mouse to top-left of element
-        // Using getBoundingClientRect ensures we account for scroll or other shifts if necessary, 
-        // though strictly 'position' is what we are rendering at.
+        hasDraggedRef.current = false;
         dragOffset.current = {
-            x: e.clientX - position.x,
-            y: e.clientY - position.y
+            x: clientX - position.x,
+            y: clientY - position.y
         };
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const updateDrag = (clientX: number, clientY: number) => {
         if (!isDragging) return;
+        hasDraggedRef.current = true;
 
-        let newX = e.clientX - dragOffset.current.x;
-        let newY = e.clientY - dragOffset.current.y;
+        let newX = clientX - dragOffset.current.x;
+        let newY = clientY - dragOffset.current.y;
 
-        // Bounds Checking
         const padding = 10;
         const buttonSize = 60;
 
@@ -131,22 +130,54 @@ export default function DiceRoller({ onRollComplete }: Props) {
         setPosition({ x: newX, y: newY });
     };
 
-    const handleMouseUp = () => {
+    const endDrag = () => {
         setIsDragging(false);
         localStorage.setItem("dicePos", JSON.stringify(position));
+    };
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        e.preventDefault();
+        startDrag(e.clientX, e.clientY);
+    };
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            startDrag(touch.clientX, touch.clientY);
+        }
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+        updateDrag(e.clientX, e.clientY);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+        if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            updateDrag(touch.clientX, touch.clientY);
+        }
     };
 
     useEffect(() => {
         if (isDragging) {
             window.addEventListener("mousemove", handleMouseMove);
-            window.addEventListener("mouseup", handleMouseUp);
+            window.addEventListener("mouseup", endDrag);
+            window.addEventListener("touchmove", handleTouchMove, { passive: false });
+            window.addEventListener("touchend", endDrag);
+            window.addEventListener("touchcancel", endDrag);
         } else {
             window.removeEventListener("mousemove", handleMouseMove);
-            window.removeEventListener("mouseup", handleMouseUp);
+            window.removeEventListener("mouseup", endDrag);
+            window.removeEventListener("touchmove", handleTouchMove);
+            window.removeEventListener("touchend", endDrag);
+            window.removeEventListener("touchcancel", endDrag);
         }
         return () => {
             window.removeEventListener("mousemove", handleMouseMove);
-            window.removeEventListener("mouseup", handleMouseUp);
+            window.removeEventListener("mouseup", endDrag);
+            window.removeEventListener("touchmove", handleTouchMove);
+            window.removeEventListener("touchend", endDrag);
+            window.removeEventListener("touchcancel", endDrag);
         };
     }, [isDragging]);
 
@@ -370,10 +401,13 @@ export default function DiceRoller({ onRollComplete }: Props) {
 
             {!isOpen && (
                 <button
-                    onClick={() => !isDragging && setIsOpen(true)}
+                    onClick={() => {
+                        if (!hasDraggedRef.current) setIsOpen(true);
+                    }}
                     onMouseDown={handleMouseDown}
+                    onTouchStart={handleTouchStart}
                     className="dice-trigger arcane-button"
-                    title="Open Fate Weaver (Drag to Move)"
+                    title="Open Fate Weaver (Drag or Tap)"
                     style={{
                         position: 'fixed',
                         left: position.x,
@@ -382,7 +416,8 @@ export default function DiceRoller({ onRollComplete }: Props) {
                         right: 'auto',
                         cursor: isDragging ? 'grabbing' : 'grab',
                         transform: isDragging ? 'scale(1.1)' : 'scale(1)',
-                        zIndex: 10000 // Ensure always on top
+                        zIndex: 10000,
+                        touchAction: 'none'
                     }}
                 >
                     <span style={{ fontSize: "28px", pointerEvents: 'none' }}>🎲</span>
@@ -394,12 +429,16 @@ export default function DiceRoller({ onRollComplete }: Props) {
                     className="dice-panel glass-panel animate-slide-up"
                     style={{
                         position: 'fixed',
-                        left: panelPos.left,
-                        top: panelPos.top,
+                        left: Math.max(10, Math.min(window.innerWidth - 370, panelPos.left)),
+                        top: Math.max(10, panelPos.top),
                         bottom: 'auto',
                         right: 'auto',
-                        width: '360px',
-                        zIndex: 10000
+                        width: 'min(360px, calc(100vw - 20px))',
+                        zIndex: 10000,
+                        boxShadow: "0 0 50px rgba(0,0,0,0.8), 0 0 15px var(--accent-color)",
+                        border: "1px solid var(--border-color)",
+                        background: "rgba(10, 10, 12, 0.95)",
+                        backdropFilter: "blur(10px)"
                     }}
                 >
                     <div className="p-4" onMouseDown={handleMouseDown} style={{ borderBottom: '1px solid rgba(163,34,34,0.3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to right, #000, #1a0505)', cursor: 'grab' }}>

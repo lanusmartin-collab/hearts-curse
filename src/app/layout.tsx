@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import "./globals_v2.css";
 import DiceRoller from "@/components/ui/DiceRoller";
@@ -6,6 +6,15 @@ import DiceRoller from "@/components/ui/DiceRoller";
 import SidebarNav from "@/components/ui/SidebarNav";
 import GlobalDrawers from "@/components/ui/GlobalDrawers";
 import CurseOverlay from "@/components/ui/CurseOverlay";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: "cover",
+  themeColor: "#0a0a0c",
+};
 
 export const metadata: Metadata = {
   title: {
