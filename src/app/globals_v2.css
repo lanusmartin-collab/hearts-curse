@@ -1401,13 +1401,13 @@ select:focus {
    GLOBAL SLIDE-OUT DRAWER LAYOUT STYLES
    ========================================= */
 
-/* Tab Dock on Right Edge */
+/* Tab Dock on Right Edge (Hidden on Tablets & Mobile to avoid covering page content) */
 .drawer-tab-dock {
     position: fixed;
     right: 0;
     top: 20%;
     z-index: 99;
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: flex-end;
     gap: 8px;
@@ -1415,14 +1415,17 @@ select:focus {
     transition: transform 0.3s ease-in-out;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
+    .drawer-tab-dock {
+        display: flex !important;
+    }
     body.drawer-open .drawer-tab-dock {
         transform: translateX(-460px);
     }
 }
 
-@media (max-width: 1023px) {
-    body.drawer-open .drawer-tab-dock {
+@media (max-width: 1199px) {
+    .drawer-tab-dock {
         display: none !important;
     }
 }
