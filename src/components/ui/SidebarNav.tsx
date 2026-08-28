@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
     Menu, X, BookOpen, ShoppingBag, Skull, Map,
-    Zap, Swords, Hammer, PenTool, FileText, Home, Scroll, Download, Activity
+    Zap, Swords, Hammer, PenTool, FileText, Home, Scroll, Download, Activity, Sparkles
 } from "lucide-react";
 import clsx from "clsx";
 import CurseTracker from "./CurseTracker";
@@ -163,8 +163,114 @@ export default function SidebarNav() {
                         HEART'S CURSE
                     </span>
                 </div>
-                {/* Space for future mobile header actions if needed */}
-                <div id="mobile-header-actions"></div>
+                {/* Quick Access Mobile Header Drawer Tabs */}
+                <div id="mobile-header-actions" style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                    <button
+                        onClick={() => window.dispatchEvent(new CustomEvent("open-campaign-drawer", { detail: { tab: "bestiary" } }))}
+                        className="mobile-header-tool-btn"
+                        style={{
+                            background: "rgba(138, 28, 28, 0.25)",
+                            border: "1px solid rgba(255, 68, 68, 0.4)",
+                            color: "#ff8888",
+                            padding: "0.35rem 0.5rem",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.25rem",
+                            fontSize: "0.75rem",
+                            minHeight: "36px"
+                        }}
+                        title="Bestiary Codex"
+                    >
+                        <Skull size={16} />
+                        <span className="hidden md:inline font-mono text-[10px] uppercase font-bold">Bestiary</span>
+                    </button>
+                    <button
+                        onClick={() => window.dispatchEvent(new CustomEvent("open-campaign-drawer", { detail: { tab: "grimoire" } }))}
+                        className="mobile-header-tool-btn"
+                        style={{
+                            background: "rgba(138, 28, 28, 0.25)",
+                            border: "1px solid rgba(255, 68, 68, 0.4)",
+                            color: "#ff8888",
+                            padding: "0.35rem 0.5rem",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.25rem",
+                            fontSize: "0.75rem",
+                            minHeight: "36px"
+                        }}
+                        title="Spells Grimoire"
+                    >
+                        <Scroll size={16} />
+                        <span className="hidden md:inline font-mono text-[10px] uppercase font-bold">Spells</span>
+                    </button>
+                    <button
+                        onClick={() => window.dispatchEvent(new CustomEvent("open-campaign-drawer", { detail: { tab: "encounters" } }))}
+                        className="mobile-header-tool-btn"
+                        style={{
+                            background: "rgba(138, 28, 28, 0.25)",
+                            border: "1px solid rgba(255, 68, 68, 0.4)",
+                            color: "#ff8888",
+                            padding: "0.35rem 0.5rem",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.25rem",
+                            fontSize: "0.75rem",
+                            minHeight: "36px"
+                        }}
+                        title="Encounter Generator"
+                    >
+                        <Swords size={16} />
+                        <span className="hidden md:inline font-mono text-[10px] uppercase font-bold">Encounters</span>
+                    </button>
+                    <button
+                        onClick={() => window.dispatchEvent(new CustomEvent("open-campaign-drawer", { detail: { tab: "notepad" } }))}
+                        className="mobile-header-tool-btn"
+                        style={{
+                            background: "rgba(201, 188, 160, 0.15)",
+                            border: "1px solid rgba(201, 188, 160, 0.4)",
+                            color: "#c9bca0",
+                            padding: "0.35rem 0.5rem",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.25rem",
+                            fontSize: "0.75rem",
+                            minHeight: "36px"
+                        }}
+                        title="DM Notes"
+                    >
+                        <PenTool size={16} />
+                        <span className="hidden md:inline font-mono text-[10px] uppercase font-bold">Notes</span>
+                    </button>
+                    <button
+                        onClick={() => window.dispatchEvent(new CustomEvent("open-campaign-drawer", { detail: { tab: "oracle" } }))}
+                        className="mobile-header-tool-btn"
+                        style={{
+                            background: "rgba(201, 188, 160, 0.15)",
+                            border: "1px solid rgba(201, 188, 160, 0.4)",
+                            color: "#c9bca0",
+                            padding: "0.35rem 0.5rem",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.25rem",
+                            fontSize: "0.75rem",
+                            minHeight: "36px"
+                        }}
+                        title="AI Oracle"
+                    >
+                        <Sparkles size={16} />
+                        <span className="hidden md:inline font-mono text-[10px] uppercase font-bold">Oracle</span>
+                    </button>
+                </div>
             </div>
 
             {/* Backdrop */}

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import {
-    Skull, Scroll, Sparkles, PenTool, X, Search, ArrowLeft, Plus, Swords
+    Skull, Scroll, Sparkles, PenTool, X, Search, ArrowLeft, Plus, Swords, ChevronLeft, ChevronRight
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -66,6 +66,7 @@ const TABLES_BY_REGION: Record<string, { id: string, name: string, table: any[] 
 export default function GlobalDrawers() {
     const pathname = usePathname();
     const [activeTab, setActiveTab] = useState<DrawerTab>(null);
+    const [isDockOpen, setIsDockOpen] = useState(false);
     const [customMonsters, setCustomMonsters] = useState<Statblock[]>([]);
     
     // Grimoire States
@@ -816,48 +817,80 @@ export default function GlobalDrawers() {
                 </div>
             </div>
 
-            {/* FLOATING TAB DOCK ON RIGHT EDGE */}
-            <div className="drawer-tab-dock no-print">
+            {/* COLLAPSIBLE FLOATING TAB DOCK ON RIGHT EDGE */}
+            <div className={clsx("drawer-tab-dock no-print", isDockOpen && "expanded")}>
+                {/* Expand / Collapse Toggle Handle */}
                 <button
-                    className={clsx("drawer-tab-btn", activeTab === "bestiary" && "active")}
-                    onClick={() => handleTabClick("bestiary")}
-                    title="Bestiary Codex"
+                    onClick={() => setIsDockOpen(!isDockOpen)}
+                    className="drawer-dock-toggle-btn"
+                    title={isDockOpen ? "Collapse Tools Dock" : "Quick Access Tools"}
+                    style={{
+                        background: "#141416",
+                        border: "1px solid rgba(201, 188, 160, 0.4)",
+                        borderRight: "none",
+                        borderRadius: "8px 0 0 8px",
+                        color: "var(--gold-accent)",
+                        padding: "6px 8px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        fontSize: "10px",
+                        fontWeight: "bold",
+                        fontFamily: "var(--font-mono)",
+                        textTransform: "uppercase",
+                        boxShadow: "-3px 3px 12px rgba(0,0,0,0.6)",
+                        marginBottom: "4px",
+                        transition: "all 0.2s"
+                    }}
                 >
-                    <Skull size={18} />
-                    <span>Bestiary</span>
+                    {isDockOpen ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+                    <span className="dock-toggle-text">{isDockOpen ? "Hide" : "Tools"}</span>
                 </button>
-                <button
-                    className={clsx("drawer-tab-btn", activeTab === "grimoire" && "active")}
-                    onClick={() => handleTabClick("grimoire")}
-                    title="Spells Grimoire"
-                >
-                    <Scroll size={18} />
-                    <span>Spells</span>
-                </button>
-                <button
-                    className={clsx("drawer-tab-btn", activeTab === "encounters" && "active")}
-                    onClick={() => handleTabClick("encounters")}
-                    title="Encounter Generator"
-                >
-                    <Swords size={18} />
-                    <span>Encounters</span>
-                </button>
-                <button
-                    className={clsx("drawer-tab-btn", activeTab === "notepad" && "active")}
-                    onClick={() => handleTabClick("notepad")}
-                    title="DM Scratchpad"
-                >
-                    <PenTool size={18} />
-                    <span>Notes</span>
-                </button>
-                <button
-                    className={clsx("drawer-tab-btn", activeTab === "oracle" && "active")}
-                    onClick={() => handleTabClick("oracle")}
-                    title="AI Oracle"
-                >
-                    <Sparkles size={18} />
-                    <span>Oracle</span>
-                </button>
+
+                {/* The 5 Drawer Action Tabs */}
+                <div className={clsx("drawer-tab-buttons-container", !isDockOpen && "dock-collapsed")}>
+                    <button
+                        className={clsx("drawer-tab-btn", activeTab === "bestiary" && "active")}
+                        onClick={() => handleTabClick("bestiary")}
+                        title="Bestiary Codex"
+                    >
+                        <Skull size={18} />
+                        <span>Bestiary</span>
+                    </button>
+                    <button
+                        className={clsx("drawer-tab-btn", activeTab === "grimoire" && "active")}
+                        onClick={() => handleTabClick("grimoire")}
+                        title="Spells Grimoire"
+                    >
+                        <Scroll size={18} />
+                        <span>Spells</span>
+                    </button>
+                    <button
+                        className={clsx("drawer-tab-btn", activeTab === "encounters" && "active")}
+                        onClick={() => handleTabClick("encounters")}
+                        title="Encounter Generator"
+                    >
+                        <Swords size={18} />
+                        <span>Encounters</span>
+                    </button>
+                    <button
+                        className={clsx("drawer-tab-btn", activeTab === "notepad" && "active")}
+                        onClick={() => handleTabClick("notepad")}
+                        title="DM Scratchpad"
+                    >
+                        <PenTool size={18} />
+                        <span>Notes</span>
+                    </button>
+                    <button
+                        className={clsx("drawer-tab-btn", activeTab === "oracle" && "active")}
+                        onClick={() => handleTabClick("oracle")}
+                        title="AI Oracle"
+                    >
+                        <Sparkles size={18} />
+                        <span>Oracle</span>
+                    </button>
+                </div>
             </div>
         </>
     );

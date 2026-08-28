@@ -1401,22 +1401,34 @@ select:focus {
    GLOBAL SLIDE-OUT DRAWER LAYOUT STYLES
    ========================================= */
 
-/* Tab Dock on Right Edge (Hidden on Tablets & Mobile to avoid covering page content) */
+/* Tab Dock on Right Edge */
 .drawer-tab-dock {
     position: fixed;
     right: 0;
-    top: 20%;
+    top: 22%;
     z-index: 99;
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 8px;
-    width: 64px;
+    gap: 6px;
+    width: auto;
     transition: transform 0.3s ease-in-out;
 }
 
+.drawer-tab-buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* On Desktop (width >= 1200px): buttons always visible */
 @media (min-width: 1200px) {
-    .drawer-tab-dock {
+    .drawer-dock-toggle-btn {
+        display: none !important;
+    }
+    .drawer-tab-buttons-container.dock-collapsed {
         display: flex !important;
     }
     body.drawer-open .drawer-tab-dock {
@@ -1424,10 +1436,28 @@ select:focus {
     }
 }
 
+/* On Mobile & Tablet (< 1200px): toggle handle is visible, buttons collapse/expand on tap */
 @media (max-width: 1199px) {
-    .drawer-tab-dock {
+    .drawer-dock-toggle-btn {
+        display: flex !important;
+    }
+    .drawer-tab-buttons-container.dock-collapsed {
         display: none !important;
     }
+    body.drawer-open .drawer-tab-dock {
+        display: none !important;
+    }
+}
+
+.mobile-header-tool-btn {
+    transition: all 0.2s ease;
+}
+.mobile-header-tool-btn:hover {
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+}
+.mobile-header-tool-btn:active {
+    transform: scale(0.95);
 }
 
 /* Individual Tab Button */
