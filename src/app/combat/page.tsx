@@ -230,11 +230,11 @@ export default function CombatPage() {
     ).slice(0, 10); // Limit results
 
     return (
-        <div className="h-screen flex flex-col bg-stone-950 text-stone-200 overflow-hidden">
+        <div className="min-h-screen lg:h-screen flex flex-col bg-stone-950 text-stone-200 overflow-y-auto lg:overflow-hidden pb-20 lg:pb-0">
             {/* Top Bar */}
-            <header className="h-14 border-b border-stone-800 bg-black flex items-center px-4 justify-between">
+            <header className="h-14 border-b border-stone-800 bg-black flex items-center px-4 justify-between shrink-0">
                 <div className="flex items-center gap-3">
-                    <div className="text-amber-600 font-bold text-xl tracking-wider">BATTLEMAP V1.0</div>
+                    <div className="text-amber-600 font-bold text-lg md:text-xl tracking-wider">BATTLEMAP V1.0</div>
                     <div className="text-xs text-stone-500 font-mono hidden md:block">GRID: 20x15 • CELL: 50px</div>
                 </div>
 
@@ -248,10 +248,10 @@ export default function CombatPage() {
                 </div>
             </header>
 
-            <div className="flex-1 flex overflow-hidden relative">
+            <div className="flex-1 flex flex-col lg:flex-row overflow-visible lg:overflow-hidden relative min-h-0">
 
                 {/* Main BattleMap Area */}
-                <div className="flex-1 bg-stone-900 flex items-center justify-center p-8 overflow-auto">
+                <div className="flex-1 bg-stone-900 flex items-center justify-center p-4 md:p-8 overflow-auto min-h-[450px]">
                     <BattleMap
                         tokens={tokens}
                         onTokenMove={handleMove}
@@ -262,7 +262,7 @@ export default function CombatPage() {
                 </div>
 
                 {/* Right Sidebar: Initiative */}
-                <div className="w-80 h-full border-l border-stone-800 z-10 shadow-xl bg-stone-950 flex flex-col">
+                <div className="w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-stone-800 z-10 shadow-xl bg-stone-950 flex flex-col min-h-[320px] lg:h-full">
                     <div className="flex-1 overflow-y-auto">
                         <InitiativeTracker
                             combatants={tokens.map(t => ({
@@ -280,7 +280,7 @@ export default function CombatPage() {
                     </div>
 
                     {/* Controls (Temporary Placeholder) */}
-                    <div className="p-4 flex gap-2 justify-center border-t border-stone-800">
+                    <div className="p-4 flex gap-2 justify-center border-t border-stone-800 shrink-0">
                         <button onClick={handleNextTurn} className="retro-btn bg-stone-800 text-xs w-full py-2 hover:bg-stone-700 transition-colors">NEXT TURN</button>
                     </div>
                 </div>

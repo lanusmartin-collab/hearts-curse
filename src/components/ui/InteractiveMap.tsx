@@ -42,10 +42,22 @@ export default function InteractiveMap({
     const containerRef = useRef<HTMLDivElement>(null);
     const mapImageRef = useRef<HTMLImageElement>(null);
 
+    // Auto-fit initial scale on mount or map change
+    useEffect(() => {
+        if (containerRef.current) {
+            const w = containerRef.current.clientWidth || window.innerWidth;
+            const h = containerRef.current.clientHeight || 550;
+            const fit = Math.max(0.25, Math.min(1, Math.min((w - 20) / 1024, (h - 20) / 1024)));
+            setScale(Math.round(fit * 100) / 100);
+            setPos({ x: 0, y: 0 });
+        }
+    }, [src]);
+
     const handleWheel = (e: React.WheelEvent) => {
         if (draggingNodeId) return; // Don't zoom while dragging node
         e.preventDefault();
-        const newScale = Math.max(0.8, Math.min(4, scale + (e.deltaY > 0 ? -0.1 : 0.1)));
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        const newScale = Math.max(0.2, Math.min(4, Math.round((scale + delta) * 100) / 100));
         setScale(newScale);
     };
 
@@ -156,8 +168,8 @@ export default function InteractiveMap({
                 e.touches[0].clientY - e.touches[1].clientY
             );
             const newScale = Math.max(
-                0.8,
-                Math.min(4, pinchState.current.initialScale * (dist / pinchState.current.initialDistance))
+                0.2,
+                Math.min(4, Math.round((pinchState.current.initialScale * (dist / pinchState.current.initialDistance)) * 100) / 100)
             );
             setScale(newScale);
         }
@@ -184,8 +196,18 @@ export default function InteractiveMap({
         setPos({ x: 0, y: 0 });
     };
 
-    const zoomIn = () => setScale(s => Math.min(4, Math.round((s + 0.25) * 100) / 100));
-    const zoomOut = () => setScale(s => Math.max(0.8, Math.round((s - 0.25) * 100) / 100));
+    const fitToScreen = () => {
+        if (containerRef.current) {
+            const w = containerRef.current.clientWidth || window.innerWidth;
+            const h = containerRef.current.clientHeight || 550;
+            const fit = Math.max(0.25, Math.min(1, Math.min((w - 20) / 1024, (h - 20) / 1024)));
+            setScale(Math.round(fit * 100) / 100);
+            setPos({ x: 0, y: 0 });
+        }
+    };
+
+    const zoomIn = () => setScale(s => Math.min(4, Math.round((s + 0.15) * 100) / 100));
+    const zoomOut = () => setScale(s => Math.max(0.2, Math.round((s - 0.15) * 100) / 100));
 
     return (
         <div
@@ -193,7 +215,8 @@ export default function InteractiveMap({
             className={`retro-border ${isEditing ? 'border-amber-500' : ''}`}
             style={{
                 overflow: "hidden",
-                height: "600px",
+                height: "100%",
+                minHeight: "480px",
                 position: "relative",
                 cursor: isEditing ? (draggingNodeId ? "grabbing" : "crosshair") : (isDraggingMap ? "grabbing" : "grab"),
                 backgroundColor: "#050505",
@@ -216,37 +239,46 @@ export default function InteractiveMap({
                     borderRadius: "4px",
                     color: "var(--fg-color)",
                     boxShadow: "0 0 10px rgba(255, 9, 9, 0.2)",
-                    backdropFilter: "blur(4px)"
+                    backdropFilter: "blur(4px)",
+                    maxWidth: "calc(100% - 20px)"
                 }}
             >
                 <div className="flex items-center gap-2">
-                    <strong style={{ color: "var(--accent-color)", textTransform: "uppercase", letterSpacing: "1px" }}>{title}</strong>
+                    <strong style={{ color: "var(--accent-color)", textTransform: "uppercase", letterSpacing: "1px", fontSize: "0.85rem" }}>{title}</strong>
                     {isEditing && <span className="bg-amber-600 text-black text-[10px] px-1 font-bold rounded animate-pulse">EDIT MODE</span>}
                 </div>
-                <div style={{ fontSize: "0.7em", opacity: 0.8 }}>Pinch or Scroll to Zoom • Touch or Drag to Pan</div>
-                <div className="flex items-center gap-1.5 mt-2">
+                <div style={{ fontSize: "0.68em", opacity: 0.8 }}>Pinch or Scroll to Zoom • Drag to Pan</div>
+                <div className="flex items-center flex-wrap gap-1.5 mt-2">
                     <button
                         onClick={zoomIn}
                         title="Zoom In"
-                        className="hover:text-amber-400 active:scale-95 transition-all text-xs font-mono font-bold"
-                        style={{ border: "1px solid #444", padding: "4px 10px", background: "#111", minWidth: "32px", minHeight: "32px", borderRadius: "3px" }}
+                        className="hover:text-amber-400 active:scale-95 transition-all text-sm font-mono font-bold"
+                        style={{ border: "1px solid #444", padding: "4px 10px", background: "#111", minWidth: "36px", minHeight: "36px", borderRadius: "3px" }}
                     >
                         +
                     </button>
                     <button
                         onClick={zoomOut}
                         title="Zoom Out"
-                        className="hover:text-amber-400 active:scale-95 transition-all text-xs font-mono font-bold"
-                        style={{ border: "1px solid #444", padding: "4px 10px", background: "#111", minWidth: "32px", minHeight: "32px", borderRadius: "3px" }}
+                        className="hover:text-amber-400 active:scale-95 transition-all text-sm font-mono font-bold"
+                        style={{ border: "1px solid #444", padding: "4px 10px", background: "#111", minWidth: "36px", minHeight: "36px", borderRadius: "3px" }}
                     >
                         -
                     </button>
                     <button
+                        onClick={fitToScreen}
+                        title="Fit Map to Screen"
+                        className="hover:text-emerald-400 active:scale-95 transition-all text-[11px] font-mono uppercase font-bold"
+                        style={{ border: "1px solid #444", padding: "4px 8px", background: "#111", minHeight: "36px", borderRadius: "3px" }}
+                    >
+                        Fit ({Math.round(scale * 100)}%)
+                    </button>
+                    <button
                         onClick={resetView}
                         className="hover:text-red-400 active:scale-95 transition-all text-[11px] font-mono uppercase"
-                        style={{ border: "1px solid #444", padding: "4px 8px", background: "#111", minHeight: "32px", borderRadius: "3px" }}
+                        style={{ border: "1px solid #444", padding: "4px 8px", background: "#111", minHeight: "36px", borderRadius: "3px" }}
                     >
-                        Reset ({Math.round(scale * 100)}%)
+                        100%
                     </button>
                 </div>
             </div>

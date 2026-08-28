@@ -172,10 +172,10 @@ export default function PlayersPage() {
     };
 
     return (
-        <div className="retro-container h-screen flex flex-col overflow-hidden bg-[#050505]">
+        <div className="retro-container min-h-[calc(100dvh-4rem)] lg:h-screen flex flex-col overflow-y-auto lg:overflow-hidden bg-[#050505] pb-24 lg:pb-0">
             <CommandBar />
 
-            <div className="flex flex-1 overflow-hidden relative">
+            <div className="flex flex-1 flex-col lg:flex-row overflow-visible lg:overflow-hidden relative min-h-0">
                 {/* 1. Sidebar - Soul Register */}
                 <div className={`grimoire-sidebar w-[320px] flex flex-col shrink-0 overflow-hidden z-20 border-r border-[#8b7e66] bg-[var(--parchment-bg)] transition-all duration-300 ${fileFullScreen ? '-ml-[320px]' : ''}`}>
                     <div className="grimoire-header p-6 border-b border-[#8b7e66]">

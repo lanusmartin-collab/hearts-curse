@@ -289,28 +289,42 @@ export default function MapsClient() {
 
     return (
         <PremiumGate feature="Interactive Maps">
-            <div className="retro-container h-screen flex flex-col overflow-hidden">
-                <header className="shrink-0 mb-4 flex justify-between items-end border-b border-gray-600 pb-2">
+            <div className="retro-container min-h-screen lg:h-screen flex flex-col overflow-y-auto lg:overflow-hidden pb-24 lg:pb-4">
+                <header className="shrink-0 mb-4 flex flex-col md:flex-row justify-between items-start md:items-end gap-3 border-b border-gray-600 pb-2">
                     <div>
-                        <h1 className="text-3xl text-shadow-neon text-red-500 font-bold font-header">
+                        <h1 className="text-2xl md:text-3xl text-shadow-neon text-red-500 font-bold font-header">
                             CAMPAIGN CARTOGRAPHY
                         </h1>
-                        <p className="text-gray-400 font-mono text-sm">
-                            ZONE: {selectedMap.title.toUpperCase()}
-                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                            <span className="text-gray-400 font-mono text-xs uppercase">Region:</span>
+                            <select
+                                className="bg-black/80 text-yellow-400 border border-red-900/80 font-serif font-bold text-xs p-1.5 rounded outline-none cursor-pointer"
+                                value={selectedMapId}
+                                onChange={(e) => {
+                                    const m = CAMPAIGN_MAPS.find(x => x.id === e.target.value);
+                                    if (m) handleMapSelect(m);
+                                }}
+                            >
+                                {CAMPAIGN_MAPS.map(m => (
+                                    <option key={m.id} value={m.id} className="bg-stone-950 text-white">
+                                        {m.title}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2 items-center w-full md:w-auto justify-start md:justify-end">
                         <div className="flex bg-gray-900 rounded border border-gray-700 p-1">
                             <button
                                 onClick={() => setViewMode("interactive")}
-                                className={`px-3 py-1 text-xs rounded transition ${viewMode === "interactive" ? "bg-red-900 text-white" : "text-gray-400 hover:text-white"}`}
+                                className={`px-3 py-1 text-xs rounded transition font-bold ${viewMode === "interactive" ? "bg-red-900 text-white" : "text-gray-400 hover:text-white"}`}
                             >
                                 MAP VIEW
                             </button>
                             <button
                                 onClick={() => setViewMode("book")}
-                                className={`px-3 py-1 text-xs rounded transition ${viewMode === "book" ? "bg-red-900 text-white" : "text-gray-400 hover:text-white"}`}
+                                className={`px-3 py-1 text-xs rounded transition font-bold ${viewMode === "book" ? "bg-red-900 text-white" : "text-gray-400 hover:text-white"}`}
                             >
                                 GUIDE VIEW
                             </button>
@@ -334,9 +348,9 @@ export default function MapsClient() {
                 </div>
 
                 {/* Main Content Area */}
-                <div className="flex-1 flex gap-4 min-h-0 relative">
+                <div className="flex-1 flex flex-col lg:flex-row gap-4 min-h-0 relative">
                     {/* LEFT: Map / Content */}
-                    <div className="flex-1 bg-black border border-gray-700 relative overflow-hidden shadow-inner flex flex-col">
+                    <div className="flex-1 bg-black border border-gray-700 relative overflow-hidden shadow-inner flex flex-col min-h-[480px] lg:min-h-0">
 
                         {/* DM Tools Overlay */}
                         <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 items-start">
@@ -448,7 +462,7 @@ export default function MapsClient() {
                     </div>
 
                     {/* RIGHT: Sidebar Navigation & Details */}
-                    <div className="w-[320px] shrink-0 flex flex-col gap-4 overflow-hidden">
+                    <div className="w-full lg:w-[320px] shrink-0 flex flex-col gap-4 overflow-visible lg:overflow-hidden min-h-[300px] lg:min-h-0">
 
                         {/* Minimap Selector */}
                         <div className="bg-paper-texture p-4 text-black border border-gray-600 shrink-0 shadow-lg">

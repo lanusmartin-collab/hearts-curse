@@ -347,10 +347,10 @@ export default function GeneratorsPage() {
 
 
     return (
-        <div className="retro-container h-screen flex flex-col overflow-hidden bg-[#050505]">
+        <div className="retro-container min-h-[calc(100dvh-4rem)] lg:h-screen flex flex-col overflow-y-auto lg:overflow-hidden bg-[#050505] pb-24 lg:pb-0">
             <CommandBar />
 
-            <div className="flex flex-1 overflow-hidden relative">
+            <div className="flex flex-1 flex-col lg:flex-row overflow-visible lg:overflow-hidden relative min-h-0">
                 {/* 1. Left Sidebar */}
                 <GeneratorSidebar
                     selectedMapId={selectedMapId}

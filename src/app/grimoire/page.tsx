@@ -118,7 +118,7 @@ function GrimoireContent() {
     }, [activeSpell, filteredSpells]);
 
     return (
-        <div className="h-screen flex flex-col bg-[#050505] text-[#ccc] font-sans overflow-hidden">
+        <div className="min-h-screen lg:h-screen flex flex-col bg-[#050505] text-[#ccc] font-sans overflow-y-auto lg:overflow-hidden pb-20 lg:pb-0">
             <Link href="/" className="no-print campaign-btn danger text-xs px-3 py-1 no-underline fixed top-4 right-4 z-[9999]">
                 SANCTUM
             </Link>
@@ -127,13 +127,13 @@ function GrimoireContent() {
             <div className="bg-[#1a0505] border-b border-[#a32222] p-4 flex items-center justify-between shrink-0 z-10 shadow-lg">
                 <div className="flex items-center gap-3">
                     <BookOpen className="text-[#a32222]" />
-                    <h1 className="grimoire-title text-2xl tracking-widest text-[#c9bca0]">THE GRIMOIRE</h1>
+                    <h1 className="grimoire-title text-xl md:text-2xl tracking-widest text-[#c9bca0]">THE GRIMOIRE</h1>
                 </div>
             </div>
 
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-1 flex-col lg:flex-row overflow-visible lg:overflow-hidden min-h-0">
                 {/* Left Sidebar: Controls & List (30%) */}
-                <div className="w-[400px] bg-[#0a0a0c] border-r border-[#a32222] flex flex-col z-20 shadow-[5px_0_20px_rgba(0,0,0,0.5)]">
+                <div className="w-full lg:w-[400px] bg-[#0a0a0c] border-b lg:border-b-0 lg:border-r border-[#a32222] flex flex-col z-20 shadow-[5px_0_20px_rgba(0,0,0,0.5)] shrink-0 min-h-[350px] lg:h-full">
 
                     {/* FILTERS CONTAINER */}
                     <div className="p-4 border-b border-[#333] bg-[#111] space-y-3">
