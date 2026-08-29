@@ -17,7 +17,7 @@ export default function VersionPage() {
                         </h1>
                     </div>
                     <p style={{ margin: 0, color: "var(--gold-accent)", fontSize: "0.85rem", opacity: 0.85, fontFamily: "var(--font-mono)" }}>
-                        HEART&apos;S CURSE // BUILD v1.3.1 (TABLET & MULTI-TOUCH ENHANCED EDITION)
+                        HEART&apos;S CURSE // BUILD v1.4.0 (FULL TABLET LANDSCAPE & MULTI-TOUCH EDITION)
                     </p>
                 </div>
 
@@ -33,15 +33,15 @@ export default function VersionPage() {
                         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.85rem" }}>
                             <li style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #222", paddingBottom: "0.4rem" }}>
                                 <span className="text-[#888]">Core Build</span>
-                                <span className="font-mono text-emerald-400 font-bold">v1.3.1 Production Ready</span>
+                                <span className="font-mono text-emerald-400 font-bold">v1.4.0 Production Ready</span>
                             </li>
                             <li style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #222", paddingBottom: "0.4rem" }}>
                                 <span className="text-[#888]">Next.js Static Export</span>
                                 <span className="font-mono text-emerald-400">Optimized (21 Routes)</span>
                             </li>
                             <li style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #222", paddingBottom: "0.4rem" }}>
-                                <span className="text-[#888]">Network Binding</span>
-                                <span className="font-mono text-emerald-400">0.0.0.0 (All Interfaces)</span>
+                                <span className="text-[#888]">Tablet Orientation</span>
+                                <span className="font-mono text-emerald-400">Landscape & Portrait</span>
                             </li>
                             <li style={{ display: "flex", justifyContent: "space-between" }}>
                                 <span className="text-[#888]">PWA Offline Engine</span>
@@ -59,19 +59,19 @@ export default function VersionPage() {
                         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.85rem" }}>
                             <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                                 <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                                <span><strong>Interactive Maps:</strong> Two-finger pinch zoom, pan & on-screen HUD buttons</span>
+                                <span><strong>Landscape Full-Width:</strong> Collapsible sidebar for 100% full-screen views</span>
                             </li>
                             <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                                 <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                                <span><strong>Combat Battlemap:</strong> Touch token dragging with coordinate clamping</span>
+                                <span><strong>Direct Header Tabs:</strong> 1-tap Bestiary, Spells, Encounters, Notes & Oracle</span>
                             </li>
                             <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                                 <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                                <span><strong>Fate Weaver:</strong> Touch draggable floating d20 dice widget</span>
+                                <span><strong>Deep Zoom (0.2x):</strong> Pinch-to-zoom out to full map overview with auto-fit</span>
                             </li>
                             <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                                 <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                                <span><strong>Monster Codex:</strong> Responsive 3-pane & horizontal tablet tabs</span>
+                                <span><strong>Touch Battlemap & Fate:</strong> Touch dragging and responsive layout</span>
                             </li>
                         </ul>
                     </div>
