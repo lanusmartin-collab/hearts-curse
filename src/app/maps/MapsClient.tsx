@@ -315,6 +315,9 @@ export default function MapsClient() {
                     </div>
 
                     <div className="flex flex-wrap gap-2 items-center w-full md:w-auto justify-start md:justify-end">
+                        <Link href="/" className="flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-black/80 text-gray-300 border border-gray-700 rounded hover:bg-black hover:text-white hover:border-gray-500 transition-colors">
+                            <ArrowLeft size={14} /> DASHBOARD
+                        </Link>
                         <div className="flex bg-gray-900 rounded border border-gray-700 p-1">
                             <button
                                 onClick={() => setViewMode("interactive")}
@@ -335,73 +338,63 @@ export default function MapsClient() {
                         <button onClick={() => setShowGuideOverlay(!showGuideOverlay)} className={`retro-btn text-xs flex gap-2 items-center transition-colors ${showGuideOverlay ? 'border-red-500 text-red-400 bg-red-950/20' : ''}`}>
                             <BookOpen size={14} /> MAP GUIDE
                         </button>
+                        <button
+                            onClick={() => setIsEditing(!isEditing)}
+                            className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold border rounded shadow-lg transition-colors ${isEditing ? "bg-yellow-600 text-black border-yellow-400 animate-pulse" : "bg-gray-900 text-gray-400 border-gray-600 hover:text-white"}`}
+                        >
+                            <Edit size={14} /> {isEditing ? "DM ACTIVE" : "DM TOOLS"}
+                        </button>
                     </div>
                 </header>
 
                 {/* Mechanics Widget */}
-                <div className="mb-4 shrink-0 pointer-events-none relative z-20">
-                    <RegionalMechanicsWidget
-                        mechanics={selectedMap.mechanics || []}
-                        curseLevel="Medium"
-                        faction="Neutral"
-                    />
-                </div>
+                <RegionalMechanicsWidget
+                    mechanics={selectedMap.mechanics || []}
+                    curseLevel="Medium"
+                    faction="Neutral"
+                />
 
                 {/* Main Content Area */}
                 <div className="flex-1 flex flex-col lg:flex-row gap-4 min-h-0 relative">
                     {/* LEFT: Map / Content */}
                     <div className="flex-1 bg-black border border-gray-700 relative overflow-hidden shadow-inner flex flex-col min-h-[480px] lg:min-h-0">
 
-                        {/* DM Tools Overlay */}
-                        <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 items-start">
-                            <div className="flex gap-2">
-                                <Link href="/" className="flex items-center gap-2 px-3 py-1 text-xs font-bold bg-black/50 text-gray-400 border border-gray-700 rounded hover:bg-black hover:text-white hover:border-gray-500 transition-colors">
-                                    <ArrowLeft size={14} /> DASHBOARD
-                                </Link>
-                                <button
-                                    onClick={() => setIsEditing(!isEditing)}
-                                    className={`flex items-center gap-2 px-3 py-1 text-xs font-bold border rounded shadow-lg transition-colors ${isEditing ? "bg-yellow-600 text-black border-yellow-400 animate-pulse" : "bg-gray-900 text-gray-400 border-gray-600 hover:text-white"}`}
-                                >
-                                    <Edit size={14} /> {isEditing ? "DM EDITING ACTIVE" : "DM TOOLS"}
-                                </button>
-                            </div>
-
-                            {isEditing && (
-                                <div className="flex flex-col gap-2 bg-black/80 p-2 rounded border border-yellow-600/50 backdrop-blur-sm">
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={handleExport}
-                                            className="flex items-center gap-2 px-3 py-1 text-xs font-bold bg-green-800 text-green-100 border border-green-600 rounded hover:bg-green-700 shadow-lg"
-                                        >
-                                            <Upload size={14} /> EXPORT JSON
-                                        </button>
-                                        <button
-                                            onClick={handleResetMap}
-                                            className="flex items-center gap-2 px-3 py-1 text-xs font-bold bg-red-900/80 text-white border border-red-600 rounded hover:bg-red-700 shadow-lg"
-                                        >
-                                            <Trash2 size={14} /> RESET MAP
-                                        </button>
-                                    </div>
-
-                                    <div className="flex items-center gap-2 mt-1 border-t border-gray-700 pt-2">
-                                        <span className="text-[10px] uppercase text-yellow-500 font-bold whitespace-nowrap">Create Mode:</span>
-                                        <select
-                                            value={defaultNodeType}
-                                            onChange={(e) => setDefaultNodeType(e.target.value as any)}
-                                            className="bg-black border border-yellow-700 text-yellow-500 text-[10px] uppercase p-1 rounded w-full outline-none focus:border-yellow-400"
-                                        >
-                                            <option value="info">Info (Blue)</option>
-                                            <option value="encounter">Encounter (Orange)</option>
-                                            <option value="boss">Boss (Red)</option>
-                                            <option value="loot">Loot (Green)</option>
-                                            <option value="quest">Quest (Gold)</option>
-                                            <option value="entrance">Entrance (Cyan)</option>
-                                            <option value="trap">Trap (Magenta)</option>
-                                        </select>
-                                    </div>
+                        {/* DM Tools Overlay (When Editing) */}
+                        {isEditing && (
+                            <div className="absolute top-2 right-2 z-20 flex flex-col gap-2 bg-black/90 p-2.5 rounded border border-yellow-600/70 backdrop-blur-md shadow-2xl">
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={handleExport}
+                                        className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold bg-green-800 text-green-100 border border-green-600 rounded hover:bg-green-700 shadow-lg"
+                                    >
+                                        <Upload size={13} /> EXPORT
+                                    </button>
+                                    <button
+                                        onClick={handleResetMap}
+                                        className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold bg-red-900/80 text-white border border-red-600 rounded hover:bg-red-700 shadow-lg"
+                                    >
+                                        <Trash2 size={13} /> RESET
+                                    </button>
                                 </div>
-                            )}
-                        </div>
+
+                                <div className="flex items-center gap-2 mt-1 border-t border-gray-700 pt-2">
+                                    <span className="text-[10px] uppercase text-yellow-500 font-bold whitespace-nowrap">Create Type:</span>
+                                    <select
+                                        value={defaultNodeType}
+                                        onChange={(e) => setDefaultNodeType(e.target.value as any)}
+                                        className="bg-black border border-yellow-700 text-yellow-500 text-[10px] uppercase p-1 rounded w-full outline-none focus:border-yellow-400 cursor-pointer"
+                                    >
+                                        <option value="info">Info (Blue)</option>
+                                        <option value="encounter">Encounter (Orange)</option>
+                                        <option value="boss">Boss (Red)</option>
+                                        <option value="loot">Loot (Green)</option>
+                                        <option value="quest">Quest (Gold)</option>
+                                        <option value="entrance">Entrance (Cyan)</option>
+                                        <option value="trap">Trap (Magenta)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        )}
 
                         {/* View Modes */}
                         {viewMode === "interactive" ? (
@@ -417,6 +410,7 @@ export default function MapsClient() {
                                     onNodeMove={handleNodeMove}
                                     onMapClick={handleMapClick}
                                     partyLocationId={partyLocationId}
+                                    selectedNodeId={selectedNode?.id}
                                 />
 
                                 {/* Editor Modal (If Editing Node) */}

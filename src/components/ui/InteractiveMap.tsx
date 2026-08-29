@@ -14,6 +14,7 @@ type InteractiveMapProps = {
     onNodeMove?: (id: string, x: number, y: number) => void;
     onMapClick?: (x: number, y: number) => void;
     partyLocationId?: string | null;
+    selectedNodeId?: string | null;
 };
 
 export default function InteractiveMap({
@@ -25,7 +26,8 @@ export default function InteractiveMap({
     isEditing = false,
     onNodeMove,
     onMapClick,
-    partyLocationId
+    partyLocationId,
+    selectedNodeId
 }: InteractiveMapProps) {
     const [scale, setScale] = useState(1);
     const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -62,8 +64,9 @@ export default function InteractiveMap({
     };
 
     const handleMouseDown = (e: React.MouseEvent) => {
-        // [EDIT MODE] Node Drag Start logic is handled in the node's onMouseDown
-        if ((e.target as HTMLElement).closest(".map-node")) return;
+        if (e.button !== 0) return;
+        const targetEl = e.target instanceof Element ? e.target : (e.target as Node)?.parentElement;
+        if (targetEl?.closest(".map-node")) return;
 
         setIsDraggingMap(true);
         setDragStart({ x: e.clientX - pos.x, y: e.clientY - pos.y });
@@ -97,7 +100,8 @@ export default function InteractiveMap({
         }
 
         if (isEditing && !draggingNodeId) {
-            if ((e.target as HTMLElement).closest(".map-node")) return;
+            const targetEl = e.target instanceof Element ? e.target : (e.target as Node)?.parentElement;
+            if (targetEl?.closest(".map-node")) return;
 
             const wasDrag = Math.abs((e.clientX - pos.x) - dragStart.x) > 5 || Math.abs((e.clientY - pos.y) - dragStart.y) > 5;
 
@@ -123,7 +127,8 @@ export default function InteractiveMap({
             const touch = e.touches[0];
             touchStartPos.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
 
-            if ((e.target as HTMLElement).closest(".map-node")) return;
+            const targetEl = e.target instanceof Element ? e.target : (e.target as Node)?.parentElement;
+            if (targetEl?.closest(".map-node")) return;
 
             setIsDraggingMap(true);
             setDragStart({ x: touch.clientX - pos.x, y: touch.clientY - pos.y });
@@ -247,7 +252,7 @@ export default function InteractiveMap({
                     <strong style={{ color: "var(--accent-color)", textTransform: "uppercase", letterSpacing: "1px", fontSize: "0.85rem" }}>{title}</strong>
                     {isEditing && <span className="bg-amber-600 text-black text-[10px] px-1 font-bold rounded animate-pulse">EDIT MODE</span>}
                 </div>
-                <div style={{ fontSize: "0.68em", opacity: 0.8 }}>Pinch or Scroll to Zoom • Drag to Pan</div>
+                <div style={{ fontSize: "0.68em", opacity: 0.8 }}>Scroll/Pinch to Zoom • Drag to Pan • Click Node to Inspect</div>
                 <div className="flex items-center flex-wrap gap-1.5 mt-2">
                     <button
                         onClick={zoomIn}
@@ -309,7 +314,8 @@ export default function InteractiveMap({
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    position: "relative"
+                    position: "relative",
+                    zIndex: 5
                 }}
             >
                 <div style={{ position: "relative" }}>
@@ -346,125 +352,154 @@ export default function InteractiveMap({
                     )}
 
                     {/* Interactive Nodes */}
-                    {nodes.map((node, index) => (
-                        <div
-                            key={node.id}
-                            className="map-node"
-                            onMouseDown={(e) => {
-                                if (isEditing) {
+                    {nodes.map((node, index) => {
+                        const isSelected = selectedNodeId === node.id;
+                        return (
+                            <div
+                                key={node.id}
+                                className={`map-node ${isSelected ? 'selected-node' : ''}`}
+                                onMouseDown={(e) => {
+                                    e.stopPropagation();
+                                    if (isEditing) {
+                                        e.preventDefault();
+                                        setDraggingNodeId(node.id);
+                                    }
+                                }}
+                                onMouseUp={(e) => {
+                                    e.stopPropagation();
+                                }}
+                                onTouchStart={(e) => {
+                                    e.stopPropagation();
+                                    if (isEditing) {
+                                        setDraggingNodeId(node.id);
+                                    }
+                                }}
+                                onClick={(e) => {
                                     e.stopPropagation();
                                     e.preventDefault();
-                                    setDraggingNodeId(node.id);
-                                }
-                            }}
-                            onTouchStart={(e) => {
-                                if (isEditing) {
-                                    e.stopPropagation();
-                                    setDraggingNodeId(node.id);
-                                }
-                            }}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                if (onNodeClick) onNodeClick(node);
-                            }}
-                            style={{
-                                position: "absolute",
-                                left: `${node.x}%`,
-                                top: `${node.y}%`,
-                                transform: "translate(-50%, -50%)",
-                                zIndex: draggingNodeId === node.id ? 100 : 10,
-                                cursor: isEditing ? "grab" : "pointer",
-                                padding: "6px"
-                            }}
-                        >
-                            {/* Pulse Effect (Only for Boss/Encounter) */}
-                            {(!isEditing && (node.type === "boss" || node.type === "encounter")) && (
-                                <div className="pulse-ring" style={{
+                                    if (onNodeClick) onNodeClick(node);
+                                }}
+                                style={{
                                     position: "absolute",
-                                    width: "100%", height: "100%",
-                                    borderRadius: "50%",
-                                    border: `2px solid ${getNodeColor(node.type)}`,
-                                    animation: "pulseRed 2s infinite"
-                                }} />
-                            )}
+                                    left: `${node.x}%`,
+                                    top: `${node.y}%`,
+                                    transform: "translate(-50%, -50%)",
+                                    zIndex: draggingNodeId === node.id ? 100 : (isSelected ? 50 : 25),
+                                    cursor: isEditing ? "grab" : "pointer",
+                                    padding: "6px",
+                                    userSelect: "none"
+                                }}
+                            >
+                                {/* Selected Ring Highlight */}
+                                {isSelected && (
+                                    <div style={{
+                                        position: "absolute",
+                                        top: "-2px", left: "-2px", right: "-2px", bottom: "-2px",
+                                        borderRadius: "50%",
+                                        border: "2px solid #ffd700",
+                                        boxShadow: "0 0 15px #ffd700, inset 0 0 8px #ffd700",
+                                        animation: "pulseGold 1.5s infinite",
+                                        pointerEvents: "none"
+                                    }} />
+                                )}
 
-                            {/* Party Token Indicator */}
-                            {partyLocationId === node.id && (
+                                {/* Pulse Effect (Only for Boss/Encounter) */}
+                                {(!isEditing && (node.type === "boss" || node.type === "encounter")) && (
+                                    <div className="pulse-ring" style={{
+                                        position: "absolute",
+                                        width: "100%", height: "100%",
+                                        borderRadius: "50%",
+                                        border: `2px solid ${getNodeColor(node.type)}`,
+                                        animation: "pulseRed 2s infinite",
+                                        pointerEvents: "none"
+                                    }} />
+                                )}
+
+                                {/* Party Token Indicator */}
+                                {partyLocationId === node.id && (
+                                    <div style={{
+                                        position: "absolute",
+                                        top: "-15px", left: "50%",
+                                        transform: "translateX(-50%)",
+                                        width: "0", height: "0",
+                                        borderLeft: "8px solid transparent",
+                                        borderRight: "8px solid transparent",
+                                        borderTop: "12px solid #3b82f6", // Blue marker
+                                        filter: "drop-shadow(0 0 5px #3b82f6)",
+                                        animation: "bounceToken 1.5s infinite",
+                                        zIndex: 50,
+                                        pointerEvents: "none"
+                                    }} />
+                                )}
+
+                                {/* Icon/Marker */}
+                                <div
+                                    className="hover:scale-110 active:scale-95 transition-transform"
+                                    style={{
+                                        width: "26px",
+                                        height: "26px",
+                                        background: isSelected ? "#2a1e00" : "#000",
+                                        border: `2px solid ${isSelected ? "#ffd700" : getNodeColor(node.type)}`,
+                                        borderRadius: "50%",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        color: isSelected ? "#ffd700" : getNodeColor(node.type),
+                                        fontSize: "12px",
+                                        fontWeight: "bold",
+                                        boxShadow: isSelected ? "0 0 15px #ffd700" : `0 0 10px ${getNodeColor(node.type)}`,
+                                        position: "relative"
+                                    }}
+                                >
+                                    {getNodeIcon(node.type)}
+
+                                    {/* Number Badge for Print/Ref */}
+                                    <div className="node-badge" style={{
+                                        position: "absolute",
+                                        top: "-8px",
+                                        right: "-8px",
+                                        background: "white",
+                                        color: "black",
+                                        borderRadius: "50%",
+                                        width: "14px",
+                                        height: "14px",
+                                        fontSize: "10px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        fontWeight: "bold",
+                                        border: "1px solid black",
+                                        zIndex: 20,
+                                        pointerEvents: "none"
+                                    }}>
+                                        {index + 1}
+                                    </div>
+                                </div>
+
+                                {/* Label */}
                                 <div style={{
                                     position: "absolute",
-                                    top: "-15px", left: "50%",
+                                    top: "100%",
+                                    left: "50%",
                                     transform: "translateX(-50%)",
-                                    width: "0", height: "0",
-                                    borderLeft: "8px solid transparent",
-                                    borderRight: "8px solid transparent",
-                                    borderTop: "12px solid #3b82f6", // Blue marker
-                                    filter: "drop-shadow(0 0 5px #3b82f6)",
-                                    animation: "bounceToken 1.5s infinite",
-                                    zIndex: 50
-                                }} />
-                            )}
-
-                            {/* Icon/Marker */}
-                            <div style={{
-                                width: "24px",
-                                height: "24px",
-                                background: "#000",
-                                border: `2px solid ${getNodeColor(node.type)}`,
-                                borderRadius: "50%",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                color: getNodeColor(node.type),
-                                fontSize: "12px",
-                                fontWeight: "bold",
-                                boxShadow: `0 0 10px ${getNodeColor(node.type)}`,
-                                position: "relative"
-                            }}>
-                                {getNodeIcon(node.type)}
-
-                                {/* Number Badge for Print/Ref */}
-                                <div className="node-badge" style={{
-                                    position: "absolute",
-                                    top: "-8px",
-                                    right: "-8px",
-                                    background: "white",
-                                    color: "black",
-                                    borderRadius: "50%",
-                                    width: "14px",
-                                    height: "14px",
+                                    background: isSelected ? "rgba(35, 25, 0, 0.95)" : "rgba(0,0,0,0.85)",
+                                    padding: "2px 6px",
+                                    borderRadius: "4px",
+                                    color: isSelected ? "#ffd700" : "#fff",
                                     fontSize: "10px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    fontWeight: "bold",
-                                    border: "1px solid black",
-                                    zIndex: 20
+                                    fontWeight: isSelected ? "bold" : "normal",
+                                    whiteSpace: "nowrap",
+                                    marginTop: "4px",
+                                    border: isSelected ? "1px solid #ffd700" : "1px solid #333",
+                                    pointerEvents: "none",
+                                    boxShadow: isSelected ? "0 0 8px rgba(255, 215, 0, 0.4)" : "none"
                                 }}>
-                                    {index + 1}
+                                    {node.label}
+                                    {isEditing && <span className="text-gray-400 ml-1">({Math.round(node.x)},{Math.round(node.y)})</span>}
                                 </div>
                             </div>
-
-                            {/* Label */}
-                            <div style={{
-                                position: "absolute",
-                                top: "100%",
-                                left: "50%",
-                                transform: "translateX(-50%)",
-                                background: "rgba(0,0,0,0.8)",
-                                padding: "2px 6px",
-                                borderRadius: "4px",
-                                color: "#fff",
-                                fontSize: "10px",
-                                whiteSpace: "nowrap",
-                                marginTop: "4px",
-                                border: "1px solid #333",
-                                pointerEvents: "none"
-                            }}>
-                                {node.label}
-                                {isEditing && <span className="text-gray-400 ml-1">({Math.round(node.x)},{Math.round(node.y)})</span>}
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
 
@@ -472,6 +507,10 @@ export default function InteractiveMap({
                 @keyframes pulseRed {
                     0% { transform: scale(1); opacity: 1; }
                     100% { transform: scale(2.5); opacity: 0; }
+                }
+                @keyframes pulseGold {
+                    0%, 100% { transform: scale(1); opacity: 0.9; }
+                    50% { transform: scale(1.3); opacity: 0.4; }
                 }
                 @keyframes bounceToken {
                     0%, 100% { transform: translate(-50%, 0); }
